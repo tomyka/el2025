@@ -18,7 +18,10 @@ class ProfileTest extends TestCase
             ->actingAs($user)
             ->get('/profile');
 
-        $response->assertOk();
+        $response
+            ->assertOk()
+            ->assertViewIs('userProfile')
+            ->assertSee($user->email);
     }
 
     public function test_profile_information_can_be_updated(): void
@@ -80,7 +83,7 @@ class ProfileTest extends TestCase
             ->assertRedirect('/');
 
         $this->assertGuest();
-        $this->assertNull($user->fresh());
+        $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
 
     public function test_correct_password_must_be_provided_to_delete_account(): void
@@ -95,9 +98,9 @@ class ProfileTest extends TestCase
             ]);
 
         $response
-            ->assertSessionHasErrorsIn('userDeletion', 'password')
+            ->assertSessionHasErrors(['password'], null, 'userDeletion')
             ->assertRedirect('/profile');
 
-        $this->assertNotNull($user->fresh());
+        $this->assertDatabaseHas('users', ['id' => $user->id]);
     }
 }
