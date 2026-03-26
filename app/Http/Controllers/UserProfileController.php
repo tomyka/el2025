@@ -2,28 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\UserGroup;
-use App\Models\UserSettings;
+use App\Services\ProfileService;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Factory;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class UserProfileController extends Controller
 {
-    public function getUserProfile () {
-        $user = User::where('id',session('userID'))->first();
-        return view('userProfile')->with('user',$user);
+    public function __construct(private ProfileService $profileService) {}
+
+    public function getUserProfile() {
+        $user = $this->profileService->getProfile(Auth::user());
+        return view('userProfile')->with('user', $user);
     }
-    public function updateUserProfile (Request $request, Factory $validator) {
 
-            $user = User::find($request->input('userID'));
-            $user->username = $request->input('username');
-            $user->name = $request->input('name');
-            $user->surname = $request->input('surname');
-            $user->email = $request->input('email');
-            $user->save();
+    public function updateUserProfile(Request $request)
+    {
+        $user = Auth::user();
 
-        return view('userProfile')->with('user',$user);
-   }
+        $request->validate([
+            'username' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+            'surname' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
+        ]);
 
+        $this->profileService->updateProfile($user, $request->only(['username', 'name', 'surname', 'email']));
+
+        return redirect('/profile')->with('status', 'profile-updated');
+    }
+
+    public function destroy(Request $request)
+    {
+        try {
+            $this->profileService->deleteAccount(Auth::user(), $request->input('password'));
+        } catch (ValidationException $e) {
+            return back()->withErrors($e->errors(), 'userDeletion');
+        }
+
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
+    }
 }

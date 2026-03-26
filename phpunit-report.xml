@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="D:\Projects\sportbet\el2025\phpunit.xml" tests="40" assertions="83" errors="5" failures="1" skipped="0" time="1.726130">
+    <testsuite name="Unit" tests="11" assertions="17" errors="2" failures="0" skipped="0" time="0.315677">
+      <testsuite name="Tests\Unit\ExampleTest" file="D:\Projects\sportbet\el2025\tests\Unit\ExampleTest.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.002570">
+        <testcase name="test_that_true_is_true" file="D:\Projects\sportbet\el2025\tests\Unit\ExampleTest.php" line="12" class="Tests\Unit\ExampleTest" classname="Tests.Unit.ExampleTest" assertions="1" time="0.002570"/>
+      </testsuite>
+      <testsuite name="Tests\Unit\GameModelTest" file="D:\Projects\sportbet\el2025\tests\Unit\GameModelTest.php" tests="2" assertions="0" errors="2" failures="0" skipped="0" time="0.226003">
+        <testcase name="test_game_has_home_and_away_teams" file="D:\Projects\sportbet\el2025\tests\Unit\GameModelTest.php" line="15" class="Tests\Unit\GameModelTest" classname="Tests.Unit.GameModelTest" assertions="0" time="0.218667">
+          <error type="Illuminate\Database\Eloquent\MassAssignmentException">Tests\Unit\GameModelTest::test_game_has_home_and_away_teams&#13;
+Illuminate\Database\Eloquent\MassAssignmentException: Add [event] to fillable property to allow mass assignment on [App\Models\Event].
+&#13;
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:544
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:633
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:1655
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:1127
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Support\Traits\ForwardsCalls.php:23
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:2372
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:2384
+D:\Projects\sportbet\el2025\tests\Unit\GameModelTest.php:17</error>
+        </testcase>
+        <testcase name="test_game_can_record_score" file="D:\Projects\sportbet\el2025\tests\Unit\GameModelTest.php" line="33" class="Tests\Unit\GameModelTest" classname="Tests.Unit.GameModelTest" assertions="0" time="0.007336">
+          <error type="Illuminate\Database\Eloquent\MassAssignmentException">Tests\Unit\GameModelTest::test_game_can_record_score&#13;
+Illuminate\Database\Eloquent\MassAssignmentException: Add [event] to fillable property to allow mass assignment on [App\Models\Event].
+&#13;
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:544
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:633
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:1655
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:1127
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Support\Traits\ForwardsCalls.php:23
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:2372
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:2384
+D:\Projects\sportbet\el2025\tests\Unit\GameModelTest.php:35</error>
+        </testcase>
+      </testsuite>
+      <testsuite name="Tests\Unit\GroupModelTest" file="D:\Projects\sportbet\el2025\tests\Unit\GroupModelTest.php" tests="2" assertions="5" errors="0" failures="0" skipped="0" time="0.025398">
+        <testcase name="test_group_can_be_created" file="D:\Projects\sportbet\el2025\tests\Unit\GroupModelTest.php" line="14" class="Tests\Unit\GroupModelTest" classname="Tests.Unit.GroupModelTest" assertions="3" time="0.017036"/>
+        <testcase name="test_group_fillable_attributes" file="D:\Projects\sportbet\el2025\tests\Unit\GroupModelTest.php" line="27" class="Tests\Unit\GroupModelTest" classname="Tests.Unit.GroupModelTest" assertions="2" time="0.008362"/>
+      </testsuite>
+      <testsuite name="Tests\Unit\ProfileServiceTest" file="D:\Projects\sportbet\el2025\tests\Unit\ProfileServiceTest.php" tests="4" assertions="7" errors="0" failures="0" skipped="0" time="0.041553">
+        <testcase name="test_get_profile_returns_user" file="D:\Projects\sportbet\el2025\tests\Unit\ProfileServiceTest.php" line="23" class="Tests\Unit\ProfileServiceTest" classname="Tests.Unit.ProfileServiceTest" assertions="2" time="0.011113"/>
+        <testcase name="test_update_profile_updates_user_details" file="D:\Projects\sportbet\el2025\tests\Unit\ProfileServiceTest.php" line="33" class="Tests\Unit\ProfileServiceTest" classname="Tests.Unit.ProfileServiceTest" assertions="3" time="0.008046"/>
+        <testcase name="test_delete_account_requires_correct_password" file="D:\Projects\sportbet\el2025\tests\Unit\ProfileServiceTest.php" line="52" class="Tests\Unit\ProfileServiceTest" classname="Tests.Unit.ProfileServiceTest" assertions="1" time="0.012136"/>
+        <testcase name="test_delete_account_with_correct_password" file="D:\Projects\sportbet\el2025\tests\Unit\ProfileServiceTest.php" line="61" class="Tests\Unit\ProfileServiceTest" classname="Tests.Unit.ProfileServiceTest" assertions="1" time="0.010258"/>
+      </testsuite>
+      <testsuite name="Tests\Unit\UserModelTest" file="D:\Projects\sportbet\el2025\tests\Unit\UserModelTest.php" tests="2" assertions="4" errors="0" failures="0" skipped="0" time="0.020153">
+        <testcase name="test_user_has_user_setting_relation" file="D:\Projects\sportbet\el2025\tests\Unit\UserModelTest.php" line="14" class="Tests\Unit\UserModelTest" classname="Tests.Unit.UserModelTest" assertions="2" time="0.010794"/>
+        <testcase name="test_user_password_is_hashed_by_cast" file="D:\Projects\sportbet\el2025\tests\Unit\UserModelTest.php" line="23" class="Tests\Unit\UserModelTest" classname="Tests.Unit.UserModelTest" assertions="2" time="0.009360"/>
+      </testsuite>
+    </testsuite>
+    <testsuite name="Feature" tests="29" assertions="66" errors="3" failures="1" skipped="0" time="1.410453">
+      <testsuite name="Tests\Feature\Auth\AuthenticationTest" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\AuthenticationTest.php" tests="4" assertions="8" errors="0" failures="0" skipped="0" time="0.289270">
+        <testcase name="test_login_screen_can_be_rendered" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\AuthenticationTest.php" line="13" class="Tests\Feature\Auth\AuthenticationTest" classname="Tests.Feature.Auth.AuthenticationTest" assertions="1" time="0.035869"/>
+        <testcase name="test_users_can_authenticate_using_the_login_screen" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\AuthenticationTest.php" line="20" class="Tests\Feature\Auth\AuthenticationTest" classname="Tests.Feature.Auth.AuthenticationTest" assertions="3" time="0.018340"/>
+        <testcase name="test_users_can_not_authenticate_with_invalid_password" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\AuthenticationTest.php" line="33" class="Tests\Feature\Auth\AuthenticationTest" classname="Tests.Feature.Auth.AuthenticationTest" assertions="1" time="0.223374"/>
+        <testcase name="test_users_can_logout" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\AuthenticationTest.php" line="45" class="Tests\Feature\Auth\AuthenticationTest" classname="Tests.Feature.Auth.AuthenticationTest" assertions="3" time="0.011688"/>
+      </testsuite>
+      <testsuite name="Tests\Feature\Auth\EmailVerificationTest" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\EmailVerificationTest.php" tests="3" assertions="6" errors="0" failures="0" skipped="0" time="0.036539">
+        <testcase name="test_email_verification_screen_can_be_rendered" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\EmailVerificationTest.php" line="16" class="Tests\Feature\Auth\EmailVerificationTest" classname="Tests.Feature.Auth.EmailVerificationTest" assertions="1" time="0.010668"/>
+        <testcase name="test_email_can_be_verified" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\EmailVerificationTest.php" line="25" class="Tests\Feature\Auth\EmailVerificationTest" classname="Tests.Feature.Auth.EmailVerificationTest" assertions="4" time="0.012962"/>
+        <testcase name="test_email_is_not_verified_with_invalid_hash" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\EmailVerificationTest.php" line="44" class="Tests\Feature\Auth\EmailVerificationTest" classname="Tests.Feature.Auth.EmailVerificationTest" assertions="1" time="0.012909"/>
+      </testsuite>
+      <testsuite name="Tests\Feature\Auth\PasswordConfirmationTest" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\PasswordConfirmationTest.php" tests="3" assertions="4" errors="0" failures="0" skipped="0" time="0.240934">
+        <testcase name="test_confirm_password_screen_can_be_rendered" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\PasswordConfirmationTest.php" line="13" class="Tests\Feature\Auth\PasswordConfirmationTest" classname="Tests.Feature.Auth.PasswordConfirmationTest" assertions="1" time="0.015760"/>
+        <testcase name="test_password_can_be_confirmed" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\PasswordConfirmationTest.php" line="22" class="Tests\Feature\Auth\PasswordConfirmationTest" classname="Tests.Feature.Auth.PasswordConfirmationTest" assertions="2" time="0.010601"/>
+        <testcase name="test_password_is_not_confirmed_with_invalid_password" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\PasswordConfirmationTest.php" line="34" class="Tests\Feature\Auth\PasswordConfirmationTest" classname="Tests.Feature.Auth.PasswordConfirmationTest" assertions="1" time="0.214572"/>
+      </testsuite>
+      <testsuite name="Tests\Feature\Auth\PasswordResetTest" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\PasswordResetTest.php" tests="4" assertions="8" errors="0" failures="0" skipped="0" time="0.684110">
+        <testcase name="test_reset_password_link_screen_can_be_rendered" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\PasswordResetTest.php" line="15" class="Tests\Feature\Auth\PasswordResetTest" classname="Tests.Feature.Auth.PasswordResetTest" assertions="1" time="0.010733"/>
+        <testcase name="test_reset_password_link_can_be_requested" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\PasswordResetTest.php" line="22" class="Tests\Feature\Auth\PasswordResetTest" classname="Tests.Feature.Auth.PasswordResetTest" assertions="1" time="0.225308"/>
+        <testcase name="test_reset_password_screen_can_be_rendered" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\PasswordResetTest.php" line="33" class="Tests\Feature\Auth\PasswordResetTest" classname="Tests.Feature.Auth.PasswordResetTest" assertions="2" time="0.218399"/>
+        <testcase name="test_password_can_be_reset_with_valid_token" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\PasswordResetTest.php" line="50" class="Tests\Feature\Auth\PasswordResetTest" classname="Tests.Feature.Auth.PasswordResetTest" assertions="4" time="0.229670"/>
+      </testsuite>
+      <testsuite name="Tests\Feature\Auth\PasswordUpdateTest" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\PasswordUpdateTest.php" tests="2" assertions="8" errors="0" failures="0" skipped="0" time="0.034039">
+        <testcase name="test_password_can_be_updated" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\PasswordUpdateTest.php" line="14" class="Tests\Feature\Auth\PasswordUpdateTest" classname="Tests.Feature.Auth.PasswordUpdateTest" assertions="4" time="0.022726"/>
+        <testcase name="test_correct_password_must_be_provided_to_update_password" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\PasswordUpdateTest.php" line="34" class="Tests\Feature\Auth\PasswordUpdateTest" classname="Tests.Feature.Auth.PasswordUpdateTest" assertions="4" time="0.011313"/>
+      </testsuite>
+      <testsuite name="Tests\Feature\Auth\RegistrationTest" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\RegistrationTest.php" tests="2" assertions="4" errors="0" failures="0" skipped="0" time="0.029106">
+        <testcase name="test_registration_screen_can_be_rendered" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\RegistrationTest.php" line="12" class="Tests\Feature\Auth\RegistrationTest" classname="Tests.Feature.Auth.RegistrationTest" assertions="1" time="0.014828"/>
+        <testcase name="test_new_users_can_register" file="D:\Projects\sportbet\el2025\tests\Feature\Auth\RegistrationTest.php" line="19" class="Tests\Feature\Auth\RegistrationTest" classname="Tests.Feature.Auth.RegistrationTest" assertions="3" time="0.014278"/>
+      </testsuite>
+      <testsuite name="Tests\Feature\ExampleTest" file="D:\Projects\sportbet\el2025\tests\Feature\ExampleTest.php" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.011927">
+        <testcase name="test_the_application_returns_a_successful_response" file="D:\Projects\sportbet\el2025\tests\Feature\ExampleTest.php" line="15" class="Tests\Feature\ExampleTest" classname="Tests.Feature.ExampleTest" assertions="1" time="0.011927"/>
+      </testsuite>
+      <testsuite name="Tests\Feature\PredictionResultTest" file="D:\Projects\sportbet\el2025\tests\Feature\PredictionResultTest.php" tests="3" assertions="0" errors="3" failures="0" skipped="0" time="0.000000">
+        <testcase name="test_user_can_make_prediction_on_game" file="D:\Projects\sportbet\el2025\tests\Feature\PredictionResultTest.php" line="36" class="Tests\Feature\PredictionResultTest" classname="Tests.Feature.PredictionResultTest" assertions="0" time="0.000000">
+          <error type="ArgumentCountError">Tests\Feature\PredictionResultTest::test_user_can_make_prediction_on_game&#13;
+ArgumentCountError: Too few arguments to function Illuminate\Events\Dispatcher::dispatch(), 0 passed in D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Foundation\helpers.php on line 473 and at least 1 expected
+&#13;
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Events\Dispatcher.php:244
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Foundation\helpers.php:473
+D:\Projects\sportbet\el2025\tests\Feature\PredictionResultTest.php:23</error>
+        </testcase>
+        <testcase name="test_multiple_users_can_predict_same_game" file="D:\Projects\sportbet\el2025\tests\Feature\PredictionResultTest.php" line="75" class="Tests\Feature\PredictionResultTest" classname="Tests.Feature.PredictionResultTest" assertions="0" time="0.000000">
+          <error type="ArgumentCountError">Tests\Feature\PredictionResultTest::test_multiple_users_can_predict_same_game&#13;
+ArgumentCountError: Too few arguments to function Illuminate\Events\Dispatcher::dispatch(), 0 passed in D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Foundation\helpers.php on line 473 and at least 1 expected
+&#13;
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Events\Dispatcher.php:244
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Foundation\helpers.php:473
+D:\Projects\sportbet\el2025\tests\Feature\PredictionResultTest.php:23</error>
+        </testcase>
+        <testcase name="test_user_can_update_prediction_before_game" file="D:\Projects\sportbet\el2025\tests\Feature\PredictionResultTest.php" line="119" class="Tests\Feature\PredictionResultTest" classname="Tests.Feature.PredictionResultTest" assertions="0" time="0.000000">
+          <error type="ArgumentCountError">Tests\Feature\PredictionResultTest::test_user_can_update_prediction_before_game&#13;
+ArgumentCountError: Too few arguments to function Illuminate\Events\Dispatcher::dispatch(), 0 passed in D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Foundation\helpers.php on line 473 and at least 1 expected
+&#13;
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Events\Dispatcher.php:244
+D:\Projects\sportbet\el2025\vendor\laravel\framework\src\Illuminate\Foundation\helpers.php:473
+D:\Projects\sportbet\el2025\tests\Feature\PredictionResultTest.php:23</error>
+        </testcase>
+      </testsuite>
+      <testsuite name="Tests\Feature\ProfileTest" file="D:\Projects\sportbet\el2025\tests\Feature\ProfileTest.php" tests="5" assertions="21" errors="0" failures="1" skipped="0" time="0.061430">
+        <testcase name="test_profile_page_is_displayed" file="D:\Projects\sportbet\el2025\tests\Feature\ProfileTest.php" line="13" class="Tests\Feature\ProfileTest" classname="Tests.Feature.ProfileTest" assertions="1" time="0.011673"/>
+        <testcase name="test_profile_information_can_be_updated" file="D:\Projects\sportbet\el2025\tests\Feature\ProfileTest.php" line="24" class="Tests\Feature\ProfileTest" classname="Tests.Feature.ProfileTest" assertions="6" time="0.010512"/>
+        <testcase name="test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged" file="D:\Projects\sportbet\el2025\tests\Feature\ProfileTest.php" line="48" class="Tests\Feature\ProfileTest" classname="Tests.Feature.ProfileTest" assertions="4" time="0.016733"/>
+        <testcase name="test_user_can_delete_their_account" file="D:\Projects\sportbet\el2025\tests\Feature\ProfileTest.php" line="68" class="Tests\Feature\ProfileTest" classname="Tests.Feature.ProfileTest" assertions="5" time="0.012051">
+          <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Feature\ProfileTest::test_user_can_delete_their_account&#13;
+Failed asserting that App\Models\User Object #6544 (
+    'connection' =&gt; 'sqlite',
+    'table' =&gt; 'users',
+    'primaryKey' =&gt; 'id',
+    'keyType' =&gt; 'int',
+    'incrementing' =&gt; true,
+    'with' =&gt; Array &amp;0 [],
+    'withCount' =&gt; Array &amp;1 [],
+    'preventsLazyLoading' =&gt; false,
+    'perPage' =&gt; 15,
+    'exists' =&gt; true,
+    'wasRecentlyCreated' =&gt; false,
+    'escapeWhenCastingToString' =&gt; false,
+    'attributes' =&gt; Array &amp;2 [
+        'id' =&gt; 1,
+        'username' =&gt; 'christina.hane',
+        'name' =&gt; 'Alfred',
+        'surname' =&gt; 'Rowe',
+        'email' =&gt; 'irma.heathcote@example.org',
+        'email_verified_at' =&gt; '2026-03-26 20:21:44',
+        'password' =&gt; '$2y$04$PnTiroJfjHhjIV8Q7QDcMe5rz0hQrj8ov/oEraHjd02Nplj9Z4ofO',
+        'remember_token' =&gt; 'grPikYDhIURXOO0MOJXSQYbnYkvZ5N7IHHRDge639CF1oFyQqu4kZctjFWRK',
+        'created_at' =&gt; '2026-03-26 20:21:44',
+        'updated_at' =&gt; '2026-03-26 20:21:44',
+    ],
+    'original' =&gt; Array &amp;3 [
+        'id' =&gt; 1,
+        'username' =&gt; 'christina.hane',
+        'name' =&gt; 'Alfred',
+        'surname' =&gt; 'Rowe',
+        'email' =&gt; 'irma.heathcote@example.org',
+        'email_verified_at' =&gt; '2026-03-26 20:21:44',
+        'password' =&gt; '$2y$04$PnTiroJfjHhjIV8Q7QDcMe5rz0hQrj8ov/oEraHjd02Nplj9Z4ofO',
+        'remember_token' =&gt; 'grPikYDhIURXOO0MOJXSQYbnYkvZ5N7IHHRDge639CF1oFyQqu4kZctjFWRK',
+        'created_at' =&gt; '2026-03-26 20:21:44',
+        'updated_at' =&gt; '2026-03-26 20:21:44',
+    ],
+    'changes' =&gt; Array &amp;4 [],
+    'casts' =&gt; Array &amp;5 [
+        'email_verified_at' =&gt; 'datetime',
+        'password' =&gt; 'hashed',
+    ],
+    'classCastCache' =&gt; Array &amp;6 [],
+    'attributeCastCache' =&gt; Array &amp;7 [],
+    'dateFormat' =&gt; null,
+    'appends' =&gt; Array &amp;8 [],
+    'dispatchesEvents' =&gt; Array &amp;9 [],
+    'observables' =&gt; Array &amp;10 [],
+    'relations' =&gt; Array &amp;11 [],
+    'touches' =&gt; Array &amp;12 [],
+    'timestamps' =&gt; true,
+    'usesUniqueIds' =&gt; false,
+    'hidden' =&gt; Array &amp;13 [
+        0 =&gt; 'password',
+        1 =&gt; 'remember_token',
+    ],
+    'visible' =&gt; Array &amp;14 [],
+    'fillable' =&gt; Array &amp;15 [
+        0 =&gt; 'username',
+        1 =&gt; 'name',
+        2 =&gt; 'surname',
+        3 =&gt; 'email',
+        4 =&gt; 'password',
+    ],
+    'guarded' =&gt; Array &amp;16 [
+        0 =&gt; '*',
+    ],
+    'authPasswordName' =&gt; 'password',
+    'rememberTokenName' =&gt; 'remember_token',
+) is null.
+&#13;
+D:\Projects\sportbet\el2025\tests\Feature\ProfileTest.php:83</failure>
+        </testcase>
+        <testcase name="test_correct_password_must_be_provided_to_delete_account" file="D:\Projects\sportbet\el2025\tests\Feature\ProfileTest.php" line="86" class="Tests\Feature\ProfileTest" classname="Tests.Feature.ProfileTest" assertions="5" time="0.010462"/>
+      </testsuite>
+      <testsuite name="Tests\Feature\UserManagementTest" file="D:\Projects\sportbet\el2025\tests\Feature\UserManagementTest.php" tests="2" assertions="6" errors="0" failures="0" skipped="0" time="0.023097">
+        <testcase name="test_admin_user_update_profile" file="D:\Projects\sportbet\el2025\tests\Feature\UserManagementTest.php" line="15" class="Tests\Feature\UserManagementTest" classname="Tests.Feature.UserManagementTest" assertions="3" time="0.010717"/>
+        <testcase name="test_admin_user_delete_user_and_related_data" file="D:\Projects\sportbet\el2025\tests\Feature\UserManagementTest.php" line="31" class="Tests\Feature\UserManagementTest" classname="Tests.Feature.UserManagementTest" assertions="3" time="0.012380"/>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>

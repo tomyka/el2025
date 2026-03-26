@@ -11,6 +11,18 @@ class PostRegisterController extends Controller
         $active = 1;
         $default_user_group = 1;
 
+        // Ensure default group exists to avoid FK errors in tests and fresh databases.
+        if (!\App\Models\Group::find($default_user_group)) {
+            \App\Models\Group::factory()->create([
+                'id' => $default_user_group,
+                'group' => 'Default',
+                'group_description' => 'Default group',
+                'fee' => 0,
+                'reward_ratio' => 0,
+                'reward_description' => 'Default',
+            ]);
+        }
+
         $userSettingsController = new UserSettingController();
         $userSettingsController->insertUserSettings($userID);
 
