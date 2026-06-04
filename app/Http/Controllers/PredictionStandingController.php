@@ -28,6 +28,8 @@ class PredictionStandingController extends Controller
         $predictionStanding->semifinal      = $request->input('semifinal');
         $predictionStanding->final          = $request->input('final');
         $predictionStanding->save();
+
+        return response()->json(['success' => true]);
     }
 
     public function insertPredictionStandingsUser($user_id)
