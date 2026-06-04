@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdatePredictionStandingRequest;
 use App\Models\PredictionStanding;
 use App\Models\Team;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Factory;
 
 
 class PredictionStandingController extends Controller
@@ -21,16 +20,14 @@ class PredictionStandingController extends Controller
             }
     }
 
-    public function updatePredictionStandingsUser(Request $request, Factory $validator)
+    public function updatePredictionStandingsUser(UpdatePredictionStandingRequest $request)
     {
-
-            $predictionStanding                   = PredictionStanding::find($request->input('prediction_standingID'));
-            $predictionStanding->group_position   = $request->input('groupPosition');
-//            $predictionStanding->last16           = $request->input('last16');
-            $predictionStanding->quarterfinal     = $request->input('quarterfinal');
-            $predictionStanding->semifinal        = $request->input('semifinal');
-            $predictionStanding->final            = $request->input('final');
-            $predictionStanding->save();
+        $predictionStanding                 = PredictionStanding::find($request->input('prediction_standingID'));
+        $predictionStanding->group_position = $request->input('groupPosition');
+        $predictionStanding->quarterfinal   = $request->input('quarterfinal');
+        $predictionStanding->semifinal      = $request->input('semifinal');
+        $predictionStanding->final          = $request->input('final');
+        $predictionStanding->save();
     }
 
     public function insertPredictionStandingsUser($user_id)
