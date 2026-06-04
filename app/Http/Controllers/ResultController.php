@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateResultRequest;
 use App\Models\Game;
 use App\Models\PredictionResult;
 
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class ResultController extends Controller
 {
@@ -26,11 +26,11 @@ class ResultController extends Controller
     }
 
 
-    public function updateResult(Request $request)
+    public function updateResult(UpdateResultRequest $request)
     {
-        $gameID         = $request->input('gameID');
-        $homeTeamScore      = $request->input('homeTeamScore');
-        $awayTeamScore      = $request->input('awayTeamScore');
+        $gameID        = $request->input('gameID');
+        $homeTeamScore = $request->input('homeTeamScore');
+        $awayTeamScore = $request->input('awayTeamScore');
 
         $game = Game::find($gameID);
         $game->home_team_score    = $homeTeamScore;
