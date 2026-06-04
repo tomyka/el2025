@@ -1,6 +1,8 @@
 @php
-    $registrationOpen = !\App\Models\Game::exists()
-        || now()->lt(\App\Models\Game::min('game_date'));
+    $nextUnscoredGame = \App\Models\Game::whereNull('home_team_score')
+        ->whereNull('away_team_score')
+        ->min('game_date');
+    $registrationOpen = is_null($nextUnscoredGame) || now()->lt($nextUnscoredGame);
 @endphp
 <!-- Login Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
