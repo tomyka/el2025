@@ -20,7 +20,7 @@ class TeamStatisticsController extends Controller
                                           group by t.id',
             [$teamID]);
 
-        return $teamHomeStatistics[0];
+        return $teamHomeStatistics[0] ?? null;
     }
 
     public function prepareTeamStatistics($predictionResults){
