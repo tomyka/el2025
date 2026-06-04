@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 class TeamStatisticsController extends Controller
 {
     public function getTeamStatistics($teamID){
-
         $teamHomeStatistics = DB::select('select
                                               SUM(CASE WHEN home_team_score IS NOT NULL then 1 else 0 end) AS gameCount,
                                               SUM(CASE WHEN g.home_team_id=t.id AND home_team_score > away_team_score OR g.away_team_id=t.id AND home_team_score < away_team_score then 1 else 0 end) AS won,
@@ -17,9 +16,10 @@ class TeamStatisticsController extends Controller
                                           from teams AS t
                                             LEFT JOIN games AS g ON t.id=g.home_team_id OR t.id=g.away_team_id
                                           where
-                                            t.id = '.$teamID.'
-                                          group by t.id
-                                     ');
+                                            t.id = ?
+                                          group by t.id',
+            [$teamID]);
+
         return $teamHomeStatistics[0];
     }
 

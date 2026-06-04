@@ -7,6 +7,8 @@ use App\Http\Controllers\PointController;
 use App\Http\Controllers\PointResultController;
 use App\Http\Controllers\PredictionResultController;
 use App\Http\Controllers\PredictionStandingController;
+use App\Http\Controllers\PredictionSurvivalController;
+use App\Http\Controllers\TeamStatisticsController;
 use App\Models\Event;
 use App\Models\Game;
 use App\Models\Group;
@@ -176,6 +178,28 @@ class SqlInjectionRegressionTest extends TestCase
         $result = $controller->getFundCollected();
 
         $this->assertIsNumeric($result);
+    }
+
+    public function test_get_prediction_survival_user_event_id_returns_results(): void
+    {
+        $data = $this->seedMinimal();
+        Session::put('timeDifference', 0);
+
+        $controller = new PredictionSurvivalController();
+        $results = $controller->getPredictionSurvivalUserEventID($data['user']->id, $data['event']->id);
+
+        $this->assertIsArray($results);
+    }
+
+    public function test_get_team_statistics_returns_stats(): void
+    {
+        $data = $this->seedMinimal();
+
+        $controller = new TeamStatisticsController();
+        $result = $controller->getTeamStatistics($data['homeTeam']->id);
+
+        $this->assertObjectHasProperty('gameCount', $result);
+        $this->assertObjectHasProperty('won', $result);
     }
 
     public function test_delete_point_result_game_points_deletes_records(): void
