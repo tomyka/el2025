@@ -3,10 +3,12 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\PredictionResultController;
+use App\Http\Controllers\PredictionStandingController;
 use App\Models\Event;
 use App\Models\Game;
 use App\Models\Group;
 use App\Models\PredictionResult;
+use App\Models\PredictionStanding;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\UserGroup;
@@ -101,6 +103,29 @@ class SqlInjectionRegressionTest extends TestCase
 
         $controller = new PredictionResultController();
         $results = $controller->getPredictionGamesUserResultAmount($data['user']->id, 10);
+
+        $this->assertIsArray($results);
+    }
+
+    public function test_get_prediction_standing_profile_returns_results(): void
+    {
+        $data = $this->seedMinimal();
+        PredictionStanding::create(['user_id' => $data['user']->id, 'team_id' => $data['homeTeam']->id]);
+
+        $controller = new PredictionStandingController();
+        $results = $controller->getPredictionStandingProfile($data['group']->id);
+
+        $this->assertIsArray($results);
+        $this->assertCount(1, $results);
+    }
+
+    public function test_get_prediction_standing_top4_returns_results(): void
+    {
+        $data = $this->seedMinimal();
+        PredictionStanding::create(['user_id' => $data['user']->id, 'team_id' => $data['homeTeam']->id, 'final' => 1]);
+
+        $controller = new PredictionStandingController();
+        $results = $controller->getPredictionStandingTop4($data['group']->id);
 
         $this->assertIsArray($results);
     }
