@@ -22,7 +22,9 @@ class FeeController extends Controller
                                     ,SUM(CASE WHEN Fee!=0 THEN 1 ELSE 0 END) AS usersActive
                                    FROM users AS u
                                     JOIN user_groups AS ug ON u.id=ug.user_id
-                                   WHERE ug.group_id='.session('groupID'). ' AND ug.guest=0');
+                                   WHERE ug.group_id = ? AND ug.guest=0',
+            [session('groupID')]);
+
         return $userDetails[0];
     }
 
@@ -43,10 +45,11 @@ class FeeController extends Controller
                                   ,MAX(g.reward_ratio) AS reward_ratio
                                 FROM `groups` AS g
                                   JOIN user_groups AS ug ON g.id=ug.group_id
-                                WHERE g.id=' . session('groupID'));
+                                WHERE g.id = ?',
+            [session('groupID')]);
 
+        $fundCollected = $groupDetails[0]->fee * $groupDetails[0]->reward_ratio;
 
-        $fundCollected = $groupDetails[0]->fee*$groupDetails[0]->reward_ratio;
         return $fundCollected;
     }
 }

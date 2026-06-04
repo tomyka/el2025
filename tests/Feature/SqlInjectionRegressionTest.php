@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\FeeController;
 use App\Http\Controllers\PointController;
 use App\Http\Controllers\PointResultController;
 use App\Http\Controllers\PredictionResultController;
@@ -152,6 +153,29 @@ class SqlInjectionRegressionTest extends TestCase
 
         $this->assertIsArray($results);
         $this->assertCount(1, $results);
+    }
+
+    public function test_get_user_details_returns_counts(): void
+    {
+        $data = $this->seedMinimal();
+        Session::put('groupID', $data['group']->id);
+
+        $controller = new FeeController();
+        $result = $controller->getUserDetails();
+
+        $this->assertObjectHasProperty('users', $result);
+        $this->assertObjectHasProperty('usersActive', $result);
+    }
+
+    public function test_get_fund_collected_returns_numeric(): void
+    {
+        $data = $this->seedMinimal();
+        Session::put('groupID', $data['group']->id);
+
+        $controller = new FeeController();
+        $result = $controller->getFundCollected();
+
+        $this->assertIsNumeric($result);
     }
 
     public function test_delete_point_result_game_points_deletes_records(): void
