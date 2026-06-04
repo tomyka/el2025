@@ -76,7 +76,7 @@ Route::group(['prefix' => 'prediction'],function(){
     Route::post('predictionSurvival', [PredictionSurvivalController::class,'updatePredictionSurvivalUser'])->name('prediction.survival');
 });
 
-Route:: group(['prefix'=>'admin'], function(){
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function () {
 
     Route::get('index', [ResultController::class,'getResultsCurrentRound'])->name('admin.index');
 
