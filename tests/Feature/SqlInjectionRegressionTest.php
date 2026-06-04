@@ -2,11 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\PointController;
+use App\Http\Controllers\PointResultController;
 use App\Http\Controllers\PredictionResultController;
 use App\Http\Controllers\PredictionStandingController;
 use App\Models\Event;
 use App\Models\Game;
 use App\Models\Group;
+use App\Models\PointResult;
+use App\Models\PointStanding;
 use App\Models\PredictionResult;
 use App\Models\PredictionStanding;
 use App\Models\Team;
@@ -128,5 +132,45 @@ class SqlInjectionRegressionTest extends TestCase
         $results = $controller->getPredictionStandingTop4($data['group']->id);
 
         $this->assertIsArray($results);
+    }
+
+    public function test_get_prediction_standings_user_points_returns_results(): void
+    {
+        $data = $this->seedMinimal();
+        PointStanding::create([
+            'user_id' => $data['user']->id,
+            'team_id' => $data['homeTeam']->id,
+            'group_position_points' => 10,
+            'last16_points' => 0,
+            'quarterfinal_points' => 0,
+            'semifinal_points' => 0,
+            'final_points' => 0,
+        ]);
+
+        $controller = new PointController();
+        $results = $controller->getPredictionStandingsUserPoints($data['user']->id);
+
+        $this->assertIsArray($results);
+        $this->assertCount(1, $results);
+    }
+
+    public function test_delete_point_result_game_points_deletes_records(): void
+    {
+        $data = $this->seedMinimal();
+        PointResult::create([
+            'user_id' => $data['user']->id,
+            'game_id' => $data['game']->id,
+            'winner_points' => 50,
+            'difference_points' => 40,
+            'bingo_points' => 0,
+            'odds' => 1.5,
+            'odds_points' => 25,
+            'full_points' => 115,
+        ]);
+
+        $controller = new PointResultController();
+        $controller->deletePointResultGamePoints($data['game']->id);
+
+        $this->assertDatabaseMissing('point_results', ['game_id' => $data['game']->id]);
     }
 }

@@ -14,7 +14,7 @@ class PointResultController extends Controller
 {
     public function deletePointResultGamePoints ($gameID): void
     {
-        DB::statement('DELETE FROM point_results WHERE game_id='.$gameID);
+        DB::statement('DELETE FROM point_results WHERE game_id = ?', [$gameID]);
     }
 
     public function insertPointResultUser ($userID, $gameID, $points): void
