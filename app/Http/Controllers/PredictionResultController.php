@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdatePredictionResultRequest;
 use App\Models\Game;
 use App\Models\PredictionResult;
 use App\Models\Team;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
-use Illuminate\Validation\Factory;
 
 class PredictionResultController extends Controller
 {
@@ -33,53 +31,33 @@ class PredictionResultController extends Controller
         }
     }
 
-    public function updatePredictionResultUser(Request $request, Factory $validator)
+    public function updatePredictionResultUser(UpdatePredictionResultRequest $request)
     {
-        $validation = $validator->make($request->all(), [
-            'homeTeamScore' => 'nullable|integer|max:150|min:50',
-            'awayTeamScore' => 'nullable|integer|max:150|min:50'
-        ]);
+        $userID = session('userID');
+        $gameID = $request->input('gameID');
+        $homeTeamScore = $request->input('homeTeamScore');
+        $awayTeamScore = $request->input('awayTeamScore');
+        $gameWinnerID = $request->input('gameWinnerID');
 
-        if ($validation->fails()) {
-            return response()->json([
-                'error' => true,
-                'messages' => $validation->errors()->all()
-            ], 400);
-        }
-        else {
+        $game = Game::where('id', $gameID)->first();
+        $now = date('Y-m-d H:i:s');
 
-            $userID = session('userID');
-            $gameID = $request->input('gameID');
-            $homeTeamScore = $request->input('homeTeamScore');
-            $awayTeamScore = $request->input('awayTeamScore');
-            $gameWinnerID = $request->input('gameWinnerID');
+        if ($game->game_date > $now) {
+            $predictionResult = PredictionResult::find($request->input('prediction_gameID'));
+            $predictionResult->home_team_score = (($homeTeamScore == "") ? null : $homeTeamScore);
+            $predictionResult->away_team_score = (($awayTeamScore == "") ? null : $awayTeamScore);
+            $predictionResult->game_winner_id = (($gameWinnerID == "") ? null : $gameWinnerID);
+            $predictionResult->generated = 0;
+            $predictionResult->save();
 
-            $game = Game::where('id', $gameID)->first();
-            $now = date('Y-m-d H:i:s');
-
-            if ($game->game_date > $now) {
-                $predictionResult = PredictionResult::find($request->input('prediction_gameID'));
-                $predictionResult->home_team_score = (($homeTeamScore == "") ? null : $homeTeamScore);
-                $predictionResult->away_team_score = (($awayTeamScore == "") ? null : $awayTeamScore);
-                $predictionResult->game_winner_id = (($gameWinnerID == "") ? null : $gameWinnerID);
-                $predictionResult->generated = 0;
-                $predictionResult->save();
-
-
-                if ($homeTeamScore != "" && $awayTeamScore != "") {
-                    $auditPredictionGameController = new AuditPredictionGameController();
-                    $auditPredictionGameController->insertAuditPredictionGame($userID, $gameID, $homeTeamScore, $awayTeamScore, $gameWinnerID);
-
-                }
-
+            if ($homeTeamScore != "" && $awayTeamScore != "") {
+                $auditPredictionGameController = new AuditPredictionGameController();
+                $auditPredictionGameController->insertAuditPredictionGame($userID, $gameID, $homeTeamScore, $awayTeamScore, $gameWinnerID);
             }
-            return response()->json([
-                'success' => true
-            ]);
-
         }
 
-        }
+        return response()->json(['success' => true]);
+    }
 
 
 
