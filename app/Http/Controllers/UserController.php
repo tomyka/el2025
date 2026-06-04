@@ -33,7 +33,7 @@ class UserController extends Controller
         $userProfile->fee = $request->input('fee');
         $userProfile->save();
 */
-        $userSetting = UserSetting::find($request->input('userID'));
+        $userSetting = UserSetting::where('user_id', $request->input('userID'))->first();
         $userSetting->admin = $request->input('admin');
         $userSetting->save();
 
