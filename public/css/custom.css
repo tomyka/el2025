@@ -13,6 +13,7 @@
   --sb-border:  #e2e8f0;
   --sb-text:    #1e293b;
   --sb-muted:   #64748b;
+  --sb-divider: #334155;
 }
 
 /* ============================================================
@@ -28,7 +29,7 @@
 .sb-main {
   flex: 1;
   padding: 16px;
-  padding-bottom: 76px;
+  padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
 }
 
 @media (min-width: 992px) {
@@ -40,7 +41,7 @@
    ============================================================ */
 .sb-navbar {
   background: var(--sb-nav) !important;
-  border-bottom: 1px solid #334155;
+  border-bottom: 1px solid var(--sb-divider);
   padding: 8px 16px;
 }
 
@@ -81,7 +82,7 @@
   display: flex;
   align-items: center;
   padding: 10px 20px;
-  border-bottom: 1px solid #334155;
+  border-bottom: 1px solid var(--sb-divider);
 }
 
 .sb-hero-stat {
@@ -108,7 +109,7 @@
 .sb-hero-divider {
   width: 1px;
   height: 28px;
-  background: #334155;
+  background: var(--sb-divider);
   margin: 0 8px;
 }
 
@@ -141,9 +142,9 @@
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 1030;
+  z-index: 1025;
   background: var(--sb-nav);
-  border-top: 1px solid #334155;
+  border-top: 1px solid var(--sb-divider);
   display: flex;
   padding: 6px 0 env(safe-area-inset-bottom, 6px);
 }
