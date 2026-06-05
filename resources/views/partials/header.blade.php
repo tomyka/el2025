@@ -1,11 +1,7 @@
 @auth
 @php
-    use App\Models\PointResult;
-    use App\Models\Game;
-    use Illuminate\Support\Facades\DB;
-
-    $sbGamePoints  = round((float) PointResult::where('user_id', session('userID'))->sum('full_points'), 1);
-    $sbStandPoints = (float) (DB::table('point_standings')
+    $sbGamePoints  = round((float) \App\Models\PointResult::where('user_id', session('userID'))->sum('full_points'), 1);
+    $sbStandPoints = (float) (\Illuminate\Support\Facades\DB::table('point_standings')
         ->where('user_id', session('userID'))
         ->selectRaw('COALESCE(SUM(group_position_points),0)
                    + COALESCE(SUM(last16_points),0)
@@ -15,7 +11,7 @@
         ->value('total') ?? 0);
     $sbTotalPoints = round($sbGamePoints + $sbStandPoints, 1);
 
-    $sbRank = DB::table('users')
+    $sbRank = \Illuminate\Support\Facades\DB::table('users')
         ->join('user_groups', 'users.id', '=', 'user_groups.user_id')
         ->leftJoin('point_results', 'users.id', '=', 'point_results.user_id')
         ->where('user_groups.group_id', session('groupID'))
@@ -24,8 +20,8 @@
         ->havingRaw('ROUND(COALESCE(SUM(point_results.full_points), 0), 1) > ?', [$sbGamePoints])
         ->count() + 1;
 
-    $sbUpcoming = Game::whereNull('home_team_score')->whereNull('away_team_score')->count();
-    $sbBingo    = PointResult::where('user_id', session('userID'))->where('bingo_points', '>', 0)->count();
+    $sbUpcoming = \App\Models\Game::whereNull('home_team_score')->whereNull('away_team_score')->count();
+    $sbBingo    = \App\Models\PointResult::where('user_id', session('userID'))->where('bingo_points', '>', 0)->count();
 @endphp
 @endauth
 
