@@ -1,22 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="lt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'App' }}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SportBet</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/cerulean/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('/css/custom.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-<body>
-    <div class="min-h-screen bg-gray-100">
-        <div class="py-12">
-            <div class="max-w-md mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 bg-white border-b border-gray-200">
-                        {{ $slot }}
-                    </div>
+<body style="min-height:100vh; background:linear-gradient(135deg, var(--sb-nav) 0%, var(--sb-hero) 100%);">
+
+    <div class="d-flex align-items-center justify-content-center" style="min-height:100vh; padding:24px 16px;">
+        <div style="width:100%; max-width:400px;">
+
+            <div class="text-center mb-4">
+                <a href="{{ url('/') }}" class="text-decoration-none d-inline-flex align-items-center gap-2">
+                    <span class="material-icons" style="color:var(--sb-accent); font-size:2rem;">sports_soccer</span>
+                    <span class="fw-bold fs-4" style="color:#fff; letter-spacing:.5px;">SportBet</span>
+                </a>
+            </div>
+
+            <div class="card border-0 shadow-lg" style="border-radius:12px;">
+                <div class="card-body p-4">
+                    {{ $slot }}
                 </div>
             </div>
+
         </div>
     </div>
+
 </body>
 </html>

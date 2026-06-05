@@ -109,7 +109,7 @@
             </a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none">@csrf</form>
             @else
-            <a class="sb-nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
+            <a class="sb-nav-link" href="{{ route('login') }}">
                 Prisijungti
             </a>
             @endauth
@@ -143,7 +143,3 @@
 </div>
 @endauth
 
-{{-- Login/register modal (guests only) --}}
-@guest
-    @include('modals.main')
-@endguest

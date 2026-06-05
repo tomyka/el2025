@@ -1,47 +1,66 @@
 <x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+
+    <h5 class="fw-bold mb-1">Prisijungti</h5>
+    <p class="text-muted small mb-4">Džiaugiamės tave matydami vėl!</p>
+
+    @if (session('status'))
+    <div class="alert alert-success py-2 mb-3 small">{{ session('status') }}</div>
+    @endif
+
+    @if ($errors->any())
+    <div class="alert alert-danger py-2 mb-3 small">{{ $errors->first() }}</div>
+    @endif
 
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <div class="mb-3">
+            <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted">
+                    <i class="bi bi-envelope"></i>
+                </span>
+                <input type="email" name="email"
+                       class="form-control border-start-0 ps-1"
+                       placeholder="El. paštas"
+                       value="{{ old('email') }}"
+                       autocomplete="email"
+                       autofocus>
+            </div>
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div class="mb-4">
+            <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted">
+                    <i class="bi bi-lock"></i>
+                </span>
+                <input type="password" name="password"
+                       class="form-control border-start-0 ps-1"
+                       placeholder="Slaptažodis"
+                       autocomplete="current-password">
+            </div>
         </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
-                <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
+        <button type="submit" class="btn w-100 fw-semibold"
+                style="background:var(--sb-accent); color:#0f172a;">
+            Prisijungti
+        </button>
     </form>
+
+    <div class="sb-auth-divider">arba</div>
+
+    <a href="{{ route('auth.google') }}"
+       class="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center gap-2">
+        <img src="https://www.svgrepo.com/show/475656/google-color.svg" width="18" height="18" alt="">
+        Prisijungti su Google
+    </a>
+
+    <div class="d-flex justify-content-between mt-3">
+        <a href="{{ route('password.request') }}" class="text-muted small text-decoration-none">
+            Pamiršau slaptažodį
+        </a>
+        <a href="{{ route('register') }}" class="text-muted small text-decoration-none">
+            Registruotis →
+        </a>
+    </div>
+
 </x-guest-layout>

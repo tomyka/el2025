@@ -1,64 +1,102 @@
 <x-guest-layout>
+
+    <h5 class="fw-bold mb-1">Registruotis</h5>
+    <p class="text-muted small mb-4">Sukurk paskyrą ir pradėk spėjimus!</p>
+
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
-        <!-- Username -->
-        <div>
-            <x-input-label for="username" :value="__('Username')" />
-            <x-text-input id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('username')" class="mt-2" />
-        </div>
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-        </div>
-        <!-- Name -->
-        <div>
-            <x-input-label for="surname" :value="__('Surname')" />
-            <x-text-input id="surname" class="block mt-1 w-full" type="text" name="surname" :value="old('surname')" required autofocus autocomplete="surname" />
-            <x-input-error :messages="$errors->get('surname')" class="mt-2" />
+        <div class="mb-3">
+            <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted">
+                    <i class="bi bi-person"></i>
+                </span>
+                <input type="text" name="username"
+                       class="form-control border-start-0 ps-1 @error('username') is-invalid @enderror"
+                       placeholder="Slapyvardis"
+                       value="{{ old('username') }}"
+                       required autofocus>
+                @error('username')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
         </div>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <div class="row g-2 mb-3">
+            <div class="col">
+                <input type="text" name="name"
+                       class="form-control @error('name') is-invalid @enderror"
+                       placeholder="Vardas"
+                       value="{{ old('name') }}"
+                       required>
+                @error('name')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col">
+                <input type="text" name="surname"
+                       class="form-control @error('surname') is-invalid @enderror"
+                       placeholder="Pavardė"
+                       value="{{ old('surname') }}">
+                @error('surname')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div class="mb-3">
+            <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted">
+                    <i class="bi bi-envelope"></i>
+                </span>
+                <input type="email" name="email"
+                       class="form-control border-start-0 ps-1 @error('email') is-invalid @enderror"
+                       placeholder="El. paštas"
+                       value="{{ old('email') }}"
+                       required>
+                @error('email')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
         </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        <div class="mb-3">
+            <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted">
+                    <i class="bi bi-lock"></i>
+                </span>
+                <input type="password" name="password"
+                       class="form-control border-start-0 ps-1 @error('password') is-invalid @enderror"
+                       placeholder="Slaptažodis"
+                       required>
+                @error('password')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
+        <div class="mb-4">
+            <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted">
+                    <i class="bi bi-lock-fill"></i>
+                </span>
+                <input type="password" name="password_confirmation"
+                       class="form-control border-start-0 ps-1"
+                       placeholder="Pakartokite slaptažodį"
+                       required>
+            </div>
         </div>
+
+        <button type="submit" class="btn w-100 fw-semibold"
+                style="background:var(--sb-accent); color:#0f172a;">
+            Registruotis
+        </button>
     </form>
+
+    <div class="text-center mt-3">
+        <a href="{{ route('login') }}" class="text-muted small text-decoration-none">
+            ← Jau turiu paskyrą
+        </a>
+    </div>
+
 </x-guest-layout>
