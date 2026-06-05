@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PostRegisterController;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -17,7 +18,11 @@ class GoogleAuthController extends Controller
 
     public function callback()
     {
-        $googleUser = Socialite::driver('google')->user();
+        try {
+            $googleUser = Socialite::driver('google')->user();
+        } catch (\Exception $e) {
+            return redirect()->route('/')->with('error', 'Google prisijungimas nepavyko. Bandykite dar kartą.');
+        }
 
         $user = User::where('google_id', $googleUser->getId())->first();
 
@@ -36,14 +41,16 @@ class GoogleAuthController extends Controller
 
         $nameParts = explode(' ', $googleUser->getName(), 2);
         $user = User::create([
-            'google_id' => $googleUser->getId(),
-            'email'     => $googleUser->getEmail(),
-            'username'  => strstr($googleUser->getEmail(), '@', true),
-            'name'      => $nameParts[0],
-            'surname'   => $nameParts[1] ?? '',
-            'password'  => null,
+            'google_id'         => $googleUser->getId(),
+            'email'             => $googleUser->getEmail(),
+            'email_verified_at' => now(),
+            'username'          => strstr($googleUser->getEmail(), '@', true),
+            'name'              => $nameParts[0],
+            'surname'           => $nameParts[1] ?? '',
+            'password'          => null,
         ]);
 
+        event(new Registered($user));
         (new PostRegisterController())->postRegisterActions($user->id);
 
         Auth::login($user);
