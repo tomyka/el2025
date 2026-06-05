@@ -1,125 +1,153 @@
-<nav class="navbar navbar-expand bg-primary navbar-dark">
-    <div class="container-fluid">
-             <a class="navbar-brand" @auth href="{{route('main')}}" @else href="{{route('/')}}" @endauth id="logo">
-                <img src="{{URL::to('img/logo.png')}}" height="30" alt="SportBet">
+@auth
+@php
+    use App\Models\PointResult;
+    use App\Models\Game;
+    use Illuminate\Support\Facades\DB;
+
+    $sbGamePoints  = round((float) PointResult::where('user_id', session('userID'))->sum('full_points'), 1);
+    $sbStandPoints = (float) (DB::table('point_standings')
+        ->where('user_id', session('userID'))
+        ->selectRaw('COALESCE(SUM(group_position_points),0)
+                   + COALESCE(SUM(last16_points),0)
+                   + COALESCE(SUM(quarterfinal_points),0)
+                   + COALESCE(SUM(semifinal_points),0)
+                   + COALESCE(SUM(final_points),0) as total')
+        ->value('total') ?? 0);
+    $sbTotalPoints = round($sbGamePoints + $sbStandPoints, 1);
+
+    $sbRank = DB::table('users')
+        ->join('user_groups', 'users.id', '=', 'user_groups.user_id')
+        ->leftJoin('point_results', 'users.id', '=', 'point_results.user_id')
+        ->where('user_groups.group_id', session('groupID'))
+        ->where('user_groups.guest', '<=', session('guest', 1))
+        ->groupBy('users.id')
+        ->havingRaw('ROUND(COALESCE(SUM(point_results.full_points), 0), 1) > ?', [$sbGamePoints])
+        ->count() + 1;
+
+    $sbUpcoming = Game::whereNull('home_team_score')->whereNull('away_team_score')->count();
+    $sbBingo    = PointResult::where('user_id', session('userID'))->where('bingo_points', '>', 0)->count();
+@endphp
+@endauth
+
+<nav class="navbar navbar-expand-lg sb-navbar">
+    <div class="container-fluid px-3">
+
+        {{-- Brand --}}
+        <a class="sb-brand" @auth href="{{ route('main') }}" @else href="{{ route('/') }}" @endauth>
+            <span class="material-icons" style="font-size:1.2rem;">sports_soccer</span>
+            SportBet
+        </a>
+
+        {{-- Desktop nav links --}}
+        @auth
+        <div class="d-none d-lg-flex align-items-center gap-3 ms-4">
+            <a class="sb-nav-link {{ request()->routeIs('prediction.results') ? 'active' : '' }}"
+               href="{{ route('prediction.results') }}">
+                <span class="material-icons" style="font-size:1rem;vertical-align:middle;">sports_soccer</span> Spėjimai
             </a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar" aria-controls="collapsibleNavbar" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-
-
-            <div class="collapse navbar-collapse" id="collapsibleNavbar">
-            <ul class="navbar-nav">
-                @auth
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('prediction.results')}}">
-                            <span class="d-md-none"><span class="material-icons" style="font-size:1.5rem;vertical-align:middle">sports_soccer</span></span>
-                            <span class="d-none d-md-block"><span class="material-icons" style="font-size:1.5rem;vertical-align:middle">sports_soccer</span> Spėjimai</span></a>
-                    </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('prediction.standings')}}">
-                                <span class="d-md-none"><i class="bi bi-table h4"></i></span>
-                                <span class="d-none d-md-block"><i class="bi bi-table h4"></i> Eiga</span></a>
-                        </li>
-
-                    @if (session('eventSurvival')==1 && session('survivalGame')==1)
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('prediction.survival')}}">
-                                <span class="d-md-none"><i class="bi bi-bullseye h4"></i></span>
-                                <span class="d-none d-md-block"><i class="bi bi-bullseye h4"></i> Išlikimas</span></a>
-                        </li>
+            <a class="sb-nav-link {{ request()->routeIs('prediction.standings') ? 'active' : '' }}"
+               href="{{ route('prediction.standings') }}">
+                <i class="bi bi-table"></i> Eiga
+            </a>
+            @if(session('eventSurvival') == 1 && session('survivalGame') == 1)
+            <a class="sb-nav-link {{ request()->routeIs('prediction.survival') ? 'active' : '' }}"
+               href="{{ route('prediction.survival') }}">
+                <i class="bi bi-bullseye"></i> Išlikimas
+            </a>
+            @endif
+            @if(session('disabled') != '')
+            <div class="dropdown">
+                <a class="sb-nav-link dropdown-toggle {{ request()->routeIs('summary.*') ? 'active' : '' }}"
+                   href="#" data-bs-toggle="dropdown">
+                    <i class="bi bi-file-earmark-bar-graph-fill"></i> Suvestinė
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{{ route('summary.history') }}">Įvykę varžybos</a>
+                    <a class="dropdown-item" target="_blank" href="{{ route('summary.prediction.results') }}">Spėjimai</a>
+                    <a class="dropdown-item" target="_blank" href="{{ route('summary.prediction.standings') }}">Eiga</a>
+                    @if(session('survivalGame') != 0)
+                    <a class="dropdown-item" href="{{ route('summary.prediction.survivals') }}">Išlikimas</a>
                     @endif
-
-
-
-
-
-
-                    @if(session('disabled')!="")
-                        <li class="nav-item dropdown">
-                            <a class="nav-link " href="#" id="navbardrop" role="button" data-bs-toggle="dropdown">
-                                <span class="d-md-none dropdown-toggle"><i class="bi bi-file-earmark-bar-graph-fill h4"></i></span>
-                                <span class="d-none d-md-block dropdown-toggle"><i class="bi bi-file-earmark-bar-graph-fill h4"></i> Suvestinė</span>
-                            </a>
-                            <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{{ route('summary.history')}}" >Įvykę varžybos</a>
-                                    <a class="dropdown-item" target="_blank" href="{{ route('summary.prediction.results')}}" >Spėjimai</a>
-                                    <a class="dropdown-item" target="_blank" href="{{ route('summary.prediction.standings')}} ">Eiga</a>
-
-                                @if(session('survivalGame')!=0)
-                                    <a class="dropdown-item" href="{{ route('summary.prediction.survivals')}}" >Išlikimas</a>
-                                @endif
-                                <a class="dropdown-item" href="{{ route('summary.chart')}}" >Grafikas</a>
-                            </div>
-                        </li>
-                    @endif
-
-
-                @else
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('rules')}}">Taisyklės</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('charity')}}">Jaunimo linija</a>
-                    </li>
-                @endauth
-
-            </ul>
-
-
-
-
-            <ul class="navbar-nav ms-auto">
-            @guest
-                <li class="nav-item dropdown">
-                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
-                        <span class="d-lg-none"><i class="bi bi-person-fill h4"></i></span>
-                        <span class="d-none d-lg-block"> Prisijungti</span>
-                    </a>
-                </li>
-            @else
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="bi bi-info-circle h4"></i></a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="{{route('users')}}">Dalyviai</a>
-                        <a class="dropdown-item" href="{{route('rules')}}">Taisyklės</a>
-                        <a class="dropdown-item" href="{{route('help')}}">Pagalba </a>
-                        <a class="dropdown-item" href="{{route('charity')}}">Jaunimo linija</a>
-                        <span class="d-md-none"><i class="bi bi-people-fill h4"></i></span>
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="bi bi-person-circle h4"></i></a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="{{route('userProfile')}}"><i class="bi bi-person-fill"></i> Profilis </a>
-                        <a class="dropdown-item" href="{{route('userSettings')}}"><i class="bi bi-gear"></i> Nustatymai</a>
-                        <a class="dropdown-item" href="{{route('userGroup')}}"><i class="bi bi-person-lines-fill"></i> Grupės</a>
-                        @if(session('admin') > 1)
-                            <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{{route('admin')}}"><i class="bi bi-database-gear"></i> Admin</a>
-                        @endif
-                    </div>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <span class="d-lg-none"><i class="bi bi-box-arrow-right h4"></i></span>
-                        <span class="d-none d-lg-block"><i class="bi bi-box-arrow-right h4"></i> Atsijungti</span>
-                    </a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                </li>
-             @endguest
-            </ul>
+                    <a class="dropdown-item" href="{{ route('summary.chart') }}">Grafikas</a>
+                </div>
+            </div>
+            @endif
         </div>
+        @endauth
+
+        {{-- Right-side controls --}}
+        <div class="ms-auto d-flex align-items-center gap-2">
+            @auth
+            {{-- Info dropdown (desktop only) --}}
+            <div class="d-none d-lg-block dropdown">
+                <a class="sb-nav-link" href="#" data-bs-toggle="dropdown">
+                    <i class="bi bi-info-circle h5 mb-0"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <a class="dropdown-item" href="{{ route('users') }}">Dalyviai</a>
+                    <a class="dropdown-item" href="{{ route('rules') }}">Taisyklės</a>
+                    <a class="dropdown-item" href="{{ route('help') }}">Pagalba</a>
+                    <a class="dropdown-item" href="{{ route('charity') }}">Jaunimo linija</a>
+                </div>
+            </div>
+            {{-- Profile dropdown --}}
+            <div class="dropdown">
+                <a class="sb-nav-link" href="#" data-bs-toggle="dropdown">
+                    <i class="bi bi-person-circle h5 mb-0"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <a class="dropdown-item" href="{{ route('userProfile') }}"><i class="bi bi-person-fill"></i> Profilis</a>
+                    <a class="dropdown-item" href="{{ route('userSettings') }}"><i class="bi bi-gear"></i> Nustatymai</a>
+                    <a class="dropdown-item" href="{{ route('userGroup') }}"><i class="bi bi-person-lines-fill"></i> Grupės</a>
+                    @if(session('admin') > 1)
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{ route('admin') }}"><i class="bi bi-database-gear"></i> Admin</a>
+                    @endif
+                </div>
+            </div>
+            {{-- Logout (desktop only) --}}
+            <a class="sb-nav-link d-none d-lg-inline-flex"
+               href="{{ route('logout') }}"
+               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <i class="bi bi-box-arrow-right"></i> Atsijungti
+            </a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none">@csrf</form>
+            @else
+            <a class="sb-nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
+                Prisijungti
+            </a>
+            @endauth
+        </div>
+
     </div>
 </nav>
-<BR>
 
-<!-- Registration Modals -->
+{{-- Stats hero bar --}}
+@auth
+<div class="sb-hero">
+    <div class="sb-hero-stat">
+        <span class="sb-hero-value" style="color:var(--sb-accent);">{{ number_format($sbTotalPoints, 0) }}</span>
+        <span class="sb-hero-label">Taškai</span>
+    </div>
+    <div class="sb-hero-divider"></div>
+    <div class="sb-hero-stat">
+        <span class="sb-hero-value" style="color:var(--sb-gold);">#{{ $sbRank }}</span>
+        <span class="sb-hero-label">Vieta</span>
+    </div>
+    <div class="sb-hero-divider"></div>
+    <div class="sb-hero-stat">
+        <span class="sb-hero-value" style="color:var(--sb-green);">{{ $sbUpcoming }}</span>
+        <span class="sb-hero-label">Rungtynės</span>
+    </div>
+    <div class="sb-hero-divider"></div>
+    <div class="sb-hero-stat">
+        <span class="sb-hero-value" style="color:var(--sb-purple);">{{ $sbBingo }}</span>
+        <span class="sb-hero-label">Bingo</span>
+    </div>
+</div>
+@endauth
+
+{{-- Login/register modal (guests only) --}}
 @guest
     @include('modals.main')
 @endguest
