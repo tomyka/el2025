@@ -167,6 +167,51 @@
 
 .sb-tab-label { font-size: .65rem; }
 
+/* ============================================================
+   Auth modal
+   ============================================================ */
+.sb-auth-header {
+  background: var(--sb-nav);
+  padding: 14px 20px 0;
+  border-radius: 12px 12px 0 0;
+}
+
+.sb-auth-tab {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  color: rgba(255,255,255,.5) !important;
+  font-size: .9rem;
+  font-weight: 600;
+  padding: 8px 4px 10px;
+  transition: color .15s, border-color .15s;
+}
+
+.sb-auth-tab:hover { color: rgba(255,255,255,.8) !important; }
+
+.sb-auth-tab.active {
+  color: #fff !important;
+  border-bottom-color: var(--sb-accent) !important;
+}
+
+.sb-auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0;
+  color: var(--sb-muted);
+  font-size: .8rem;
+}
+
+.sb-auth-divider::before,
+.sb-auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--sb-border);
+}
+
 .body-blank {
 
     background-image: none; !important;

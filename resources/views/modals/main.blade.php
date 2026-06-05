@@ -3,35 +3,59 @@
         ->whereNull('away_team_score')
         ->min('game_date');
     $registrationOpen = is_null($nextUnscoredGame) || now()->lt($nextUnscoredGame);
+    $openRegTab = $errors->hasAny(['username', 'name', 'surname']);
 @endphp
-<!-- Login Modal -->
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
 
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-                <nav>
-                    <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                        <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Prisijungti</button>
-                        @if ($registrationOpen)
-                            <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Registruotis</button>
-                        @endif
+<div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:420px">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:12px;overflow:hidden">
+
+            {{-- Dark branded header --}}
+            <div class="sb-auth-header">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="material-icons" style="color:var(--sb-accent);font-size:1.25rem;">sports_soccer</span>
+                        <span class="fw-bold" style="color:#fff;letter-spacing:.5px;font-size:.95rem;">SportBet</span>
                     </div>
-                </nav>
-                <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                        @include('modals.login')
-                    </div>
-                    @if ($registrationOpen)
-                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                            @include('modals.register')
-                        </div>
-                    @endif
+                    <button type="button" class="btn-close btn-close-white btn-sm" data-bs-dismiss="modal"></button>
                 </div>
 
-
+                {{-- Tabs --}}
+                <div class="d-flex gap-3">
+                    <button class="nav-link sb-auth-tab {{ $openRegTab ? '' : 'active' }}"
+                            data-bs-toggle="tab" data-bs-target="#loginPane" type="button">
+                        Prisijungti
+                    </button>
+                    @if ($registrationOpen)
+                    <button class="nav-link sb-auth-tab {{ $openRegTab ? 'active' : '' }}"
+                            data-bs-toggle="tab" data-bs-target="#registerPane" type="button">
+                        Registruotis
+                    </button>
+                    @endif
+                </div>
             </div>
+
+            {{-- Panes --}}
+            <div class="tab-content">
+                <div class="tab-pane fade {{ $openRegTab ? '' : 'show active' }}" id="loginPane" role="tabpanel">
+                    @include('modals.login')
+                </div>
+                @if ($registrationOpen)
+                <div class="tab-pane fade {{ $openRegTab ? 'show active' : '' }}" id="registerPane" role="tabpanel">
+                    @include('modals.register')
+                </div>
+                @endif
+            </div>
+
         </div>
     </div>
+</div>
+
+@if ($errors->any())
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var el = document.getElementById('loginModal');
+    if (el) bootstrap.Modal.getOrCreateInstance(el).show();
+});
+</script>
+@endif

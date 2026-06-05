@@ -1,68 +1,93 @@
-<!-- Registration Modals -->
+<div class="p-4">
 
+    <form method="POST" action="{{ route('register') }}">
+        @csrf
 
-            <div class="modal-body" style="padding-bottom: 0px">
-                <form method="POST" action="{{ route('register') }}">
-                    @csrf
-                    <div class="form-group row">
-                        <div class="col-md-12">
-                            <input id="username" placeholder="Vartotojo vardas" type="text" class="form-control{{ $errors->has('username') ? ' is-invalid' : '' }}" name="username" value="{{ old('usernname') }}" required autofocus>
-                            @if ($errors->has('username'))
-                                <span class="invalid-feedback">
-                                                        <strong>{{ $errors->first('username') }}</strong>
-                                                    </span>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-12">
-                            <input id="name" placeholder="Vardas" type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{ old('name') }}" required autofocus>
-                            @if ($errors->has('name'))
-                                <span class="invalid-feedback">
-                                                        <strong>{{ $errors->first('name') }}</strong>
-                                                    </span>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-12">
-                            <input id="surname" placeholder="Pavardė" type="text" class="form-control{{ $errors->has('surname') ? ' is-invalid' : '' }}" name="surname" value="{{ old('surname') }}" autofocus>
-                            @if ($errors->has('surname'))
-                                <span class="invalid-feedback">
-                                                        <strong>{{ $errors->first('surname') }}</strong>
-                                                    </span>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-12">
-                            <input id="email" placeholder="Email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required>
-                            @if ($errors->has('email'))
-                                <span class="invalid-feedback">
-                                                        <strong>{{ $errors->first('email') }}</strong>
-                                                    </span>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-12">
-                            <input id="password" placeholder="Slaptažodis" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required>
-                            @if ($errors->has('password'))
-                                <span class="invalid-feedback">
-                                                        <strong>{{ $errors->first('password') }}</strong>
-                                                    </span>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-12">
-                            <input id="password-confirmation" placeholder="Pakartokite slaptažodį" type="password" class="form-control" name="password_confirmation" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                            <button type="submit" class="btn btn-outline-primary">
-                                {{ __('Registruotis') }}
-                            </button>
-                    </div>
-                </form>
+        <div class="mb-3">
+            <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted">
+                    <i class="bi bi-person"></i>
+                </span>
+                <input type="text" name="username"
+                       class="form-control border-start-0 ps-1 @error('username') is-invalid @enderror"
+                       placeholder="Slapyvardis"
+                       value="{{ old('username') }}"
+                       required autofocus>
+                @error('username')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
+        </div>
+
+        <div class="row g-2 mb-3">
+            <div class="col">
+                <input type="text" name="name"
+                       class="form-control @error('name') is-invalid @enderror"
+                       placeholder="Vardas"
+                       value="{{ old('name') }}"
+                       required>
+                @error('name')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col">
+                <input type="text" name="surname"
+                       class="form-control @error('surname') is-invalid @enderror"
+                       placeholder="Pavardė"
+                       value="{{ old('surname') }}">
+                @error('surname')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted">
+                    <i class="bi bi-envelope"></i>
+                </span>
+                <input type="email" name="email"
+                       class="form-control border-start-0 ps-1 @error('email') is-invalid @enderror"
+                       placeholder="El. paštas"
+                       value="{{ old('email') }}"
+                       required>
+                @error('email')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted">
+                    <i class="bi bi-lock"></i>
+                </span>
+                <input type="password" name="password"
+                       class="form-control border-start-0 ps-1 @error('password') is-invalid @enderror"
+                       placeholder="Slaptažodis"
+                       required>
+                @error('password')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted">
+                    <i class="bi bi-lock-fill"></i>
+                </span>
+                <input type="password" name="password_confirmation"
+                       class="form-control border-start-0 ps-1"
+                       placeholder="Pakartokite slaptažodį"
+                       required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn w-100 fw-semibold"
+                style="background:var(--sb-accent);color:#0f172a;">
+            Registruotis
+        </button>
+    </form>
+
+</div>
