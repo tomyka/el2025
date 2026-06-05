@@ -29,7 +29,7 @@ class TeamController extends Controller
         $predictionResultsController = new PredictionResultController();
         $predictionResultsController->insertPredictionResultsUser(session('userID'));
 
-        $predictionStandingsController = new PredictionStandingsController();
+        $predictionStandingsController = new PredictionStandingController();
         $predictionStandingsController->insertPredictionStandingsUser(session('userID'));
 
         $predictionSurvivalTeams = new PredictionSurvivalTeamController();

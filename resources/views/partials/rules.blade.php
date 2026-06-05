@@ -71,7 +71,7 @@
                     <td class="table-light cell_align_center cell_valign_middle"><B>&nbsp&#10005;</B></td>
                 </tr>
                 <tr>
-                    <td class="table-default cell_align_center cell_valign_middle">30</td>
+                    <td class="table-default cell_align_center cell_valign_middle">90</td>
                     <td class="table-default cell_align_center cell_valign_middle">0</td>
                 </tr>
             </table>
@@ -85,38 +85,28 @@
                 <td class="table-light text-center"><B>&nbsp;</B></td>
                 <td class="table-light text-center"><B>1</B></td>
                 <td class="table-light text-center"><B>2</B></td>
-                <td class="table-light text-center"><B>3</B></td>
-                <td class="table-light text-center"><B>4</B></td>
+                <td class="table-light text-center"><B>3-4</B></td>
+
             </tr>
             <tr>
                 <td class="table-light text-center" ><B>1</B></td>
                 <td class="table-default text-center">720</td>
                 <td class="table-default text-center">480</td>
-                <td class="table-default text-center">300</td>
-                <td class="table-default text-center">180</td>
+                <td class="table-default text-center">240</td>
+
             </tr>
             <tr>
                 <td class="table-active text-center"><B>2</B></td>
                 <td class="table-default text-center">480</td>
                 <td class="table-default text-center">600</td>
                 <td class="table-default text-center">360</td>
-                <td class="table-default text-center">240</td>
             </tr>
             <tr>
 
-                <td class="table-active text-center"><B>3</B></td>
-                <td class="table-default text-center">300</td>
+                <td class="table-active text-center"><B>3-4</B></td>
+                <td class="table-default text-center">240</td>
                 <td class="table-default text-center">360</td>
-                <td class="table-default text-center">540</td>
-                <td class="table-default text-center">330</td>
-            </tr>
-            <tr>
-
-                <td class="table-active text-center"><B>4</B></td>
-                <td class="table-default text-center">180</td>
-                <td class="table-default text-center">240</td>
-                <td class="table-default text-center">330</td>
-                <td class="table-default text-center">450</td>
+                <td class="table-default text-center">420</td>
             </tr>
         </table>
     </div>

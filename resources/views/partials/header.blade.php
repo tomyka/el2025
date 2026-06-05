@@ -15,8 +15,8 @@
                 @auth
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('prediction.results')}}">
-                            <span class="d-md-none"><i class="bi bi-dribbble h4"></i></span>
-                            <span class="d-none d-md-block"><i class="bi bi-dribbble h4"></i> Spėjimai</span></a>
+                            <span class="d-md-none"><span class="material-icons" style="font-size:1.5rem;vertical-align:middle">sports_soccer</span></span>
+                            <span class="d-none d-md-block"><span class="material-icons" style="font-size:1.5rem;vertical-align:middle">sports_soccer</span> Spėjimai</span></a>
                     </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('prediction.standings')}}">

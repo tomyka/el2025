@@ -75,10 +75,10 @@ class PointStandingController extends Controller
     private function calculateFinalPoints($teamFinal, $predictedFinal)
     {
         $pointsMatrix = [
-            4 => [4 => 450, 3 => 330, 2 => 240, 1 => 180],
-            3 => [4 => 330, 3 => 540, 2 => 360, 1 => 300],
-            2 => [4 => 240, 3 => 360, 2 => 600, 1 => 480],
-            1 => [4 => 180, 3 => 300, 2 => 480, 1 => 720],
+            4 => [4 => 420, 3 => 420, 2 => 360, 1 => 240],
+            3 => [4 => 420, 3 => 420, 2 => 360, 1 => 240],
+            2 => [4 => 360, 3 => 360, 2 => 600, 1 => 480],
+            1 => [4 => 240, 3 => 240, 2 => 480, 1 => 720],
         ];
 
         return $pointsMatrix[$teamFinal][$predictedFinal] ?? 0;
