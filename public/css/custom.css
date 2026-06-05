@@ -1,9 +1,170 @@
-body {
-    background-position: center;
-    background-repeat: no-repeat;
-    display: flex;
-    flex-direction: row;
+/* ============================================================
+   SportBet design tokens
+   ============================================================ */
+:root {
+  --sb-nav:     #1e293b;
+  --sb-hero:    #0f172a;
+  --sb-accent:  #38bdf8;
+  --sb-gold:    #f59e0b;
+  --sb-green:   #34d399;
+  --sb-purple:  #a78bfa;
+  --sb-surface: #f1f5f9;
+  --sb-card:    #ffffff;
+  --sb-border:  #e2e8f0;
+  --sb-text:    #1e293b;
+  --sb-muted:   #64748b;
 }
+
+/* ============================================================
+   Layout
+   ============================================================ */
+.sb-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--sb-surface);
+}
+
+.sb-main {
+  flex: 1;
+  padding: 16px;
+  padding-bottom: 76px;
+}
+
+@media (min-width: 992px) {
+  .sb-main { padding-bottom: 16px; }
+}
+
+/* ============================================================
+   Navbar
+   ============================================================ */
+.sb-navbar {
+  background: var(--sb-nav) !important;
+  border-bottom: 1px solid #334155;
+  padding: 8px 16px;
+}
+
+.sb-brand {
+  color: var(--sb-accent) !important;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sb-nav-link {
+  color: rgba(255,255,255,.7);
+  text-decoration: none;
+  font-size: .9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 2px;
+  border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+}
+
+.sb-nav-link:hover { color: #fff; }
+
+.sb-nav-link.active {
+  color: #fff;
+  border-bottom-color: var(--sb-accent);
+}
+
+/* ============================================================
+   Stats hero bar
+   ============================================================ */
+.sb-hero {
+  background: linear-gradient(135deg, var(--sb-nav) 0%, var(--sb-hero) 100%);
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #334155;
+}
+
+.sb-hero-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.sb-hero-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.sb-hero-label {
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--sb-muted);
+}
+
+.sb-hero-divider {
+  width: 1px;
+  height: 28px;
+  background: #334155;
+  margin: 0 8px;
+}
+
+/* ============================================================
+   Content cards
+   ============================================================ */
+.sb-card {
+  background: var(--sb-card);
+  border: 1px solid var(--sb-border);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  margin-bottom: 16px;
+}
+
+.sb-card-title {
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--sb-text);
+  margin-bottom: 12px;
+}
+
+/* ============================================================
+   Bottom tab bar (mobile)
+   ============================================================ */
+.sb-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  background: var(--sb-nav);
+  border-top: 1px solid #334155;
+  display: flex;
+  padding: 6px 0 env(safe-area-inset-bottom, 6px);
+}
+
+.sb-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--sb-muted);
+  text-decoration: none;
+  padding: 4px 0;
+  transition: color .15s;
+}
+
+.sb-tab:hover,
+.sb-tab.active { color: var(--sb-accent); }
+
+.sb-tab-label { font-size: .65rem; }
+
 .body-blank {
 
     background-image: none; !important;
@@ -65,29 +226,6 @@ body {
    }
 }
 
-
-.body_side{
-    background-color: #fff;
-}
-.div-right{
-    flex-grow: 1;
-    background-position: right;
-    background-repeat: repeat;
-    padding: 0px;
-    padding-bottom: 20px !important;
-}
-.div-left{
-    flex-grow: 1;
-    background-position: left;
-    background-repeat: repeat;
-    padding: 0px;
-    padding-bottom: 20px !important;
-}
-.div-content{
-    padding: 0px;
-    padding-bottom: 20px !important;
-    flex: auto;
-}
 p{
     margin: 0px;
 }
