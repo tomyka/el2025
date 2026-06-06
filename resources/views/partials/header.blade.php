@@ -12,6 +12,7 @@
     $sbTotalPoints = round($sbGamePoints + $sbStandPoints, 1);
 
     $sbRank = \Illuminate\Support\Facades\DB::table('users')
+        ->select('users.id')
         ->join('user_groups', 'users.id', '=', 'user_groups.user_id')
         ->leftJoin('point_results', 'users.id', '=', 'point_results.user_id')
         ->where('user_groups.group_id', session('groupID'))
