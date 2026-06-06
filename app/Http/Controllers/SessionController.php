@@ -64,8 +64,8 @@ class SessionController extends Controller
         Session::put('admin',$userSettings->admin);
         Session::put('fee',$userGroup->fee);
         Session::put('guest',$userGroup->guest);
-        Session::put('survivalGame',$survivalGame->value);
-        Session::put('timeDifference',$timeDifference->value);
+        Session::put('survivalGame', $survivalGame?->value ?? 0);
+        Session::put('timeDifference', $timeDifference?->value ?? 0);
 
     }
 }
