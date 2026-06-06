@@ -13,30 +13,71 @@ class TeamSeeder extends Seeder
      */
     public function run(): void
     {
-        $teams = array(
-                    array('team' => 'Anadolu Efes',     'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/anadolu-efes-istanbul/roster/ist/?season=2025-26'),
-                    array('team' => 'AS Monaco',        'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/as-monaco/roster/mco/?season=2025-26'),
-                    array('team' => 'Baskonia Vitoria', 'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/baskonia-vitoria-gasteiz/roster/bas/?season=2025-26'),
-                    array('team' => 'Crvena Zvezda',    'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/crvena-zvezda-meridianbet-belgrade/roster/red/?season=2025-26'),
-                    array('team' => 'Dubai Basketball', 'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/dubai-basketball/roster/dub/?season=2025-26'),
-                    array('team' => 'Emporio Armani',   'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/ea7-emporio-armani-milan/roster/mil/?season=2025-26'),
-                    array('team' => 'FC Barcelona',     'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/fc-barcelona/roster/bar/?season=2025-26'),
-                    array('team' => 'FC Bayern Munich', 'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/fc-bayern-munich/roster/mun/?season=2025-26'),
-                    array('team' => 'Fenerbahce',       'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/fenerbahce-beko-istanbul/roster/ulk/?season=2025-26'),
-                    array('team' => 'Hapoel',           'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/hapoel-ibi-tel-aviv/roster/hta/?season=2025-26'),
-                    array('team' => 'LDLC Asvel',       'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/ldlc-asvel-villeurbanne/roster/asv/?season=2025-26'),
-                    array('team' => 'Maccabi',          'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/maccabi-playtika-tel-aviv/roster/tel/?season=2025-26'),
-                    array('team' => 'Olympiacos',       'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/olympiacos-piraeus/roster/oly/?season=2025-26'),
-                    array('team' => 'Panathinaikos',    'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/panathinaikos-aktor-athens/roster/pan/?season=2025-26'),
-                    array('team' => 'Paris Basketball', 'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/paris-basketball/roster/prs/?season=2025-26'),
-                    array('team' => 'Partizan',         'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/partizan-mozzart-bet-belgrade/roster/par/?season=2025-26'),
-                    array('team' => 'Real Madrid',      'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/real-madrid/roster/mad/?season=2025-26'),
-                    array('team' => 'Valencia',         'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/valencia-basket/roster/pam/?season=2025-26'),
-                    array('team' => 'Virtus',           'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/virtus-segafredo-bologna/roster/vir/?season=2025-26'),
-                    array('team' => 'Zalgiris',         'link' => 'https://www.euroleaguebasketball.net/en/euroleague/teams/zalgiris-kaunas/roster/zal/?season=2025-26')
-         );
+        $base = 'https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/';
+        $suffix = '/team-news';
+
+        $teams = [
+            // AFC (9)
+            ['team' => 'Australia',             'link' => $base . 'australia'              . $suffix],
+            ['team' => 'Iran',                  'link' => $base . 'iran'                   . $suffix],
+            ['team' => 'Iraq',                  'link' => $base . 'iraq'                   . $suffix],
+            ['team' => 'Japan',                 'link' => $base . 'japan'                  . $suffix],
+            ['team' => 'Jordan',                'link' => $base . 'jordan'                 . $suffix],
+            ['team' => 'Qatar',                 'link' => $base . 'qatar'                  . $suffix],
+            ['team' => 'Saudi Arabia',          'link' => $base . 'saudi-arabia'           . $suffix],
+            ['team' => 'Korea Republic',        'link' => $base . 'korea-republic'         . $suffix],
+            ['team' => 'Uzbekistan',            'link' => $base . 'uzbekistan'             . $suffix],
+
+            // CAF (10)
+            ['team' => 'Algeria',               'link' => $base . 'algeria'                . $suffix],
+            ['team' => 'Cape Verde',            'link' => $base . 'cape-verde'             . $suffix],
+            ['team' => 'Congo DR',              'link' => $base . 'congo-dr'               . $suffix],
+            ['team' => 'Egypt',                 'link' => $base . 'egypt'                  . $suffix],
+            ['team' => 'Ghana',                 'link' => $base . 'ghana'                  . $suffix],
+            ['team' => 'Ivory Coast',           'link' => $base . 'ivory-coast'            . $suffix],
+            ['team' => 'Morocco',               'link' => $base . 'morocco'                . $suffix],
+            ['team' => 'Senegal',               'link' => $base . 'senegal'                . $suffix],
+            ['team' => 'South Africa',          'link' => $base . 'south-africa'           . $suffix],
+            ['team' => 'Tunisia',               'link' => $base . 'tunisia'                . $suffix],
+
+            // CONCACAF (6)
+            ['team' => 'Canada',                'link' => $base . 'canada'                 . $suffix],
+            ['team' => 'Curaçao',               'link' => $base . 'curacao'                . $suffix],
+            ['team' => 'Haiti',                 'link' => $base . 'haiti'                  . $suffix],
+            ['team' => 'Mexico',                'link' => $base . 'mexico'                 . $suffix],
+            ['team' => 'Panama',                'link' => $base . 'panama'                 . $suffix],
+            ['team' => 'United States',         'link' => $base . 'united-states'          . $suffix],
+
+            // CONMEBOL (6)
+            ['team' => 'Argentina',             'link' => $base . 'argentina'              . $suffix],
+            ['team' => 'Brazil',                'link' => $base . 'brazil'                 . $suffix],
+            ['team' => 'Colombia',              'link' => $base . 'colombia'               . $suffix],
+            ['team' => 'Ecuador',               'link' => $base . 'ecuador'                . $suffix],
+            ['team' => 'Paraguay',              'link' => $base . 'paraguay'               . $suffix],
+            ['team' => 'Uruguay',               'link' => $base . 'uruguay'                . $suffix],
+
+            // OFC (1)
+            ['team' => 'New Zealand',           'link' => $base . 'new-zealand'            . $suffix],
+
+            // UEFA (16)
+            ['team' => 'Austria',               'link' => $base . 'austria'                . $suffix],
+            ['team' => 'Belgium',               'link' => $base . 'belgium'                . $suffix],
+            ['team' => 'Bosnia and Herzegovina','link' => $base . 'bosnia-and-herzegovina' . $suffix],
+            ['team' => 'Croatia',               'link' => $base . 'croatia'                . $suffix],
+            ['team' => 'Czechia',               'link' => $base . 'czechia'                . $suffix],
+            ['team' => 'England',               'link' => $base . 'england'                . $suffix],
+            ['team' => 'France',                'link' => $base . 'france'                 . $suffix],
+            ['team' => 'Germany',               'link' => $base . 'germany'                . $suffix],
+            ['team' => 'Netherlands',           'link' => $base . 'netherlands'            . $suffix],
+            ['team' => 'Norway',                'link' => $base . 'norway'                 . $suffix],
+            ['team' => 'Portugal',              'link' => $base . 'portugal'               . $suffix],
+            ['team' => 'Scotland',              'link' => $base . 'scotland'               . $suffix],
+            ['team' => 'Spain',                 'link' => $base . 'spain'                  . $suffix],
+            ['team' => 'Sweden',                'link' => $base . 'sweden'                 . $suffix],
+            ['team' => 'Switzerland',           'link' => $base . 'switzerland'            . $suffix],
+            ['team' => 'Türkiye',               'link' => $base . 'turkiye'                . $suffix],
+        ];
 
         DB::table((new Team)->getTable())->insert($teams);
-
     }
 }
