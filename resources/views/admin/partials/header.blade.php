@@ -1,74 +1,80 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container-fluid">
-        <!-- Brand -->
-        <a class="navbar-brand" href="{{route('admin.index')}}" id="logo">
-            <img src="{{URL::to('img/logo.png')}}" height="40">
+<nav class="navbar navbar-expand-lg sb-navbar">
+    <div class="container-fluid px-3">
+
+        {{-- Brand --}}
+        <a class="sb-brand" href="{{ route('admin.index') }}">
+            <span class="material-icons" style="font-size:1.2rem;">admin_panel_settings</span>
+            Admin
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar"  aria-controls="collapsibleNavbar" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+
+        {{-- Mobile toggler --}}
+        <button class="navbar-toggler border-0 p-1" type="button"
+                data-bs-toggle="collapse" data-bs-target="#adminNav"
+                aria-controls="adminNav" aria-expanded="false">
+            <i class="bi bi-list text-white" style="font-size:1.4rem;"></i>
         </button>
-        <!-- Links -->
-        <div class="collapse navbar-collapse" id="collapsibleNavbar">
-            <ul class="navbar-nav">
+
+        <div class="collapse navbar-collapse" id="adminNav">
+
+            {{-- Nav links --}}
+            <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-2 gap-lg-3 ms-lg-4 py-2 py-lg-0">
                 @if(session('admin') > 5)
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('admin.teams')}}">Komandos</a>
-                    </li>
+                <a class="sb-nav-link {{ request()->routeIs('admin.teams') ? 'active' : '' }}"
+                   href="{{ route('admin.teams') }}">
+                    <i class="bi bi-flag"></i> Komandos
+                </a>
                 @endif
-                <li class="nav-item">
-                    <a class="nav-link" href="{{route('admin.games')}}">Rungtynės</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{route('admin.resultsAll')}}">Rezultatai</a>
-                </li>
+                <a class="sb-nav-link {{ request()->routeIs('admin.games') ? 'active' : '' }}"
+                   href="{{ route('admin.games') }}">
+                    <i class="bi bi-calendar3"></i> Rungtynės
+                </a>
+                <a class="sb-nav-link {{ request()->routeIs('admin.resultsAll') ? 'active' : '' }}"
+                   href="{{ route('admin.resultsAll') }}">
+                    <i class="bi bi-check2-square"></i> Rezultatai
+                </a>
                 @if(session('admin') > 5)
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('admin.users')}}">Dalyviai</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('admin.groups')}}">Grupės</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('admin.userGroups')}}">Dalyviu Grupės</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('admin.messages')}}">Pranešimai</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('admin.events')}}">Įvykiai</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('admin.settings')}}">Nustatymai</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="bi bi-calculator h4"></i></a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{route('admin.updateStandingPoints')}}">Taškai už eigą</a>
-                        </div>
-                    </li>
+                <a class="sb-nav-link {{ request()->routeIs('admin.users') ? 'active' : '' }}"
+                   href="{{ route('admin.users') }}">
+                    <i class="bi bi-people"></i> Dalyviai
+                </a>
+                <a class="sb-nav-link {{ request()->routeIs('admin.groups') ? 'active' : '' }}"
+                   href="{{ route('admin.groups') }}">
+                    <i class="bi bi-diagram-3"></i> Grupės
+                </a>
+                <a class="sb-nav-link {{ request()->routeIs('admin.userGroups') ? 'active' : '' }}"
+                   href="{{ route('admin.userGroups') }}">
+                    <i class="bi bi-person-lines-fill"></i> Dalyvių grupės
+                </a>
+                <a class="sb-nav-link {{ request()->routeIs('admin.messages') ? 'active' : '' }}"
+                   href="{{ route('admin.messages') }}">
+                    <i class="bi bi-chat-left-text"></i> Pranešimai
+                </a>
+                <a class="sb-nav-link {{ request()->routeIs('admin.events') ? 'active' : '' }}"
+                   href="{{ route('admin.events') }}">
+                    <i class="bi bi-trophy"></i> Įvykiai
+                </a>
+                <a class="sb-nav-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}"
+                   href="{{ route('admin.settings') }}">
+                    <i class="bi bi-gear"></i> Nustatymai
+                </a>
+                <a class="sb-nav-link" href="{{ route('admin.updateStandingPoints') }}">
+                    <i class="bi bi-calculator"></i> Taškai už eigą
+                </a>
                 @endif
-            </ul>
+            </div>
 
+            {{-- Right side --}}
+            <div class="ms-auto d-flex align-items-center gap-3 mt-2 mt-lg-0">
+                <a class="sb-nav-link" href="{{ route('main') }}" title="Pagrindinis">
+                    <i class="bi bi-house h5 mb-0"></i>
+                </a>
+                <a class="sb-nav-link" href="{{ route('logout') }}"
+                   onclick="event.preventDefault(); document.getElementById('admin-logout-form').submit();">
+                    <i class="bi bi-box-arrow-right"></i> Atsijungti
+                </a>
+                <form id="admin-logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
+            </div>
 
-
-            <ul class="nav navbar-nav flex-row justify-content-between ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{route('main')}}"> <i class="bi bi-person-circle h4"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('logout') }}"
-                       onclick="event.preventDefault();
-                                                                 document.getElementById('logout-form').submit();">
-                        {{ __('Atsijungti') }}
-                    </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
-                    </form>
-                </li>
-            </ul>
         </div>
     </div>
 </nav>
-
-
-
