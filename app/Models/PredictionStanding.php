@@ -11,6 +11,7 @@ class PredictionStanding extends Model
         'user_id',
         'team_id',
         'group_position',
+        'last32',
         'last16',
         'quarterfinal',
         'semifinal',

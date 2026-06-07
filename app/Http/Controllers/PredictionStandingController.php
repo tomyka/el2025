@@ -24,6 +24,8 @@ class PredictionStandingController extends Controller
     {
         $predictionStanding                 = PredictionStanding::find($request->input('prediction_standingID'));
         $predictionStanding->group_position = $request->input('groupPosition');
+        $predictionStanding->last32         = $request->input('last32');
+        $predictionStanding->last16         = $request->input('last16');
         $predictionStanding->quarterfinal   = $request->input('quarterfinal');
         $predictionStanding->semifinal      = $request->input('semifinal');
         $predictionStanding->final          = $request->input('final');
@@ -64,6 +66,8 @@ class PredictionStandingController extends Controller
                                 ,t.team
                                 ,ps.group_position
                                 ,IFNULL(pos.group_position_points,0) AS group_position_points
+                                ,ps.last32
+                                ,IFNULL(pos.last32_points,0) AS last32_points
                                 ,ps.last16
                                 ,IFNULL(pos.last16_points,0) AS last16_points
                                 ,ps.quarterfinal

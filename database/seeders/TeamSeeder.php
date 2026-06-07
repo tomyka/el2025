@@ -22,7 +22,7 @@ class TeamSeeder extends Seeder
 
             // Group B
             ['group_name' => 'B', 'team' => 'Canada',           'link' => $base . 'canada'                 . $suffix],
-            ['group_name' => 'B', 'team' => 'Bosnia and Herzegovina', 'link' => $base . 'bosnia-and-herzegovina' . $suffix],
+            ['group_name' => 'B', 'team' => 'Bosnia and Herzegovina', 'link' => $base . 'bosnia-herzegovina' . $suffix],
             ['group_name' => 'B', 'team' => 'Qatar',            'link' => $base . 'qatar'                  . $suffix],
             ['group_name' => 'B', 'team' => 'Switzerland',      'link' => $base . 'switzerland'            . $suffix],
 
@@ -33,7 +33,7 @@ class TeamSeeder extends Seeder
             ['group_name' => 'C', 'team' => 'Scotland',         'link' => $base . 'scotland'               . $suffix],
 
             // Group D
-            ['group_name' => 'D', 'team' => 'United States',    'link' => $base . 'united-states'          . $suffix],
+            ['group_name' => 'D', 'team' => 'United States',    'link' => $base . 'usa'          . $suffix],
             ['group_name' => 'D', 'team' => 'Paraguay',         'link' => $base . 'paraguay'               . $suffix],
             ['group_name' => 'D', 'team' => 'Australia',        'link' => $base . 'australia'              . $suffix],
             ['group_name' => 'D', 'team' => 'Türkiye',          'link' => $base . 'turkiye'                . $suffix],
@@ -41,7 +41,7 @@ class TeamSeeder extends Seeder
             // Group E
             ['group_name' => 'E', 'team' => 'Germany',          'link' => $base . 'germany'                . $suffix],
             ['group_name' => 'E', 'team' => 'Curaçao',          'link' => $base . 'curacao'                . $suffix],
-            ['group_name' => 'E', 'team' => 'Ivory Coast',      'link' => $base . 'ivory-coast'            . $suffix],
+            ['group_name' => 'E', 'team' => 'Ivory Coast',      'link' => $base . 'cote-d-ivoire'            . $suffix],
             ['group_name' => 'E', 'team' => 'Ecuador',          'link' => $base . 'ecuador'                . $suffix],
 
             // Group F
@@ -58,7 +58,7 @@ class TeamSeeder extends Seeder
 
             // Group H
             ['group_name' => 'H', 'team' => 'Spain',            'link' => $base . 'spain'                  . $suffix],
-            ['group_name' => 'H', 'team' => 'Cape Verde',       'link' => $base . 'cape-verde'             . $suffix],
+            ['group_name' => 'H', 'team' => 'Cape Verde',       'link' => $base . 'cabo-verde'             . $suffix],
             ['group_name' => 'H', 'team' => 'Saudi Arabia',     'link' => $base . 'saudi-arabia'           . $suffix],
             ['group_name' => 'H', 'team' => 'Uruguay',          'link' => $base . 'uruguay'                . $suffix],
 

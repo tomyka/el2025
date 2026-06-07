@@ -17,8 +17,7 @@ class EventSeeder extends Seeder
             $events[] = [
                 'event' => 'Grupių etapas. ' . $i . ' turas',
                 'event_day' => $i,
-                'event_survival' => '1',
-                'active' => '1',
+                'event_survival' => '0',
                 'rate' => '1',
             ];
         }

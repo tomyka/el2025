@@ -34,5 +34,9 @@ class DatabaseSeeder extends Seeder
             EventSeeder::class,
         );
 
+        $this->call(
+            GameSeeder::class,
+        );
+
     }
 }

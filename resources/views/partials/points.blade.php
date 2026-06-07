@@ -2,6 +2,7 @@
     <div class="sb-card-title">🏆 Taškų lentelė</div>
     @php
         $maxTotal = collect($points)->max(fn($p) => $p['userGamePoints'] + $p['standingPoints']->total_points + $p['survivalPoints']) ?: 1;
+        $feeRequired = isset($groupDetails) && $groupDetails->fee > 0;
     @endphp
     @foreach($points as $point)
     @php
@@ -9,10 +10,27 @@
         $barW  = round($total / $maxTotal * 100);
         $rank  = $loop->iteration;
         $isMe  = session('userID') == $point['userID'];
+        $fullName = trim($point['name'] . ' ' . $point['surname']);
+        $feeContent = '';
+        if ($feeRequired) {
+            if ($point['userFee'] > 0) {
+                $feeContent = '<div class=\'text-success mt-1\' style=\'font-size:.78rem\'>✓ Mokestis sumokėtas</div>';
+            } else {
+                $feeContent = '<div class=\'text-danger mt-1\' style=\'font-size:.78rem\'>✗ Mokestis nesumokėtas</div>';
+            }
+        }
     @endphp
     <div class="lb-row {{ $isMe ? 'lb-me-row' : '' }}">
         <div class="lb-rank {{ $rank <= 3 ? 'lb-rank-' . $rank : 'lb-rank-n' }}">{{ $rank }}</div>
-        <div class="lb-name {{ $isMe ? 'lb-me-name' : '' }}">{{ $point['username'] }}</div>
+        <div class="lb-name {{ $isMe ? 'lb-me-name' : '' }}">
+            <span class="lb-name-btn"
+                  tabindex="0"
+                  data-bs-toggle="popover"
+                  data-bs-trigger="click"
+                  data-bs-html="true"
+                  data-bs-title="{{ $fullName }}"
+                  data-bs-content="<div style='font-size:.8rem'>{{ $point['username'] }}{!! $feeContent !!}</div>">{{ $point['username'] }}</span>
+        </div>
         <div class="lb-bar-wrap">
             <div class="lb-bar" style="width:{{ $barW }}%"></div>
         </div>

@@ -11,24 +11,45 @@ use Illuminate\Support\Facades\DB;
 class PredictionResultController extends Controller
 {
     public function getPredictionResultsUser() {
-        if (session('userID')!=''){
-            $teams = Team::pluck('team','id');
+        if (session('userID') != '') {
             $userID = session('userID');
-            $resultAmount = ((session('resultAmount'))==""?18:session('resultAmount'));
-            $teamStatisticsController = new TeamStatisticsController();
-
-            $predictionResults= $this->getPredictionGamesUserResultAmount($userID,$resultAmount);
-            if (!empty($predictionResults)){
-                $predictionResultsWithStats = $teamStatisticsController->prepareTeamStatistics($predictionResults);
-                return view('prediction.results')->with('predictionResults',$predictionResultsWithStats)->with('teams',$teams);
-            }
-            else {
-                return view('prediction.results');
-            }
-        }
-        else {
+            $raw = $this->getPredictionGamesGrouped($userID);
+            $groupedResults = collect($raw)
+                ->groupBy('event_day')
+                ->map(fn($day) => $day->groupBy('group_name'));
+            return view('prediction.results')->with('groupedResults', $groupedResults);
+        } else {
             return redirect('/');
         }
+    }
+
+    private function getPredictionGamesGrouped($userID) {
+        $timeDiff = session('timeDifference');
+        return DB::select('SELECT DISTINCT
+                prr.id,
+                g.id as game_id,
+                g.game_date,
+                g.event_id,
+                e.event as event_name,
+                e.event_day,
+                ht.team AS home_team,
+                ht.id AS home_team_id,
+                ht.group_name,
+                at.team AS away_team,
+                at.id AS away_team_id,
+                prr.home_team_score,
+                prr.away_team_score
+            FROM prediction_results AS prr
+                JOIN users u ON prr.user_id = u.id
+                JOIN games g ON g.id = prr.game_id
+                JOIN teams ht ON g.home_team_id = ht.id
+                JOIN teams at ON g.away_team_id = at.id
+                JOIN events e ON e.id = g.event_id
+            WHERE
+                prr.user_id = ? AND
+                g.game_date > DATE_ADD(NOW(), INTERVAL ? HOUR)
+            ORDER BY g.event_id ASC, ht.group_name ASC, g.game_date ASC',
+            [$userID, $timeDiff]);
     }
 
     public function updatePredictionResultUser(UpdatePredictionResultRequest $request)

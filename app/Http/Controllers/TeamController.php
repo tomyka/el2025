@@ -49,6 +49,7 @@ class TeamController extends Controller
             $team->link             = $request->input('link')[$i];
             $team->group_name       = $request->input('groupName')[$i];
             $team->group_position   = $request->input('groupPosition')[$i];
+            $team->last32           = (isset($request->input('last32')[$i])?1:0);
             $team->last16           = (isset($request->input('last16')[$i])?1:0);
             $team->quarterfinal     = (isset($request->input('quarterfinal')[$i])?1:0);
             $team->semifinal        = (isset($request->input('semifinal')[$i])?1:0);

@@ -22,55 +22,68 @@
         </div>
     @endif
 
-    <div class="container-fluid">
+    <div class="ps-table-wrap">
         <form class="form-horizontal" role="form" method="post" action="">
             {{csrf_field()}}
-            <div class="row justify-content-center" >
-                <div class="col-lg-2 col-md-2 col-4 table-header text-center">Komanda</div>
-              <div class="col-lg-1 col-md-1 col-2 table-header text-center">Grupė</div>
-                <div class="col-lg-1 col-md-1 col-2 table-header text-center">Vieta</div>
-            <div class="col-lg-1 col-md-2 col-3 table-header text-center">Aštuntfinalis</div>
-                <div class="col-lg-1 col-md-2 col-3 table-header text-center">Ketvirtfinalis</div>
-                <div class="col-lg-1 col-md-2 col-3 table-header text-center">Pusfinalis</div>
-                <div class="col-lg-1 col-md-1 col-3 table-header text-center">Finalas</div>
-
-            </div>
-            @foreach ($predictionStandings as $predictionStanding)
-
-            <div class="row justify-content-center">
-                <input type="hidden" name="prediction_standingID{{$predictionStanding->id}}" id="prediction_standingID{{$predictionStanding->id}}" value="{{$predictionStanding->id}}">
-                <div class="col-lg-2 col-md-2 col-4 d-flex justify-content-center justify-content-lg-start" id="tableCellBorderLess">
-                    <a href="{{$predictionStanding->link}}" target="_blank"><img src="{{URL::to('img/teams/'.str_replace(' ','%20',strtolower($predictionStanding->team)).'.svg')}}" width=40><span class="d-none d-lg-inline">{{$predictionStanding->team}}</span></a>
+            <div class="row" >
+                <div class="ps-col-team table-header text-center">
+                    <span class="d-none d-md-inline">Komanda</span>
+                    <span class="d-md-none">Kom.</span>
                 </div>
-<!--
-                <div class="col-lg-1 col-md-1 col-2 d-flex justify-content-center" id="tableCellBorderLess">
+                <div class="ps-col-sm table-header text-center">
+                    <span class="d-none d-md-inline">Grupė</span>
+                    <span class="d-md-none">Gr.</span>
+                </div>
+                <div class="ps-col-sm table-header text-center">Vieta</div>
+                <div class="ps-col-sm table-header text-center">
+                    <span class="d-none d-md-inline">Šešioliktfinalis</span>
+                    <span class="d-md-none">1/16</span>
+                </div>
+                <div class="ps-col-sm table-header text-center">
+                    <span class="d-none d-md-inline">Aštuntfinalis</span>
+                    <span class="d-md-none">1/8</span>
+                </div>
+                <div class="ps-col-sm table-header text-center">
+                    <span class="d-none d-md-inline">Ketvirtfinalis</span>
+                    <span class="d-md-none">1/4</span>
+                </div>
+                <div class="ps-col-sm table-header text-center">
+                    <span class="d-none d-md-inline">Pusfinalis</span>
+                    <span class="d-md-none">1/2</span>
+                </div>
+                <div class="ps-col-sm table-header text-center">
+                    <span class="d-none d-md-inline">Finalas</span>
+                    <span class="d-md-none">F</span>
+                </div>
+            </div>
+            @php $prevGroup = null; @endphp
+            @foreach ($predictionStandings as $predictionStanding)
+            @php $groupChanged = $prevGroup !== $predictionStanding->group_name; $prevGroup = $predictionStanding->group_name; @endphp
+
+            <div class="row prediction-row {{ $groupChanged && !$loop->first ? 'group-start' : '' }}">
+                <input type="hidden" name="prediction_standingID{{$predictionStanding->id}}" id="prediction_standingID{{$predictionStanding->id}}" value="{{$predictionStanding->id}}">
+                <div class="ps-col-team d-flex align-items-center">
+                    <a href="{{$predictionStanding->link}}" target="_blank"><img src="{{URL::to('img/teams/'.str_replace(' ','%20',strtolower($predictionStanding->team)).'.svg')}}" width=22><span class="d-none d-md-inline" style="white-space:nowrap">{{$predictionStanding->team}}</span></a>
+                </div>
+                <div class="ps-col-sm d-flex align-items-center justify-content-center">
                     <span>{{ $predictionStanding->group_name }}</span>
                 </div>
--->
-                <div class="col-lg-1 col-md-1 col-2 d-flex justify-content-center" id="tableCellBorderLess">
+                <div class="ps-col-sm d-flex align-items-center justify-content-center">
                     <input class="form-control input-size-3" type="text" onchange="updateUserStandings({{$predictionStanding->id}})" name="groupPosition{{$predictionStanding->id}}" id="groupPosition{{$predictionStanding->id}}" value="{{ $predictionStanding->group_position }}" {{session('disabled')}}>
                 </div>
-                <div class="col-lg-1 col-md-2 col-3 d-flex align-items-center justify-content-center align-middle">
-                    <div class="col-1 col-md-1 col-lg-1 d-flex align-items-center justify-content-center">
-                        <span class="align-middle"><input type="checkbox" class="form-check-input" onchange="updateUserStandings({{$predictionStanding->id}})" name="last16{{$predictionStanding->id}}" id="last16{{$predictionStanding->id}}" {{(($predictionStanding->last16==1)?"checked":"")}} {{session('disabled')}}></span>
-                        <span class="align-content-center"></span>
-                    </div>
+                <div class="ps-col-sm d-flex align-items-center justify-content-center">
+                    <input type="checkbox" class="form-check-input" onchange="updateUserStandings({{$predictionStanding->id}})" name="last32{{$predictionStanding->id}}" id="last32{{$predictionStanding->id}}" {{(($predictionStanding->last32==1)?"checked":"")}} {{session('disabled')}}>
                 </div>
-                <div class="col-lg-1 col-md-2 col-3 d-flex align-items-center justify-content-center align-middle">
-                    <div class="col-1 col-md-1 col-lg-1 d-flex align-items-center justify-content-center">
-                        <span class="align-middle"><input type="checkbox" class="form-check-input" onchange="updateUserStandings({{$predictionStanding->id}})" name="quarterfinal{{$predictionStanding->id}}" id="quarterfinal{{$predictionStanding->id}}" {{(($predictionStanding->quarterfinal==1)?"checked":"")}} {{session('disabled')}}></span>
-                        <span class="align-content-center"></span>
-                    </div>
+                <div class="ps-col-sm d-flex align-items-center justify-content-center">
+                    <input type="checkbox" class="form-check-input" onchange="updateUserStandings({{$predictionStanding->id}})" name="last16{{$predictionStanding->id}}" id="last16{{$predictionStanding->id}}" {{(($predictionStanding->last16==1)?"checked":"")}} {{session('disabled')}}>
                 </div>
-
-                <div class="col-lg-1 col-md-2 col-3 d-flex align-items-center justify-content-center align-middle">
-                    <div class="col-1 col-md-1 col-lg-1 d-flex align-items-center justify-content-center">
-                        <span class="align-middle"><input type="checkbox" class="form-check-input" onchange="updateUserStandings({{$predictionStanding->id}})" name="semifinal{{$predictionStanding->id}}" id="semifinal{{$predictionStanding->id}}" {{(($predictionStanding->semifinal==1)?"checked":"")}} {{session('disabled')}}></span>
-                        <span class="align-content-center"></span>
-                    </div>
+                <div class="ps-col-sm d-flex align-items-center justify-content-center">
+                    <input type="checkbox" class="form-check-input" onchange="updateUserStandings({{$predictionStanding->id}})" name="quarterfinal{{$predictionStanding->id}}" id="quarterfinal{{$predictionStanding->id}}" {{(($predictionStanding->quarterfinal==1)?"checked":"")}} {{session('disabled')}}>
                 </div>
-
-                <div class="col-lg-1 col-md-1 col-3 d-flex justify-content-center" id="tableCellBorderLess">
+                <div class="ps-col-sm d-flex align-items-center justify-content-center">
+                    <input type="checkbox" class="form-check-input" onchange="updateUserStandings({{$predictionStanding->id}})" name="semifinal{{$predictionStanding->id}}" id="semifinal{{$predictionStanding->id}}" {{(($predictionStanding->semifinal==1)?"checked":"")}} {{session('disabled')}}>
+                </div>
+                <div class="ps-col-sm d-flex align-items-center justify-content-center">
                     <input class="form-control input-size-3" type="text" onchange="updateUserStandings({{$predictionStanding->id}})" name="final{{$predictionStanding->id}}" id="final{{$predictionStanding->id}}" value="{{$predictionStanding->final}}" {{session('disabled')}}>
                 </div>
 
@@ -81,8 +94,9 @@
         </form>
         <div class="row justify-content-center">
             <div class="col-lg-5 col-md-7 col-12">
-                Vieta - reikia surašyti vietas (1-20), kurias komandos, Jūsų nuomone, užims reguliame sezone.
-<!--            <BR>Aštuntfinalis - reikia varnelėmis pažymėti 16 komandų. -->
+                Vieta - reikia surašyti vietas grupėje (1-4), kurias komandos, Jūsų nuomone, užims.
+                <BR>Šešiolikfinalis - reikia varnelėmis pažymėti 32 komandas.
+                <BR>Aštuntfinalis - reikia varnelėmis pažymėti 16 komandų.
                 <BR>Ketvirtfinalis - reikia varnelėmis pažymėti 8 komandas.
                 <BR>Pusfinalis - reikia varnelėmis pažymėti 4 komandas.
                 <BR>Finalas - Finalo etape reikia pažymėti tik 1-2 vietas užimsiančias komandas.
@@ -95,16 +109,17 @@
 <script>
     function updateUserStandings(prediction_standingID) {
         var groupPosition = document.getElementById('groupPosition'+prediction_standingID);
-        //var last16 = document.getElementById('last16'+prediction_standingID).checked;
+        var last32 = document.getElementById('last32'+prediction_standingID).checked;
+        var last16 = document.getElementById('last16'+prediction_standingID).checked;
         var quarterfinal = document.getElementById('quarterfinal'+prediction_standingID).checked;
         var semifinal = document.getElementById('semifinal'+prediction_standingID).checked;
         var final = document.getElementById('final'+prediction_standingID);
 
-
             var formData = {
                 prediction_standingID : prediction_standingID,
                 groupPosition : $(groupPosition).val(),
-//                last16 : ((last16)?1:0),
+                last32 : ((last32)?1:0),
+                last16 : ((last16)?1:0),
                 quarterfinal : ((quarterfinal)?1:0),
                 semifinal : ((semifinal)?1:0),
                 final : $(final).val()

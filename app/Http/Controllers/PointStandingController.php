@@ -11,13 +11,14 @@ class PointStandingController extends Controller
 {
     public function getStandingsUserPoints($userID){
         $userPredictionStandingPoints = DB::table('point_standings')
-            ->select(DB::raw('SUM(IFNULL(group_position_points,0)) as group_position_points, SUM(IFNULL(last16_points,0)) as last16_points, SUM(IFNULL(quarterfinal_points,0)) as quarterfinal_points, SUM(IFNULL(semifinal_points,0)) as semifinal_points, SUM(IFNULL(final_points,0)) as final_points, SUM(IFNULL(group_position_points,0)+IFNULL(last16_points,0)+IFNULL(quarterfinal_points,0)+IFNULL(semifinal_points,0)+IFNULL(final_points,0)) as total_points'))
+            ->select(DB::raw('SUM(IFNULL(group_position_points,0)) as group_position_points, SUM(IFNULL(last32_points,0)) as last32_points, SUM(IFNULL(last16_points,0)) as last16_points, SUM(IFNULL(quarterfinal_points,0)) as quarterfinal_points, SUM(IFNULL(semifinal_points,0)) as semifinal_points, SUM(IFNULL(final_points,0)) as final_points, SUM(IFNULL(group_position_points,0)+IFNULL(last32_points,0)+IFNULL(last16_points,0)+IFNULL(quarterfinal_points,0)+IFNULL(semifinal_points,0)+IFNULL(final_points,0)) as total_points'))
             ->where('user_id',$userID)
             ->first();
 
         if (empty($userPredictionStandingPoints)){
             $userPredictionStandingPoints = new \stdClass();
             $userPredictionStandingPoints->group_position_points = '0';
+            $userPredictionStandingPoints->last32_points = '0';
             $userPredictionStandingPoints->last16_points = '0';
             $userPredictionStandingPoints->quarterfinal_points = '0';
             $userPredictionStandingPoints->semifinal_points = '0';
@@ -35,36 +36,41 @@ class PointStandingController extends Controller
 
         $teams = Team::all();
         $numberOfTeams = $teams->count();
-        $quarterfinalPoints = 90;
 
         foreach ($teams as $team) {
 
-            // Get the prediction standings associated with the current team
             $predictionStandings = PredictionStanding::where('team_id', $team->id)->get();
 
             foreach ($predictionStandings as $predictionStanding) {
-                // Create a new PointStanding instance
                 $pointStanding = new PointStanding();
 
-                // Assign values to the attributes
-                $pointStanding->team_id = $team->id;  // Use the actual team id
+                $pointStanding->team_id = $team->id;
                 $pointStanding->user_id = $predictionStanding->user_id;
                 $pointStanding->group_position_points = $this->calculateGroupPositionPoints(
                     $team->group_position,
                     $predictionStanding->group_position,
                     $numberOfTeams
                 );
-                $pointStanding->quarterfinal_points = $this->calculateQuarterfinalPoints(
+                $pointStanding->last32_points = $this->calculateKnockoutPoints(
+                    $team->last32,
+                    $predictionStanding->last32,
+                    40
+                );
+                $pointStanding->last16_points = $this->calculateKnockoutPoints(
+                    $team->last16,
+                    $predictionStanding->last16,
+                    60
+                );
+                $pointStanding->quarterfinal_points = $this->calculateKnockoutPoints(
                     $team->quarterfinal,
                     $predictionStanding->quarterfinal,
-                    $quarterfinalPoints
+                    90
                 );
                 $pointStanding->final_points = $this->calculateFinalPoints(
                     $team->final,
                     $predictionStanding->final
                 );
 
-                // Save the new instance to the database
                 $pointStanding->save();
             }
         }
@@ -95,15 +101,8 @@ class PointStandingController extends Controller
         return $teamGroupPositionPoints;
     }
 
-    private function calculateQuarterfinalPoints($teamQuarterfinal, $predictedQuarterfinal, $quarterfinalPoints){
-        if ($teamQuarterfinal==1 && $predictedQuarterfinal==1){
-            $teamQuarterfinalPoints = $quarterfinalPoints;
-        }
-        else{
-            $teamQuarterfinalPoints = 0;
-        }
-
-        return $teamQuarterfinalPoints;
+    private function calculateKnockoutPoints($teamResult, $predictedResult, $points){
+        return ($teamResult == 1 && $predictedResult == 1) ? $points : 0;
     }
 
 }

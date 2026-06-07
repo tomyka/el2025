@@ -29,7 +29,7 @@ class UserProfileController extends Controller
 
         $this->profileService->updateProfile($user, $request->only(['username', 'name', 'surname', 'email']));
 
-        return redirect('/profile')->with('status', 'profile-updated');
+        return redirect()->route('userProfile')->with('info', 'Profilis atnaujintas.');
     }
 
     public function destroy(Request $request)

@@ -1,58 +1,104 @@
 @extends('layouts.master')
 @section('content')
 
-    @if (count($errors->all()))
-        <div class="row">
-            <div class="col-md-12">
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach($errors->all() as $error)
-                            <li>{{$error}}</li>
-                        @endforeach
-                    </ul>
+@if(Session::has('info'))
+<div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+    {{ Session::get('info') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+@endif
+
+@if(session('status') === 'password-updated')
+<div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+    Slaptažodis sėkmingai pakeistas.
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+@endif
+
+<div class="row g-3">
+
+    {{-- Profile info --}}
+    <div class="col-lg-6 col-12">
+        <div class="sb-card h-100">
+            <div class="sb-card-title">Profilio informacija</div>
+
+            @if($errors->any() && !$errors->hasBag('updatePassword'))
+            <div class="alert alert-danger py-2 mb-3">
+                <ul class="mb-0 ps-3">
+                    @foreach($errors->all() as $error)
+                        <li style="font-size:.83rem">{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+
+            <form method="POST" action="{{ route('userProfile') }}">
+                @csrf
+                <input type="hidden" name="userID" value="{{ $user->id }}">
+
+                <div class="profile-field">
+                    <label class="profile-label">Vartotojo vardas</label>
+                    <input class="form-control form-control-sm profile-input" type="text" name="username" value="{{ old('username', $user->username) }}" required>
                 </div>
-            </div>
-        </div>
-    @endif
-
-    @if (Session::has('info'))
-        <div class="row">
-            <div class="col-md-12">
-                <p class="alert alert-success">{{Session::get('info')}}</p>
-            </div>
-        </div>
-    @endif
-
-
-    <form class="form-horizontal" role="form" method="post" action="userProfile">
-        @csrf
-        <input type="hidden" class="form-control" size=1 name="userID" value="{{$user->id}}">
-        <div class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="col-md-2 col-6 table-header text-left">Vartotojo vardas</div>
-                <div class="col-md-2 col-6 table-cell text-center"><input class="form-control form-control-sm" type="text" name="username" value="{{$user->username}}"></div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-2 col-6 table-header text-left">Vardas</div>
-                <div class="col-md-2 col-6 table-cell text-center"><input class="form-control form-control-sm" type="text" name="name" value="{{$user->name}}"></div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-2 col-6 table-header text-left">Pavardė</div>
-                <div class="col-md-2 col-6 table-cell text-center"><input class="form-control form-control-sm" type="text" name="surname" value="{{$user->surname}}"></div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-2 col-6 table-header text-left">E-mail</div>
-                <div class="col-md-2 col-6 table-cell text-center"><input class="form-control form-control-sm" type="text" name="email" value="{{$user->email}}"></div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-4 col-12 text-center">&nbsp;</div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-4 col-12 text-center">
-                    <input class="btn btn-outline-primary" type="submit" name="update" value="Įvesti">
+                <div class="profile-field">
+                    <label class="profile-label">Vardas</label>
+                    <input class="form-control form-control-sm profile-input" type="text" name="name" value="{{ old('name', $user->name) }}" required>
                 </div>
-            </div>
+                <div class="profile-field">
+                    <label class="profile-label">Pavardė</label>
+                    <input class="form-control form-control-sm profile-input" type="text" name="surname" value="{{ old('surname', $user->surname) }}" required>
+                </div>
+                <div class="profile-field">
+                    <label class="profile-label">El. paštas</label>
+                    <input class="form-control form-control-sm profile-input" type="email" name="email" value="{{ old('email', $user->email) }}" required>
+                </div>
+
+                <div class="mt-3 text-end">
+                    <button type="submit" class="btn btn-sm btn-primary">Išsaugoti</button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
+
+    {{-- Password change --}}
+    <div class="col-lg-6 col-12">
+        <div class="sb-card h-100">
+            <div class="sb-card-title">Slaptažodžio keitimas</div>
+
+            @if($errors->hasBag('updatePassword'))
+            <div class="alert alert-danger py-2 mb-3">
+                <ul class="mb-0 ps-3">
+                    @foreach($errors->getBag('updatePassword')->all() as $error)
+                        <li style="font-size:.83rem">{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+
+            <form method="POST" action="{{ route('password.update') }}">
+                @csrf
+                @method('PUT')
+
+                <div class="profile-field">
+                    <label class="profile-label">Dabartinis</label>
+                    <input class="form-control form-control-sm profile-input" type="password" name="current_password" autocomplete="current-password" required>
+                </div>
+                <div class="profile-field">
+                    <label class="profile-label">Naujas</label>
+                    <input class="form-control form-control-sm profile-input" type="password" name="password" autocomplete="new-password" required>
+                </div>
+                <div class="profile-field">
+                    <label class="profile-label">Pakartoti</label>
+                    <input class="form-control form-control-sm profile-input" type="password" name="password_confirmation" autocomplete="new-password" required>
+                </div>
+
+                <div class="mt-3 text-end">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">Keisti slaptažodį</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
 
 @endsection

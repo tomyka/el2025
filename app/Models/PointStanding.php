@@ -13,6 +13,7 @@ class PointStanding extends Model
         'user_id',
         'team_id',
         'group_position_points',
+        'last32_points',
         'last16_points',
         'quarterfinal_points',
         'semifinal_points',

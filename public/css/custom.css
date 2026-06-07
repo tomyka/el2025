@@ -642,8 +642,8 @@ a:hover { color: var(--sb-accent-h); }
 .match-away { flex-direction: row-reverse; }
 
 .match-flag {
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   flex-shrink: 0;
   object-fit: cover;
@@ -760,6 +760,12 @@ a:hover { color: var(--sb-accent-h); }
 
 .lb-name.lb-me-name { font-weight: 700; color: var(--sb-accent); }
 
+.lb-name-btn {
+  cursor: pointer;
+  border-bottom: 1px dotted var(--sb-muted);
+}
+.lb-name-btn:hover { color: var(--sb-accent); }
+
 .lb-bar-wrap {
   flex: 2;
   height: 5px;
@@ -788,8 +794,8 @@ a:hover { color: var(--sb-accent-h); }
    ============================================================ */
 .standings-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
 }
 
 .standing-card {
@@ -808,8 +814,8 @@ a:hover { color: var(--sb-accent-h); }
 }
 
 .standing-flag {
-  width: 26px;
-  height: 26px;
+  width: 21px;
+  height: 21px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
@@ -863,11 +869,298 @@ a:hover { color: var(--sb-accent-h); }
 }
 
 /* ============================================================
+   Profile page
+   ============================================================ */
+.profile-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--sb-border);
+}
+.profile-field:last-of-type { border-bottom: none; }
+
+.profile-label {
+  width: 130px;
+  flex-shrink: 0;
+  font-size: .82rem;
+  color: var(--sb-muted);
+  font-weight: 500;
+}
+
+.profile-input { flex: 1; min-width: 0; }
+
+/* ============================================================
+   Prediction results — grouped by group & matchday
+   ============================================================ */
+.pred-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pred-event-header {
+  font-size: .8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--sb-nav);
+  border-bottom: 2px solid var(--sb-accent);
+  padding-bottom: 4px;
+  margin-bottom: 10px;
+}
+
+.pred-event-groups {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 900px) {
+  .pred-event-groups {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .pred-event-groups {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* kept for backwards compat if used elsewhere */
+.pred-group-header {
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--sb-nav);
+  border-bottom: 2px solid var(--sb-accent);
+  padding-bottom: 4px;
+  margin-bottom: 10px;
+}
+
+.pred-group-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pred-day-card {
+  background: #fff;
+  border: 1px solid var(--sb-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.pred-day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--sb-muted);
+  padding-bottom: 7px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid var(--sb-border);
+}
+
+.pred-day-date {
+  font-weight: 400;
+}
+
+.pred-game {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 7px 0;
+}
+
+.pred-game + .pred-game {
+  border-top: 1px solid #f1f5f9;
+}
+
+.pred-team-home {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 0;
+}
+
+.pred-team-away {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.pred-team-name {
+  font-size: .85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.pred-flag {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.pred-scores {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 8px;
+}
+
+.pred-score {
+  width: 32px !important;
+  text-align: center;
+  padding: 3px 2px !important;
+  font-size: .9rem;
+  line-height: 1.4;
+  border-radius: 4px;
+}
+
+.pred-sep {
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--sb-muted);
+  line-height: 1;
+}
+
+@media (max-width: 575px) {
+  .pred-day-card { flex: 1 1 100%; max-width: 100%; }
+  .pred-team-name { max-width: 70px; }
+}
+
+/* ============================================================
+   Prediction results cards (old — kept for main page widget)
+   ============================================================ */
+.pr-cards-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.pr-card {
+  width: 17rem;
+}
+
+.pr-flag {
+  height: 40px;
+}
+
+.pr-team-name {
+  font-size: .72rem;
+  color: var(--sb-muted);
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  padding: 0 4px;
+}
+
+.pr-date {
+  font-size: .7rem;
+  color: var(--sb-muted);
+  margin-bottom: 4px;
+}
+
+.pr-colon {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--sb-nav);
+  line-height: 1;
+}
+
+/* ============================================================
+   Prediction standings table
+   ============================================================ */
+.ps-table-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.ps-col-team {
+  flex: 0 0 220px;
+  width: 220px;
+}
+
+.ps-col-sm {
+  flex: 1;
+  min-width: 90px;
+  text-align: center;
+}
+
+.ps-table-wrap .row {
+  flex-wrap: nowrap;
+}
+
+@media (max-width: 767px) {
+  .ps-table-wrap {
+    max-width: 100%;
+  }
+  .ps-col-team {
+    flex: 0 0 44px;
+    width: 44px;
+  }
+  .ps-col-sm {
+    min-width: 0;
+  }
+}
+
+.table-header {
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  color: var(--sb-muted);
+  padding-bottom: 4px;
+  border-bottom: 2px solid var(--sb-border);
+  margin-bottom: 2px;
+}
+
+/* ============================================================
+   Prediction standings rows
+   ============================================================ */
+.prediction-row {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  font-size: .8rem;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background .1s;
+}
+
+.prediction-row:hover {
+  background: #f0f7ff;
+}
+
+.prediction-row.group-start {
+  border-top: 2px solid var(--sb-border);
+  margin-top: 4px;
+  padding-top: 4px;
+}
+
+.prediction-row a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+
+/* ============================================================
    Legacy / Admin utility classes
    ============================================================ */
 p { margin: 0; }
 
-.input-size-3 { width: 55px; text-align: center; padding: 0 !important; }
+.input-size-3 { width: 36px; text-align: center; padding: 0 !important; }
 .input-size-2 { width: 44px; text-align: center; }
 .input-size-1 { width: 35px !important; }
 

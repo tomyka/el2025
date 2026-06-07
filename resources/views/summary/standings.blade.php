@@ -7,7 +7,7 @@
             <td rowspan="2" style="vertical-align: middle; text-align: center; border-right: double"><strong>Komanda</strong></td>
             @foreach($predictionStandings as $predictionStanding)
                 @if($predictionStanding->team_id == 1)
-                    <td class="text-center" style="border-right: double" colspan="4"><strong>{{ $predictionStanding->username }}</strong></td>
+                    <td class="text-center" style="border-right: double" colspan="6"><strong>{{ $predictionStanding->username }}</strong></td>
                 @endif
             @endforeach
         </tr>
@@ -15,6 +15,8 @@
             @foreach($predictionStandings as $predictionStanding)
                 @if($predictionStanding->team_id == 1)
                     <td class="text-center"><strong>V</strong></td>
+                    <td class="text-center"><strong>1/16</strong></td>
+                    <td class="text-center"><strong>1/8</strong></td>
                     <td class="text-center"><strong>1/4</strong></td>
                     <td class="text-center"><strong>1/2</strong></td>
                     <td class="text-center" style="border-right: double"><strong>&nbsp;F&nbsp;</strong></td>
@@ -30,41 +32,53 @@
                 @foreach(array_filter($predictionStandings, fn($ps) => $ps->team_id == $team->id) as $predictionStanding)
                     <td class="text-center align-middle">{{ $predictionStanding->group_position }}</td>
                     <td class="text-center align-middle">
-                        @if($predictionStanding->quarterfinal == 1)
-                            {{ "x" }}
-                        @endif
+                        @if($predictionStanding->last32 == 1){{ "x" }}@endif
                     </td>
                     <td class="text-center align-middle">
-                        @if($predictionStanding->semifinal == 1)
-                            {{ "x" }}
-                        @endif
+                        @if($predictionStanding->last16 == 1){{ "x" }}@endif
                     </td>
-
+                    <td class="text-center align-middle">
+                        @if($predictionStanding->quarterfinal == 1){{ "x" }}@endif
+                    </td>
+                    <td class="text-center align-middle">
+                        @if($predictionStanding->semifinal == 1){{ "x" }}@endif
+                    </td>
                     <td class="text-center align-middle" style="border-right: double">{{ $predictionStanding->final }}</td>
                 @endforeach
             </tr>
             <tr class="table-default">
                 @foreach(array_filter($predictionStandings, fn($ps) => $ps->team_id == $team->id) as $predictionStanding)
                     <td class="text-center align-middle">
-                        <span
-                            @if ($predictionStanding->group_position == $team->group_position) class="badge bg-success" @elseif(isset($predictionStanding->group_position)) class="badge bg-light" @endif>
-                           {{ $predictionStanding->group_position_points }}
+                        <span @if ($predictionStanding->group_position == $team->group_position) class="badge bg-success" @elseif(isset($predictionStanding->group_position)) class="badge bg-light" @endif>
+                            {{ $predictionStanding->group_position_points }}
                         </span>
                     </td>
                     <td class="text-center align-middle">
-                        <span
-                            @if ($predictionStanding->quarterfinal == 1 && $team->quarterfinal == 1) class="badge bg-success"
-                            @elseif ($predictionStanding->quarterfinal == 1 && isset($team->quarterfinal)) class="badge bg-danger"
-                            @elseif ($predictionStanding->quarterfinal == 1 && !isset($team->quarterfinal)) class="badge bg-light" @endif>
+                        <span @if ($predictionStanding->last32 == 1 && $team->last32 == 1) class="badge bg-success"
+                              @elseif ($predictionStanding->last32 == 1 && isset($team->last32)) class="badge bg-danger"
+                              @elseif ($predictionStanding->last32 == 1 && !isset($team->last32)) class="badge bg-light" @endif>
+                            @if($predictionStanding->last32 == 1){{ $predictionStanding->last32_points }}@endif
+                        </span>
+                    </td>
+                    <td class="text-center align-middle">
+                        <span @if ($predictionStanding->last16 == 1 && $team->last16 == 1) class="badge bg-success"
+                              @elseif ($predictionStanding->last16 == 1 && isset($team->last16)) class="badge bg-danger"
+                              @elseif ($predictionStanding->last16 == 1 && !isset($team->last16)) class="badge bg-light" @endif>
+                            @if($predictionStanding->last16 == 1){{ $predictionStanding->last16_points }}@endif
+                        </span>
+                    </td>
+                    <td class="text-center align-middle">
+                        <span @if ($predictionStanding->quarterfinal == 1 && $team->quarterfinal == 1) class="badge bg-success"
+                              @elseif ($predictionStanding->quarterfinal == 1 && isset($team->quarterfinal)) class="badge bg-danger"
+                              @elseif ($predictionStanding->quarterfinal == 1 && !isset($team->quarterfinal)) class="badge bg-light" @endif>
                             @if($predictionStanding->quarterfinal == 1){{ $predictionStanding->quarterfinal_points }}@endif
                         </span>
                     </td>
                     <td class="text-center align-middle">
-                        <span
-                            @if ($predictionStanding->semifinal == 1 && $team->semifinal == 1) class="badge bg-success"
-                            @elseif ($predictionStanding->semifinal == 1 && isset($team->semifinal)) class="badge bg-danger"
-                            @elseif ($predictionStanding->semifinal == 1 && !isset($team->semifinal)) class="badge bg-light" @endif>
-                            @if($predictionStanding->quarterfinal == 1){{ $predictionStanding->semifinal_points }}@endif
+                        <span @if ($predictionStanding->semifinal == 1 && $team->semifinal == 1) class="badge bg-success"
+                              @elseif ($predictionStanding->semifinal == 1 && isset($team->semifinal)) class="badge bg-danger"
+                              @elseif ($predictionStanding->semifinal == 1 && !isset($team->semifinal)) class="badge bg-light" @endif>
+                            @if($predictionStanding->semifinal == 1){{ $predictionStanding->semifinal_points }}@endif
                         </span>
                     </td>
                     <td class="text-center align-middle" style="border-right: double">{{ $predictionStanding->final_points }}</td>

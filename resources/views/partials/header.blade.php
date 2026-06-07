@@ -1,30 +1,3 @@
-@auth
-@php
-    $sbGamePoints  = round((float) \App\Models\PointResult::where('user_id', session('userID'))->sum('full_points'), 1);
-    $sbStandPoints = (float) (\Illuminate\Support\Facades\DB::table('point_standings')
-        ->where('user_id', session('userID'))
-        ->selectRaw('COALESCE(SUM(group_position_points),0)
-                   + COALESCE(SUM(last16_points),0)
-                   + COALESCE(SUM(quarterfinal_points),0)
-                   + COALESCE(SUM(semifinal_points),0)
-                   + COALESCE(SUM(final_points),0) as total')
-        ->value('total') ?? 0);
-    $sbTotalPoints = round($sbGamePoints + $sbStandPoints, 1);
-
-    $sbRank = \Illuminate\Support\Facades\DB::table('users')
-        ->select('users.id')
-        ->join('user_groups', 'users.id', '=', 'user_groups.user_id')
-        ->leftJoin('point_results', 'users.id', '=', 'point_results.user_id')
-        ->where('user_groups.group_id', session('groupID'))
-        ->where('user_groups.guest', '<=', session('guest', 1))
-        ->groupBy('users.id')
-        ->havingRaw('ROUND(COALESCE(SUM(point_results.full_points), 0), 1) > ?', [$sbGamePoints])
-        ->count() + 1;
-
-    $sbUpcoming = \App\Models\Game::whereNull('home_team_score')->whereNull('away_team_score')->count();
-    $sbBingo    = \App\Models\PointResult::where('user_id', session('userID'))->where('bingo_points', '>', 0)->count();
-@endphp
-@endauth
 
 <nav class="navbar sb-navbar">
 
@@ -36,8 +9,7 @@
         {{-- Left: brand --}}
         <div class="sb-nav-start">
             <a class="sb-brand" @auth href="{{ route('main') }}" @else href="{{ route('/') }}" @endauth>
-                <span class="material-icons sb-brand-dot" style="font-size:1.3rem;">sports_soccer</span>
-                Sport<span class="sb-brand-dot">Bet</span>
+                <img src="{{ URL::to('img/logo.png') }}" alt="SportBet" style="height:36px;">
             </a>
         </div>
 
@@ -85,10 +57,6 @@
 
             {{-- Info --}}
             <span class="sb-nav-sep"></span>
-            <a class="sb-nav-link {{ request()->routeIs('users') ? 'active' : '' }}"
-               href="{{ route('users') }}">
-                <i class="bi bi-people"></i> Dalyviai
-            </a>
             <a class="sb-nav-link {{ request()->routeIs('rules') ? 'active' : '' }}"
                href="{{ route('rules') }}">
                 <i class="bi bi-journal-text"></i> Taisyklės
@@ -116,7 +84,7 @@
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item {{ request()->routeIs('admin*') ? 'active' : '' }}"
                            href="{{ route('admin') }}">
-                        <i class="bi bi-database-gear me-1"></i>Admin pultas</a></li>
+                        <i class="bi bi-database-gear me-1"></i>Admin</a></li>
                     @endif
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item"
@@ -138,8 +106,7 @@
          ============================================================ --}}
     <div class="sb-mobile-bar d-lg-none">
         <a class="sb-brand" @auth href="{{ route('main') }}" @else href="{{ route('/') }}" @endauth>
-            <span class="material-icons sb-brand-dot" style="font-size:1.3rem;">sports_soccer</span>
-            Sport<span class="sb-brand-dot">Bet</span>
+            <img src="{{ URL::to('img/logo.png') }}" alt="SportBet" style="height:36px;">
         </a>
 
         @auth
@@ -200,10 +167,6 @@
 
         <div class="sb-mobile-group">
             <div class="sb-mobile-label">Informacija</div>
-            <a class="sb-nav-link {{ request()->routeIs('users') ? 'active' : '' }}"
-               href="{{ route('users') }}">
-                <i class="bi bi-people"></i> Dalyviai
-            </a>
             <a class="sb-nav-link {{ request()->routeIs('rules') ? 'active' : '' }}"
                href="{{ route('rules') }}">
                 <i class="bi bi-journal-text"></i> Taisyklės
@@ -245,29 +208,3 @@
 
 </nav>
 
-{{-- Stats hero bar --}}
-@auth
-<div class="sb-hero">
-    <div class="sb-hero-inner sb-container">
-        <div class="sb-hero-stat">
-            <span class="sb-hero-value" style="color:var(--sb-accent);">{{ number_format($sbTotalPoints, 0) }}</span>
-            <span class="sb-hero-label">Taškai</span>
-        </div>
-        <div class="sb-hero-divider"></div>
-        <div class="sb-hero-stat">
-            <span class="sb-hero-value" style="color:var(--sb-gold);">#{{ $sbRank }}</span>
-            <span class="sb-hero-label">Vieta</span>
-        </div>
-        <div class="sb-hero-divider"></div>
-        <div class="sb-hero-stat">
-            <span class="sb-hero-value" style="color:var(--sb-green);">{{ $sbUpcoming }}</span>
-            <span class="sb-hero-label">Rungtynės</span>
-        </div>
-        <div class="sb-hero-divider"></div>
-        <div class="sb-hero-stat">
-            <span class="sb-hero-value" style="color:var(--sb-purple);">{{ $sbBingo }}</span>
-            <span class="sb-hero-label">Bingo</span>
-        </div>
-    </div>
-</div>
-@endauth
