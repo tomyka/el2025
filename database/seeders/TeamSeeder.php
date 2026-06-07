@@ -8,74 +8,83 @@ use Illuminate\Support\Facades\DB;
 
 class TeamSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        $base = 'https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/';
+        $base   = 'https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/teams/';
         $suffix = '/team-news';
 
         $teams = [
-            // AFC (9)
-            ['team' => 'Australia',             'link' => $base . 'australia'              . $suffix],
-            ['team' => 'Iran',                  'link' => $base . 'iran'                   . $suffix],
-            ['team' => 'Iraq',                  'link' => $base . 'iraq'                   . $suffix],
-            ['team' => 'Japan',                 'link' => $base . 'japan'                  . $suffix],
-            ['team' => 'Jordan',                'link' => $base . 'jordan'                 . $suffix],
-            ['team' => 'Qatar',                 'link' => $base . 'qatar'                  . $suffix],
-            ['team' => 'Saudi Arabia',          'link' => $base . 'saudi-arabia'           . $suffix],
-            ['team' => 'Korea Republic',        'link' => $base . 'korea-republic'         . $suffix],
-            ['team' => 'Uzbekistan',            'link' => $base . 'uzbekistan'             . $suffix],
+            // Group A
+            ['group_name' => 'A', 'team' => 'Mexico',           'link' => $base . 'mexico'                 . $suffix],
+            ['group_name' => 'A', 'team' => 'South Africa',     'link' => $base . 'south-africa'           . $suffix],
+            ['group_name' => 'A', 'team' => 'Korea Republic',   'link' => $base . 'korea-republic'         . $suffix],
+            ['group_name' => 'A', 'team' => 'Czechia',          'link' => $base . 'czechia'                . $suffix],
 
-            // CAF (10)
-            ['team' => 'Algeria',               'link' => $base . 'algeria'                . $suffix],
-            ['team' => 'Cape Verde',            'link' => $base . 'cape-verde'             . $suffix],
-            ['team' => 'Congo DR',              'link' => $base . 'congo-dr'               . $suffix],
-            ['team' => 'Egypt',                 'link' => $base . 'egypt'                  . $suffix],
-            ['team' => 'Ghana',                 'link' => $base . 'ghana'                  . $suffix],
-            ['team' => 'Ivory Coast',           'link' => $base . 'ivory-coast'            . $suffix],
-            ['team' => 'Morocco',               'link' => $base . 'morocco'                . $suffix],
-            ['team' => 'Senegal',               'link' => $base . 'senegal'                . $suffix],
-            ['team' => 'South Africa',          'link' => $base . 'south-africa'           . $suffix],
-            ['team' => 'Tunisia',               'link' => $base . 'tunisia'                . $suffix],
+            // Group B
+            ['group_name' => 'B', 'team' => 'Canada',           'link' => $base . 'canada'                 . $suffix],
+            ['group_name' => 'B', 'team' => 'Bosnia and Herzegovina', 'link' => $base . 'bosnia-and-herzegovina' . $suffix],
+            ['group_name' => 'B', 'team' => 'Qatar',            'link' => $base . 'qatar'                  . $suffix],
+            ['group_name' => 'B', 'team' => 'Switzerland',      'link' => $base . 'switzerland'            . $suffix],
 
-            // CONCACAF (6)
-            ['team' => 'Canada',                'link' => $base . 'canada'                 . $suffix],
-            ['team' => 'Curaçao',               'link' => $base . 'curacao'                . $suffix],
-            ['team' => 'Haiti',                 'link' => $base . 'haiti'                  . $suffix],
-            ['team' => 'Mexico',                'link' => $base . 'mexico'                 . $suffix],
-            ['team' => 'Panama',                'link' => $base . 'panama'                 . $suffix],
-            ['team' => 'United States',         'link' => $base . 'united-states'          . $suffix],
+            // Group C
+            ['group_name' => 'C', 'team' => 'Brazil',           'link' => $base . 'brazil'                 . $suffix],
+            ['group_name' => 'C', 'team' => 'Morocco',          'link' => $base . 'morocco'                . $suffix],
+            ['group_name' => 'C', 'team' => 'Haiti',            'link' => $base . 'haiti'                  . $suffix],
+            ['group_name' => 'C', 'team' => 'Scotland',         'link' => $base . 'scotland'               . $suffix],
 
-            // CONMEBOL (6)
-            ['team' => 'Argentina',             'link' => $base . 'argentina'              . $suffix],
-            ['team' => 'Brazil',                'link' => $base . 'brazil'                 . $suffix],
-            ['team' => 'Colombia',              'link' => $base . 'colombia'               . $suffix],
-            ['team' => 'Ecuador',               'link' => $base . 'ecuador'                . $suffix],
-            ['team' => 'Paraguay',              'link' => $base . 'paraguay'               . $suffix],
-            ['team' => 'Uruguay',               'link' => $base . 'uruguay'                . $suffix],
+            // Group D
+            ['group_name' => 'D', 'team' => 'United States',    'link' => $base . 'united-states'          . $suffix],
+            ['group_name' => 'D', 'team' => 'Paraguay',         'link' => $base . 'paraguay'               . $suffix],
+            ['group_name' => 'D', 'team' => 'Australia',        'link' => $base . 'australia'              . $suffix],
+            ['group_name' => 'D', 'team' => 'Türkiye',          'link' => $base . 'turkiye'                . $suffix],
 
-            // OFC (1)
-            ['team' => 'New Zealand',           'link' => $base . 'new-zealand'            . $suffix],
+            // Group E
+            ['group_name' => 'E', 'team' => 'Germany',          'link' => $base . 'germany'                . $suffix],
+            ['group_name' => 'E', 'team' => 'Curaçao',          'link' => $base . 'curacao'                . $suffix],
+            ['group_name' => 'E', 'team' => 'Ivory Coast',      'link' => $base . 'ivory-coast'            . $suffix],
+            ['group_name' => 'E', 'team' => 'Ecuador',          'link' => $base . 'ecuador'                . $suffix],
 
-            // UEFA (16)
-            ['team' => 'Austria',               'link' => $base . 'austria'                . $suffix],
-            ['team' => 'Belgium',               'link' => $base . 'belgium'                . $suffix],
-            ['team' => 'Bosnia and Herzegovina','link' => $base . 'bosnia-and-herzegovina' . $suffix],
-            ['team' => 'Croatia',               'link' => $base . 'croatia'                . $suffix],
-            ['team' => 'Czechia',               'link' => $base . 'czechia'                . $suffix],
-            ['team' => 'England',               'link' => $base . 'england'                . $suffix],
-            ['team' => 'France',                'link' => $base . 'france'                 . $suffix],
-            ['team' => 'Germany',               'link' => $base . 'germany'                . $suffix],
-            ['team' => 'Netherlands',           'link' => $base . 'netherlands'            . $suffix],
-            ['team' => 'Norway',                'link' => $base . 'norway'                 . $suffix],
-            ['team' => 'Portugal',              'link' => $base . 'portugal'               . $suffix],
-            ['team' => 'Scotland',              'link' => $base . 'scotland'               . $suffix],
-            ['team' => 'Spain',                 'link' => $base . 'spain'                  . $suffix],
-            ['team' => 'Sweden',                'link' => $base . 'sweden'                 . $suffix],
-            ['team' => 'Switzerland',           'link' => $base . 'switzerland'            . $suffix],
-            ['team' => 'Türkiye',               'link' => $base . 'turkiye'                . $suffix],
+            // Group F
+            ['group_name' => 'F', 'team' => 'Netherlands',      'link' => $base . 'netherlands'            . $suffix],
+            ['group_name' => 'F', 'team' => 'Japan',            'link' => $base . 'japan'                  . $suffix],
+            ['group_name' => 'F', 'team' => 'Sweden',           'link' => $base . 'sweden'                 . $suffix],
+            ['group_name' => 'F', 'team' => 'Tunisia',          'link' => $base . 'tunisia'                . $suffix],
+
+            // Group G
+            ['group_name' => 'G', 'team' => 'Belgium',          'link' => $base . 'belgium'                . $suffix],
+            ['group_name' => 'G', 'team' => 'Egypt',            'link' => $base . 'egypt'                  . $suffix],
+            ['group_name' => 'G', 'team' => 'Iran',             'link' => $base . 'iran'                   . $suffix],
+            ['group_name' => 'G', 'team' => 'New Zealand',      'link' => $base . 'new-zealand'            . $suffix],
+
+            // Group H
+            ['group_name' => 'H', 'team' => 'Spain',            'link' => $base . 'spain'                  . $suffix],
+            ['group_name' => 'H', 'team' => 'Cape Verde',       'link' => $base . 'cape-verde'             . $suffix],
+            ['group_name' => 'H', 'team' => 'Saudi Arabia',     'link' => $base . 'saudi-arabia'           . $suffix],
+            ['group_name' => 'H', 'team' => 'Uruguay',          'link' => $base . 'uruguay'                . $suffix],
+
+            // Group I
+            ['group_name' => 'I', 'team' => 'France',           'link' => $base . 'france'                 . $suffix],
+            ['group_name' => 'I', 'team' => 'Senegal',          'link' => $base . 'senegal'                . $suffix],
+            ['group_name' => 'I', 'team' => 'Iraq',             'link' => $base . 'iraq'                   . $suffix],
+            ['group_name' => 'I', 'team' => 'Norway',           'link' => $base . 'norway'                 . $suffix],
+
+            // Group J
+            ['group_name' => 'J', 'team' => 'Argentina',        'link' => $base . 'argentina'              . $suffix],
+            ['group_name' => 'J', 'team' => 'Algeria',          'link' => $base . 'algeria'                . $suffix],
+            ['group_name' => 'J', 'team' => 'Austria',          'link' => $base . 'austria'                . $suffix],
+            ['group_name' => 'J', 'team' => 'Jordan',           'link' => $base . 'jordan'                 . $suffix],
+
+            // Group K
+            ['group_name' => 'K', 'team' => 'Portugal',         'link' => $base . 'portugal'               . $suffix],
+            ['group_name' => 'K', 'team' => 'Congo DR',         'link' => $base . 'congo-dr'               . $suffix],
+            ['group_name' => 'K', 'team' => 'Uzbekistan',       'link' => $base . 'uzbekistan'             . $suffix],
+            ['group_name' => 'K', 'team' => 'Colombia',         'link' => $base . 'colombia'               . $suffix],
+
+            // Group L
+            ['group_name' => 'L', 'team' => 'England',          'link' => $base . 'england'                . $suffix],
+            ['group_name' => 'L', 'team' => 'Croatia',          'link' => $base . 'croatia'                . $suffix],
+            ['group_name' => 'L', 'team' => 'Ghana',            'link' => $base . 'ghana'                  . $suffix],
+            ['group_name' => 'L', 'team' => 'Panama',           'link' => $base . 'panama'                 . $suffix],
         ];
 
         DB::table((new Team)->getTable())->insert($teams);
