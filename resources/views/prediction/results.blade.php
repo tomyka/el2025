@@ -42,7 +42,7 @@
                                                 <input type="hidden" name="awayTeam" value = "{{$predictionResult['gameDetails']->away_team}}">
 
                                                 <div class="col col-lg-4 col-md-4 col-sm-3 col-3 text-center">
-                                                        <img src="{{URL::to('img/Teams/'.$predictionResult['gameDetails']->home_team.'.png')}}" alt="homeTeam" height=70>
+                                                        <img src="{{URL::to('img/teams/'.str_replace(' ','%20',strtolower($predictionResult['gameDetails']->home_team)).'.png')}}" onerror="this.onerror=null;this.src=this.src.replace('.png','.svg')" alt="homeTeam" height=70>
                                                 </div>
 
                                                 <div class="col col-lg-4 col-md-4 col-sm-4 col-6 text-center">
@@ -54,7 +54,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col col-lg-4 col-md-4 col-sm-3 col-3 text-center">
-                                                        <img src="{{URL::to('img/Teams/'.$predictionResult['gameDetails']->away_team.'.png')}}" alt="awayTeam" height=70>
+                                                        <img src="{{URL::to('img/teams/'.str_replace(' ','%20',strtolower($predictionResult['gameDetails']->away_team)).'.png')}}" onerror="this.onerror=null;this.src=this.src.replace('.png','.svg')" alt="awayTeam" height=70>
                                                 </div>
                                             </div>
                                             </div>

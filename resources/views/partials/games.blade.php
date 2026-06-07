@@ -16,7 +16,8 @@
             <div class="match-card-body">
                 <div class="match-team match-home">
                     <img class="match-flag"
-                         src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($g->home_team)) . '.svg') }}"
+                         src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($g->home_team)) . '.png') }}"
+                         onerror="this.onerror=null;this.src=this.src.replace('.png','.svg')"
                          alt="{{ $g->home_team }}">
                     <span class="match-team-name">{{ $g->home_team }}</span>
                 </div>
@@ -33,7 +34,8 @@
                 <div class="match-team match-away">
                     <span class="match-team-name">{{ $g->away_team }}</span>
                     <img class="match-flag"
-                         src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($g->away_team)) . '.svg') }}"
+                         src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($g->away_team)) . '.png') }}"
+                         onerror="this.onerror=null;this.src=this.src.replace('.png','.svg')"
                          alt="{{ $g->away_team }}">
                 </div>
             </div>

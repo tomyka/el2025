@@ -40,7 +40,7 @@
             <div class="row justify-content-center">
                 <input type="hidden" name="prediction_standingID{{$predictionStanding->id}}" id="prediction_standingID{{$predictionStanding->id}}" value="{{$predictionStanding->id}}">
                 <div class="col-lg-2 col-md-2 col-4 d-flex justify-content-center justify-content-lg-start" id="tableCellBorderLess">
-                    <a href="{{$predictionStanding->link}}" target="_blank"><img src="{{URL::to('img/Teams/'.$predictionStanding->team.'.svg')}}" width=40><span class="d-none d-lg-inline">{{$predictionStanding->team}}</span></a>
+                    <a href="{{$predictionStanding->link}}" target="_blank"><img src="{{URL::to('img/teams/'.str_replace(' ','%20',strtolower($predictionStanding->team)).'.png')}}" onerror="this.onerror=null;this.src=this.src.replace('.png','.svg')" width=40><span class="d-none d-lg-inline">{{$predictionStanding->team}}</span></a>
                 </div>
 <!--
                 <div class="col-lg-1 col-md-1 col-2 d-flex justify-content-center" id="tableCellBorderLess">

@@ -5,7 +5,8 @@
         <div class="standing-card">
             <div class="standing-card-header">
                 <img class="standing-flag"
-                     src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($standing->team)) . '.svg') }}"
+                     src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($standing->team)) . '.png') }}"
+                     onerror="this.onerror=null;this.src=this.src.replace('.png','.svg')"
                      alt="{{ $standing->team }}">
                 <span class="standing-team">{{ $standing->team }}</span>
             </div>
