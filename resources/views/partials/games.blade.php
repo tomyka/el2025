@@ -16,8 +16,7 @@
             <div class="match-card-body">
                 <div class="match-team match-home">
                     <img class="match-flag"
-                         src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($g->home_team)) . '.png') }}"
-                         onerror="this.onerror=null;this.src=this.src.replace('.png','.svg')"
+                         src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($g->home_team)) . '.svg') }}"
                          alt="{{ $g->home_team }}">
                     <span class="match-team-name">{{ $g->home_team }}</span>
                 </div>
