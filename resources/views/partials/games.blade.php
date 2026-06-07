@@ -1,36 +1,43 @@
 <div class="sb-card">
     <div class="sb-card-title">🗓 Artimiausios rungtynės</div>
-    <table class="table table-sm table-bordered mb-0">
-        <thead>
-            <tr class="table-primary">
-                <th class="d-none d-sm-table-cell text-center"><strong>Nr.</strong></th>
-                <th class="text-center"><strong>Šeimininkai</strong></th>
-                <th class="text-center"><strong>Svečiai</strong></th>
-                <th class="d-none d-sm-table-cell text-center"><strong>Rezultatas</strong></th>
-                <th class="text-center"><strong>Spėjimas</strong></th>
-                <th class="text-center"><strong>Taškai</strong></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($predictionGames as $predictionGame)
-            <tr class="table-default">
-                <td class="d-none d-sm-table-cell text-center text-body">{{ $predictionGame['gameDetails']->id }}</td>
-                <td class="text-left">{{ $predictionGame['gameDetails']->home_team }}</td>
-                <td class="text-left">{{ $predictionGame['gameDetails']->away_team }}</td>
-                <td class="d-none d-sm-table-cell text-center">
-                    {{ $predictionGame['gameDetails']->home_team_score }}&nbsp;:&nbsp;{{ $predictionGame['gameDetails']->away_team_score }}
-                </td>
-                <td class="text-center">
-                    {{ $predictionGame['gameDetails']->p_home_team_score }}&nbsp;:&nbsp;{{ $predictionGame['gameDetails']->p_away_team_score }}
-                </td>
-                <td class="text-center">
-                    <a href="#" data-container="body" data-toggle="popover" data-bs-html="true"
-                       data-bs-trigger="hover" data-placement="right"
-                       data-bs-content="<div class='row'><div class='col col-8 col-md-9'><div>Už nugalėtoją:</div><div>Už skirtumą:</div><div>Už tikslų skirtumą:</div><div>Už koeficientą:</div><div>Koeficientas:</div></div><div class='col col-4 col-md-3'><div><strong>{{ number_format($predictionGame['gameDetails']->winner_points,2) }}</strong></div><div><strong>{{ number_format($predictionGame['gameDetails']->difference_points,2) }}</strong></div><div><strong>{{ number_format($predictionGame['gameDetails']->bingo_points,2) }}</strong></div><div><strong>{{ number_format($predictionGame['gameDetails']->odds_points,2) }}</strong></div><div><strong>{{ number_format($predictionGame['gameDetails']->odds,2) }}</strong></div></div></div>"
-                       data-bs-original-title="Rungtynių taškai">{{ $predictionGame['gameDetails']->full_points }}</a>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <div class="match-grid">
+        @foreach($predictionGames as $predictionGame)
+        @php $g = $predictionGame['gameDetails']; @endphp
+        <div class="match-card">
+            <div class="match-card-header">
+                <span>#{{ $g->id }}</span>
+                @if($g->full_points !== null)
+                <a href="#" class="match-pts match-pts-popover"
+                   data-bs-toggle="popover" data-bs-html="true" data-bs-trigger="hover focus"
+                   data-bs-content="<div style='font-size:.8rem;min-width:160px'><div class='d-flex justify-content-between gap-3'><span>Nugalėtojas:</span><strong>{{ number_format($g->winner_points,2) }}</strong></div><div class='d-flex justify-content-between gap-3'><span>Skirtumas:</span><strong>{{ number_format($g->difference_points,2) }}</strong></div><div class='d-flex justify-content-between gap-3'><span>Bingo:</span><strong>{{ number_format($g->bingo_points,2) }}</strong></div><div class='d-flex justify-content-between gap-3'><span>Koeficientas:</span><strong>{{ number_format($g->odds_points,2) }}</strong></div></div>"
+                   data-bs-original-title="Rungtynių taškai">{{ $g->full_points }} pts</a>
+                @endif
+            </div>
+            <div class="match-card-body">
+                <div class="match-team match-home">
+                    <img class="match-flag"
+                         src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($g->home_team)) . '.svg') }}"
+                         alt="{{ $g->home_team }}">
+                    <span class="match-team-name">{{ $g->home_team }}</span>
+                </div>
+                <div class="match-vs">
+                    @if($g->home_team_score !== null)
+                    <div class="match-score-actual">{{ $g->home_team_score }} : {{ $g->away_team_score }}</div>
+                    @else
+                    <div class="match-score-actual match-no-score">VS</div>
+                    @endif
+                    <div class="match-score-pred">
+                        {{ $g->p_home_team_score ?? '?' }} : {{ $g->p_away_team_score ?? '?' }}
+                    </div>
+                </div>
+                <div class="match-team match-away">
+                    <span class="match-team-name">{{ $g->away_team }}</span>
+                    <img class="match-flag"
+                         src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($g->away_team)) . '.svg') }}"
+                         alt="{{ $g->away_team }}">
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
 </div>

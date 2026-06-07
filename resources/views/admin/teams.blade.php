@@ -1,14 +1,13 @@
 @extends('admin.layouts.master')
 @section('content')
+<div class="sb-card">
     @if (Session::has('info'))
-    <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
                 <p class="alert alert-primary">{{Session::get('info')}}</p>
             </div>
         </div>
-    </div>
-     @endif
+    @endif
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-2 col-6 text-center">&nbsp;</div>
@@ -63,5 +62,5 @@
         </div>
         </form>
     </div>
-
+</div>
 @endsection

@@ -1,30 +1,23 @@
 @extends('layouts.master')
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-        <div class="col col-12 col-lg-6"  style=" margin-right: auto; margin-left: auto;" >
-            <table class="table table-sm table-striped">
-                <thead>
-                    <tr class="table-dark">
-                        <td class="text-center"><span>Dalyvis</span></td>
-                        <td class="text-center"><span>Vardas</span></td>
-                        <td class="text-center"><span>Paaukota</span></td>
-                    </tr>
-                </thead>
 
-                <tbody class="table-default">
-                    @foreach($userGroups as $userGroup)
-                    <tr>
-                        <td><B>{{$userGroup->user->username}}</B></td>
-                        <td>{{$userGroup->user->name}}</td>
-                        <td class="text-center">{{$userGroup->fee}}</td>
-                    </tr>
+<div class="sb-card" style="max-width:560px; margin:0 auto;">
+    <div class="sb-card-title">👥 Dalyviai</div>
 
-                    @endforeach
-                </tbody>
-            </table>
+    @foreach($userGroups as $userGroup)
+    <div class="lb-row">
+        <div class="lb-rank lb-rank-n">{{ $loop->iteration }}</div>
+        <div class="lb-name">
+            <span class="fw-600">{{ $userGroup->user->username }}</span>
+            @if($userGroup->user->name)
+            <span class="text-muted ms-1" style="font-size:.78rem;font-weight:400;">{{ $userGroup->user->name }}</span>
+            @endif
         </div>
+        @if($userGroup->fee)
+        <span class="match-pts">{{ $userGroup->fee }} €</span>
+        @endif
     </div>
-    </div>
+    @endforeach
+</div>
 
 @endsection

@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('content')
-
+<div class="sb-card">
     @if (Session::has('info'))
         <div class="row">
             <div class="col-md-12">
@@ -34,5 +34,5 @@
             @endforeach
 
         </div>
-
+</div>
 @endsection

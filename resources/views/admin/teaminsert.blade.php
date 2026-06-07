@@ -1,5 +1,6 @@
 @extends('admin.layouts.master')
 @section('content')
+<div class="sb-card">
     @include('partials.errors')
     <div class="form-group">
     <form action="{{route('admin.teaminsert')}}" method="post">
@@ -23,4 +24,5 @@
         </div>
     </form>
     </div>
+</div>
 @endsection

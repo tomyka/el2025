@@ -1,5 +1,6 @@
 @extends('admin.layouts.master')
 @section('content')
+<div class="sb-card">
 <!--
     <div class="container-fluid">
         @if (count($errors->all()))
@@ -55,7 +56,5 @@
 
 -->
     </div>
-
-
-
+</div>
 @endsection

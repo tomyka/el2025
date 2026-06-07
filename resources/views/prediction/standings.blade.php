@@ -27,9 +27,9 @@
             {{csrf_field()}}
             <div class="row justify-content-center" >
                 <div class="col-lg-2 col-md-2 col-4 table-header text-center">Komanda</div>
-<!--                <div class="col-lg-1 col-md-1 col-2 table-header text-center">Grupė</div> -->
+              <div class="col-lg-1 col-md-1 col-2 table-header text-center">Grupė</div>
                 <div class="col-lg-1 col-md-1 col-2 table-header text-center">Vieta</div>
-<!--            <div class="col-lg-1 col-md-2 col-3 table-header text-center">Aštuntfinalis</div> -->
+            <div class="col-lg-1 col-md-2 col-3 table-header text-center">Aštuntfinalis</div>
                 <div class="col-lg-1 col-md-2 col-3 table-header text-center">Ketvirtfinalis</div>
                 <div class="col-lg-1 col-md-2 col-3 table-header text-center">Pusfinalis</div>
                 <div class="col-lg-1 col-md-1 col-3 table-header text-center">Finalas</div>
@@ -40,7 +40,7 @@
             <div class="row justify-content-center">
                 <input type="hidden" name="prediction_standingID{{$predictionStanding->id}}" id="prediction_standingID{{$predictionStanding->id}}" value="{{$predictionStanding->id}}">
                 <div class="col-lg-2 col-md-2 col-4 d-flex justify-content-center justify-content-lg-start" id="tableCellBorderLess">
-                    <a href="{{$predictionStanding->link}}" target="_blank"><img src="{{URL::to('img/Teams/'.$predictionStanding->team.'.png')}}" width=40><span class="d-none d-lg-inline">{{$predictionStanding->team}}</span></a>
+                    <a href="{{$predictionStanding->link}}" target="_blank"><img src="{{URL::to('img/Teams/'.$predictionStanding->team.'.svg')}}" width=40><span class="d-none d-lg-inline">{{$predictionStanding->team}}</span></a>
                 </div>
 <!--
                 <div class="col-lg-1 col-md-1 col-2 d-flex justify-content-center" id="tableCellBorderLess">
@@ -50,14 +50,12 @@
                 <div class="col-lg-1 col-md-1 col-2 d-flex justify-content-center" id="tableCellBorderLess">
                     <input class="form-control input-size-3" type="text" onchange="updateUserStandings({{$predictionStanding->id}})" name="groupPosition{{$predictionStanding->id}}" id="groupPosition{{$predictionStanding->id}}" value="{{ $predictionStanding->group_position }}" {{session('disabled')}}>
                 </div>
-<!--
                 <div class="col-lg-1 col-md-2 col-3 d-flex align-items-center justify-content-center align-middle">
                     <div class="col-1 col-md-1 col-lg-1 d-flex align-items-center justify-content-center">
                         <span class="align-middle"><input type="checkbox" class="form-check-input" onchange="updateUserStandings({{$predictionStanding->id}})" name="last16{{$predictionStanding->id}}" id="last16{{$predictionStanding->id}}" {{(($predictionStanding->last16==1)?"checked":"")}} {{session('disabled')}}></span>
                         <span class="align-content-center"></span>
                     </div>
                 </div>
--->
                 <div class="col-lg-1 col-md-2 col-3 d-flex align-items-center justify-content-center align-middle">
                     <div class="col-1 col-md-1 col-lg-1 d-flex align-items-center justify-content-center">
                         <span class="align-middle"><input type="checkbox" class="form-check-input" onchange="updateUserStandings({{$predictionStanding->id}})" name="quarterfinal{{$predictionStanding->id}}" id="quarterfinal{{$predictionStanding->id}}" {{(($predictionStanding->quarterfinal==1)?"checked":"")}} {{session('disabled')}}></span>

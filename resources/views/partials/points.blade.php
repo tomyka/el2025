@@ -1,40 +1,25 @@
 <div class="sb-card">
     <div class="sb-card-title">🏆 Taškų lentelė</div>
-    <table class="table table-sm table-bordered mb-0">
-        <thead>
-            <tr class="table-primary">
-                <td class="text-center"><strong>#</strong></td>
-                <td class="text-center"><strong>Dalyvis</strong></td>
-                <td class="text-center"><strong>Taškai</strong></td>
-                <td class="d-none d-sm-table-cell text-center"><strong>Vidurkis</strong></td>
-                <td class="d-none d-sm-table-cell text-center"><abbr title="Atspėta tiksliai"><strong>Bingo</strong></abbr></td>
-                @if(session('survivalGame') == 1)
-                <td class="text-center"><strong>Išlikimas</strong></td>
-                @endif
-                <td class="text-center"><strong>Eiga</strong></td>
-                <td class="text-center"><strong>Viso:</strong></td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($points as $point)
-            <tr class="table-default {{ session('userID') == $point['userID'] ? 'table-primary fw-bold' : '' }}">
-                <td class="text-center">{{ $loop->iteration }}</td>
-                <td class="text-left">{{ $point['username'] }}</td>
-                <td class="text-center">{{ $point['userGamePoints'] }}</td>
-                <td class="d-none d-sm-table-cell text-center">{{ $point['averagePoints'] }}</td>
-                <td class="d-none d-sm-table-cell text-center">{{ $point['userGameBingo'] }}</td>
-                @if(session('survivalGame') == 1)
-                <td class="text-center">{{ $point['survivalPoints'] }}</td>
-                @endif
-                <td class="text-center">
-                    <a href="#" data-container="body" data-toggle="popover" data-bs-html="true"
-                       data-bs-trigger="hover" data-placement="bottom"
-                       data-bs-content="<div class='row'><div class='col col-9 col-md-9'><div>Grupės vietos:</div><div>Patekimas į ketvirtfinalį:</div><div>Finalas:</div></div><div class='col col-3 col-md-3'><div align='right'><strong>{{ $point['standingPoints']->group_position_points }}</strong></div><div align='right'><strong>{{ $point['standingPoints']->quarterfinal_points }}</strong></div><div align='right'><strong>{{ $point['standingPoints']->final_points }}</strong></div></div></div>"
-                       data-bs-original-title="Eigos taškai">{{ $point['standingPoints']->total_points }}</a>
-                </td>
-                <td class="text-center">{{ $point['userGamePoints'] + $point['standingPoints']->total_points + $point['survivalPoints'] }}</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+    @php
+        $maxTotal = collect($points)->max(fn($p) => $p['userGamePoints'] + $p['standingPoints']->total_points + $p['survivalPoints']) ?: 1;
+    @endphp
+    @foreach($points as $point)
+    @php
+        $total = $point['userGamePoints'] + $point['standingPoints']->total_points + $point['survivalPoints'];
+        $barW  = round($total / $maxTotal * 100);
+        $rank  = $loop->iteration;
+        $isMe  = session('userID') == $point['userID'];
+    @endphp
+    <div class="lb-row {{ $isMe ? 'lb-me-row' : '' }}">
+        <div class="lb-rank {{ $rank <= 3 ? 'lb-rank-' . $rank : 'lb-rank-n' }}">{{ $rank }}</div>
+        <div class="lb-name {{ $isMe ? 'lb-me-name' : '' }}">{{ $point['username'] }}</div>
+        <div class="lb-bar-wrap">
+            <div class="lb-bar" style="width:{{ $barW }}%"></div>
+        </div>
+        <a href="#" class="lb-points"
+           data-bs-toggle="popover" data-bs-html="true" data-bs-trigger="hover focus"
+           data-bs-content="<div style='font-size:.8rem;min-width:160px'><div class='d-flex justify-content-between gap-3'><span>Rungtynės:</span><strong>{{ $point['userGamePoints'] }}</strong></div><div class='d-flex justify-content-between gap-3'><span>Eiga:</span><strong>{{ $point['standingPoints']->total_points }}</strong></div>@if(session('survivalGame') == 1)<div class='d-flex justify-content-between gap-3'><span>Išlikimas:</span><strong>{{ $point['survivalPoints'] }}</strong></div>@endif<div class='d-flex justify-content-between gap-3'><span>Vidurkis:</span><strong>{{ $point['averagePoints'] }}</strong></div><div class='d-flex justify-content-between gap-3'><span>Bingo:</span><strong>{{ $point['userGameBingo'] }}</strong></div></div>"
+           data-bs-original-title="{{ $point['username'] }}">{{ $total }}</a>
+    </div>
+    @endforeach
 </div>

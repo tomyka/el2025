@@ -13,9 +13,9 @@ class EventSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 34; $i++) {
+        for ($i = 1; $i <= 3; $i++) {
             $events[] = [
-                'event' => 'Reguliarus sezonas ' . $i . ' turas',
+                'event' => 'Grupių etapas. ' . $i . ' turas',
                 'event_day' => $i,
                 'event_survival' => '1',
                 'active' => '1',

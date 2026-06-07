@@ -8,108 +8,90 @@
     $registrationOpen = is_null($nextUnscoredGame) || now()->lt($nextUnscoredGame);
 @endphp
 
-<div class="d-flex justify-content-center pt-2">
-    <div class="card border-0 shadow" style="width:100%; max-width:420px; border-radius:12px;">
-        <div class="card-body p-4">
+<div class="sb-auth-page">
 
-            <h5 class="fw-bold mb-1">Registruotis</h5>
-            <p class="text-muted small mb-4">Sukurk paskyrą ir pradėk spėjimus!</p>
+    {{-- Logo --}}
+    <a href="{{ route('/') }}" class="sb-auth-logo">
+        <span class="material-icons sb-brand-dot" style="font-size:1.6rem;">sports_soccer</span>
+        Sport<span class="sb-brand-dot">Bet</span>
+    </a>
 
-            @if (!$registrationOpen)
-            <div class="alert alert-warning py-2 small">
-                Registracija šiuo metu uždaryta.
+    <div class="sb-auth-body">
+
+        <h1 class="sb-auth-title">Registruotis</h1>
+
+        @if (!$registrationOpen)
+            <div class="alert alert-warning text-center">Registracija šiuo metu uždaryta.</div>
+        @else
+
+        @if ($errors->any())
+            <div class="alert alert-danger mb-4">{{ $errors->first() }}</div>
+        @endif
+
+        {{-- Google --}}
+        <a href="{{ route('auth.google') }}" class="sb-auth-google-btn">
+            <img src="https://www.svgrepo.com/show/475656/google-color.svg" width="20" height="20" alt="">
+            Registruotis su Google
+        </a>
+
+        <div class="sb-auth-divider">arba registruotis el. paštu</div>
+
+        <form method="POST" action="{{ route('register') }}" x-data="{ showPwd: false, showPwd2: false }">
+            @csrf
+
+            <input type="text" name="username"
+                   class="sb-auth-input @error('username') sb-auth-input-error @enderror"
+                   placeholder="Vartotojo vardas *"
+                   value="{{ old('username') }}"
+                   required autofocus>
+
+            <div class="d-flex gap-2">
+                <input type="text" name="name"
+                       class="sb-auth-input @error('name') sb-auth-input-error @enderror"
+                       placeholder="Vardas *"
+                       value="{{ old('name') }}"
+                       required>
+                <input type="text" name="surname"
+                       class="sb-auth-input @error('surname') sb-auth-input-error @enderror"
+                       placeholder="Pavardė"
+                       value="{{ old('surname') }}">
             </div>
-            @else
 
-            <form method="POST" action="{{ route('register') }}">
-                @csrf
+            <input type="email" name="email"
+                   class="sb-auth-input @error('email') sb-auth-input-error @enderror"
+                   placeholder="El. pašto adresas *"
+                   value="{{ old('email') }}"
+                   required>
 
-                <div class="form-floating mb-3">
-                    <input type="text" name="username" id="regUsername"
-                           class="form-control @error('username') is-invalid @enderror"
-                           placeholder="Slapyvardis"
-                           value="{{ old('username') }}"
-                           required autofocus>
-                    <label for="regUsername">Slapyvardis</label>
-                    @error('username')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="row g-2 mb-3">
-                    <div class="col">
-                        <div class="form-floating">
-                            <input type="text" name="name" id="regName"
-                                   class="form-control @error('name') is-invalid @enderror"
-                                   placeholder="Vardas"
-                                   value="{{ old('name') }}"
-                                   required>
-                            <label for="regName">Vardas</label>
-                            @error('name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="form-floating">
-                            <input type="text" name="surname" id="regSurname"
-                                   class="form-control @error('surname') is-invalid @enderror"
-                                   placeholder="Pavardė"
-                                   value="{{ old('surname') }}">
-                            <label for="regSurname">Pavardė</label>
-                            @error('surname')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-floating mb-3">
-                    <input type="email" name="email" id="regEmail"
-                           class="form-control @error('email') is-invalid @enderror"
-                           placeholder="el@pastas.lt"
-                           value="{{ old('email') }}"
-                           required>
-                    <label for="regEmail">El. paštas</label>
-                    @error('email')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="form-floating mb-3">
-                    <input type="password" name="password" id="regPassword"
-                           class="form-control @error('password') is-invalid @enderror"
-                           placeholder="Slaptažodis"
-                           required>
-                    <label for="regPassword">Slaptažodis</label>
-                    @error('password')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="form-floating mb-4">
-                    <input type="password" name="password_confirmation" id="regPasswordConfirm"
-                           class="form-control"
-                           placeholder="Pakartokite slaptažodį"
-                           required>
-                    <label for="regPasswordConfirm">Pakartokite slaptažodį</label>
-                </div>
-
-                <button type="submit" class="btn w-100 fw-semibold"
-                        style="background:var(--sb-accent); color:#0f172a;">
-                    Registruotis
+            <div class="sb-auth-input-wrap mb-3">
+                <input :type="showPwd ? 'text' : 'password'" name="password"
+                       class="sb-auth-input @error('password') sb-auth-input-error @enderror"
+                       placeholder="Slaptažodis *"
+                       required>
+                <button type="button" class="sb-auth-eye" @click="showPwd = !showPwd" tabindex="-1">
+                    <i class="bi" :class="showPwd ? 'bi-eye-slash' : 'bi-eye'"></i>
                 </button>
-            </form>
-
-            @endif
-
-            <div class="text-center mt-3">
-                <a href="{{ route('login') }}" class="text-muted small text-decoration-none">
-                    ← Jau turiu paskyrą
-                </a>
             </div>
 
-        </div>
+            <div class="sb-auth-input-wrap mb-3">
+                <input :type="showPwd2 ? 'text' : 'password'" name="password_confirmation"
+                       class="sb-auth-input"
+                       placeholder="Pakartokite slaptažodį *"
+                       required>
+                <button type="button" class="sb-auth-eye" @click="showPwd2 = !showPwd2" tabindex="-1">
+                    <i class="bi" :class="showPwd2 ? 'bi-eye-slash' : 'bi-eye'"></i>
+                </button>
+            </div>
+
+            <button type="submit" class="sb-auth-btn-primary">Sukurti paskyrą</button>
+        </form>
+
+        @endif
+
+        <a href="{{ route('login') }}" class="sb-auth-bottom-link">
+            Jau turite paskyrą? Prisijungti
+        </a>
+
     </div>
 </div>
 
