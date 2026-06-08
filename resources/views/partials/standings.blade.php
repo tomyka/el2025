@@ -1,5 +1,5 @@
 <div class="sb-card">
-    <div class="sb-card-title">📊 Finalų dalyvių prognozės</div>
+    <div class="sb-card-title"><i class="bi bi-graph-up-arrow sb-card-icon"></i> Finalų dalyvių prognozės</div>
     <div class="standings-grid">
         @foreach($standings as $standing)
         <div class="standing-card">

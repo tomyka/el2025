@@ -690,24 +690,7 @@ a:hover { color: var(--sb-accent-h); }
 }
 .upcoming-all-link:hover { text-decoration: underline; }
 
-/* ============================================================
-   Leaderboard — name column with sub-info
-   ============================================================ */
-.lb-name-col {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.lb-sub {
-  font-size: .70rem;
-  color: var(--sb-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+/* (lb-name-col / lb-sub removed — breakdown moved to popover) */
 
 .lb-total {
   font-size: .9rem;
@@ -851,9 +834,9 @@ a:hover { color: var(--sb-accent-h); }
    ============================================================ */
 .lb-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
-  padding: 9px 0;
+  padding: 5px 0;
   border-bottom: 1px solid #f1f5f9;
 }
 
@@ -1285,6 +1268,145 @@ a:hover { color: var(--sb-accent-h); }
   align-items: center;
   gap: 6px;
   text-decoration: none;
+}
+
+/* ============================================================
+   Rules page
+   ============================================================ */
+.sb-card-icon {
+  color: var(--sb-accent);
+  font-size: 1.1em;
+  vertical-align: -0.1em;
+  margin-right: 4px;
+}
+.rules-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rules-section {
+  font-size: .88rem;
+  color: var(--sb-text);
+  line-height: 1.6;
+}
+.rules-section p { margin-bottom: .5rem; }
+
+.rules-stage {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin: 12px 0;
+}
+
+.rules-stage-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--sb-accent);
+  color: #fff;
+  font-size: .78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.rules-stage strong { display: block; margin-bottom: 4px; }
+
+.rules-link {
+  color: var(--sb-accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+.rules-link:hover { text-decoration: underline; }
+
+.rules-list {
+  padding-left: 1.2rem;
+  margin: 6px 0;
+  font-size: .85rem;
+  line-height: 1.7;
+}
+
+.rules-formula {
+  margin-top: 10px;
+  padding: 8px 14px;
+  background: #f8fafc;
+  border-left: 3px solid var(--sb-accent);
+  border-radius: 4px;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--sb-nav);
+}
+
+.rules-scoring-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.rules-scoring-item {
+  background: #f8fafc;
+  border: 1px solid var(--sb-border);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+.rules-scoring-pts {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--sb-accent);
+}
+
+.rules-scoring-label {
+  font-size: .75rem;
+  color: var(--sb-muted);
+  margin-top: 4px;
+}
+
+.rules-table-title {
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--sb-nav);
+  margin-bottom: 8px;
+}
+
+.rules-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .82rem;
+}
+
+.rules-table th,
+.rules-table td {
+  text-align: center;
+  padding: 6px 8px;
+  border: 1px solid var(--sb-border);
+}
+
+.rules-table thead th {
+  background: var(--sb-nav);
+  color: #fff;
+  font-weight: 600;
+}
+
+.rules-table tbody th {
+  background: #f8fafc;
+  font-weight: 600;
+  color: var(--sb-nav);
+}
+
+.rules-pts-pos  { background: #eff6ff; color: var(--sb-accent); font-weight: 700; }
+.rules-pts-zero { color: var(--sb-muted); }
+
+.rules-table-caption {
+  font-size: .72rem;
+  color: var(--sb-muted);
+  margin-top: 4px;
 }
 
 /* ============================================================

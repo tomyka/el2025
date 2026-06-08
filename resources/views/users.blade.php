@@ -2,7 +2,7 @@
 @section('content')
 
 <div class="sb-card" style="max-width:560px; margin:0 auto;">
-    <div class="sb-card-title">👥 Dalyviai</div>
+    <div class="sb-card-title"><i class="bi bi-people-fill sb-card-icon"></i> Dalyviai</div>
 
     @foreach($userGroups as $userGroup)
     <div class="lb-row">

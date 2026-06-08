@@ -1,5 +1,5 @@
 <div class="sb-card">
-    <div class="sb-card-title">⏮ Praėjusio turo lyderiai</div>
+    <div class="sb-card-title"><i class="bi bi-clock-history sb-card-icon"></i> Praėjusio turo lyderiai</div>
     @php
         $maxRound = collect($previousRoundPoints)->max(fn($p) => $p['pointResult']->full_points + $p['pointSurvival']) ?: 1;
     @endphp

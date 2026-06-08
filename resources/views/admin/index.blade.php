@@ -4,7 +4,7 @@
 <div class="row g-3">
 
     <div class="col-12">
-        <div class="sb-card-title">⚙️ Admin skydelis</div>
+        <div class="sb-card-title"><i class="bi bi-gear-fill sb-card-icon"></i> Admin skydelis</div>
     </div>
 
     @php
