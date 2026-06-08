@@ -28,9 +28,8 @@ class UserGroupController extends Controller
     }
 
     public function getUserGroupAll () {
-
-        $userGroups = UserGroup::all();
-        return view('admin.usergroups')->with('userGroups',$userGroups);
+        $userGroups = UserGroup::with(['user', 'group'])->orderBy('group_id')->orderBy('user_id')->get();
+        return view('admin.usergroups')->with('userGroups', $userGroups);
     }
 
     public function insertUserGroup(Request $request){
