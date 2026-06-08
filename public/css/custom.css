@@ -1523,6 +1523,49 @@ a:hover { color: var(--sb-accent-h); }
 }
 
 /* ============================================================
+   Admin users table
+   ============================================================ */
+.au-table { font-size: .875rem; }
+.au-col-id      { width: 40px; }
+.au-col-auth    { width: 64px; }
+.au-col-admin   { width: 140px; }
+.au-col-actions { width: 48px; }
+
+.au-id       { font-size: .75rem; color: var(--sb-muted); }
+.au-email    { font-size: .82rem; color: var(--sb-muted); }
+.au-username { font-weight: 600; font-size: .875rem; }
+.au-fullname { font-size: .75rem; color: var(--sb-muted); }
+
+.au-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--sb-accent);
+  color: #fff;
+  font-size: .75rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.au-auth-badge   { font-size: .9rem; }
+.au-auth-google  { color: #4285f4; }
+.au-auth-email   { color: var(--sb-muted); }
+
+.au-admin-select { font-size: .8rem; width: 80px; }
+.au-admin-elevated { border-color: var(--sb-accent) !important; color: var(--sb-accent); font-weight: 600; }
+
+.au-action-btn {
+  width: 30px; height: 30px; padding: 0;
+  border-radius: 6px; border: 1px solid var(--sb-border);
+  background: transparent; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: .85rem; transition: background .15s, border-color .15s, color .15s;
+}
+.au-action-save  { color: var(--sb-accent); }
+.au-action-save:hover  { background: var(--sb-accent); border-color: var(--sb-accent); color: #fff; }
+.au-action-delete { color: #dc2626; }
+.au-action-delete:hover { background: #dc2626; border-color: #dc2626; color: #fff; }
+
+/* ============================================================
    Legacy / Admin utility classes
    ============================================================ */
 p { margin: 0; }
