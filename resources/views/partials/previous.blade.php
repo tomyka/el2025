@@ -1,3 +1,4 @@
+{{-- @deprecated Praėjusio turo lyderiai removed from main view. --}}
 <div class="sb-card">
     <div class="sb-card-title"><i class="bi bi-clock-history sb-card-icon"></i> Praėjusio turo lyderiai</div>
     @php
