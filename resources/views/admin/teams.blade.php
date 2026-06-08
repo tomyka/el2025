@@ -32,11 +32,7 @@
             </thead>
             <tbody>
                 @php $prevGroup = null; @endphp
-                @foreach($teams->sortBy(function($t) {
-                    $pos = $t->group_position;
-                    $posVal = ($pos === null || $pos === '') ? 999 : (int)$pos;
-                    return [$t->group_name ?? '', $posVal];
-                }) as $team)
+                @foreach($teams->sortBy([['group_name', 'asc'], ['id', 'asc']]) as $team)
 
                 @if($team->group_name !== $prevGroup)
                 <tr class="at-group-sep">
