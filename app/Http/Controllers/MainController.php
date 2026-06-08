@@ -30,9 +30,18 @@ class MainController extends Controller
             $userID = session('userID');
             $eventID = session('eventID');
             $points = $pointController->getAllUserPoints($groupID);
+            $roundHistory = $pointController->getAllUsersRoundHistory($groupID);
+            foreach ($points as $i => &$point) {
+                $point['roundHistory'] = $roundHistory[$point['userID']] ?? [];
+                $lastRound             = end($point['roundHistory']) ?: null;
+                $prevRank              = $lastRound ? $lastRound['rank'] : null;
+                $point['rankChange']   = $prevRank !== null ? $prevRank - ($i + 1) : null;
+            }
+            unset($point);
             $messages = $messageController->getProfileMessages($groupID);
             $predictionResults = $predictionResults->getPredictionResultsUserGroupEventDay($eventID,$groupID, $userID);
-            $previousRoundPoints = $pointController->getPointEventTotal($eventID-1, $groupID);
+            // @deprecated previousRoundPoints removed from view
+            $previousRoundPoints = [];
             $predictionResultsWithStats = $teamStatisticsController->prepareTeamStatistics($predictionResults);
 
             // Limit upcoming-games widget to first 3 distinct calendar dates
@@ -47,7 +56,7 @@ class MainController extends Controller
             $eventDaySurvivalStatus=$predictionSurvivalController->getEventDaySurvivalStatus($userID,$eventID);
             $predictionStandingsPoints = $pointController->getPredictionStandingsUserPoints($userID);
 
-            return view('main')->with('messages', $messages)->with('points', $points)->with('predictionGames', $predictionResultsWithStats)->with('previousRoundPoints', array_slice($previousRoundPoints,0,5))->with('eventDaySurvivalStatus',$eventDaySurvivalStatus)->with('groupDetails',$feeController->getGroupDetails())->with('userDetails',$feeController->getUserDetails())->with('fund',$feeController->getFund())->with('fundCollected',$feeController->getFundCollected())->with('standings',$standings)->with('predictionStandingsPoints',$predictionStandingsPoints);
+            return view('main')->with('messages', $messages)->with('points', $points)->with('predictionGames', $predictionResultsWithStats)->with('eventDaySurvivalStatus',$eventDaySurvivalStatus)->with('groupDetails',$feeController->getGroupDetails())->with('userDetails',$feeController->getUserDetails())->with('fund',$feeController->getFund())->with('fundCollected',$feeController->getFundCollected())->with('standings',$standings)->with('predictionStandingsPoints',$predictionStandingsPoints);
         }
         else {
             $games = Game::with('away_team')->with('home_team')->take(9)->get();
