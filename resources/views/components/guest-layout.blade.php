@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SportBet</title>
-    <link rel="icon" type="image/svg+xml" href="{{ asset('img/favicon.svg') }}">
+    <link rel="icon" type="image/png" href="{{ asset('img/favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('img/favicon-180.png') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/cerulean/bootstrap.min.css">
     <link rel="stylesheet" href="{{ asset('/css/custom.css') }}">
@@ -17,7 +18,7 @@
 
             <div class="text-center mb-4">
                 <a href="{{ url('/') }}" class="text-decoration-none d-inline-flex align-items-center gap-2">
-                    <img src="{{ asset('img/favicon.svg') }}" alt="SportBet" style="height:2rem;">
+                    <img src="{{ asset('img/favicon-512.png') }}" alt="SportBet" style="height:2rem;">
                     <span class="fw-bold fs-4" style="color:#fff; letter-spacing:.5px;">SportBet</span>
                 </a>
             </div>
