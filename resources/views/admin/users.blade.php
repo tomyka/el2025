@@ -59,8 +59,8 @@
                         @endif
                     </td>
 
-                    <td>
-                        <form method="post" action="{{ route('admin.updateUser') }}" class="d-flex align-items-center justify-content-center gap-1">
+                    <td class="text-center">
+                        <form method="post" action="{{ route('admin.updateUser') }}" style="margin:0;">
                             @csrf
                             <input type="hidden" name="userID"   value="{{ $user->id }}">
                             <input type="hidden" name="username" value="{{ $user->username }}">
