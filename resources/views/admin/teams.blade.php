@@ -41,7 +41,7 @@
                 @php $prevGroup = $team->group_name; @endphp
                 @endif
 
-                <tr>
+                <tr class="at-team-row" data-group="{{ $team->group_name }}">
                     <td>
                         <input type="hidden" name="teamID[{{ $team->id }}]" value="{{ $team->id }}">
                         @if($team->link)
@@ -53,47 +53,52 @@
                     <td>
                         <input type="text" class="form-control form-control-sm"
                                name="team[{{ $team->id }}]" value="{{ $team->team }}"
-                               onchange="document.getElementById('teams-form').submit()">
+                               onchange="atAutoSave()">
                     </td>
                     <td>
                         <input type="text" class="form-control form-control-sm at-link-input"
                                name="link[{{ $team->id }}]" value="{{ $team->link }}" placeholder="https://…"
-                               onchange="document.getElementById('teams-form').submit()">
+                               onchange="atAutoSave()">
                     </td>
                     <td class="text-center">
                         <input type="text" class="form-control form-control-sm text-center at-tiny-input"
                                name="groupName[{{ $team->id }}]" value="{{ $team->group_name }}" maxlength="2"
-                               onchange="document.getElementById('teams-form').submit()">
+                               onchange="atAutoSave()">
                     </td>
                     <td class="text-center">
-                        <input type="number" class="form-control form-control-sm text-center at-tiny-input"
-                               name="groupPosition[{{ $team->id }}]" value="{{ $team->group_position }}" min="1" max="6"
-                               onchange="document.getElementById('teams-form').submit()">
+                        <input type="number" class="form-control form-control-sm text-center at-tiny-input at-pos-input"
+                               name="groupPosition[{{ $team->id }}]" value="{{ $team->group_position }}"
+                               min="1" max="6" data-group="{{ $team->group_name }}"
+                               onchange="atAutoSave()">
                     </td>
                     <td class="text-center">
                         <input type="checkbox" class="form-check-input at-chk"
                                name="last32[{{ $team->id }}]" {{ $team->last32 ? 'checked' : '' }}
-                               onchange="document.getElementById('teams-form').submit()">
+                               data-round="last32" data-team-id="{{ $team->id }}"
+                               onchange="atAutoSave()">
                     </td>
                     <td class="text-center">
                         <input type="checkbox" class="form-check-input at-chk"
                                name="last16[{{ $team->id }}]" {{ $team->last16 ? 'checked' : '' }}
-                               onchange="document.getElementById('teams-form').submit()">
+                               data-round="last16" data-team-id="{{ $team->id }}"
+                               onchange="atAutoSave()">
                     </td>
                     <td class="text-center">
                         <input type="checkbox" class="form-check-input at-chk"
                                name="quarterfinal[{{ $team->id }}]" {{ $team->quarterfinal ? 'checked' : '' }}
-                               onchange="document.getElementById('teams-form').submit()">
+                               data-round="quarterfinal" data-team-id="{{ $team->id }}"
+                               onchange="atAutoSave()">
                     </td>
                     <td class="text-center">
                         <input type="checkbox" class="form-check-input at-chk"
                                name="semifinal[{{ $team->id }}]" {{ $team->semifinal ? 'checked' : '' }}
-                               onchange="document.getElementById('teams-form').submit()">
+                               data-round="semifinal" data-team-id="{{ $team->id }}"
+                               onchange="atAutoSave()">
                     </td>
                     <td class="text-center">
                         <input type="number" class="form-control form-control-sm text-center at-tiny-input"
                                name="final[{{ $team->id }}]" value="{{ $team->final }}" min="0"
-                               onchange="document.getElementById('teams-form').submit()">
+                               onchange="atAutoSave()">
                     </td>
                 </tr>
 
@@ -104,4 +109,93 @@
 </div>
 
 </form>
+
+<script>
+var _atRounds = ['last32', 'last16', 'quarterfinal', 'semifinal'];
+var _atLimits = { last32: 32, last16: 16, quarterfinal: 8, semifinal: 4 };
+
+function atEnforceAllLimits() {
+    // Reset disabled state on all checkboxes
+    _atRounds.forEach(function(round) {
+        document.querySelectorAll('input.at-chk[data-round="' + round + '"]').forEach(function(cb) {
+            cb.disabled = false;
+        });
+    });
+
+    // Cascade DOWN: if not in a round, disable and uncheck all subsequent rounds for that team
+    document.querySelectorAll('input.at-chk[data-round="last32"]').forEach(function(cb32) {
+        var id  = cb32.dataset.teamId;
+        var cb16 = document.querySelector('input.at-chk[data-round="last16"][data-team-id="' + id + '"]');
+        var cbQF = document.querySelector('input.at-chk[data-round="quarterfinal"][data-team-id="' + id + '"]');
+        var cbSF = document.querySelector('input.at-chk[data-round="semifinal"][data-team-id="' + id + '"]');
+
+        var in32 = cb32.checked;
+        var in16 = in32 && cb16 && cb16.checked;
+        var inQF = in16 && cbQF && cbQF.checked;
+
+        if (cb16 && !in32) { cb16.disabled = true; cb16.checked = false; }
+        if (cbQF && !in16) { cbQF.disabled  = true; cbQF.checked  = false; }
+        if (cbSF && !inQF) { cbSF.disabled  = true; cbSF.checked  = false; }
+    });
+
+    // Global caps: disable unchecked boxes once the limit is reached
+    _atRounds.forEach(function(round) {
+        var boxes   = document.querySelectorAll('input.at-chk[data-round="' + round + '"]');
+        var checked = 0;
+        boxes.forEach(function(cb) { if (cb.checked) checked++; });
+        if (checked >= _atLimits[round]) {
+            boxes.forEach(function(cb) { if (!cb.checked) cb.disabled = true; });
+        }
+    });
+}
+
+// Cascade UP: checking a higher round auto-checks all prerequisite lower rounds
+document.addEventListener('change', function(e) {
+    var cb = e.target;
+    if (!cb.matches('input.at-chk') || !cb.checked) return;
+    var idx = _atRounds.indexOf(cb.dataset.round);
+    if (idx < 1) return;
+    var id = cb.dataset.teamId;
+    // Check every round below the checked one
+    for (var i = 0; i < idx; i++) {
+        var lower = document.querySelector('input.at-chk[data-round="' + _atRounds[i] + '"][data-team-id="' + id + '"]');
+        if (lower && !lower.disabled) lower.checked = true;
+    }
+}, true);
+
+function atValidateGroupPositions() {
+    var valid = true;
+    var byGroup = {};
+
+    document.querySelectorAll('input.at-pos-input').forEach(function(inp) {
+        var grp = inp.dataset.group || '';
+        if (!byGroup[grp]) byGroup[grp] = [];
+        byGroup[grp].push(inp);
+    });
+
+    Object.keys(byGroup).forEach(function(grp) {
+        var inputs = byGroup[grp];
+        var vals   = inputs.map(function(i) { return i.value; }).filter(function(v) { return v !== ''; });
+        inputs.forEach(function(inp) {
+            var isDupe = inp.value !== '' && vals.filter(function(v) { return v === inp.value; }).length > 1;
+            inp.classList.toggle('is-invalid', isDupe);
+            if (isDupe) valid = false;
+        });
+    });
+
+    return valid;
+}
+
+function atAutoSave() {
+    atEnforceAllLimits();
+    if (!atValidateGroupPositions()) return;
+    document.getElementById('teams-form').submit();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    atEnforceAllLimits();
+    atValidateGroupPositions();
+});
+</script>
+
 @endsection
