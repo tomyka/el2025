@@ -41,19 +41,18 @@ class TeamController extends Controller
 
     public function updateTeams(Request $request){
 
-        $arrayStart = key($request->input('teamID'));
-
-        for($i=$arrayStart;$i<$arrayStart+count($request->input('teamID'));$i++){
-            $team                   =Team::find($request->input('teamID')[$i]);
-            $team->team             = $request->input('team')[$i];
-            $team->link             = $request->input('link')[$i];
-            $team->group_name       = $request->input('groupName')[$i];
-            $team->group_position   = $request->input('groupPosition')[$i];
-            $team->last32           = (isset($request->input('last32')[$i])?1:0);
-            $team->last16           = (isset($request->input('last16')[$i])?1:0);
-            $team->quarterfinal     = (isset($request->input('quarterfinal')[$i])?1:0);
-            $team->semifinal        = (isset($request->input('semifinal')[$i])?1:0);
-            $team->final                    = $request->input('final')[$i];
+        foreach ($request->input('teamID') as $i => $id) {
+            $team = Team::find($id);
+            if (!$team) continue;
+            $team->team           = $request->input('team')[$i];
+            $team->link           = $request->input('link')[$i];
+            $team->group_name     = $request->input('groupName')[$i];
+            $team->group_position = $request->input('groupPosition')[$i];
+            $team->last32         = isset($request->input('last32')[$i])        ? 1 : 0;
+            $team->last16         = isset($request->input('last16')[$i])        ? 1 : 0;
+            $team->quarterfinal   = isset($request->input('quarterfinal')[$i])  ? 1 : 0;
+            $team->semifinal      = isset($request->input('semifinal')[$i])     ? 1 : 0;
+            $team->final          = $request->input('final')[$i];
             $team->save();
         }
         return redirect()->route('admin.teams')->with('info','Teams updated');
