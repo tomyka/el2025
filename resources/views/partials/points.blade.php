@@ -6,13 +6,13 @@
     <div class="lb-header">
         <span class="lb-header-rank">#</span>
         <span class="lb-header-name">Žaidėjas</span>
-        <span class="lb-header-sub">R</span>
-        <span class="lb-header-sub">E</span>
+        <span class="lb-header-sub" title="Rungtynių taškai"><i class="bi bi-check2-all"></i></span>
+        <span class="lb-header-sub" title="Eigos taškai"><i class="bi bi-bar-chart-steps"></i></span>
         @if(session('survivalGame') == 1)
-        <span class="lb-header-sub">I</span>
+        <span class="lb-header-sub" title="Išlikimo taškai"><i class="bi bi-shield-check"></i></span>
         @endif
-        <span class="lb-header-sub">Avg</span>
-        <span class="lb-header-sub lb-header-sub-bingo">★</span>
+        <span class="lb-header-sub" title="Vidurkis"><i class="bi bi-graph-up"></i></span>
+        <span class="lb-header-sub lb-header-sub-bingo" title="Bingo"><i class="bi bi-bullseye"></i></span>
         <span class="lb-header-trend"></span>
         <span class="lb-header-total">Taškai</span>
         <span class="lb-header-chevron"></span>
