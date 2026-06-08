@@ -13,7 +13,7 @@
 
         {{-- Center: admin nav links --}}
         <div class="sb-nav-center sb-admin-center">
-            @if(session('admin') > 5)
+            @if(session('admin') >= 5)
             <a class="sb-nav-link {{ request()->routeIs('admin.teams') ? 'active' : '' }}"
                href="{{ route('admin.teams') }}">
                 <i class="bi bi-flag"></i> Komandos
@@ -27,7 +27,7 @@
                href="{{ route('admin.resultsAll') }}">
                 <i class="bi bi-check2-square"></i> Rezultatai
             </a>
-            @if(session('admin') > 5)
+            @if(session('admin') >= 5)
             <a class="sb-nav-link {{ request()->routeIs('admin.users') ? 'active' : '' }}"
                href="{{ route('admin.users') }}">
                 <i class="bi bi-people"></i> Dalyviai
@@ -97,7 +97,7 @@
     <div class="collapse sb-mobile-collapse d-lg-none w-100" id="adminNav">
         <div class="sb-mobile-group">
             <div class="sb-mobile-label">Admin</div>
-            @if(session('admin') > 5)
+            @if(session('admin') >= 5)
             <a class="sb-nav-link {{ request()->routeIs('admin.teams') ? 'active' : '' }}"
                href="{{ route('admin.teams') }}">
                 <i class="bi bi-flag"></i> Komandos
@@ -111,7 +111,7 @@
                href="{{ route('admin.resultsAll') }}">
                 <i class="bi bi-check2-square"></i> Rezultatai
             </a>
-            @if(session('admin') > 5)
+            @if(session('admin') >= 5)
             <a class="sb-nav-link {{ request()->routeIs('admin.users') ? 'active' : '' }}"
                href="{{ route('admin.users') }}">
                 <i class="bi bi-people"></i> Dalyviai
