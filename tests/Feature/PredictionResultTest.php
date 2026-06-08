@@ -25,7 +25,6 @@ class PredictionResultTest extends TestCase
             'event' => 'Euro 2024 Round of 16',
             'event_day' => 2,
             'event_survival' => 0,
-            'active' => 1,
             'rate' => 1,
         ]);
 
@@ -67,7 +66,6 @@ class PredictionResultTest extends TestCase
             'event' => 'Euro 2024',
             'event_day' => 1,
             'event_survival' => 0,
-            'active' => 1,
             'rate' => 1,
         ]);
 
@@ -108,7 +106,6 @@ class PredictionResultTest extends TestCase
             'event' => 'Euro 2024 Final',
             'event_day' => 10,
             'event_survival' => 0,
-            'active' => 1,
             'rate' => 1,
         ]);
 

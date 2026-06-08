@@ -46,34 +46,37 @@ Route::get('/', [MainController::class,  'loadApp'])->name('/');
 Route::get('main', [MainController::class,  'loadApp'])->name('main');
 Route::get('admin', function () {return redirect()->route('admin.index');})->name('admin');
 
-Route::get('userProfile', [UserProfileController::class, 'getUserProfile'])->name('userProfile');
-Route::post('userProfile', [UserProfileController::class,'updateUserProfile'])->name('userProfile');
-
-Route::get('users', [UserController::class, 'getAllUsers'])->name('users');
 Route::get('rules', [RulesController::class,'getRulesDetails'])->name('rules');
 Route::get('help', function () {return view('help');})->name('help');
 Route::get('charity', function () {return view('charity');})->name('charity');
 Route::get('support', function () {return view('support');})->name('support');
 Route::get('sponsors', function () {return view('sponsors');})->name('sponsors');
 
-Route::get('userSettings', [UserSettingController::class,'getUserSettings'])->name('userSettings');
-Route::post('userSettings', [UserSettingController::class,'updateUserSettings'])->name('userSettings');
+Route::middleware('auth')->group(function () {
+    Route::get('userProfile', [UserProfileController::class, 'getUserProfile'])->name('userProfile');
+    Route::post('userProfile', [UserProfileController::class, 'updateUserProfile']);
 
-Route::get('userGroup'     , [UserGroupController::class,'getUserGroup'])->name('userGroup');
-Route::post('updateUserGroup' , [UserGroupController::class,'updateUserGroup'])->name('updateUserGroup');
-Route::post('deleteUserGroup' , [UserGroupController::class,'deleteUserGroup'])->name('deleteUserGroup');
-Route::post('insertUserGroup' , [UserGroupController::class,'insertUserGroup'])->name('insertUserGroup');
+    Route::get('users', [UserController::class, 'getAllUsers'])->name('users');
 
-Route::group(['prefix' => 'prediction'],function(){
+    // @deprecated — settings merged into profile page; routes kept to avoid 404 on stale bookmarks
+    Route::get('userSettings', [UserSettingController::class, 'getUserSettings'])->name('userSettings');
+    Route::post('userSettings', [UserSettingController::class, 'updateUserSettings']);
 
-    Route::get('results', [PredictionResultController::class,'getPredictionResultsUser'])->name('prediction.results');
-    Route::post('results', [PredictionResultController::class,'updatePredictionResultUser'])->name('prediction.results');
+    Route::get('userGroup', [UserGroupController::class, 'getUserGroup'])->name('userGroup');
+    Route::post('updateUserGroup', [UserGroupController::class, 'updateUserGroup'])->name('updateUserGroup');
+    Route::post('deleteUserGroup', [UserGroupController::class, 'deleteUserGroup'])->name('deleteUserGroup');
+    Route::post('insertUserGroup', [UserGroupController::class, 'insertUserGroup'])->name('insertUserGroup');
 
-    Route::get('standings', [PredictionStandingController::class,'getPredictionStandingsUser'])->name('prediction.standings');
-    Route::post('standings', [PredictionStandingController::class,'updatePredictionStandingsUser'])->name('prediction.standings');
+    Route::group(['prefix' => 'prediction'], function () {
+        Route::get('results', [PredictionResultController::class, 'getPredictionResultsUser'])->name('prediction.results');
+        Route::post('results', [PredictionResultController::class, 'updatePredictionResultUser']);
 
-    Route::get('predictionSurvival', [PredictionSurvivalController::class,'getPredictionSurvivalUser'])->name('prediction.survival');
-    Route::post('predictionSurvival', [PredictionSurvivalController::class,'updatePredictionSurvivalUser'])->name('prediction.survival');
+        Route::get('standings', [PredictionStandingController::class, 'getPredictionStandingsUser'])->name('prediction.standings');
+        Route::post('standings', [PredictionStandingController::class, 'updatePredictionStandingsUser']);
+
+        Route::get('predictionSurvival', [PredictionSurvivalController::class, 'getPredictionSurvivalUser'])->name('prediction.survival');
+        Route::post('predictionSurvival', [PredictionSurvivalController::class, 'updatePredictionSurvivalUser']);
+    });
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function () {

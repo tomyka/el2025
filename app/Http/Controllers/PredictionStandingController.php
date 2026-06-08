@@ -22,7 +22,9 @@ class PredictionStandingController extends Controller
 
     public function updatePredictionStandingsUser(UpdatePredictionStandingRequest $request)
     {
-        $predictionStanding                 = PredictionStanding::find($request->input('prediction_standingID'));
+        $predictionStanding = PredictionStanding::where('id', $request->input('prediction_standingID'))
+            ->where('user_id', session('userID'))
+            ->firstOrFail();
         $predictionStanding->group_position = $request->input('groupPosition');
         $predictionStanding->last32         = $request->input('last32');
         $predictionStanding->last16         = $request->input('last16');

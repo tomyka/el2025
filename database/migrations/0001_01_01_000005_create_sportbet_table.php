@@ -41,6 +41,7 @@ return new class extends Migration
             $table->string('event');
             $table->smallInteger('event_day');
             $table->tinyInteger('event_survival');
+            $table->tinyInteger('active')->default(1);
             $table->tinyInteger('rate');
             $table->timestamps();
         });

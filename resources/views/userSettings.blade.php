@@ -1,3 +1,4 @@
+{{-- @deprecated Settings page removed from navigation. This view is kept only for backward compatibility. --}}
 @extends('layouts.master')
 @section('content')
 

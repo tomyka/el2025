@@ -110,7 +110,7 @@
                 <p class="rules-table-title">Nokautų etapas — patekimas</p>
                 <table class="rules-table">
                     <thead>
-                        <tr><th>Etapas</th><th>✓ atspėta</th><th>✗ neatspėta</th></tr>
+                        <tr><th>Etapas</th><th><i class="bi bi-check-lg"></i> atspėta</th><th><i class="bi bi-x-lg"></i> neatspėta</th></tr>
                     </thead>
                     <tbody>
                         <tr><td>1/16</td><td class="rules-pts-pos">3</td><td class="rules-pts-zero">0</td></tr>

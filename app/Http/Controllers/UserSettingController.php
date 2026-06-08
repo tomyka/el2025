@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Factory;
 
 
+/**
+ * @deprecated Settings UI removed from navigation; routes kept only for backward compatibility.
+ */
 class UserSettingController extends Controller
 {
     public function getUserSettings () {
@@ -36,7 +39,9 @@ class UserSettingController extends Controller
 
         if ($request->has('update')) {
 
-            $userSettings = UserSetting::find($request->input('user_settingsID'));
+            $userSettings = UserSetting::where('id', $request->input('user_settingsID'))
+                ->where('user_id', session('userID'))
+                ->firstOrFail();
             $userSettings->result_amount = $request->input('resultAmount');
             $userSettings->save();
 

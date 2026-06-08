@@ -12,8 +12,8 @@ class PointController extends Controller
     public function getAllUserPoints($groupID){
         $users=DB::table('users')->join('user_groups','users.id','=','user_groups.user_id')->where('user_groups.group_id','=',$groupID)->where('user_groups.guest','<=',session('guest'))->select('users.id','users.username','users.name','users.surname','user_groups.fee as user_fee')->get();
 
-        $pointStandingController = new PointStandingController();
-        $pointsResultController = new PointResultController();
+        $pointStandingController = app(PointStandingController::class);
+        $pointsResultController = app(PointResultController::class);
         $pointSurvivalController = new PointSurvivalController();
 
         foreach ($users as $user){

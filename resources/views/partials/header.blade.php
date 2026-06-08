@@ -68,18 +68,14 @@
         <div class="sb-nav-end">
             @auth
             <div class="dropdown">
-                <a class="sb-nav-link dropdown-toggle {{ request()->routeIs('userProfile', 'userSettings', 'admin*') ? 'active' : '' }}"
-                   href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-                   style="font-size:1.3rem; padding:4px 8px;">
+                <a class="sb-nav-link dropdown-toggle {{ request()->routeIs('userProfile', 'admin*') ? 'active' : '' }}"
+                   href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-person-circle"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><a class="dropdown-item {{ request()->routeIs('userProfile') ? 'active' : '' }}"
                            href="{{ route('userProfile') }}">
                         <i class="bi bi-person-fill me-1"></i>Profilis</a></li>
-                    <li><a class="dropdown-item {{ request()->routeIs('userSettings') ? 'active' : '' }}"
-                           href="{{ route('userSettings') }}">
-                        <i class="bi bi-gear me-1"></i>Nustatymai</a></li>
                     @if(session('admin') > 1)
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item {{ request()->routeIs('admin*') ? 'active' : '' }}"
@@ -184,10 +180,6 @@
             <a class="sb-nav-link {{ request()->routeIs('userProfile') ? 'active' : '' }}"
                href="{{ route('userProfile') }}">
                 <i class="bi bi-person-fill"></i> Profilis
-            </a>
-            <a class="sb-nav-link {{ request()->routeIs('userSettings') ? 'active' : '' }}"
-               href="{{ route('userSettings') }}">
-                <i class="bi bi-gear"></i> Nustatymai
             </a>
             @if(session('admin') > 1)
             <a class="sb-nav-link {{ request()->routeIs('admin*') ? 'active' : '' }}"

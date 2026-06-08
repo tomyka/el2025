@@ -64,7 +64,9 @@ class PredictionResultController extends Controller
         $now = date('Y-m-d H:i:s');
 
         if ($game->game_date > $now) {
-            $predictionResult = PredictionResult::find($request->input('prediction_gameID'));
+            $predictionResult = PredictionResult::where('id', $request->input('prediction_gameID'))
+                ->where('user_id', $userID)
+                ->firstOrFail();
             $predictionResult->home_team_score = (($homeTeamScore == "") ? null : $homeTeamScore);
             $predictionResult->away_team_score = (($awayTeamScore == "") ? null : $awayTeamScore);
             $predictionResult->game_winner_id = (($gameWinnerID == "") ? null : $gameWinnerID);

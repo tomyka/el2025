@@ -44,7 +44,9 @@ class UserGroupController extends Controller
 
     public function updateUserGroup(Request $request)
     {
-        $userGroup = UserGroup::find($request->input('user_groupID'));
+        $userGroup = UserGroup::where('id', $request->input('user_groupID'))
+            ->where('user_id', session('userID'))
+            ->firstOrFail();
         $userGroup->active = (($request->input('active') == "on") ? 1 : 0);
         $userGroup->guest = (($request->input('guest') == "on") ? 1 : 0);
         $userGroup->save();
@@ -53,7 +55,9 @@ class UserGroupController extends Controller
 
     public function deleteUserGroup(Request $request)
     {
-        UserGroup::where('user_group_id',$request->input('user_group_id'))->delete();
-        return redirect()->route('getUserGroup')->with('info','Dalyvių grupė '. $request->input('group') .' ištrinta');
+        UserGroup::where('id', $request->input('user_group_id'))
+            ->where('user_id', session('userID'))
+            ->delete();
+        return redirect()->route('userGroup')->with('info', 'Dalyvių grupė ' . $request->input('group') . ' ištrinta');
     }
 }

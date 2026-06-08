@@ -14,7 +14,7 @@ class GameModelTest extends TestCase
 
     public function test_game_has_home_and_away_teams(): void
     {
-        $event = Event::create(['event' => 'Euro 2024', 'event_day' => 1, 'event_survival' => 0, 'active' => 1, 'rate' => 1]);
+        $event = Event::create(['event' => 'Euro 2024', 'event_day' => 1, 'event_survival' => 0, 'rate' => 1]);
         $homeTeam = Team::create(['team' => 'France', 'group_name' => 'A', 'group_position' => 1]);
         $awayTeam = Team::create(['team' => 'Germany', 'group_name' => 'A', 'group_position' => 2]);
 
@@ -32,7 +32,7 @@ class GameModelTest extends TestCase
 
     public function test_game_can_record_score(): void
     {
-        $event = Event::create(['event' => 'Euro 2024', 'event_day' => 1, 'event_survival' => 0, 'active' => 1, 'rate' => 1]);
+        $event = Event::create(['event' => 'Euro 2024', 'event_day' => 1, 'event_survival' => 0, 'rate' => 1]);
         $homeTeam = Team::create(['team' => 'France', 'group_name' => 'A', 'group_position' => 1]);
         $awayTeam = Team::create(['team' => 'Spain', 'group_name' => 'A', 'group_position' => 2]);
 

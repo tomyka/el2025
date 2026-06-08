@@ -98,7 +98,70 @@
 @endsection
 
 <script>
+    function enforceAllLimits() {
+        // Reset all disabled states
+        ['last32', 'last16', 'quarterfinal', 'semifinal'].forEach(function(prefix) {
+            document.querySelectorAll('input[type="checkbox"][id^="' + prefix + '"]').forEach(function(cb) {
+                cb.disabled = false;
+            });
+        });
+        document.querySelectorAll('input[type="number"][id^="final"]').forEach(function(inp) {
+            inp.disabled = false;
+        });
+
+        // Cascade: if team not in lower round, disable all higher rounds for that team
+        document.querySelectorAll('input[type="checkbox"][id^="last32"]').forEach(function(cb) {
+            var id  = cb.id.replace('last32', '');
+            var l16 = document.getElementById('last16' + id);
+            var qf  = document.getElementById('quarterfinal' + id);
+            var sf  = document.getElementById('semifinal' + id);
+            var fin = document.getElementById('final' + id);
+
+            var in32 = cb.checked;
+            var in16 = in32 && l16 && l16.checked;
+            var inQF = in16 && qf  && qf.checked;
+            var inSF = inQF && sf  && sf.checked;
+
+            if (l16 && !in32) { l16.disabled = true; l16.checked = false; }
+            if (qf  && !in16) { qf.disabled  = true; qf.checked  = false; }
+            if (sf  && !inQF) { sf.disabled  = true; sf.checked  = false; }
+            if (fin && !inSF) { fin.disabled = true; fin.value   = '';    }
+        });
+
+        // Global limits: disable unchecked boxes once cap is reached
+        [['last32', 32], ['last16', 16], ['quarterfinal', 8], ['semifinal', 4]].forEach(function(pair) {
+            var prefix = pair[0], limit = pair[1];
+            var boxes = document.querySelectorAll('input[type="checkbox"][id^="' + prefix + '"]');
+            var checked = 0;
+            boxes.forEach(function(cb) { if (cb.checked) checked++; });
+            if (checked >= limit) {
+                boxes.forEach(function(cb) { if (!cb.checked) cb.disabled = true; });
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', enforceAllLimits);
+
+    // Cascade UP: checking a round auto-checks all higher rounds for that team.
+    // Capture phase ensures this runs before inline onchange → AJAX reads updated state.
+    var _bracketRounds = ['last32', 'last16', 'quarterfinal', 'semifinal'];
+    document.addEventListener('change', function(e) {
+        var cb = e.target;
+        if (!cb.matches('input[type="checkbox"]') || !cb.checked) return;
+        for (var idx = 0; idx < _bracketRounds.length; idx++) {
+            if (cb.id.startsWith(_bracketRounds[idx])) {
+                var id = cb.id.replace(_bracketRounds[idx], '');
+                for (var i = idx + 1; i < _bracketRounds.length; i++) {
+                    var higher = document.getElementById(_bracketRounds[i] + id);
+                    if (higher && !higher.disabled) higher.checked = true;
+                }
+                break;
+            }
+        }
+    }, true);
+
     function updateUserStandings(prediction_standingID) {
+        enforceAllLimits();
         var groupPositionEl = document.getElementById('groupPosition' + prediction_standingID);
         var finalEl         = document.getElementById('final' + prediction_standingID);
 

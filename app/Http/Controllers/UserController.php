@@ -11,51 +11,58 @@ use App\Models\UserSetting;
 use App\Models\PredictionResult;
 use App\Models\PredictionStanding;
 use App\Models\PredictionSurvival;
-use App\Models\PredictionSurvivalTeam;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Factory;
 
 class UserController extends Controller
 {
-    public function getAllUsers () {
-        $userGroups = UserGroup::where('group_id',session('groupID'))->where('guest',0)->with('user')->get();
-        return view('users',['userGroups'=>$userGroups]);
-    }
-    public function getAllUsersFull () {
-        $users = json_decode(User::with('userSetting')->orderBy('id')->get());
-        return view('admin.users',['users'=>$users]);
+    public function getAllUsers(): \Illuminate\View\View
+    {
+        $userGroups = UserGroup::where('group_id', session('groupID'))
+            ->where('guest', 0)
+            ->with('user')
+            ->get();
+
+        return view('users', ['userGroups' => $userGroups]);
     }
 
-    public function updateUser(Request $request)
+    public function getAllUsersFull(): \Illuminate\View\View
     {
-    /*     $userProfile = UserGroup::find($request->input('user_groupID'));
-        $userProfile->guest = (($request->input('guest') == "on") ? 1 : 0);
-        $userProfile->fee = $request->input('fee');
-        $userProfile->save();
-*/
-        $userSetting = UserSetting::where('user_id', $request->input('userID'))->first();
-        $userSetting->admin = $request->input('admin');
+        $users = json_decode(User::with('userSetting')->orderBy('id')->get());
+
+        return view('admin.users', ['users' => $users]);
+    }
+
+    public function updateUser(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $request->validate(['admin' => 'required|integer|in:0,1,9']);
+
+        $userSetting        = UserSetting::where('user_id', $request->input('userID'))->firstOrFail();
+        $userSetting->admin = (int) $request->input('admin');
         $userSetting->save();
 
-        return redirect()->route('admin.users')->with('info', 'Vartotojo ' . $request->input('username') . ' duomenys buvo atnaujinti.');
+        return redirect()->route('admin.users')
+            ->with('info', 'Vartotojo ' . $request->input('username') . ' duomenys buvo atnaujinti.');
     }
 
-    public function deleteUser(Request $request)
+    public function deleteUser(Request $request): \Illuminate\Http\RedirectResponse
     {
+        $userID = (int) $request->input('userID');
 
-        userGroup::where('user_id',$request->input('userID'))->delete();
-        PointResult::where('user_id',$request->input('userID'))->delete();
-        PointStanding::where('user_id',$request->input('userID'))->delete();
-        PointSurvival::where('user_id',$request->input('userID'))->delete();
-        userSetting::where('user_id',$request->input('userID'))->delete();
-        PredictionSurvival::where('user_id',$request->input('userID'))->delete();
-        PredictionResult::where('user_id',$request->input('userID'))->delete();
-        PredictionStanding::where('user_id',$request->input('userID'))->delete();
-        User::where('id',$request->input('userID'))->delete();
-        return redirect()->route('admin.users')->with('info','User '. $request->input('userID') .' deleted');
-    }
-    public function updatePassword ($currentPassword, $newPassword, $newPasswordConfirmation) {
+        if ($userID === (int) session('userID')) {
+            return redirect()->route('admin.users')->with('error', 'Cannot delete your own account.');
+        }
 
+        UserGroup::where('user_id', $userID)->delete();
+        PointResult::where('user_id', $userID)->delete();
+        PointStanding::where('user_id', $userID)->delete();
+        PointSurvival::where('user_id', $userID)->delete();
+        UserSetting::where('user_id', $userID)->delete();
+        PredictionSurvival::where('user_id', $userID)->delete();
+        PredictionResult::where('user_id', $userID)->delete();
+        PredictionStanding::where('user_id', $userID)->delete();
+        User::where('id', $userID)->delete();
 
+        return redirect()->route('admin.users')
+            ->with('info', 'User ' . $userID . ' deleted');
     }
 }

@@ -51,7 +51,7 @@ class ResultController extends Controller
             $gameOddsController = new GameOddsController();
             $gameOddsController->updateGameOdds($gameID);
 
-            $pointsResultController = new PointResultController();
+            $pointsResultController = app(PointResultController::class);
             $pointsResultController->updateGamePoints($gameID);
 
 

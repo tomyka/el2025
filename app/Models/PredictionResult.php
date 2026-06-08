@@ -12,5 +12,8 @@ class PredictionResult extends Model
         'game_id',
         'home_team_score',
         'away_team_score',
+        'game_winner_id',
+        'prediction_date',
+        'generated',
     ];
 }

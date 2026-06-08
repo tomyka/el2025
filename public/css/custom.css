@@ -986,6 +986,38 @@ a:hover { color: var(--sb-accent-h); }
 /* ============================================================
    Profile page
    ============================================================ */
+.profile-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  letter-spacing: -.5px;
+}
+
+.profile-eye {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 4px;
+  line-height: 1;
+  z-index: 10;
+}
+.profile-eye:hover { color: #64748b; }
+
+/* keep for any other pages that still use the old pattern */
 .profile-field {
   display: flex;
   align-items: center;

@@ -216,7 +216,7 @@ class SqlInjectionRegressionTest extends TestCase
             'full_points' => 115,
         ]);
 
-        $controller = new PointResultController();
+        $controller = app(PointResultController::class);
         $controller->deletePointResultGamePoints($data['game']->id);
 
         $this->assertDatabaseMissing('point_results', ['game_id' => $data['game']->id]);

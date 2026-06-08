@@ -1,6 +1,6 @@
 <div class="sb-card">
     <div class="sb-card-title d-flex justify-content-between align-items-center">
-        <span>🗓 Artimiausios rungtynės</span>
+        <span><i class="bi bi-calendar3"></i> Artimiausios rungtynės</span>
         <a href="{{ route('prediction.results') }}" class="upcoming-all-link">Visi spėjimai <i class="bi bi-arrow-right-short"></i></a>
     </div>
     <div class="upcoming-list">

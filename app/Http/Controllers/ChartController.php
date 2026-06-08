@@ -11,7 +11,7 @@ use DB;
 class ChartController extends Controller
 {
     public function getChartData() {
-        $pointStandingController = new PointStandingController();
+        $pointStandingController = app(PointStandingController::class);
     $history_rounds = 5;
     $labels = DB::table('events')->join('games','games.event_id','=','events.id')->where('event_id','>=',session('eventID')-$history_rounds)->whereNotNull('games.home_team_score')->distinct()->pluck('events.id');
     $users = DB::table('user_groups')->where('group_id','=',session('groupID'))->join('colors','user_groups.user_id','=','colors.id')->join('users','user_groups.user_id','=','users.id')->select('users.id','users.username','colors.color_code')->get();
