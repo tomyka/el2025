@@ -19,8 +19,10 @@
 </head>
 <body class="sb-layout">
 <script>
-    $(document).ready(function () {
-        $('[data-toggle="popover"]').popover();
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (el) {
+            new bootstrap.Popover(el);
+        });
     });
 </script>
 

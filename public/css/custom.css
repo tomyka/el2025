@@ -589,6 +589,137 @@ a:hover { color: var(--sb-accent-h); }
 }
 
 /* ============================================================
+   Upcoming games list
+   ============================================================ */
+.upcoming-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.upcoming-row {
+  display: grid;
+  grid-template-columns: 36px 1fr auto 1fr auto;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 4px;
+  border-bottom: 1px solid #f1f5f9;
+  text-decoration: none;
+  color: var(--sb-text);
+  border-radius: 6px;
+  transition: background .15s;
+}
+.upcoming-row:last-child { border-bottom: none; }
+.upcoming-row:hover { background: #f8fafc; color: var(--sb-text); }
+
+.upcoming-date {
+  font-size: .72rem;
+  color: var(--sb-muted);
+  white-space: nowrap;
+}
+
+.upcoming-team {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.upcoming-home { justify-content: flex-end; }
+.upcoming-away { justify-content: flex-start; }
+
+.upcoming-name {
+  font-size: .82rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.upcoming-flag {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.upcoming-scores {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+  justify-content: center;
+  min-width: 72px;
+}
+
+.usc-actual {
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--sb-text);
+}
+
+.usc-sep {
+  font-size: .72rem;
+  color: var(--sb-muted);
+}
+
+.usc-pred {
+  font-size: .78rem;
+  color: var(--sb-muted);
+}
+
+.usc-pred-only {
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--sb-accent);
+}
+
+.upcoming-pts {
+  font-size: .78rem;
+  font-weight: 700;
+  min-width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.upt-scored { color: var(--sb-accent); }
+.upt-empty  { color: transparent; }
+
+.upcoming-all-link {
+  font-size: .75rem;
+  font-weight: 500;
+  color: var(--sb-accent);
+  text-decoration: none;
+}
+.upcoming-all-link:hover { text-decoration: underline; }
+
+/* ============================================================
+   Leaderboard — name column with sub-info
+   ============================================================ */
+.lb-name-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.lb-sub {
+  font-size: .70rem;
+  color: var(--sb-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lb-total {
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--sb-text);
+  min-width: 44px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.lb-me-total { color: var(--sb-accent); }
+
+/* ============================================================
    Match cards
    ============================================================ */
 .match-grid {
@@ -720,7 +851,7 @@ a:hover { color: var(--sb-accent-h); }
    ============================================================ */
 .lb-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   padding: 9px 0;
   border-bottom: 1px solid #f1f5f9;
@@ -740,6 +871,7 @@ a:hover { color: var(--sb-accent-h); }
   font-size: .75rem;
   font-weight: 700;
   flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .lb-rank-1 { background: #f59e0b; color: #fff; }

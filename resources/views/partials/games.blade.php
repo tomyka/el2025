@@ -1,44 +1,41 @@
 <div class="sb-card">
-    <div class="sb-card-title">🗓 Artimiausios rungtynės</div>
-    <div class="match-grid">
+    <div class="sb-card-title d-flex justify-content-between align-items-center">
+        <span>🗓 Artimiausios rungtynės</span>
+        <a href="{{ route('prediction.results') }}" class="upcoming-all-link">Visi spėjimai <i class="bi bi-arrow-right-short"></i></a>
+    </div>
+    <div class="upcoming-list">
         @foreach($predictionGames as $predictionGame)
-        @php $g = $predictionGame['gameDetails']; @endphp
-        <div class="match-card">
-            <div class="match-card-header">
-                <span>#{{ $g->id }}</span>
-                @if($g->full_points !== null)
-                <a href="#" class="match-pts match-pts-popover"
-                   data-bs-toggle="popover" data-bs-html="true" data-bs-trigger="hover focus"
-                   data-bs-content="<div style='font-size:.8rem;min-width:160px'><div class='d-flex justify-content-between gap-3'><span>Nugalėtojas:</span><strong>{{ number_format($g->winner_points,2) }}</strong></div><div class='d-flex justify-content-between gap-3'><span>Skirtumas:</span><strong>{{ number_format($g->difference_points,2) }}</strong></div><div class='d-flex justify-content-between gap-3'><span>Bingo:</span><strong>{{ number_format($g->bingo_points,2) }}</strong></div><div class='d-flex justify-content-between gap-3'><span>Koeficientas:</span><strong>{{ number_format($g->odds_points,2) }}</strong></div></div>"
-                   data-bs-original-title="Rungtynių taškai">{{ $g->full_points }} pts</a>
+        @php
+            $g       = $predictionGame['gameDetails'];
+            $played  = $g->home_team_score !== null;
+        @endphp
+        <a href="{{ route('prediction.results') }}" class="upcoming-row">
+            <span class="upcoming-date">{{ \Carbon\Carbon::parse($g->game_date)->format('d.m') }}</span>
+
+            <span class="upcoming-team upcoming-home">
+                <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($g->home_team)) . '.svg') }}"
+                     class="upcoming-flag" alt="{{ $g->home_team }}">
+                <span class="upcoming-name">{{ $g->home_team }}</span>
+            </span>
+
+            <span class="upcoming-scores">
+                @if($played)
+                    <span class="usc-actual">{{ $g->home_team_score }}:{{ $g->away_team_score }}</span>
+                    <span class="usc-sep">/</span>
                 @endif
-            </div>
-            <div class="match-card-body">
-                <div class="match-team match-home">
-                    <img class="match-flag"
-                         src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($g->home_team)) . '.svg') }}"
-                         alt="{{ $g->home_team }}">
-                    <span class="match-team-name">{{ $g->home_team }}</span>
-                </div>
-                <div class="match-vs">
-                    @if($g->home_team_score !== null)
-                    <div class="match-score-actual">{{ $g->home_team_score }} : {{ $g->away_team_score }}</div>
-                    @else
-                    <div class="match-score-actual match-no-score">VS</div>
-                    @endif
-                    <div class="match-score-pred">
-                        {{ $g->p_home_team_score ?? '?' }} : {{ $g->p_away_team_score ?? '?' }}
-                    </div>
-                </div>
-                <div class="match-team match-away">
-                    <span class="match-team-name">{{ $g->away_team }}</span>
-                    <img class="match-flag"
-                         src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($g->away_team)) . '.png') }}"
-                         onerror="this.onerror=null;this.src=this.src.replace('.png','.svg')"
-                         alt="{{ $g->away_team }}">
-                </div>
-            </div>
-        </div>
+                <span class="usc-pred {{ $played ? '' : 'usc-pred-only' }}">{{ $g->p_home_team_score ?? '?' }}:{{ $g->p_away_team_score ?? '?' }}</span>
+            </span>
+
+            <span class="upcoming-team upcoming-away">
+                <span class="upcoming-name">{{ $g->away_team }}</span>
+                <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($g->away_team)) . '.svg') }}"
+                     class="upcoming-flag" alt="{{ $g->away_team }}">
+            </span>
+
+            <span class="upcoming-pts {{ $played && $g->full_points > 0 ? 'upt-scored' : 'upt-empty' }}">
+                {{ $played ? number_format($g->full_points, 0) : '' }}
+            </span>
+        </a>
         @endforeach
     </div>
 </div>

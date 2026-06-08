@@ -101,6 +101,7 @@ class PredictionResultController extends Controller
         $timeDiff = session('timeDifference');
         $predictionGamesUserProfileEventDay = DB::select('SELECT
                             g.id,
+                              g.game_date,
                               ht.team AS home_team,
                               at.team AS away_team,
                               ht.id AS home_team_id,
@@ -128,7 +129,7 @@ class PredictionResultController extends Controller
                               u.id = ?
                               AND e.id = ?
                               AND ug.group_id = ?
-                          ORDER BY g.id ASC',
+                          ORDER BY g.game_date ASC',
             [$timeDiff, $userID, $eventID, $groupID]);
 
         return $predictionGamesUserProfileEventDay;

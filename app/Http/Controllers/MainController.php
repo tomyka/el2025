@@ -34,6 +34,15 @@ class MainController extends Controller
             $predictionResults = $predictionResults->getPredictionResultsUserGroupEventDay($eventID,$groupID, $userID);
             $previousRoundPoints = $pointController->getPointEventTotal($eventID-1, $groupID);
             $predictionResultsWithStats = $teamStatisticsController->prepareTeamStatistics($predictionResults);
+
+            // Limit upcoming-games widget to first 3 distinct calendar dates
+            $upcomingDates = collect($predictionResultsWithStats)
+                ->map(fn($item) => substr($item['gameDetails']->game_date, 0, 10))
+                ->unique()->take(3)->flip();
+            $predictionResultsWithStats = array_values(array_filter(
+                $predictionResultsWithStats,
+                fn($item) => $upcomingDates->has(substr($item['gameDetails']->game_date, 0, 10))
+            ));
             $standings = $predictionStandingController->getPredictionStandingTop4( $groupID);
             $eventDaySurvivalStatus=$predictionSurvivalController->getEventDaySurvivalStatus($userID,$eventID);
             $predictionStandingsPoints = $pointController->getPredictionStandingsUserPoints($userID);
