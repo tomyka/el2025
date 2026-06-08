@@ -81,7 +81,7 @@
                                 title="Išsaugoti">
                             <i class="bi bi-check-lg"></i>
                         </button>
-                        @if(session('admin') == 9)
+                        @if(session('admin') >= 9)
                         <button type="submit" name="delete" value="1"
                                 class="btn btn-sm btn-outline-secondary ag-action-btn ag-action-delete ms-1"
                                 formaction="{{ route('admin.deleteGame') }}"
