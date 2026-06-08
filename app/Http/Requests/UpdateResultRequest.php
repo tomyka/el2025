@@ -15,8 +15,8 @@ class UpdateResultRequest extends FormRequest
     {
         return [
             'gameID'        => ['required', 'integer'],
-            'homeTeamScore' => ['nullable', 'integer', 'min:0'],
-            'awayTeamScore' => ['nullable', 'integer', 'min:0'],
+            'homeTeamScore' => ['nullable', 'integer', 'min:0', 'max:7'],
+            'awayTeamScore' => ['nullable', 'integer', 'min:0', 'max:7'],
         ];
     }
 }

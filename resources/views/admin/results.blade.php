@@ -1,140 +1,110 @@
 @extends('admin.layouts.master')
 @section('content')
-<div class="sb-card">
-    <div class="container-fluid">
-        @if (count($errors->all()))
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach($errors->all() as $error)
-                                <li>{{$error}}</li>
-                            @endforeach
-                        </ul>
+
+@if(count($errors->all()))
+<div class="alert alert-danger mb-3">
+    <ul class="mb-0 ps-3">
+        @foreach($errors->all() as $error)
+            <li style="font-size:.83rem">{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
+
+@if(Session::has('info'))
+<div class="alert alert-primary mb-3">{{ Session::get('info') }}</div>
+@endif
+
+@php
+$grouped = collect($games)
+    ->groupBy(fn($g) => $g->event->event_day)
+    ->map(fn($day) => $day->groupBy(fn($g) => $g->home_team->group_name));
+@endphp
+
+<div class="pred-page">
+    @foreach($grouped as $eventDay => $groupGroups)
+    @php $eventName = $groupGroups->first()->first()->event->event; @endphp
+    <div class="pred-event">
+        <div class="pred-event-header">{{ $eventName }}</div>
+        <div class="pred-event-groups">
+            @foreach($groupGroups as $groupName => $groupGames)
+            @php $firstGame = $groupGames->first(); @endphp
+            <div class="pred-day-card">
+                <div class="pred-day-header">
+                    <span>{{ $groupName ? 'Grupė ' . $groupName : 'Rungtynės' }}</span>
+                    <span class="pred-day-date">{{ \Carbon\Carbon::parse($firstGame->game_date)->format('d.m') }}</span>
+                </div>
+                @foreach($groupGames as $game)
+                @php $hasResult = $game->home_team_score !== null; @endphp
+                <div class="pred-game">
+                    <div class="pred-team-home">
+                        <span class="pred-team-name">{{ $game->home_team->team }}</span>
+                        <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($game->home_team->team)) . '.svg') }}"
+                             class="pred-flag" alt="{{ $game->home_team->team }}">
+                    </div>
+                    <div class="pred-scores">
+                        <input type="text"
+                               class="form-control pred-score"
+                               id="homeTeamScore{{ $game->id }}"
+                               onchange="saveResult({{ $game->id }})"
+                               value="{{ $game->home_team_score }}"
+                               maxlength="2"
+                               style="{{ $hasResult ? 'border-color:#22c55e' : '' }}"
+                               autocomplete="off">
+                        <span class="pred-sep">:</span>
+                        <input type="text"
+                               class="form-control pred-score"
+                               id="awayTeamScore{{ $game->id }}"
+                               onchange="saveResult({{ $game->id }})"
+                               value="{{ $game->away_team_score }}"
+                               maxlength="2"
+                               style="{{ $hasResult ? 'border-color:#22c55e' : '' }}"
+                               autocomplete="off">
+                    </div>
+                    <div class="pred-team-away">
+                        <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($game->away_team->team)) . '.svg') }}"
+                             class="pred-flag" alt="{{ $game->away_team->team }}">
+                        <span class="pred-team-name">{{ $game->away_team->team }}</span>
                     </div>
                 </div>
+                @endforeach
             </div>
-        @endif
-        @if (Session::has('info'))
-            <div class="row">
-                <div class="col-md-12">
-                    <p class="alert alert-primary">{{Session::get('info')}}</p>
-                </div>
-            </div>
-        @endif
-
-            @foreach($games as $game)
-                <form id="prediction_result{{$game->id}}" method="POST" action="">
-                    @csrf
-                    <div class="row">
-                        <div class="col col-lg-12 col-md-12 " style="display: flex; flex-wrap: wrap; justify-content: space-evenly;">
-                            <div class="card" style="width:34rem;">
-                                <div class="card-body">
-                                    <div class="row">
-                                        {{csrf_field()}}
-                                        <input type="hidden" name="gameID" value = "{{$game->id}}">
-
-                                        <div class="col col-xl-4 col-md-4 col-sm-3 col-3 text-center">
-                                            <img src="{{URL::to('img/Teams/'.$game->home_team->team.'.png')}}" alt="homeTeam" height=70>
-                                        </div>
-
-                                        <div class="col col-lg-4 col-md-4 col-sm-4 col-6 text-center">
-                                            <h6>{{ substr($game->game_date,0,16)}}</h6>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control input-size-2" size=1 name="homeTeamScore" onchange="checkPrediction({{$game->id}})" id="homeTeamScore{{$game->id}}" value="{{$game->home_team_score}}">
-                                                <h3>&nbsp;:&nbsp;</h3>
-                                                <input type="text" class="form-control input-size-2" size=1 name="awayTeamScore" onchange="checkPrediction({{$game->id}})" id="awayTeamScore{{$game->id}}" value="{{$game->away_team_score}}">
-                                            </div>
-                                        </div>
-                                        <div class="col col-lg-4 col-md-4 col-sm-3 col-3 text-center">
-                                            <img src="{{URL::to('img/Teams/'.$game->away_team->team.'.png')}}" alt="awayTeam" height=70>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
             @endforeach
         </div>
+    </div>
+    @endforeach
 </div>
+
 @endsection
 
 <script>
+function saveResult(gameID) {
+    var homeScore = document.getElementById('homeTeamScore' + gameID);
+    var awayScore = document.getElementById('awayTeamScore' + gameID);
+    var homeVal   = homeScore.value.trim();
+    var awayVal   = awayScore.value.trim();
+    var bothFilled = homeVal !== '' && awayVal !== '';
+    var bothEmpty  = homeVal === '' && awayVal === '';
 
-    async function checkPrediction(gameID) {
-
-        const homeTeamScore = document.getElementById('homeTeamScore'+gameID);
-        const awayTeamScore = document.getElementById('awayTeamScore'+gameID);
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-
-        // Visual validation
-        homeTeamScore.style.borderColor = homeTeamScore.value ? "green" : "red";
-        awayTeamScore.style.borderColor = awayTeamScore.value ? "green" : "red";
-
-        // Check if both fields are filled (or both empty if that's your requirement)
-        const bothFilled = homeTeamScore.value && awayTeamScore.value;
-        const bothEmpty = !homeTeamScore.value && !awayTeamScore.value;
-        const bothValid = homeTeamScore.value >10 && awayTeamScore.value >10 || homeTeamScore.value <0 && awayTeamScore.value <0;
-
-        if (bothFilled&&bothValid || bothEmpty) {
-            const formData = {
-                gameID: gameID,
-                awayTeamScore: awayTeamScore.value,
-                homeTeamScore: homeTeamScore.value
-            };
-
-            console.log('Submitting:', formData);
-
-            fetch
-            {
-                const response = await fetch("{{route('admin.updateResult')}}", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    body: JSON.stringify(formData)
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            // Show all error messages
-                            showNotification(data.messages.join('\n'));
-                        } else {
-                            if (bothFilled)
-                                showNotification('Spėjimas išsaugotas.', 'success');
-                        }
-                    });
-            }
-
-        }
+    if (!bothFilled && !bothEmpty) {
+        homeScore.style.borderColor = '#fbbf24';
+        awayScore.style.borderColor = '#fbbf24';
+        return;
     }
 
-    // Optional: Add notification function for better UX
-    function showNotification(message, type = 'info') {
-        // You can use your own notification system here
-        // For example, using toast notifications or updating a status element
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.textContent = message;
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            color: white;
-            z-index: 1000;
-            background-color: ${type === 'success' ? '#4CAF50' : '#f44336'};
-        `;
-
-        document.body.appendChild(notification);
-
-        // Auto-remove after 3 seconds
-        setTimeout(() => {
-            notification.remove();
-        }, 3000);
-    }
+    $.ajax({
+        type: 'POST',
+        url: '{{ route("admin.updateResult") }}',
+        data: { gameID: gameID, homeTeamScore: homeVal, awayTeamScore: awayVal },
+        dataType: 'json',
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+    }).done(function() {
+        var color = bothFilled ? '#22c55e' : '#cbd5e1';
+        homeScore.style.borderColor = color;
+        awayScore.style.borderColor = color;
+    }).fail(function() {
+        homeScore.style.borderColor = '#ef4444';
+        awayScore.style.borderColor = '#ef4444';
+    });
+}
 </script>

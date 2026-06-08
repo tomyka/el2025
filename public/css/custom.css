@@ -1288,6 +1288,38 @@ a:hover { color: var(--sb-accent-h); }
 }
 
 /* ============================================================
+   Admin dashboard tiles
+   ============================================================ */
+.admin-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px 10px;
+  background: #fff;
+  border: 1px solid var(--sb-border);
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--sb-text);
+  transition: box-shadow .15s, transform .15s;
+}
+.admin-tile:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,.1);
+  transform: translateY(-2px);
+  color: var(--sb-accent);
+}
+.admin-tile-icon {
+  font-size: 1.8rem;
+  color: var(--sb-accent);
+}
+.admin-tile-label {
+  font-size: .78rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ============================================================
    Legacy / Admin utility classes
    ============================================================ */
 p { margin: 0; }

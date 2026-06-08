@@ -78,7 +78,7 @@ Route::group(['prefix' => 'prediction'],function(){
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function () {
 
-    Route::get('index', [ResultController::class,'getResultsCurrentRound'])->name('admin.index');
+    Route::get('index', fn() => view('admin.index'))->name('admin.index');
 
     Route::get('users', [UserController::class,'getAllUsersFull'])->name('admin.users');
     Route::post('updateUser', [UserController::class,'updateUser'])->name('admin.updateUser');
