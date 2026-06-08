@@ -1564,6 +1564,51 @@ a:hover { color: var(--sb-accent-h); }
 .au-action-delete:hover { background: #dc2626; border-color: #dc2626; color: #fff; }
 
 /* ============================================================
+   Admin teams table (.at-*)
+   ============================================================ */
+.at-table { font-size: .875rem; }
+.at-col-flag    { width: 44px; }
+.at-col-name    { min-width: 120px; }
+.at-col-link    { min-width: 180px; }
+.at-col-short   { width: 60px; }
+.at-col-chk     { width: 48px; }
+
+.at-flag {
+  width: 32px;
+  height: 22px;
+  object-fit: cover;
+  border-radius: 2px;
+  border: 1px solid var(--sb-border);
+}
+.at-flag-empty {
+  width: 32px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .75rem;
+  color: var(--sb-muted);
+  border: 1px dashed var(--sb-border);
+  border-radius: 2px;
+}
+
+.at-tiny-input  { width: 48px; display: inline-block; padding: 2px 4px; }
+.at-link-input  { font-size: .78rem; }
+
+.at-group-sep td {
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--sb-muted);
+  background: var(--sb-surface);
+  padding: 6px 10px;
+  border-top: 2px solid var(--sb-border) !important;
+}
+
+.at-chk { width: 1.1rem; height: 1.1rem; cursor: pointer; }
+
+/* ============================================================
    Legacy / Admin utility classes
    ============================================================ */
 p { margin: 0; }
