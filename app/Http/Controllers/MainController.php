@@ -30,9 +30,9 @@ class MainController extends Controller
             $userID = session('userID');
             $eventID = session('eventID');
             $points = $pointController->getAllUserPoints($groupID);
-            $roundHistory = $pointController->getAllUsersRoundHistory($groupID);
+            $gameHistory = $pointController->getAllUsersGameHistory($groupID);
             foreach ($points as $i => &$point) {
-                $history               = $roundHistory[$point['userID']] ?? [];
+                $history               = $gameHistory[$point['userID']] ?? [];
                 $point['roundHistory'] = $history;
                 $n                     = count($history);
                 $lastRound             = $n >= 1 ? $history[$n - 1] : null;

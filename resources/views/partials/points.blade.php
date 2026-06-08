@@ -81,12 +81,12 @@
                     $ptsPoly .= "{$x},{$yPts} ";
                     $rnkPoly .= "{$x},{$yRnk} ";
                     $dots[]   = ['x' => $x, 'y' => $yPts, 'last' => $i === $n - 1];
-                    $lbls[]   = ['x' => $x, 'label' => 'R' . $r['event_day']];
+                    $lbls[]   = ['x' => $x, 'label' => $r['game_idx']];
                 }
             @endphp
             <div class="lb-trend-panel-inner">
                 <div class="lb-trend-chart">
-                    <div class="lb-trend-chart-label">Taškai ir vieta per turus</div>
+                    <div class="lb-trend-chart-label">Paskutinės 10 rungtynių</div>
                     <svg viewBox="0 0 {{ $svgW }} 90" style="width:100%;height:90px">
                         <line x1="0" y1="80" x2="{{ $svgW }}" y2="80" stroke="#e2e8f0" stroke-width="0.5"/>
                         <line x1="0" y1="55" x2="{{ $svgW }}" y2="55" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="3,3"/>
@@ -111,7 +111,7 @@
                 </div>
                 <div class="lb-trend-table">
                     <div class="lb-trend-table-header">
-                        <span>Turas</span><span>+Tšk</span><span>Vieta</span>
+                        <span>#</span><span>+Tšk</span><span>Vieta</span>
                     </div>
                     @foreach($rounds as $idx => $r)
                     @php
@@ -121,8 +121,8 @@
                         $rArrow = $rDir > 0 ? ' ▲' : ($rDir < 0 ? ' ▼' : '');
                     @endphp
                     <div class="lb-trend-row">
-                        <span class="lb-trend-rnd">R{{ $r['event_day'] }}</span>
-                        <span class="lb-trend-rpts">+{{ number_format($r['round_points'], 1) }}</span>
+                        <span class="lb-trend-rnd">{{ $r['game_idx'] }}</span>
+                        <span class="lb-trend-rpts">+{{ number_format($r['game_points'], 1) }}</span>
                         <span class="lb-trend-rank {{ $rCls }}">#{{ $r['rank'] }}{{ $rArrow }}</span>
                     </div>
                     @endforeach
