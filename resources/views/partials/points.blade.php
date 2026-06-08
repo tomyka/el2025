@@ -28,19 +28,110 @@
             . $feeHtml
             . '<div class="text-muted mt-1">' . $breakdown . '</div>'
             . '</div>';
+
+        $hasHistory = !empty($point['roundHistory']);
+        $rankChange = $point['rankChange'] ?? null;
+        if ($rankChange === null || !$hasHistory) {
+            $badgeClass = 'lb-trend-neutral'; $badgeText = '—';
+        } elseif ($rankChange > 0) {
+            $badgeClass = 'lb-trend-up';   $badgeText = '▲ ' . $rankChange;
+        } elseif ($rankChange < 0) {
+            $badgeClass = 'lb-trend-down'; $badgeText = '▼ ' . abs($rankChange);
+        } else {
+            $badgeClass = 'lb-trend-neutral'; $badgeText = '—';
+        }
     @endphp
-    <div class="lb-row {{ $isMe ? 'lb-me-row' : '' }}">
-        <div class="lb-rank {{ $rank <= 3 ? 'lb-rank-' . $rank : 'lb-rank-n' }}">{{ $rank }}</div>
-        <div class="lb-name {{ $isMe ? 'lb-me-name' : '' }}">
-            <span class="lb-name-btn"
-                  tabindex="0"
-                  data-bs-toggle="popover"
-                  data-bs-trigger="click"
-                  data-bs-html="true"
-                  data-bs-title="{{ $fullName ?: $point['username'] }}"
-                  data-bs-content="{{ $popoverContent }}">{{ $point['username'] }}</span>
+    <div class="lb-entry" x-data="{ open: false }">
+        <div class="lb-row {{ $isMe ? 'lb-me-row' : '' }} {{ $hasHistory ? 'lb-row-expandable' : '' }}"
+             @if($hasHistory) x-on:click="open = !open" @endif>
+            <div class="lb-rank {{ $rank <= 3 ? 'lb-rank-' . $rank : 'lb-rank-n' }}">{{ $rank }}</div>
+            <div class="lb-name {{ $isMe ? 'lb-me-name' : '' }}">
+                <span class="lb-name-btn"
+                      tabindex="0"
+                      data-bs-toggle="popover"
+                      data-bs-trigger="click"
+                      data-bs-html="true"
+                      data-bs-title="{{ $fullName ?: $point['username'] }}"
+                      data-bs-content="{{ $popoverContent }}"
+                      x-on:click.stop>{{ $point['username'] }}</span>
+            </div>
+            <span class="lb-trend-badge {{ $badgeClass }}">{{ $badgeText }}</span>
+            <div class="lb-total {{ $isMe ? 'lb-me-total' : '' }}">{{ number_format($total, 1) }}</div>
+            @if($hasHistory)
+                <span class="lb-trend-chevron" x-text="open ? '▾' : '▸'"></span>
+            @endif
         </div>
-        <div class="lb-total {{ $isMe ? 'lb-me-total' : '' }}">{{ number_format($total, 1) }}</div>
+
+        @if($hasHistory)
+        <div x-show="open" x-transition.duration.150ms class="lb-trend-panel" style="display:none">
+            @php
+                $rounds  = $point['roundHistory'];
+                $n       = count($rounds);
+                $svgW    = max(120, ($n - 1) * 60);
+                $maxCum  = max(max(array_column($rounds, 'cumulative_points')), 1);
+                $maxRank = max(max(array_column($rounds, 'rank')), 1);
+
+                $ptsPoly = '';
+                $rnkPoly = '';
+                $dots    = [];
+                $lbls    = [];
+
+                foreach ($rounds as $i => $r) {
+                    $x        = $n > 1 ? round(($i / ($n - 1)) * $svgW, 1) : $svgW / 2;
+                    $yPts     = round(10 + (1 - $r['cumulative_points'] / $maxCum) * 60, 1);
+                    $yRnk     = $maxRank > 1 ? round(10 + (($r['rank'] - 1) / ($maxRank - 1)) * 60, 1) : 10.0;
+                    $ptsPoly .= "{$x},{$yPts} ";
+                    $rnkPoly .= "{$x},{$yRnk} ";
+                    $dots[]   = ['x' => $x, 'y' => $yPts, 'last' => $i === $n - 1];
+                    $lbls[]   = ['x' => $x, 'label' => 'R' . $r['event_day']];
+                }
+            @endphp
+            <div class="lb-trend-panel-inner">
+                <div class="lb-trend-chart">
+                    <div class="lb-trend-chart-label">Taškai ir vieta per turus</div>
+                    <svg viewBox="0 0 {{ $svgW }} 90" style="width:100%;height:90px">
+                        <line x1="0" y1="80" x2="{{ $svgW }}" y2="80" stroke="#e2e8f0" stroke-width="0.5"/>
+                        <line x1="0" y1="55" x2="{{ $svgW }}" y2="55" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="3,3"/>
+                        <line x1="0" y1="30" x2="{{ $svgW }}" y2="30" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="3,3"/>
+                        @if($n > 1)
+                        <polyline points="{{ trim($ptsPoly) }}" fill="none" stroke="#2563eb" stroke-width="2" stroke-linejoin="round"/>
+                        <polyline points="{{ trim($rnkPoly) }}" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,2" stroke-linejoin="round"/>
+                        @endif
+                        @foreach($dots as $dot)
+                        <circle cx="{{ $dot['x'] }}" cy="{{ $dot['y'] }}"
+                                r="{{ $dot['last'] ? 4 : 3 }}" fill="#2563eb"
+                                @if($dot['last']) stroke="#fff" stroke-width="1.5" @endif/>
+                        @endforeach
+                        @foreach($lbls as $lbl)
+                        <text x="{{ $lbl['x'] }}" y="89" font-size="8" fill="#94a3b8" text-anchor="middle">{{ $lbl['label'] }}</text>
+                        @endforeach
+                    </svg>
+                    <div class="lb-trend-legend">
+                        <span class="lb-trend-legend-pts">— taškai</span>
+                        <span class="lb-trend-legend-rank">-- vieta</span>
+                    </div>
+                </div>
+                <div class="lb-trend-table">
+                    <div class="lb-trend-table-header">
+                        <span>Turas</span><span>+Tšk</span><span>Vieta</span>
+                    </div>
+                    @foreach($rounds as $idx => $r)
+                    @php
+                        $prev   = $idx > 0 ? $rounds[$idx - 1]['rank'] : null;
+                        $rDir   = $prev !== null ? $prev - $r['rank'] : 0;
+                        $rCls   = $rDir > 0 ? 'lb-trend-rank-up' : ($rDir < 0 ? 'lb-trend-rank-down' : '');
+                        $rArrow = $rDir > 0 ? ' ▲' : ($rDir < 0 ? ' ▼' : '');
+                    @endphp
+                    <div class="lb-trend-row">
+                        <span class="lb-trend-rnd">R{{ $r['event_day'] }}</span>
+                        <span class="lb-trend-rpts">+{{ number_format($r['round_points'], 1) }}</span>
+                        <span class="lb-trend-rank {{ $rCls }}">#{{ $r['rank'] }}{{ $rArrow }}</span>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
     @endforeach
 </div>
