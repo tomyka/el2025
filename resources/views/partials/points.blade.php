@@ -23,25 +23,7 @@
         $rank      = $loop->iteration;
         $isMe      = session('userID') == $point['userID'];
         $fullName  = trim($point['name'] . ' ' . $point['surname']);
-        $feeHtml   = '';
-        if ($feeRequired) {
-            $feeHtml = $point['userFee'] > 0
-                ? '<div class="text-success" style="font-size:.78rem">&#10003; Mokestis sumokėtas</div>'
-                : '<div class="text-danger" style="font-size:.78rem">&#10007; Mokestis nesumokėtas</div>';
-        }
-        $breakdown = 'R: ' . number_format($point['userGamePoints'], 1) . ' &nbsp;·&nbsp; E: ' . number_format($point['standingPoints']->total_points, 1);
-        if (session('survivalGame') == 1) {
-            $breakdown .= ' &nbsp;·&nbsp; I: ' . $point['survivalPoints'];
-        }
-        $breakdown .= ' &nbsp;·&nbsp; Avg: ' . number_format($point['averagePoints'], 1);
-        if ($point['userGameBingo'] > 0) {
-            $breakdown .= ' &nbsp;·&nbsp; &#127919; ' . $point['userGameBingo'];
-        }
-        $popoverContent = '<div style="font-size:.8rem">'
-            . ($fullName ? '<strong>' . e($fullName) . '</strong>' : '')
-            . $feeHtml
-            . '<div class="text-muted mt-1">' . $breakdown . '</div>'
-            . '</div>';
+        $tooltipTitle = $fullName ?: null;
 
         $hasHistory = !empty($point['roundHistory']);
         $rankChange = $point['rankChange'] ?? null;
@@ -61,13 +43,8 @@
             <div class="lb-rank {{ $rank <= 3 ? 'lb-rank-' . $rank : 'lb-rank-n' }}">{{ $rank }}</div>
             <div class="lb-name {{ $isMe ? 'lb-me-name' : '' }}">
                 <span class="lb-name-btn"
-                      tabindex="0"
-                      data-bs-toggle="popover"
-                      data-bs-trigger="click"
-                      data-bs-html="true"
-                      data-bs-title="{{ $fullName ?: $point['username'] }}"
-                      data-bs-content="{{ $popoverContent }}"
-                      x-on:click.stop>{{ $point['username'] }}</span>
+                      @if($tooltipTitle) data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $tooltipTitle }}" @endif
+                >{{ $point['username'] }}</span>
             </div>
             <div class="lb-sub-col">{{ number_format($point['userGamePoints'], 1) }}</div>
             <div class="lb-sub-col">{{ number_format($point['standingPoints']->total_points, 1) }}</div>
