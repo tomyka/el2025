@@ -832,15 +832,42 @@ a:hover { color: var(--sb-accent-h); }
 /* ============================================================
    Leaderboard rows
    ============================================================ */
+.lb-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 0 6px;
+  border-bottom: 2px solid var(--sb-border);
+  margin-bottom: 2px;
+  font-size: .65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  color: var(--sb-muted);
+}
+.lb-header-rank   { width: 26px; text-align: center; flex-shrink: 0; }
+.lb-header-name   { flex: 1; }
+.lb-header-trend  { min-width: 40px; text-align: center; flex-shrink: 0; }
+.lb-header-total  { min-width: 44px; text-align: right; flex-shrink: 0; font-weight: 700; }
+.lb-header-chevron { width: 12px; flex-shrink: 0; }
+
 .lb-row {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 5px 0;
+  padding: 4px 0;
   border-bottom: 1px solid #f1f5f9;
 }
+.lb-entry:nth-child(even) > .lb-row:not(.lb-me-row) { background: #f9fafb; }
+.lb-entry:last-child .lb-row { border-bottom: none; }
 
-.lb-me-row { background: #eff6ff; border-radius: 8px; padding: 9px 8px; margin: 0 -8px; }
+.lb-me-row {
+  background: #eff6ff !important;
+  border-radius: 6px;
+  padding: 5px 8px;
+  margin: 0 -8px;
+  border-left: 3px solid var(--sb-accent);
+}
 
 .lb-rank {
   width: 26px;
@@ -852,13 +879,12 @@ a:hover { color: var(--sb-accent-h); }
   font-size: .75rem;
   font-weight: 700;
   flex-shrink: 0;
-  margin-top: 2px;
 }
 
-.lb-rank-1 { background: #f59e0b; color: #fff; }
-.lb-rank-2 { background: #94a3b8; color: #fff; }
-.lb-rank-3 { background: #c47c2e; color: #fff; }
-.lb-rank-n { background: #f1f5f9; color: var(--sb-muted); }
+.lb-rank-1 { background: #f59e0b; color: #fff; box-shadow: 0 0 0 2px #fde68a; }
+.lb-rank-2 { background: #94a3b8; color: #fff; box-shadow: 0 0 0 2px #e2e8f0; }
+.lb-rank-3 { background: #c47c2e; color: #fff; box-shadow: 0 0 0 2px #fde8c8; }
+.lb-rank-n { background: transparent; color: var(--sb-muted); border: 1.5px solid var(--sb-border); font-weight: 500; }
 
 .lb-name {
   flex: 1;
@@ -1511,22 +1537,23 @@ p { margin: 0; }
 /* ============================================================
    Leaderboard trend panel
    ============================================================ */
-.lb-entry:last-child .lb-row { border-bottom: none; }
-
 .lb-row-expandable { cursor: pointer; }
-.lb-row-expandable:hover { background: #f8faff; }
-.lb-me-row.lb-row-expandable:hover { background: #dbeafe; }
+.lb-row-expandable:hover { background: #f0f4ff !important; }
+.lb-me-row.lb-row-expandable:hover { background: #dbeafe !important; }
 
 .lb-trend-badge {
-  font-size: .7rem;
+  font-size: .65rem;
   font-weight: 600;
-  min-width: 34px;
+  min-width: 40px;
   text-align: center;
   flex-shrink: 0;
+  padding: 2px 5px;
+  border-radius: 20px;
+  line-height: 1.4;
 }
-.lb-trend-up      { color: #16a34a; }
-.lb-trend-down    { color: #dc2626; }
-.lb-trend-neutral { color: var(--sb-muted); }
+.lb-trend-up      { color: #16a34a; background: #dcfce7; }
+.lb-trend-down    { color: #dc2626; background: #fee2e2; }
+.lb-trend-neutral { color: var(--sb-muted); background: transparent; }
 
 .lb-trend-chevron {
   font-size: .7rem;

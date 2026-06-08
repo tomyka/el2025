@@ -3,6 +3,13 @@
     @php
         $feeRequired = isset($groupDetails) && $groupDetails->fee > 0;
     @endphp
+    <div class="lb-header">
+        <span class="lb-header-rank">#</span>
+        <span class="lb-header-name">Žaidėjas</span>
+        <span class="lb-header-trend"></span>
+        <span class="lb-header-total">Taškai</span>
+        <span class="lb-header-chevron"></span>
+    </div>
     @foreach($points as $point)
     @php
         $total     = $point['userGamePoints'] + $point['standingPoints']->total_points + $point['survivalPoints'];
