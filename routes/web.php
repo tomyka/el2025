@@ -115,8 +115,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::post('messages', [MessageController::class,'updateMessage'])->name('admin.messages');
     Route::post('messageInsert', [MessageController::class,'insertMessage'])->name('admin.messageInsert');
 
+    // @deprecated — settings removed from admin panel; routes kept to avoid 404 on stale bookmarks
     Route::get('settings', [SettingController::class,'getSettingAll'])->name('admin.settings');
-    Route::post('settings', [SettingController::class,'updateSetting'])->name('admin.settings');
+    Route::post('settings', [SettingController::class,'updateSetting']);
 
     Route::get('updateStandingPoints', [PointStandingController::class,'updateStandingPoints'])->name('admin.updateStandingPoints');
 });

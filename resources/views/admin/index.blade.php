@@ -17,7 +17,6 @@
         ['icon' => 'bi-calendar-event',  'label' => 'Turai',               'route' => 'admin.events'],
         ['icon' => 'bi-diagram-3-fill',  'label' => 'Grupės',              'route' => 'admin.groups'],
         ['icon' => 'bi-chat-left-text',  'label' => 'Žinutės',             'route' => 'admin.messages'],
-        ['icon' => 'bi-gear-fill',       'label' => 'Nustatymai',          'route' => 'admin.settings'],
         ['icon' => 'bi-bar-chart-fill',  'label' => 'Eigos taškai',        'route' => 'admin.updateStandingPoints'],
     ];
     @endphp

@@ -48,10 +48,6 @@
                href="{{ route('admin.events') }}">
                 <i class="bi bi-trophy"></i> Įvykiai
             </a>
-            <a class="sb-nav-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}"
-               href="{{ route('admin.settings') }}">
-                <i class="bi bi-gear"></i> Nustatymai
-            </a>
             <a class="sb-nav-link" href="{{ route('admin.updateStandingPoints') }}">
                 <i class="bi bi-calculator"></i> Taškai už eigą
             </a>
@@ -69,8 +65,6 @@
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><a class="dropdown-item" href="{{ route('userProfile') }}">
                         <i class="bi bi-person-fill me-1"></i>Profilis</a></li>
-                    <li><a class="dropdown-item" href="{{ route('userSettings') }}">
-                        <i class="bi bi-gear me-1"></i>Nustatymai</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="{{ route('main') }}">
                         <i class="bi bi-arrow-left-circle me-1"></i>Grįžti į svetainę</a></li>
@@ -138,10 +132,6 @@
                href="{{ route('admin.events') }}">
                 <i class="bi bi-trophy"></i> Įvykiai
             </a>
-            <a class="sb-nav-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}"
-               href="{{ route('admin.settings') }}">
-                <i class="bi bi-gear"></i> Nustatymai
-            </a>
             <a class="sb-nav-link" href="{{ route('admin.updateStandingPoints') }}">
                 <i class="bi bi-calculator"></i> Taškai už eigą
             </a>
@@ -151,9 +141,6 @@
             <div class="sb-mobile-label">Paskyra</div>
             <a class="sb-nav-link" href="{{ route('userProfile') }}">
                 <i class="bi bi-person-fill"></i> Profilis
-            </a>
-            <a class="sb-nav-link" href="{{ route('userSettings') }}">
-                <i class="bi bi-gear"></i> Nustatymai
             </a>
             <a class="sb-nav-link" href="{{ route('main') }}">
                 <i class="bi bi-arrow-left-circle"></i> Grįžti į svetainę

@@ -1,3 +1,4 @@
+{{-- @deprecated Settings removed from admin panel. View and routes kept for backward compatibility. --}}
 @extends('admin.layouts.master')
 @section('content')
 <div class="sb-card">
