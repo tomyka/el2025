@@ -86,21 +86,19 @@ class GameController extends Controller
 
     public function updateGame(Request $request)
     {
-        $gameID         = $request->input('gameID');
-        $gameDate       = $request->input('gameDate');
-        $homeTeamID     = $request->input('homeTeamID');
-        $awayTeamID     = $request->input('awayTeamID');
-
-        $eventID        = $request->input('eventID');
+        $gameID     = $request->input('gameID');
+        $homeTeamID = $request->input('homeTeamID');
+        $awayTeamID = $request->input('awayTeamID');
+        $eventID    = $request->input('eventID');
 
         $game = game::find($gameID);
-        $game->game_date     = $gameDate;
-        $game->home_team_id   = $homeTeamID;
-        $game->away_team_id   = $awayTeamID;
-        $game->event_id      = $eventID;
+        $game->game_date    = $request->input('gameDate') . ' ' . $request->input('gameHour') . ':' . $request->input('gameMinute') . ':00';
+        $game->home_team_id = $homeTeamID;
+        $game->away_team_id = $awayTeamID;
+        $game->event_id     = $eventID;
         $game->save();
 
-        return redirect()->route('admin.games')->with('info','Game '.$gameID.' has been updated');
+        return redirect()->route('admin.games')->with('info', 'Game ' . $gameID . ' has been updated');
     }
 
     public function deleteGame(Request $request)
