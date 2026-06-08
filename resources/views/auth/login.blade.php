@@ -6,7 +6,7 @@
     {{-- Logo --}}
     <a href="{{ route('/') }}" class="sb-auth-logo">
         <img src="{{ asset('img/favicon.svg') }}" alt="SportBet" style="height:1.6rem;">
-        Sport<span class="sb-brand-dot">Bet</span>
+        <span>Sport<span class="sb-brand-dot">Bet</span></span>
     </a>
 
     <div class="sb-auth-body">
