@@ -15,9 +15,11 @@ class UpdatePredictionStandingRequest extends FormRequest
     {
         return [
             'prediction_standingID' => ['required', 'integer'],
-            'groupPosition'         => ['nullable', 'integer', 'min:1'],
-            'quarterfinal'          => ['nullable', 'integer', 'min:1'],
-            'semifinal'             => ['nullable', 'integer', 'min:1'],
+            'groupPosition'         => ['nullable', 'integer', 'min:1', 'max:4'],
+            'last32'                => ['nullable', 'integer', 'min:0', 'max:1'],
+            'last16'                => ['nullable', 'integer', 'min:0', 'max:1'],
+            'quarterfinal'          => ['nullable', 'integer', 'min:0', 'max:1'],
+            'semifinal'             => ['nullable', 'integer', 'min:0', 'max:1'],
             'final'                 => ['nullable', 'integer', 'min:1', 'max:4'],
         ];
     }

@@ -1270,6 +1270,29 @@ a:hover { color: var(--sb-accent-h); }
   text-decoration: none;
 }
 
+.ps-input {
+  width: 38px;
+  height: 28px;
+  text-align: center;
+  border: 1px solid var(--sb-border);
+  border-radius: 6px;
+  font-size: .8rem;
+  color: var(--sb-text);
+  background: #fff;
+  padding: 0;
+  -moz-appearance: textfield;
+}
+.ps-input::-webkit-outer-spin-button,
+.ps-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.ps-input:focus {
+  outline: none;
+  border-color: var(--sb-accent);
+  box-shadow: 0 0 0 2px rgba(37,99,235,.15);
+}
+.ps-input:disabled { background: #f8fafc; color: var(--sb-muted); }
+.ps-input-ok    { border-color: #22c55e !important; box-shadow: 0 0 0 2px rgba(34,197,94,.15) !important; }
+.ps-input-error { border-color: #ef4444 !important; box-shadow: 0 0 0 2px rgba(239,68,68,.15) !important; }
+
 /* ============================================================
    Rules page
    ============================================================ */
