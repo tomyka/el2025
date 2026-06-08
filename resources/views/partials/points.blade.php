@@ -6,6 +6,13 @@
     <div class="lb-header">
         <span class="lb-header-rank">#</span>
         <span class="lb-header-name">Žaidėjas</span>
+        <span class="lb-header-sub">R</span>
+        <span class="lb-header-sub">E</span>
+        @if(session('survivalGame') == 1)
+        <span class="lb-header-sub">I</span>
+        @endif
+        <span class="lb-header-sub">Avg</span>
+        <span class="lb-header-sub lb-header-sub-bingo">★</span>
         <span class="lb-header-trend"></span>
         <span class="lb-header-total">Taškai</span>
         <span class="lb-header-chevron"></span>
@@ -62,6 +69,13 @@
                       data-bs-content="{{ $popoverContent }}"
                       x-on:click.stop>{{ $point['username'] }}</span>
             </div>
+            <div class="lb-sub-col">{{ number_format($point['userGamePoints'], 1) }}</div>
+            <div class="lb-sub-col">{{ number_format($point['standingPoints']->total_points, 1) }}</div>
+            @if(session('survivalGame') == 1)
+            <div class="lb-sub-col">{{ $point['survivalPoints'] }}</div>
+            @endif
+            <div class="lb-sub-col">{{ number_format($point['averagePoints'], 1) }}</div>
+            <div class="lb-sub-col {{ $point['userGameBingo'] > 0 ? 'lb-sub-bingo' : '' }}">{{ $point['userGameBingo'] > 0 ? '★'.$point['userGameBingo'] : '' }}</div>
             <span class="lb-trend-badge {{ $badgeClass }}">{{ $badgeText }}</span>
             <div class="lb-total {{ $isMe ? 'lb-me-total' : '' }}">{{ number_format($total, 1) }}</div>
             @if($hasHistory)
