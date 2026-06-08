@@ -34,12 +34,6 @@ class MainController extends Controller
             foreach ($points as $i => &$point) {
                 $history               = $gameHistory[$point['userID']] ?? [];
                 $point['roundHistory'] = $history;
-                $n                     = count($history);
-                $lastRound             = $n >= 1 ? $history[$n - 1] : null;
-                $secondLastRound       = $n >= 2 ? $history[$n - 2] : null;
-                $point['rankChange']   = ($lastRound && $secondLastRound)
-                    ? $secondLastRound['rank'] - $lastRound['rank']
-                    : null;
             }
             unset($point);
             $messages = $messageController->getProfileMessages($groupID);

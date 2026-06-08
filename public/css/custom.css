@@ -849,7 +849,6 @@ a:hover { color: var(--sb-accent-h); }
 .lb-header-name   { flex: 1; }
 .lb-header-sub    { width: 38px; text-align: center; flex-shrink: 0; }
 .lb-header-sub-bingo { color: var(--sb-gold); }
-.lb-header-trend  { min-width: 40px; text-align: center; flex-shrink: 0; }
 .lb-header-total  { min-width: 44px; text-align: right; flex-shrink: 0; font-weight: 700; }
 .lb-header-chevron { width: 12px; flex-shrink: 0; }
 
@@ -1553,19 +1552,6 @@ p { margin: 0; }
 .lb-row-expandable:hover { background: #f0f4ff !important; }
 .lb-me-row.lb-row-expandable:hover { background: #dbeafe !important; }
 
-.lb-trend-badge {
-  font-size: .65rem;
-  font-weight: 600;
-  min-width: 40px;
-  text-align: center;
-  flex-shrink: 0;
-  padding: 2px 5px;
-  border-radius: 20px;
-  line-height: 1.4;
-}
-.lb-trend-up      { color: #16a34a; background: #dcfce7; }
-.lb-trend-down    { color: #dc2626; background: #fee2e2; }
-.lb-trend-neutral { color: var(--sb-muted); background: transparent; }
 
 .lb-trend-chevron {
   font-size: .7rem;

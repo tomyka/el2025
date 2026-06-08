@@ -13,7 +13,6 @@
         @endif
         <span class="lb-header-sub" title="Vidurkis"><i class="bi bi-graph-up"></i></span>
         <span class="lb-header-sub lb-header-sub-bingo" title="Bingo"><i class="bi bi-bullseye"></i></span>
-        <span class="lb-header-trend"></span>
         <span class="lb-header-total">Taškai</span>
         <span class="lb-header-chevron"></span>
     </div>
@@ -26,16 +25,6 @@
         $tooltipTitle = $fullName ?: null;
 
         $hasHistory = !empty($point['roundHistory']);
-        $rankChange = $point['rankChange'] ?? null;
-        if ($rankChange === null || !$hasHistory) {
-            $badgeClass = 'lb-trend-neutral'; $badgeText = '—';
-        } elseif ($rankChange > 0) {
-            $badgeClass = 'lb-trend-up';   $badgeText = '▲ ' . $rankChange;
-        } elseif ($rankChange < 0) {
-            $badgeClass = 'lb-trend-down'; $badgeText = '▼ ' . abs($rankChange);
-        } else {
-            $badgeClass = 'lb-trend-neutral'; $badgeText = '—';
-        }
     @endphp
     <div class="lb-entry" x-data="{ open: false }">
         <div class="lb-row {{ $isMe ? 'lb-me-row' : '' }} {{ $hasHistory ? 'lb-row-expandable' : '' }}"
@@ -53,7 +42,6 @@
             @endif
             <div class="lb-sub-col">{{ number_format($point['averagePoints'], 1) }}</div>
             <div class="lb-sub-col {{ $point['userGameBingo'] > 0 ? 'lb-sub-bingo' : '' }}">{{ $point['userGameBingo'] > 0 ? '★'.$point['userGameBingo'] : '' }}</div>
-            <span class="lb-trend-badge {{ $badgeClass }}">{{ $badgeText }}</span>
             <div class="lb-total {{ $isMe ? 'lb-me-total' : '' }}">{{ number_format($total, 1) }}</div>
             @if($hasHistory)
                 <span class="lb-trend-chevron" x-text="open ? '▾' : '▸'"></span>
