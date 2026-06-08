@@ -77,7 +77,7 @@
                     <li><a class="dropdown-item {{ request()->routeIs('userProfile') ? 'active' : '' }}"
                            href="{{ route('userProfile') }}">
                         <i class="bi bi-person-fill me-1"></i>Profilis</a></li>
-                    @if(session('admin') > 1)
+                    @if(session('admin') >= 1)
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item {{ request()->routeIs('admin*') ? 'active' : '' }}"
                            href="{{ route('admin') }}">
@@ -182,7 +182,7 @@
                href="{{ route('userProfile') }}">
                 <i class="bi bi-person-fill"></i> Profilis
             </a>
-            @if(session('admin') > 1)
+            @if(session('admin') >= 1)
             <a class="sb-nav-link {{ request()->routeIs('admin*') ? 'active' : '' }}"
                href="{{ route('admin') }}">
                 <i class="bi bi-database-gear"></i> Admin

@@ -79,9 +79,25 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+// Admin (level 1+): dashboard, games, results
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function () {
 
     Route::get('index', fn() => view('admin.index'))->name('admin.index');
+
+    Route::get('games', [GameController::class,'getGameAll'])->name('admin.games');
+    Route::post('updateGame', [GameController::class,'updateGame'])->name('admin.updateGame');
+    Route::post('deleteGame', [GameController::class,'deleteGame'])->name('admin.deleteGame');
+    Route::post('insertGame', [GameController::class,'insertGame'])->name('admin.insertGame');
+
+    Route::get('results', [ResultController::class,'getResultsCurrentRound'])->name('admin.results');
+    Route::get('resultsAll', [ResultController::class,'getResultsAll'])->name('admin.resultsAll');
+    Route::post('updateResult', [ResultController::class,'updateResult'])->name('admin.updateResult');
+
+    Route::get('updateStandingPoints', [PointStandingController::class,'updateStandingPoints'])->name('admin.updateStandingPoints');
+});
+
+// SuperAdmin (level 9): everything else
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'superadmin']], function () {
 
     Route::get('users', [UserController::class,'getAllUsersFull'])->name('admin.users');
     Route::post('updateUser', [UserController::class,'updateUser'])->name('admin.updateUser');
@@ -93,15 +109,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::get('teaminsert', [TeamController::class,'getTeam'])->name('admin.teaminsert');
     Route::post('teams', [TeamController::class,'updateTeams'])->name('admin.teams');
     Route::post('teaminsert', [TeamController::class,'insertTeams'])->name('admin.teamsinsert');
-
-    Route::get('games', [GameController::class,'getGameAll'])->name('admin.games');
-    Route::post('updateGame', [GameController::class,'updateGame'])->name('admin.updateGame');
-    Route::post('deleteGame', [GameController::class,'deleteGame'])->name('admin.deleteGame');
-    Route::post('insertGame', [GameController::class,'insertGame'])->name('admin.insertGame');
-
-    Route::get('results', [ResultController::class,'getResultsCurrentRound'])->name('admin.results');
-    Route::get('resultsAll', [ResultController::class,'getResultsAll'])->name('admin.resultsAll');
-    Route::post('updateResult', [ResultController::class,'updateResult'])->name('admin.updateResult');
 
     Route::get('events', [EventController::class,'getEvent'])->name('admin.events');
     Route::post('events', [EventController::class,'updateEvent'])->name('admin.events');
@@ -118,8 +125,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     // @deprecated — settings removed from admin panel; routes kept to avoid 404 on stale bookmarks
     Route::get('settings', [SettingController::class,'getSettingAll'])->name('admin.settings');
     Route::post('settings', [SettingController::class,'updateSetting']);
-
-    Route::get('updateStandingPoints', [PointStandingController::class,'updateStandingPoints'])->name('admin.updateStandingPoints');
 });
 
 Route::group(['prefix' => 'summary'],function(){
