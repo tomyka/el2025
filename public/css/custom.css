@@ -1566,47 +1566,49 @@ a:hover { color: var(--sb-accent-h); }
 /* ============================================================
    Admin teams table (.at-*)
    ============================================================ */
-.at-table { font-size: .875rem; }
-.at-col-flag    { width: 44px; }
-.at-col-name    { min-width: 120px; }
-.at-col-link    { min-width: 180px; }
-.at-col-short   { width: 60px; }
-.at-col-chk     { width: 48px; }
+.at-table { font-size: .8rem; }
+.at-table td, .at-table th { padding: 3px 6px; }
+.at-col-flag    { width: 32px; }
+.at-col-name    { min-width: 100px; }
+.at-col-link    { min-width: 150px; }
+.at-col-short   { width: 48px; }
+.at-col-chk     { width: 38px; }
 
 .at-flag {
-  width: 32px;
-  height: 22px;
+  width: 24px;
+  height: 16px;
   object-fit: cover;
   border-radius: 2px;
   border: 1px solid var(--sb-border);
 }
 .at-flag-empty {
-  width: 32px;
-  height: 22px;
+  width: 24px;
+  height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: .75rem;
+  font-size: .65rem;
   color: var(--sb-muted);
   border: 1px dashed var(--sb-border);
   border-radius: 2px;
 }
 
-.at-tiny-input  { width: 48px; display: inline-block; padding: 2px 4px; }
-.at-link-input  { font-size: .78rem; }
+.at-tiny-input  { width: 40px; display: inline-block; padding: 1px 3px; font-size: .78rem; height: 24px; }
+.at-link-input  { font-size: .73rem; height: 24px; padding: 1px 5px; }
+.at-table .form-control-sm { height: 24px; padding: 1px 5px; font-size: .78rem; }
 
 .at-group-sep td {
-  font-size: .7rem;
+  font-size: .68rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .5px;
   color: var(--sb-muted);
   background: var(--sb-surface);
-  padding: 6px 10px;
+  padding: 4px 8px;
   border-top: 2px solid var(--sb-border) !important;
 }
 
-.at-chk { width: 1.1rem; height: 1.1rem; cursor: pointer; }
+.at-chk { width: 1rem; height: 1rem; cursor: pointer; }
 
 /* ============================================================
    Admin groups table (.ag-*)
