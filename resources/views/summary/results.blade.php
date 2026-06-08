@@ -44,7 +44,7 @@
                                         <div align='right'><strong>{{number_format($predictionResult->odds,2)}}</strong></div>
                                         <div align='right'><strong>{{number_format($predictionResult->odds_points,2)}}</strong></div>
                                       </div>
-                               </div>" data-bs-original-title="Rungtynių taškai">{{$predictionResult->full_points}}</a>
+                               </div>" data-bs-original-title="Rungtynių taškai">{{number_format($predictionResult->full_points,1)}}</a>
                             </div>
 
                             <div class="text-center">

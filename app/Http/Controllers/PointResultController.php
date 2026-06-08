@@ -7,6 +7,7 @@ use App\Models\Game;
 use App\Models\GameOdds;
 use App\Models\Group;
 use App\Models\PointResult;
+use App\Models\PointsCalculation;
 use App\Services\ScoringService;
 use Illuminate\Support\Facades\DB;
 
@@ -39,7 +40,7 @@ class PointResultController extends Controller
             ->select('winner_points', 'difference_points', 'bingo_points', 'odds_points', 'full_points')
             ->get()
             ->map(fn ($r) => [
-                'full_points'  => round($r->full_points, 0),
+                'full_points'  => round($r->full_points, 1),
                 'bingo_points' => $r->bingo_points != 0 ? 1 : 0,
             ])
             ->all();
@@ -55,6 +56,16 @@ class PointResultController extends Controller
 
         $this->deletePointResultGamePoints($gameID);
 
+        // Preload all 66 lookup rows once — keyed by "{homeDiff}_{awayDiff}"
+        $pointsLookup = PointsCalculation::all()
+            ->keyBy(fn($r) => "{$r->home_score_difference}_{$r->away_score_difference}");
+
+        $gameOdds = GameOdds::where('game_id', $gameID)->first() ?? tap(new GameOdds(), function ($o) {
+            $o->home_odds = 1.0;
+            $o->draw_odds = 1.0;
+            $o->away_odds = 1.0;
+        });
+
         foreach (Group::all() as $group) {
             $predictionResults = DB::table('prediction_results')
                 ->join('user_groups', 'prediction_results.user_id', '=', 'user_groups.user_id')
@@ -62,15 +73,14 @@ class PointResultController extends Controller
                 ->where('prediction_results.game_id', '=', $gameID)
                 ->get();
 
-            $gameOdds = GameOdds::where('game_id', $gameID)->firstOrFail();
-
             foreach ($predictionResults as $predictionResult) {
-                $odds             = $this->scoring->getGameOdds($predictionResult->home_team_score, $predictionResult->away_team_score, $gameOdds, $predictionResult->generated);
-                $winnerPoints     = $this->scoring->getWinnerPoints($homeTeamScore, $awayTeamScore, $predictionResult->home_team_score, $predictionResult->away_team_score);
-                $differencePoints = $this->scoring->getDifferencePoints($homeTeamScore, $awayTeamScore, $predictionResult->home_team_score, $predictionResult->away_team_score);
-                $bingoPoints      = $this->scoring->getBingoPoints($homeTeamScore, $awayTeamScore, $predictionResult->home_team_score, $predictionResult->away_team_score);
-                $oddsPoints       = $this->scoring->getOddsPoints($odds, $winnerPoints);
-                $points           = $this->scoring->calculateGamePoints($winnerPoints, $differencePoints, $oddsPoints, $bingoPoints, $odds, $event->rate);
+                $tablePoints  = $this->scoring->getTablePoints($homeTeamScore, $awayTeamScore, $predictionResult->home_team_score, $predictionResult->away_team_score, $pointsLookup);
+                $winnerDir    = $this->scoring->getWinnerPoints($homeTeamScore, $awayTeamScore, $predictionResult->home_team_score, $predictionResult->away_team_score);
+                $winnerBonus  = $winnerDir > 0 ? 5.0 : 0.0;
+                $bingoPoints  = $this->scoring->getBingoPoints($homeTeamScore, $awayTeamScore, (int) $predictionResult->home_team_score, (int) $predictionResult->away_team_score);
+                $odds         = $this->scoring->getGameOdds($predictionResult->home_team_score, $predictionResult->away_team_score, $gameOdds, $predictionResult->generated);
+                $oddsPoints   = $this->scoring->getOddsPoints($odds, $winnerDir);
+                $points       = $this->scoring->calculateGamePoints($winnerBonus, $tablePoints, $oddsPoints, $bingoPoints, $odds, $event->rate);
 
                 $this->insertPointResultUser($predictionResult->user_id, $gameID, $points);
             }

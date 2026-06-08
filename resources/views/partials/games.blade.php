@@ -33,7 +33,7 @@
             </span>
 
             <span class="upcoming-pts {{ $played && $g->full_points > 0 ? 'upt-scored' : 'upt-empty' }}">
-                {{ $played ? number_format($g->full_points, 0) : '' }}
+                {{ $played ? number_format($g->full_points, 1) : '' }}
             </span>
         </a>
         @endforeach

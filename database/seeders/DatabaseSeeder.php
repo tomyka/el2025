@@ -38,9 +38,5 @@ class DatabaseSeeder extends Seeder
             GameSeeder::class,
         );
 
-        $this->call(
-            PointCalculationSeeder::class,
-        );
-
     }
 }

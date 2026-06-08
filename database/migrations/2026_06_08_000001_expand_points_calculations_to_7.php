@@ -1,22 +1,14 @@
 <?php
 
-namespace Database\Seeders;
-
-use Illuminate\Database\Seeder;
+use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-class PointCalculationSeeder extends Seeder
+return new class extends Migration
 {
-    // Points table: row = |actual_home - pred_home| (0–7)
-    // col = signed away difference (−7 to +7, sign-flip adjusted)
-    // Values stored ×2 to preserve 0.5-point increments.
-    //
-    // Formula: col >= row → 10 + row − 2·col
-    //          0 ≤ col < row → (10 − 2·row) + col
-    //          col < 0       → (10 − 2·row) + 2·col
-
-    public function run(): void
+    public function up(): void
     {
+        DB::table('points_calculations')->delete();
+
         $awayDiffs = [7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5, -6, -7];
 
         $table = [
@@ -47,4 +39,9 @@ class PointCalculationSeeder extends Seeder
 
         DB::table('points_calculations')->insert($rows);
     }
-}
+
+    public function down(): void
+    {
+        DB::table('points_calculations')->delete();
+    }
+};

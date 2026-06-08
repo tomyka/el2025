@@ -3,10 +3,42 @@
 namespace App\Services;
 
 use App\Models\GameOdds;
+use Illuminate\Support\Collection;
 use stdClass;
 
 class ScoringService
 {
+    /**
+     * Look up the base score from the points_calculations table.
+     *
+     * $lookup must be keyed by "{home_score_difference}_{away_score_difference}".
+     * Table values are stored ×2 to support 0.5-point increments; this method
+     * divides by 2 before returning.
+     */
+    public function getTablePoints(
+        int $homeActual,
+        int $awayActual,
+        mixed $homePred,
+        mixed $awayPred,
+        Collection $lookup
+    ): float {
+        if ($homePred === null || $awayPred === null) {
+            return 0.0;
+        }
+
+        $homeSignedDiff = $homeActual - (int) $homePred;
+        $homeDiff       = min(abs($homeSignedDiff), 7);
+        $awayRawDiff    = $awayActual - (int) $awayPred;
+        // Flip away direction when home was overpredicted so uniform misses
+        // (both scores off by the same amount) always map to positive col values.
+        $awayDiff = max(-7, min(7, $homeSignedDiff < 0 ? -$awayRawDiff : $awayRawDiff));
+        $key      = "{$homeDiff}_{$awayDiff}";
+
+        $row = $lookup->get($key);
+
+        return $row !== null ? (float) $row->points / 2.0 : 0.0;
+    }
+
     /**
      * 50 pts if the predicted winner/draw direction matches the actual result.
      */
@@ -24,6 +56,7 @@ class ScoringService
     }
 
     /**
+     * @deprecated Replaced by getTablePoints(); kept for reference only.
      * 50 minus the absolute difference between actual and predicted goal-difference.
      */
     public function getDifferencePoints(
@@ -39,23 +72,17 @@ class ScoringService
     }
 
     /**
-     * 50 pts for exact score; 20 pts if the goal-difference delta is zero (same margin, different scores).
+     * 2.5 pts for an exact score prediction; 0 otherwise.
      */
     public function getBingoPoints(
         int $homeScore,
         int $awayScore,
         int $homeScorePrediction,
         int $awayScorePrediction
-    ): int {
-        if ($homeScore === $homeScorePrediction && $awayScore === $awayScorePrediction) {
-            return 50;
-        }
-
-        if (($homeScore - $homeScorePrediction) === ($awayScore - $awayScorePrediction)) {
-            return 20;
-        }
-
-        return 0;
+    ): float {
+        return ($homeScore === $homeScorePrediction && $awayScore === $awayScorePrediction)
+            ? 2.5
+            : 0.0;
     }
 
     /**
@@ -89,10 +116,10 @@ class ScoringService
      * Apply the event rate multiplier and return a point breakdown object.
      */
     public function calculateGamePoints(
-        int   $winnerPoints,
-        int   $differencePoints,
+        float $winnerPoints,
+        float $differencePoints,
         float $oddsPoints,
-        int   $bingoPoints,
+        float $bingoPoints,
         float $odds,
         float $rate
     ): stdClass {

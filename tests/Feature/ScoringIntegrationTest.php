@@ -11,7 +11,6 @@ use App\Models\PredictionResult;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\UserGroup;
-use App\Services\ScoringService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -19,10 +18,16 @@ class ScoringIntegrationTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(\Database\Seeders\PointCalculationSeeder::class);
+    }
+
     private function scaffoldGame(int $homeScore, int $awayScore): array
     {
-        $group    = Group::factory()->create();
-        $user     = User::factory()->create();
+        $group = Group::factory()->create();
+        $user  = User::factory()->create();
         UserGroup::factory()->create(['user_id' => $user->id, 'group_id' => $group->id]);
 
         $event = Event::create([
@@ -54,7 +59,10 @@ class ScoringIntegrationTest extends TestCase
         return compact('user', 'game', 'event');
     }
 
-    public function test_exact_score_prediction_earns_bingo_and_winner_points(): void
+    // Exact match: |home_diff|=0, away_diff=0 → table gives 10/2 = 5.0
+    // Direction correct → odds_points = 50*(1.8-1)*rate(1) = 40.0
+    // full_points = 5.0 + 40.0 = 45.0; winner_points = 0; bingo_points = 0
+    public function test_exact_score_prediction_earns_table_max_score(): void
     {
         ['user' => $user, 'game' => $game] = $this->scaffoldGame(2, 1);
 
@@ -69,16 +77,17 @@ class ScoringIntegrationTest extends TestCase
         $controller = app(\App\Http\Controllers\PointResultController::class);
         $controller->updateGamePoints($game->id);
 
-        $pointResult = PointResult::where('user_id', $user->id)
-            ->where('game_id', $game->id)
-            ->firstOrFail();
+        $r = PointResult::where('user_id', $user->id)->where('game_id', $game->id)->firstOrFail();
 
-        $this->assertSame(50.0, (float) $pointResult->winner_points);
-        $this->assertSame(50.0, (float) $pointResult->bingo_points);
-        $this->assertSame(50.0, (float) $pointResult->difference_points);
+        $this->assertSame(5.0,  (float) $r->winner_points);       // correct direction → +5
+        $this->assertSame(2.5,  (float) $r->bingo_points);        // exact score → +2.5
+        $this->assertSame(5.0,  (float) $r->difference_points);   // table 10/2 × rate(1)
+        $this->assertEqualsWithDelta(40.0, (float) $r->odds_points, 0.01); // 50*(1.8-1)*1
+        $this->assertEqualsWithDelta(52.5, (float) $r->full_points, 0.01); // 5+2.5+5+40
     }
 
-    public function test_wrong_direction_prediction_earns_zero_winner_points(): void
+    // Wrong direction: no odds bonus; winner_points always 0 in new model
+    public function test_wrong_direction_prediction_earns_no_odds_bonus(): void
     {
         ['user' => $user, 'game' => $game] = $this->scaffoldGame(2, 0);
 
@@ -93,14 +102,13 @@ class ScoringIntegrationTest extends TestCase
         $controller = app(\App\Http\Controllers\PointResultController::class);
         $controller->updateGamePoints($game->id);
 
-        $pointResult = PointResult::where('user_id', $user->id)
-            ->where('game_id', $game->id)
-            ->firstOrFail();
+        $r = PointResult::where('user_id', $user->id)->where('game_id', $game->id)->firstOrFail();
 
-        $this->assertSame(0.0, (float) $pointResult->winner_points);
-        $this->assertSame(0.0, (float) $pointResult->odds_points);
+        $this->assertSame(0.0, (float) $r->winner_points);
+        $this->assertSame(0.0, (float) $r->odds_points);
     }
 
+    // Generated prediction: odds forced to 1.0 → no odds bonus regardless of direction
     public function test_generated_prediction_receives_no_odds_bonus(): void
     {
         ['user' => $user, 'game' => $game] = $this->scaffoldGame(2, 0);
@@ -116,14 +124,13 @@ class ScoringIntegrationTest extends TestCase
         $controller = app(\App\Http\Controllers\PointResultController::class);
         $controller->updateGamePoints($game->id);
 
-        $pointResult = PointResult::where('user_id', $user->id)
-            ->where('game_id', $game->id)
-            ->firstOrFail();
+        $r = PointResult::where('user_id', $user->id)->where('game_id', $game->id)->firstOrFail();
 
-        $this->assertSame(1.0, (float) $pointResult->odds);
-        $this->assertSame(0.0, (float) $pointResult->odds_points);
+        $this->assertSame(1.0, (float) $r->odds);
+        $this->assertSame(0.0, (float) $r->odds_points);
     }
 
+    // Recalculation must replace, not append
     public function test_recalculating_game_replaces_old_points(): void
     {
         ['user' => $user, 'game' => $game] = $this->scaffoldGame(2, 1);

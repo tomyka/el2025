@@ -15,11 +15,11 @@
                 ? '<div class="text-success" style="font-size:.78rem">&#10003; Mokestis sumokėtas</div>'
                 : '<div class="text-danger" style="font-size:.78rem">&#10007; Mokestis nesumokėtas</div>';
         }
-        $breakdown = 'R: ' . $point['userGamePoints'] . ' &nbsp;·&nbsp; E: ' . $point['standingPoints']->total_points;
+        $breakdown = 'R: ' . number_format($point['userGamePoints'], 1) . ' &nbsp;·&nbsp; E: ' . number_format($point['standingPoints']->total_points, 1);
         if (session('survivalGame') == 1) {
             $breakdown .= ' &nbsp;·&nbsp; I: ' . $point['survivalPoints'];
         }
-        $breakdown .= ' &nbsp;·&nbsp; Avg: ' . $point['averagePoints'];
+        $breakdown .= ' &nbsp;·&nbsp; Avg: ' . number_format($point['averagePoints'], 1);
         if ($point['userGameBingo'] > 0) {
             $breakdown .= ' &nbsp;·&nbsp; &#127919; ' . $point['userGameBingo'];
         }
@@ -40,7 +40,7 @@
                   data-bs-title="{{ $fullName ?: $point['username'] }}"
                   data-bs-content="{{ $popoverContent }}">{{ $point['username'] }}</span>
         </div>
-        <div class="lb-total {{ $isMe ? 'lb-me-total' : '' }}">{{ $total }}</div>
+        <div class="lb-total {{ $isMe ? 'lb-me-total' : '' }}">{{ number_format($total, 1) }}</div>
     </div>
     @endforeach
 </div>

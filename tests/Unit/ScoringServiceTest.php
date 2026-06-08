@@ -16,6 +16,94 @@ class ScoringServiceTest extends TestCase
         $this->service = new ScoringService();
     }
 
+    // ── getTablePoints ───────────────────────────────────────────────────────
+
+    public function test_table_points_exact_match_returns_max(): void
+    {
+        // |0|, 0 → table[0][0 idx=5] = 10 → 10/2 = 5.0
+        $this->assertSame(5.0, $this->service->getTablePoints(2, 1, 2, 1, $this->buildLookup()));
+    }
+
+    public function test_table_points_null_prediction_returns_zero(): void
+    {
+        $this->assertSame(0.0, $this->service->getTablePoints(2, 1, null, null, $this->buildLookup()));
+    }
+
+    public function test_table_points_off_by_one_home(): void
+    {
+        // |2-3|=1, away diff=1-1=0 → table[1][5] = 8 → 8/2 = 4.0
+        $this->assertSame(4.0, $this->service->getTablePoints(2, 1, 3, 1, $this->buildLookup()));
+    }
+
+    public function test_table_points_off_by_one_away(): void
+    {
+        // |0|, 1-0=1 → table[0][4] = 8 → 8/2 = 4.0
+        $this->assertSame(4.0, $this->service->getTablePoints(2, 1, 2, 0, $this->buildLookup()));
+    }
+
+    public function test_table_points_negative_score(): void
+    {
+        // actual 5:0, pred 0:5 — homeSigned=+5 (no flip), awayRaw=0-5=-5 → key "5_-5" → -10/2=-5.0
+        $this->assertSame(-5.0, $this->service->getTablePoints(5, 0, 0, 5, $this->buildLookup()));
+    }
+
+    public function test_table_points_home_overpredicted_flips_away_sign(): void
+    {
+        // actual 0:1, pred 1:0 — homeSigned=-1 (flip), awayRaw=+1 → awayDiff=-1 → key "1_-1" → 6/2=3.0
+        $this->assertSame(3.0, $this->service->getTablePoints(0, 1, 1, 0, $this->buildLookup()));
+    }
+
+    public function test_table_points_uniform_underprediction_equals_overprediction(): void
+    {
+        // actual 0:0, pred 1:1 — both down by 1 → homeSigned=-1 (flip), awayRaw=-1 → awayDiff=+1 → key "1_1"
+        // actual 2:1, pred 1:0 — both up by 1  → homeSigned=+1 (no flip), awayRaw=+1 → awayDiff=+1 → key "1_1"
+        $up   = $this->service->getTablePoints(2, 1, 1, 0, $this->buildLookup());
+        $down = $this->service->getTablePoints(0, 0, 1, 1, $this->buildLookup());
+        $this->assertSame($up, $down); // symmetric miss → same score
+        $this->assertSame(4.5, $up);   // key "1_1" → 9/2
+    }
+
+    public function test_table_points_home_diff_clamped_to_seven(): void
+    {
+        // actual 10:1, pred 0:1 — homeSigned=+10→7, awayRaw=0 → key "7_0" → -4/2=-2.0
+        $this->assertSame(-2.0, $this->service->getTablePoints(10, 1, 0, 1, $this->buildLookup()));
+    }
+
+    public function test_table_points_away_diff_clamped_to_seven(): void
+    {
+        // actual 2:12, pred 2:0 — homeSigned=0 (no flip), awayRaw=12→7 → key "0_7" → -4/2=-2.0
+        $this->assertSame(-2.0, $this->service->getTablePoints(2, 12, 2, 0, $this->buildLookup()));
+    }
+
+    private function buildLookup(): \Illuminate\Support\Collection
+    {
+        $awayDiffs = [7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5, -6, -7];
+        $tableData = [
+            0 => [ -4,  -2,   0,   2,   4,   6,   8,  10,   8,   6,   4,   2,   0,  -2,  -4],
+            1 => [ -3,  -1,   1,   3,   5,   7,   9,   8,   6,   4,   2,   0,  -2,  -4,  -6],
+            2 => [ -2,   0,   2,   4,   6,   8,   7,   6,   4,   2,   0,  -2,  -4,  -6,  -8],
+            3 => [ -1,   1,   3,   5,   7,   6,   5,   4,   2,   0,  -2,  -4,  -6,  -8, -10],
+            4 => [  0,   2,   4,   6,   5,   4,   3,   2,   0,  -2,  -4,  -6,  -8, -10, -12],
+            5 => [  1,   3,   5,   4,   3,   2,   1,   0,  -2,  -4,  -6,  -8, -10, -12, -14],
+            6 => [  2,   4,   3,   2,   1,   0,  -1,  -2,  -4,  -6,  -8, -10, -12, -14, -16],
+            7 => [  3,   2,   1,   0,  -1,  -2,  -3,  -4,  -6,  -8, -10, -12, -14, -16, -18],
+        ];
+
+        $rows = [];
+        foreach ($tableData as $homeDiff => $points) {
+            foreach ($awayDiffs as $i => $awayDiff) {
+                $key        = "{$homeDiff}_{$awayDiff}";
+                $rows[$key] = (object) [
+                    'home_score_difference' => $homeDiff,
+                    'away_score_difference' => $awayDiff,
+                    'points'                => $points[$i],
+                ];
+            }
+        }
+
+        return collect($rows);
+    }
+
     // ── getWinnerPoints ──────────────────────────────────────────────────────
 
     public function test_winner_points_home_win_correctly_predicted(): void
@@ -72,24 +160,23 @@ class ScoringServiceTest extends TestCase
 
     public function test_bingo_exact_score(): void
     {
-        $this->assertSame(50, $this->service->getBingoPoints(2, 1, 2, 1));
+        $this->assertSame(2.5, $this->service->getBingoPoints(2, 1, 2, 1));
     }
 
-    public function test_bingo_same_goal_difference_delta(): void
+    public function test_bingo_same_goal_difference_delta_no_longer_scores(): void
     {
-        // home-prediction delta = 2-3 = -1, away-prediction delta = 0-1 = -1 → 20 pts
-        $this->assertSame(20, $this->service->getBingoPoints(2, 0, 3, 1));
+        // same margin but different scores → no bingo bonus
+        $this->assertSame(0.0, $this->service->getBingoPoints(2, 0, 3, 1));
     }
 
     public function test_bingo_no_match(): void
     {
-        $this->assertSame(0, $this->service->getBingoPoints(2, 1, 0, 2));
+        $this->assertSame(0.0, $this->service->getBingoPoints(2, 1, 0, 2));
     }
 
-    public function test_bingo_exact_takes_priority_over_delta(): void
+    public function test_bingo_zero_zero_exact(): void
     {
-        // 0-0 vs 0-0 is exact match (50), not just delta match
-        $this->assertSame(50, $this->service->getBingoPoints(0, 0, 0, 0));
+        $this->assertSame(2.5, $this->service->getBingoPoints(0, 0, 0, 0));
     }
 
     // ── getOddsPoints ────────────────────────────────────────────────────────
