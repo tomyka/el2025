@@ -34,7 +34,7 @@ class UserController extends Controller
 
     public function updateUser(Request $request): \Illuminate\Http\RedirectResponse
     {
-        $request->validate(['admin' => 'required|integer|in:0,1,9']);
+        $request->validate(['admin' => 'required|integer|in:0,1,5,9']);
 
         $userSetting        = UserSetting::where('user_id', $request->input('userID'))->firstOrFail();
         $userSetting->admin = (int) $request->input('admin');
