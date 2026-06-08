@@ -1560,8 +1560,6 @@ a:hover { color: var(--sb-accent-h); }
   display: inline-flex; align-items: center; justify-content: center;
   font-size: .85rem; transition: background .15s, border-color .15s, color .15s;
 }
-.au-action-save  { color: var(--sb-accent); }
-.au-action-save:hover  { background: var(--sb-accent); border-color: var(--sb-accent); color: #fff; }
 .au-action-delete { color: #dc2626; }
 .au-action-delete:hover { background: #dc2626; border-color: #dc2626; color: #fff; }
 

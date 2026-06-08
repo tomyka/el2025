@@ -66,16 +66,12 @@
                             <input type="hidden" name="username" value="{{ $user->username }}">
                             <select name="admin"
                                     class="form-select form-select-sm au-admin-select {{ $adminLevel >= 1 ? 'au-admin-elevated' : '' }}"
-                                    {{ session('admin') < 8 ? 'disabled' : '' }}>
+                                    {{ session('admin') < 8 ? 'disabled' : '' }}
+                                    onchange="this.form.submit()">
                                 <option value="0" {{ $adminLevel == 0 ? 'selected' : '' }}>User</option>
                                 <option value="1" {{ $adminLevel == 1 ? 'selected' : '' }}>Admin</option>
                                 <option value="9" {{ $adminLevel == 9 ? 'selected' : '' }}>Super</option>
                             </select>
-                            @if(session('admin') >= 8)
-                            <button type="submit" class="au-action-btn au-action-save" title="Išsaugoti">
-                                <i class="bi bi-check-lg"></i>
-                            </button>
-                            @endif
                         </form>
                     </td>
 
