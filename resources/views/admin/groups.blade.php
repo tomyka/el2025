@@ -57,14 +57,12 @@
                                 title="Išsaugoti">
                             <i class="bi bi-check-lg"></i>
                         </button>
-                        @if(session('admin') >= 9)
                         <button type="submit" name="delete" value="1"
                                 class="btn btn-sm btn-outline-secondary ag-action-btn ag-action-delete ms-1"
                                 title="Ištrinti"
                                 onclick="return confirm('Ištrinti grupę „{{ addslashes($group->group) }}"?')">
                             <i class="bi bi-trash3"></i>
                         </button>
-                        @endif
                     </td>
                     </form>
                 </tr>

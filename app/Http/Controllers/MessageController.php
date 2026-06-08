@@ -42,9 +42,6 @@ class MessageController extends Controller
         }
 
         if ($request->has('delete')) {
-            if (session('admin') < 9) {
-                return redirect()->route('admin.messages')->with('error', 'Insufficient permissions to delete.');
-            }
             message::destroy($request->input('messageID'));
             return redirect()->route('admin.messages')->with('info','message '. $request->input('messageID') .' deleted');
         }

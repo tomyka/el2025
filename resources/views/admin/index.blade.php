@@ -22,7 +22,7 @@
     @endphp
 
     @foreach($sections as $s)
-    @if(!$s['super'] || session('admin') >= 5)
+    @if(!$s['super'] || session('admin') >= 9)
     <div class="col-xl-2 col-lg-3 col-md-4 col-6">
         <a href="{{ route($s['route']) }}" class="admin-tile">
             <i class="bi {{ $s['icon'] }} admin-tile-icon"></i>
