@@ -21,3 +21,6 @@ yarn-error.log
 /.zed
 /docker/mysql/
 /docker-compose - Copy.yml
+.DS_Store
+/.superpowers/
+/.claude/
