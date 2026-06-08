@@ -1,130 +1,159 @@
 @extends('admin.layouts.master')
 @section('content')
+
 <div class="sb-card">
-    @if (Session::has('info'))
-        <div class="row">
-            <div class="col-md-12">
-                <p class="alert alert-primary">{{Session::get('info')}}</p>
-            </div>
-        </div>
+    <div class="sb-card-title">
+        <i class="bi bi-calendar-event-fill sb-card-icon"></i> Žaidimai
+        <span class="badge bg-secondary fw-normal ms-1">{{ $games->count() }}</span>
+    </div>
+
+    @if(Session::has('info'))
+    <div class="alert alert-success py-2 mb-3">{{ Session::get('info') }}</div>
     @endif
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">&nbsp;</div>
-        </div>
-        <form role="form" method="post" action="{{route('admin.insertGame')}}">
-            {{csrf_field()}}
-            <div class="row">
-                <div class="col-md-1 d-none d-lg-block text-center"><input type="text" class="form-control form-control-sm" size=16 name="gameDate" value="{{substr($gameMaxDateTime,0,10)}}"></div>
-                <div class="col-md-1 d-none d-lg-block text-center">
-                    <select name="gameHour" class="form-select form-select-sm">
-                        <option value="18" {{ substr($gameMaxDateTime, 11, 2) == '18' ? 'selected' : '' }}>18</option>
-                        <option value="19" {{ substr($gameMaxDateTime, 11, 2) == '19' ? 'selected' : '' }}>19</option>
-                        <option value="20" {{ substr($gameMaxDateTime, 11, 2) == '20' ? 'selected' : '' }}>20</option>
-                        <option value="21" {{ substr($gameMaxDateTime, 11, 2) == '21' ? 'selected' : '' }}>21</option>
-                        <option value="22" {{ substr($gameMaxDateTime, 11, 2) == '22' ? 'selected' : '' }}>22</option>
-                    </select>
-                </div>
-                <div class="col-md-1 d-none d-lg-block text-center">
-                    <select name="gameMinute" class="form-select form-select-sm">
-                        <option value="00" {{ substr($gameMaxDateTime, 14, 2) == '00' ? 'selected' : '' }}>00</option>
-                        <option value="05" {{ substr($gameMaxDateTime, 14, 2) == '05' ? 'selected' : '' }}>05</option>
-                        <option value="15" {{ substr($gameMaxDateTime, 14, 2) == '15' ? 'selected' : '' }}>15</option>
-                        <option value="30" {{ substr($gameMaxDateTime, 14, 2) == '30' ? 'selected' : '' }}>30</option>
-                        <option value="45" {{ substr($gameMaxDateTime, 14, 2) == '45' ? 'selected' : '' }}>45</option>
-                    </select>
-                </div>
-                <div class="col-md-2 d-none d-lg-block text-right">
-                    <select name="homeTeamID" class="form-select form-select-sm">
-                        <option value="">Select Home Team</option>
-                        @foreach($teams as $teamID => $teamName)
-                            <option value="{{ $teamID }}">{{ $teamName }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                  <div class="col-md-2 d-none d-lg-block text-left">
-                      <select name="awayTeamID" class="form-select form-select-sm">
-                          <option value="">Select Away Team</option>
-                          @foreach($teams as $teamID => $teamName)
-                              <option value="{{ $teamID }}">{{ $teamName }}</option>
-                          @endforeach
-                      </select>
-                  </div>
-                <div class="col-md-2 d-none d-lg-block text-center">
-                    <select name="eventID" class="form-select form-select-sm">
-                        <option value="">Select an Event</option>
-                        @foreach($events as $eventID => $eventName)
-                            <option value="{{ $eventID }}" {{ $eventID == $lastEnteredEventID ? 'selected' : '' }}>
-                                {{ $eventName }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-2 d-none d-lg-block text-center"><input name="insert" class="btn btn-sm btn-outline-primary" type="Submit" value="Insert"></div>
-            </div>
-        </form>
-
-
-                <div class="row">
-                    <div class="col-md-1 d-none d-lg-block text-center">Nr.</div>
-                    <div class="col-lg-2 col-md-3 d-none d-md-block text-center">GameDate</div>
-                    <div class="col-md-2 col-4 text-center">HomeTeam</div>
-                    <div class="col-md-2 col-4 text-center">AwayTeam</div>
-<!--                    <div class="col-md-1 col-4 text-center">Winner</div>-->
-                    <div class="col-lg-2 col-md-3 d-none d-md-block text-center">Event</div>
-                </div>
-
-        @foreach($games as $game)
-            <form role="form" method="post">
-                {{csrf_field()}}
-                <div class="row">
-                    <input type="hidden" name="gameID" value = "{{$game->id}}">
-                    <div class="col-md-1 d-none d-lg-block text-center">{{$game->id}}</div>
-                    <div class="col-lg-2 col-md-3 d-none d-md-block text-center">
-                        <input type="text" class="form-control form-control-sm" size=14 name="gameDate" id="gameDate{{$game->id}}" value="{{$game->game_date}}">
-                    </div>
-                    <div class="col-md-2 col-4 text-right">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 ag-table">
+            <thead class="table-light">
+                <tr>
+                    <th class="ag-col-id text-muted">#</th>
+                    <th class="ag-col-date">Data</th>
+                    <th class="ag-col-time text-center">Val.</th>
+                    <th class="ag-col-time text-center">Min.</th>
+                    <th class="ag-col-team">Šeimininkai</th>
+                    <th class="ag-col-team">Svečiai</th>
+                    <th class="ag-col-team">Etapas</th>
+                    <th class="ag-col-actions"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($games as $game)
+                <tr>
+                    <form method="post">
+                    @csrf
+                    <input type="hidden" name="gameID" value="{{ $game->id }}">
+                    <td class="ag-id">{{ $game->id }}</td>
+                    <td>
+                        <input type="text" class="form-control form-control-sm"
+                               name="gameDate" value="{{ substr($game->game_date, 0, 10) }}">
+                    </td>
+                    <td class="text-center">
+                        <select name="gameHour" class="form-select form-select-sm">
+                            @foreach(['18','19','20','21','22'] as $h)
+                            <option value="{{ $h }}" {{ substr($game->game_date, 11, 2) == $h ? 'selected' : '' }}>{{ $h }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td class="text-center">
+                        <select name="gameMinute" class="form-select form-select-sm">
+                            @foreach(['00','05','15','30','45'] as $m)
+                            <option value="{{ $m }}" {{ substr($game->game_date, 14, 2) == $m ? 'selected' : '' }}>{{ $m }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
                         <select name="homeTeamID" class="form-select form-select-sm">
-                            <option value="">Select Home Team</option>
+                            <option value="">—</option>
                             @foreach($teams as $teamID => $teamName)
-                                <option value="{{ $teamID }}" {{ $teamID == $game->home_team_id ? 'selected' : '' }}>
-                                    {{ $teamName }}
-                                </option>
+                            <option value="{{ $teamID }}" {{ $teamID == $game->home_team_id ? 'selected' : '' }}>{{ $teamName }}</option>
                             @endforeach
                         </select>
-                    </div>
-                    <div class="col-md-2 col-4 text-center">
+                    </td>
+                    <td>
                         <select name="awayTeamID" class="form-select form-select-sm">
-                            <option value="">Select Away Team</option>
+                            <option value="">—</option>
                             @foreach($teams as $teamID => $teamName)
-                                <option value="{{ $teamID }}" {{ $teamID == $game->away_team_id ? 'selected' : '' }}>
-                                    {{ $teamName }}
-                                </option>
+                            <option value="{{ $teamID }}" {{ $teamID == $game->away_team_id ? 'selected' : '' }}>{{ $teamName }}</option>
                             @endforeach
                         </select>
-                    </div>
-                    <div class="col-lg-2 col-md-3 d-none d-md-block text-center">
+                    </td>
+                    <td>
                         <select name="eventID" class="form-select form-select-sm">
-                            <option value="">Select an Event</option>
+                            <option value="">—</option>
                             @foreach($events as $eventID => $eventName)
-                                <option value="{{ $eventID }}" {{ $eventID == $game->event_id ? 'selected' : '' }}>
-                                    {{ $eventName }}
-                                </option>
+                            <option value="{{ $eventID }}" {{ $eventID == $game->event_id ? 'selected' : '' }}>{{ $eventName }}</option>
                             @endforeach
                         </select>
-                    </div>
-                    <div class="col-2 col-md-2 col-lg-2 d-flex align-items-center justify-content-center">
-                        <input type="Submit" class="btn btn-sm btn-outline-primary" name="update" value="Update" formaction="{{route('admin.updateGame')}}">
-                            @if (session('admin')==9)
-                                <input type="Submit" class="btn btn-sm btn-outline-danger" name="delete" value="Delete" formaction="{{route('admin.deleteGame')}}">
-                            @endif
-                    </div>
-                </div>
-            </form>
-        @endforeach
+                    </td>
+                    <td class="text-end" style="white-space:nowrap;">
+                        <button type="submit" name="update" value="1"
+                                class="btn btn-sm btn-outline-secondary ag-action-btn"
+                                formaction="{{ route('admin.updateGame') }}"
+                                title="Išsaugoti">
+                            <i class="bi bi-check-lg"></i>
+                        </button>
+                        @if(session('admin') == 9)
+                        <button type="submit" name="delete" value="1"
+                                class="btn btn-sm btn-outline-secondary ag-action-btn ag-action-delete ms-1"
+                                formaction="{{ route('admin.deleteGame') }}"
+                                title="Ištrinti"
+                                onclick="return confirm('Ištrinti žaidimą #{{ $game->id }}?')">
+                            <i class="bi bi-trash3"></i>
+                        </button>
+                        @endif
+                    </td>
+                    </form>
+                </tr>
+                @endforeach
 
+                {{-- Insert row --}}
+                <tr class="ag-insert-row">
+                    <form method="post" action="{{ route('admin.insertGame') }}">
+                    @csrf
+                    <td class="ag-id"><i class="bi bi-plus-lg text-muted"></i></td>
+                    <td>
+                        <input type="text" class="form-control form-control-sm"
+                               name="gameDate" value="{{ substr($gameMaxDateTime, 0, 10) }}">
+                    </td>
+                    <td class="text-center">
+                        <select name="gameHour" class="form-select form-select-sm">
+                            @foreach(['18','19','20','21','22'] as $h)
+                            <option value="{{ $h }}" {{ substr($gameMaxDateTime, 11, 2) == $h ? 'selected' : '' }}>{{ $h }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td class="text-center">
+                        <select name="gameMinute" class="form-select form-select-sm">
+                            @foreach(['00','05','15','30','45'] as $m)
+                            <option value="{{ $m }}" {{ substr($gameMaxDateTime, 14, 2) == $m ? 'selected' : '' }}>{{ $m }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <select name="homeTeamID" class="form-select form-select-sm">
+                            <option value="">— Šeimininkai —</option>
+                            @foreach($teams as $teamID => $teamName)
+                            <option value="{{ $teamID }}">{{ $teamName }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <select name="awayTeamID" class="form-select form-select-sm">
+                            <option value="">— Svečiai —</option>
+                            @foreach($teams as $teamID => $teamName)
+                            <option value="{{ $teamID }}">{{ $teamName }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <select name="eventID" class="form-select form-select-sm">
+                            <option value="">— Etapas —</option>
+                            @foreach($events as $eventID => $eventName)
+                            <option value="{{ $eventID }}" {{ $eventID == $lastEnteredEventID ? 'selected' : '' }}>{{ $eventName }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td class="text-end">
+                        <button type="submit" name="insert" value="1"
+                                class="btn btn-sm btn-primary ag-action-btn"
+                                title="Pridėti žaidimą">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                    </td>
+                    </form>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
-@endsection
 
+@endsection
