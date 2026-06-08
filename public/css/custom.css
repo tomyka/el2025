@@ -1638,6 +1638,10 @@ a:hover { color: var(--sb-accent-h); }
 
 .ag-insert-row td { border-top: 2px solid var(--sb-border); background: #f9fafb; }
 
+.ag-col-date        { width: 110px; }
+.ag-col-time        { width: 64px; }
+.ag-col-team        { min-width: 130px; }
+
 /* ============================================================
    Admin events table (.ae-*)
    ============================================================ */
