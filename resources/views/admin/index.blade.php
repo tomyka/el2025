@@ -12,7 +12,7 @@
         ['icon' => 'bi-trophy',          'label' => 'Rezultatai (turas)',  'route' => 'admin.results',               'super' => false],
         ['icon' => 'bi-trophy-fill',     'label' => 'Visi rezultatai',     'route' => 'admin.resultsAll',            'super' => false],
         ['icon' => 'bi-calendar3',       'label' => 'Varžybos',            'route' => 'admin.games',                 'super' => false],
-        ['icon' => 'bi-bar-chart-fill',  'label' => 'Eigos taškai',        'route' => 'admin.updateStandingPoints',  'super' => false],
+        ['icon' => 'bi-bar-chart-fill',  'label' => 'Eigos taškai',        'route' => 'admin.updateStandingPoints',  'super' => true],
         ['icon' => 'bi-people-fill',     'label' => 'Vartotojai',          'route' => 'admin.users',                 'super' => true],
         ['icon' => 'bi-flag-fill',       'label' => 'Komandos',            'route' => 'admin.teams',                 'super' => true],
         ['icon' => 'bi-calendar-event',  'label' => 'Turai',               'route' => 'admin.events',                'super' => true],

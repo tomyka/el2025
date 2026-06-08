@@ -93,7 +93,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::get('resultsAll', [ResultController::class,'getResultsAll'])->name('admin.resultsAll');
     Route::post('updateResult', [ResultController::class,'updateResult'])->name('admin.updateResult');
 
-    Route::get('updateStandingPoints', [PointStandingController::class,'updateStandingPoints'])->name('admin.updateStandingPoints');
 });
 
 // SuperAdmin (level 9): everything else
@@ -121,6 +120,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'superadmin']], func
     Route::get('messages', [MessageController::class,'getMessageAll'])->name('admin.messages');
     Route::post('messages', [MessageController::class,'updateMessage'])->name('admin.messages');
     Route::post('messageInsert', [MessageController::class,'insertMessage'])->name('admin.messageInsert');
+
+    Route::get('updateStandingPoints', [PointStandingController::class,'updateStandingPoints'])->name('admin.updateStandingPoints');
 
     // @deprecated — settings removed from admin panel; routes kept to avoid 404 on stale bookmarks
     Route::get('settings', [SettingController::class,'getSettingAll'])->name('admin.settings');
