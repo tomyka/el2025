@@ -46,6 +46,10 @@ class UserController extends Controller
 
     public function deleteUser(Request $request): \Illuminate\Http\RedirectResponse
     {
+        if (session('admin') < 9) {
+            return redirect()->route('admin.users')->with('error', 'Insufficient permissions to delete users.');
+        }
+
         $userID = (int) $request->input('userID');
 
         if ($userID === (int) session('userID')) {

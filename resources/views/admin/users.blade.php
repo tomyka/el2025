@@ -70,13 +70,14 @@
                                     onchange="this.form.submit()">
                                 <option value="0" {{ $adminLevel == 0 ? 'selected' : '' }}>User</option>
                                 <option value="1" {{ $adminLevel == 1 ? 'selected' : '' }}>Admin</option>
+                                <option value="5" {{ $adminLevel == 5 ? 'selected' : '' }}>Editor</option>
                                 <option value="9" {{ $adminLevel == 9 ? 'selected' : '' }}>Super</option>
                             </select>
                         </form>
                     </td>
 
                     <td class="text-center">
-                        @if(session('admin') == 9)
+                        @if(session('admin') >= 9)
                         <form method="post" action="{{ route('admin.deleteUser') }}"
                               onsubmit="return confirm('Ištrinti vartotoją {{ addslashes($user->username) }}?')">
                             @csrf
