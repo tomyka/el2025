@@ -1,75 +1,116 @@
 @extends('admin.layouts.master')
 @section('content')
+
 <div class="sb-card">
-    @if (Session::has('info'))
-        <div class="row">
-            <div class="col-md-12">
-                <p class="alert alert-primary">{{Session::get('info')}}</p>
-            </div>
-        </div>
-     @endif
+    <div class="sb-card-title">
+        <i class="bi bi-calendar-event-fill sb-card-icon"></i> Turai
+        <span class="badge bg-secondary fw-normal ms-1">{{ $events->count() }}</span>
+    </div>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="table-header col-md-1 text-center">Nr.</div>
-                <div class="table-header col-md-2 text-center">Event</div>
-                <div class="table-header col-md-1 text-center">EventDay</div>
-                <div class="table-header col-md-1 text-center">EventSurvival</div>
-                <div class="table-header col-md-1 text-center">Active</div>
-                <div class="table-header col-md-1 text-center">Rate</div>
-            </div>
+    @if(Session::has('info'))
+    <div class="alert alert-success py-2 mb-3">{{ Session::get('info') }}</div>
+    @endif
 
-            @foreach($events as $event )
-                <form role="form" method="post" action="{{route('admin.events')}}">
-                    {{csrf_field()}}
-                    <div class="row">
-                        <input type="hidden" name="eventID" value = "{{$event->id}}">
-                        <div class="col-md-1 table-cell text-center">{{$event->id}}</div>
-                        <div class="col-md-2 table-cell justify-content-center"><input type="text" class="form-control form-control-sm" name="event" value="{{$event->event}}"></div>
-                        <div class="col-md-1 table-cell d-flex justify-content-center"><input type="text" class="form-control form-control-sm input-size-2" name="eventDay" value="{{$event->event_day}}"></div>
-                        <div class="col-md-1 table-cell text-center">
-                            <div class="form-check form-switch d-flex align-items-center justify-content-center">
-                                <input type="checkbox" class="form-check-input" name="eventSurvival" {{(($event->event_survival==1)?"checked":"")}}>
-                            </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 ae-table">
+            <thead class="table-light">
+                <tr>
+                    <th class="ae-col-id text-muted">#</th>
+                    <th class="ae-col-name">Turas</th>
+                    <th class="ae-col-short text-center" title="Turo diena">Diena</th>
+                    <th class="ae-col-switch text-center" title="Išlikimo turas">Išlik.</th>
+                    <th class="ae-col-switch text-center">Aktyvus</th>
+                    <th class="ae-col-short text-center" title="Koeficientas">Rate</th>
+                    <th class="ae-col-actions"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($events as $event)
+                <tr>
+                    <form method="post" action="{{ route('admin.events') }}">
+                    @csrf
+                    <input type="hidden" name="eventID" value="{{ $event->id }}">
+                    <td class="text-muted ae-id">{{ $event->id }}</td>
+                    <td>
+                        <input type="text" class="form-control form-control-sm"
+                               name="event" value="{{ $event->event }}">
+                    </td>
+                    <td class="text-center">
+                        <input type="number" class="form-control form-control-sm text-center ae-tiny-input"
+                               name="eventDay" value="{{ $event->event_day }}" min="1">
+                    </td>
+                    <td class="text-center">
+                        <div class="form-check form-switch d-flex justify-content-center mb-0">
+                            <input type="checkbox" class="form-check-input" role="switch"
+                                   name="eventSurvival" {{ $event->event_survival ? 'checked' : '' }}>
                         </div>
-                        <div class="col-md-1 table-cell text-center">
-                            <div class="form-check form-switch d-flex align-items-center justify-content-center">
-                                <input type="checkbox" class="form-check-input" name="active" {{(($event->active==1)?"checked":"")}}>
-                            </div>
+                    </td>
+                    <td class="text-center">
+                        <div class="form-check form-switch d-flex justify-content-center mb-0">
+                            <input type="checkbox" class="form-check-input" role="switch"
+                                   name="active" {{ $event->active ? 'checked' : '' }}>
                         </div>
-                        <div class="col-md-1 table-cell d-flex justify-content-center text-center"><input type="textbox" class="form-control form-control-sm input-size-2" name="rate" value="{{$event->rate}}"></div>
-                        <div class="col-md-2 text-center">
-                            <input type="Submit" class="btn btn-sm btn-outline-primary" name="update" value="Update">
-                            @if (session('admin')==9)
-                                <input type="Submit" class="btn btn-sm btn-outline-dark" name="delete" value="Delete">
-                            @endif
-                        </div>
-                    </div>
-                </form>
-            @endforeach
+                    </td>
+                    <td class="text-center">
+                        <input type="number" class="form-control form-control-sm text-center ae-tiny-input"
+                               name="rate" value="{{ $event->rate }}" min="0" step="0.01">
+                    </td>
+                    <td class="text-end" style="white-space:nowrap;">
+                        <button type="submit" name="update" value="1"
+                                class="btn btn-sm btn-outline-secondary ae-action-btn"
+                                title="Išsaugoti">
+                            <i class="bi bi-check-lg"></i>
+                        </button>
+                        <button type="submit" name="delete" value="1"
+                                class="btn btn-sm btn-outline-secondary ae-action-btn ae-action-delete ms-1"
+                                title="Ištrinti"
+                                onclick="return confirm('Ištrinti turą „{{ addslashes($event->event) }}"?')">
+                            <i class="bi bi-trash3"></i>
+                        </button>
+                    </td>
+                    </form>
+                </tr>
+                @endforeach
 
-
-            <form role="form" method="post" action="{{route('admin.eventInsert')}}">
-                {{csrf_field()}}
-                <div class="row">
-                    <div class="col-md-1 table-cell text-center"></div>
-                    <div class="col-md-2 table-cell text-center"><input type="text" class="form-control form-control-sm" name="event" value=""></div>
-                    <div class="col-md-1 table-cell d-flex justify-content-center"><input type="text" class="form-control form-control-sm input-size-2" name="eventDay" value=""></div>
-                    <div class="col-md-1 table-cell">
-                        <div class="form-check form-switch d-flex align-items-center justify-content-center">
-                            <input type="checkbox" class="form-check-input" name="eventSurvival">
+                {{-- Insert row --}}
+                <tr class="ae-insert-row">
+                    <form method="post" action="{{ route('admin.eventInsert') }}">
+                    @csrf
+                    <td class="text-muted ae-id"><i class="bi bi-plus-lg"></i></td>
+                    <td>
+                        <input type="text" class="form-control form-control-sm"
+                               name="event" placeholder="Turo pavadinimas…">
+                    </td>
+                    <td class="text-center">
+                        <input type="number" class="form-control form-control-sm text-center ae-tiny-input"
+                               name="eventDay" placeholder="1" min="1">
+                    </td>
+                    <td class="text-center">
+                        <div class="form-check form-switch d-flex justify-content-center mb-0">
+                            <input type="checkbox" class="form-check-input" role="switch" name="eventSurvival">
                         </div>
-
-                    </div>
-                    <div class="col-md-1 table-cell">
-                        <div class="form-check form-switch d-flex align-items-center justify-content-center">
-                            <input type="checkbox" class="form-check-input" name="active">
+                    </td>
+                    <td class="text-center">
+                        <div class="form-check form-switch d-flex justify-content-center mb-0">
+                            <input type="checkbox" class="form-check-input" role="switch" name="active">
                         </div>
-                    </div>
-                    <div class="col-md-1 table-cell d-flex justify-content-center text-center"><input type="textbox" class="form-control form-control-sm input-size-2" name="rate" value=""></div>
-                    <div class="col-md-2 col-xs-1 text-center"><input name="insert" class="btn btn-sm btn-outline-primary" type="Submit" value="Insert"></div>
-                </div>
-            </form>
-        </div>
+                    </td>
+                    <td class="text-center">
+                        <input type="number" class="form-control form-control-sm text-center ae-tiny-input"
+                               name="rate" placeholder="1" min="0" step="0.01">
+                    </td>
+                    <td class="text-end">
+                        <button type="submit" name="insert" value="1"
+                                class="btn btn-sm btn-primary ae-action-btn"
+                                title="Pridėti turą">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                    </td>
+                    </form>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+
 @endsection

@@ -1639,6 +1639,29 @@ a:hover { color: var(--sb-accent-h); }
 .ag-insert-row td { border-top: 2px solid var(--sb-border); background: #f9fafb; }
 
 /* ============================================================
+   Admin events table (.ae-*)
+   ============================================================ */
+.ae-table        { font-size: .875rem; }
+.ae-col-id       { width: 36px; }
+.ae-col-name     { min-width: 160px; }
+.ae-col-short    { width: 64px; }
+.ae-col-switch   { width: 72px; }
+.ae-col-actions  { width: 80px; }
+
+.ae-id           { font-size: .75rem; color: var(--sb-muted); }
+.ae-tiny-input   { width: 52px; display: inline-block; padding: 2px 4px; }
+
+.ae-action-btn {
+  width: 30px; height: 30px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: .85rem; transition: background .15s, border-color .15s, color .15s;
+}
+.ae-action-delete       { color: #dc2626; }
+.ae-action-delete:hover { background: #dc2626; border-color: #dc2626; color: #fff; }
+
+.ae-insert-row td { border-top: 2px solid var(--sb-border); background: #f9fafb; }
+
+/* ============================================================
    Admin messages table (.am-*)
    ============================================================ */
 .am-table       { font-size: .875rem; }
