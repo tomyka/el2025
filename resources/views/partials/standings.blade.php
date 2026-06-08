@@ -1,32 +1,20 @@
 <div class="sb-card">
     <div class="sb-card-title"><i class="bi bi-graph-up-arrow sb-card-icon"></i> Finalų dalyvių prognozės</div>
-    <div class="standings-grid">
+    <div class="stnl-list">
         @foreach($standings as $standing)
-        <div class="standing-card">
-            <div class="standing-card-header">
+        <div class="stnl-row">
+            <span class="stnl-team">
                 <img class="standing-flag"
                      src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($standing->team)) . '.svg') }}"
                      alt="{{ $standing->team }}">
-                <span class="standing-team">{{ $standing->team }}</span>
-            </div>
-            <div class="standing-positions">
-                <div class="standing-pos">
-                    <span class="standing-pos-badge pos-1">1</span>
-                    <span class="standing-pos-count {{ $standing->firstPlacePrediction == 0 ? 'text-muted' : '' }}">{{ $standing->firstPlacePrediction }}</span>
-                </div>
-                <div class="standing-pos">
-                    <span class="standing-pos-badge pos-2">2</span>
-                    <span class="standing-pos-count {{ $standing->secondPlacePrediction == 0 ? 'text-muted' : '' }}">{{ $standing->secondPlacePrediction }}</span>
-                </div>
-                <div class="standing-pos">
-                    <span class="standing-pos-badge pos-3">3</span>
-                    <span class="standing-pos-count {{ $standing->thirdPlacePrediction == 0 ? 'text-muted' : '' }}">{{ $standing->thirdPlacePrediction }}</span>
-                </div>
-                <div class="standing-pos">
-                    <span class="standing-pos-badge pos-4">4</span>
-                    <span class="standing-pos-count {{ $standing->fourthPlacePrediction == 0 ? 'text-muted' : '' }}">{{ $standing->fourthPlacePrediction }}</span>
-                </div>
-            </div>
+                <span class="stnl-name">{{ $standing->team }}</span>
+            </span>
+            <span class="stnl-preds">
+                <span class="standing-pos-badge pos-1 {{ $standing->firstPlacePrediction  == 0 ? 'pos-zero' : '' }}">{{ $standing->firstPlacePrediction }}</span>
+                <span class="standing-pos-badge pos-2 {{ $standing->secondPlacePrediction == 0 ? 'pos-zero' : '' }}">{{ $standing->secondPlacePrediction }}</span>
+                <span class="standing-pos-badge pos-3 {{ $standing->thirdPlacePrediction  == 0 ? 'pos-zero' : '' }}">{{ $standing->thirdPlacePrediction }}</span>
+                <span class="standing-pos-badge pos-4 {{ $standing->fourthPlacePrediction == 0 ? 'pos-zero' : '' }}">{{ $standing->fourthPlacePrediction }}</span>
+            </span>
         </div>
         @endforeach
     </div>
