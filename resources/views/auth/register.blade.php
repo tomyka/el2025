@@ -12,8 +12,8 @@
 
     {{-- Logo --}}
     <a href="{{ route('/') }}" class="sb-auth-logo">
-        <span class="material-icons sb-brand-dot" style="font-size:1.6rem;">sports_soccer</span>
-        Sport<span class="sb-brand-dot">Bet</span>
+        <img src="{{ asset('img/favicon.svg') }}" alt="SportBet" style="height:1.6rem;">
+        SportBet
     </a>
 
     <div class="sb-auth-body">
