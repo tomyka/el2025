@@ -1638,9 +1638,19 @@ a:hover { color: var(--sb-accent-h); }
 
 .ag-insert-row td { border-top: 2px solid var(--sb-border); background: #f9fafb; }
 
-.ag-col-date        { width: 110px; }
-.ag-col-time        { width: 64px; }
-.ag-col-team        { min-width: 130px; }
+/* ============================================================
+   Admin games table (.agm-*)
+   ============================================================ */
+.agm-table { font-size: .875rem; table-layout: fixed; min-width: 760px; }
+.agm-col-id      { width: 36px; }
+.agm-col-date    { width: 122px; }
+.agm-col-time    { width: 76px; }
+.agm-col-team    { width: 145px; }
+.agm-col-event   { width: 130px; }
+.agm-col-actions { width: 44px; }
+
+.agm-id { font-size: .75rem; color: var(--sb-muted); }
+.agm-insert-row td { border-top: 2px solid var(--sb-border); background: #f9fafb; }
 
 /* ============================================================
    Admin events table (.ae-*)

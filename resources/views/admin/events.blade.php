@@ -21,7 +21,9 @@
                     <th class="ae-col-switch text-center" title="Išlikimo turas">Išlik.</th>
                     <th class="ae-col-switch text-center">Aktyvus</th>
                     <th class="ae-col-short text-center" title="Koeficientas">Rate</th>
+                    @if(session('admin') >= 9)
                     <th class="ae-col-actions"></th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -33,43 +35,43 @@
                     <td class="text-muted ae-id">{{ $event->id }}</td>
                     <td>
                         <input type="text" class="form-control form-control-sm"
-                               name="event" value="{{ $event->event }}">
+                               name="event" value="{{ $event->event }}"
+                               onchange="this.form.submit()">
                     </td>
                     <td class="text-center">
                         <input type="number" class="form-control form-control-sm text-center ae-tiny-input"
-                               name="eventDay" value="{{ $event->event_day }}" min="1">
+                               name="eventDay" value="{{ $event->event_day }}" min="1"
+                               onfocus="this.select()" onblur="this.form.submit()">
                     </td>
                     <td class="text-center">
                         <div class="form-check form-switch d-flex justify-content-center mb-0">
                             <input type="checkbox" class="form-check-input" role="switch"
-                                   name="eventSurvival" {{ $event->event_survival ? 'checked' : '' }}>
+                                   name="eventSurvival" {{ $event->event_survival ? 'checked' : '' }}
+                                   onchange="this.form.submit()">
                         </div>
                     </td>
                     <td class="text-center">
                         <div class="form-check form-switch d-flex justify-content-center mb-0">
                             <input type="checkbox" class="form-check-input" role="switch"
-                                   name="active" {{ $event->active ? 'checked' : '' }}>
+                                   name="active" {{ $event->active ? 'checked' : '' }}
+                                   onchange="this.form.submit()">
                         </div>
                     </td>
                     <td class="text-center">
                         <input type="number" class="form-control form-control-sm text-center ae-tiny-input"
-                               name="rate" value="{{ $event->rate }}" min="0" step="0.01">
+                               name="rate" value="{{ $event->rate }}" min="0" step="0.01"
+                               onfocus="this.select()" onblur="this.form.submit()">
                     </td>
-                    <td class="text-end" style="white-space:nowrap;">
-                        <button type="submit" name="update" value="1"
-                                class="btn btn-sm btn-outline-secondary ae-action-btn"
-                                title="Išsaugoti">
-                            <i class="bi bi-check-lg"></i>
-                        </button>
-                        @if(session('admin') >= 9)
+                    @if(session('admin') >= 9)
+                    <td class="text-end">
                         <button type="submit" name="delete" value="1"
-                                class="btn btn-sm btn-outline-secondary ae-action-btn ae-action-delete ms-1"
+                                class="btn btn-sm btn-outline-secondary ae-action-btn ae-action-delete"
                                 title="Ištrinti"
                                 onclick="return confirm('Ištrinti turą „{{ addslashes($event->event) }}"?')">
                             <i class="bi bi-trash3"></i>
                         </button>
-                        @endif
                     </td>
+                    @endif
                     </form>
                 </tr>
                 @endforeach
@@ -85,7 +87,7 @@
                     </td>
                     <td class="text-center">
                         <input type="number" class="form-control form-control-sm text-center ae-tiny-input"
-                               name="eventDay" placeholder="1" min="1">
+                               name="eventDay" placeholder="1" min="1" onfocus="this.select()">
                     </td>
                     <td class="text-center">
                         <div class="form-check form-switch d-flex justify-content-center mb-0">
@@ -99,7 +101,7 @@
                     </td>
                     <td class="text-center">
                         <input type="number" class="form-control form-control-sm text-center ae-tiny-input"
-                               name="rate" placeholder="1" min="0" step="0.01">
+                               name="rate" placeholder="1" min="0" step="0.01" onfocus="this.select()">
                     </td>
                     <td class="text-end">
                         <button type="submit" name="insert" value="1"

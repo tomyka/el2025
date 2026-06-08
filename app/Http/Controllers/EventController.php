@@ -28,17 +28,6 @@ class EventController extends Controller
 
     public function updateEvent(Request $request)
     {
-        if ($request->has('update')) {
-            $event = Event::find($request->input('eventID'));
-            $event->event = $request->input('event');
-            $event->event_day = $request->input('eventDay');
-            $event->event_survival = (($request->input('eventSurvival') == "on") ? 1 : 0);
-            $event->active = (($request->input('active') == "on") ? 1 : 0);
-            $event->rate = $request->input('rate');
-            $event->save();
-            return redirect()->route('admin.events')->with('info','Event '. $request->input('eventID') .' updated');
-        }
-
         if ($request->has('delete')) {
             if (session('admin') < 9) {
                 return redirect()->route('admin.events')->with('error', 'Insufficient permissions to delete.');
@@ -47,5 +36,13 @@ class EventController extends Controller
             return redirect()->route('admin.events')->with('info','Event '. $request->input('eventID') .' deleted');
         }
 
+        $event = Event::find($request->input('eventID'));
+        $event->event = $request->input('event');
+        $event->event_day = $request->input('eventDay');
+        $event->event_survival = (($request->input('eventSurvival') == "on") ? 1 : 0);
+        $event->active = (($request->input('active') == "on") ? 1 : 0);
+        $event->rate = $request->input('rate');
+        $event->save();
+        return redirect()->route('admin.events')->with('info','Event '. $request->input('eventID') .' updated');
     }
 }
