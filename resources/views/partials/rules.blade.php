@@ -113,8 +113,8 @@
                         <tr><th>Etapas</th><th><i class="bi bi-check-lg"></i> atspėta</th><th><i class="bi bi-x-lg"></i> neatspėta</th></tr>
                     </thead>
                     <tbody>
-                        <tr><td>1/16</td><td class="rules-pts-pos">3</td><td class="rules-pts-zero">0</td></tr>
-                        <tr><td>1/8</td><td class="rules-pts-pos">6</td><td class="rules-pts-zero">0</td></tr>
+                        <tr><td>Šešioliktfinalis</td><td class="rules-pts-pos">3</td><td class="rules-pts-zero">0</td></tr>
+                        <tr><td>Aštuntfinalis</td><td class="rules-pts-pos">6</td><td class="rules-pts-zero">0</td></tr>
                         <tr><td>Ketvirtfinalis</td><td class="rules-pts-pos">9</td><td class="rules-pts-zero">0</td></tr>
                     </tbody>
                 </table>
