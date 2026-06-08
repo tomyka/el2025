@@ -847,7 +847,7 @@ a:hover { color: var(--sb-accent-h); }
 }
 .lb-header-rank   { width: 26px; text-align: center; flex-shrink: 0; }
 .lb-header-name   { flex: 1; }
-.lb-header-sub    { width: 38px; text-align: right; flex-shrink: 0; }
+.lb-header-sub    { width: 38px; text-align: center; flex-shrink: 0; }
 .lb-header-sub-bingo { color: var(--sb-gold); }
 .lb-header-trend  { min-width: 40px; text-align: center; flex-shrink: 0; }
 .lb-header-total  { min-width: 44px; text-align: right; flex-shrink: 0; font-weight: 700; }
@@ -857,7 +857,7 @@ a:hover { color: var(--sb-accent-h); }
   font-size: .72rem;
   font-weight: 500;
   color: var(--sb-muted);
-  text-align: right;
+  text-align: center;
   flex-shrink: 0;
   width: 38px;
 }
