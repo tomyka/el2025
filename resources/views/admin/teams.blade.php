@@ -51,6 +51,7 @@
                         @endif
                     </td>
                     <td>
+                        {{-- Text inputs: onchange fires on blur only (correct behaviour) --}}
                         <input type="text" class="form-control form-control-sm"
                                name="team[{{ $team->id }}]" value="{{ $team->team }}"
                                onchange="atAutoSave()">
@@ -66,10 +67,13 @@
                                onchange="atAutoSave()">
                     </td>
                     <td class="text-center">
+                        {{-- Number inputs: onblur (not onchange) to avoid firing on arrow keys / scroll --}}
+                        {{-- onfocus select-all prevents accidental concatenation (e.g. "3"→type "1"→"31") --}}
                         <input type="number" class="form-control form-control-sm text-center at-tiny-input at-pos-input"
                                name="groupPosition[{{ $team->id }}]" value="{{ $team->group_position }}"
                                min="1" max="6" data-group="{{ $team->group_name }}"
-                               onchange="atAutoSave()">
+                               onfocus="this.select()"
+                               onblur="atAutoSave()">
                     </td>
                     <td class="text-center">
                         <input type="checkbox" class="form-check-input at-chk"
@@ -98,7 +102,8 @@
                     <td class="text-center">
                         <input type="number" class="form-control form-control-sm text-center at-tiny-input"
                                name="final[{{ $team->id }}]" value="{{ $team->final }}" min="0"
-                               onchange="atAutoSave()">
+                               onfocus="this.select()"
+                               onblur="atAutoSave()">
                     </td>
                 </tr>
 
@@ -115,14 +120,13 @@ var _atRounds = ['last32', 'last16', 'quarterfinal', 'semifinal'];
 var _atLimits = { last32: 32, last16: 16, quarterfinal: 8, semifinal: 4 };
 
 function atEnforceAllLimits() {
-    // Reset disabled state on all checkboxes
     _atRounds.forEach(function(round) {
         document.querySelectorAll('input.at-chk[data-round="' + round + '"]').forEach(function(cb) {
             cb.disabled = false;
         });
     });
 
-    // Cascade DOWN: if not in a round, disable and uncheck all subsequent rounds for that team
+    // Cascade DOWN: unchecking a round disables and clears all later rounds for that team
     document.querySelectorAll('input.at-chk[data-round="last32"]').forEach(function(cb32) {
         var id  = cb32.dataset.teamId;
         var cb16 = document.querySelector('input.at-chk[data-round="last16"][data-team-id="' + id + '"]');
@@ -149,14 +153,13 @@ function atEnforceAllLimits() {
     });
 }
 
-// Cascade UP: checking a higher round auto-checks all prerequisite lower rounds
+// Cascade UP: checking a round auto-checks all prerequisite lower rounds
 document.addEventListener('change', function(e) {
     var cb = e.target;
     if (!cb.matches('input.at-chk') || !cb.checked) return;
     var idx = _atRounds.indexOf(cb.dataset.round);
     if (idx < 1) return;
     var id = cb.dataset.teamId;
-    // Check every round below the checked one
     for (var i = 0; i < idx; i++) {
         var lower = document.querySelector('input.at-chk[data-round="' + _atRounds[i] + '"][data-team-id="' + id + '"]');
         if (lower && !lower.disabled) lower.checked = true;
@@ -177,9 +180,13 @@ function atValidateGroupPositions() {
         var inputs = byGroup[grp];
         var vals   = inputs.map(function(i) { return i.value; }).filter(function(v) { return v !== ''; });
         inputs.forEach(function(inp) {
+            // Range check: must be 1–6
+            var outOfRange = inp.value !== '' && (parseInt(inp.value, 10) < 1 || parseInt(inp.value, 10) > 6);
+            // Duplicate check: warn only, don't block save
             var isDupe = inp.value !== '' && vals.filter(function(v) { return v === inp.value; }).length > 1;
-            inp.classList.toggle('is-invalid', isDupe);
-            if (isDupe) valid = false;
+            inp.classList.toggle('is-invalid', outOfRange);
+            inp.classList.toggle('at-pos-warn', !outOfRange && isDupe);
+            if (outOfRange) valid = false;
         });
     });
 
