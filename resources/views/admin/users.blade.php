@@ -66,7 +66,7 @@
                             <input type="hidden" name="username" value="{{ $user->username }}">
                             <select name="admin"
                                     class="form-select form-select-sm au-admin-select {{ $adminLevel >= 1 ? 'au-admin-elevated' : '' }}"
-                                    {{ session('admin') < 8 ? 'disabled' : '' }}
+                                    {{ session('admin') < 5 ? 'disabled' : '' }}
                                     onchange="this.form.submit()">
                                 <option value="0" {{ $adminLevel == 0 ? 'selected' : '' }}>User</option>
                                 <option value="1" {{ $adminLevel == 1 ? 'selected' : '' }}>Admin</option>
