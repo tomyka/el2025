@@ -109,9 +109,63 @@
         </div>
     </div>
 
-    {{-- Password change --}}
+    {{-- Password change / set --}}
     <div class="col-lg-6">
         <div class="sb-card h-100">
+
+            @if(is_null($user->password))
+            {{-- Google user: no password yet — set one --}}
+            <div class="sb-card-title"><i class="bi bi-key me-1"></i>Nustatyti slaptažodį</div>
+
+            <p class="text-muted mb-3" style="font-size:.82rem">
+                Jūs prisijungėte per Google. Nustatykite slaptažodį, kad galėtumėte prisijungti ir be Google.
+            </p>
+
+            @if($errors->hasBag('setPassword'))
+            <div class="alert alert-danger alert-dismissible py-2 mb-3" role="alert">
+                <ul class="mb-0 ps-3">
+                    @foreach($errors->getBag('setPassword')->all() as $err)
+                        <li style="font-size:.83rem">{{ $err }}</li>
+                    @endforeach
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            @endif
+
+            <form method="POST" action="{{ route('password.set') }}"
+                  x-data="{ n: false, r: false }">
+                @csrf
+                <div class="form-floating mb-2 position-relative">
+                    <input id="pw_new"
+                           :type="n ? 'text' : 'password'"
+                           class="form-control pe-5"
+                           name="password" placeholder=" "
+                           autocomplete="new-password" required>
+                    <label for="pw_new">Naujas slaptažodis</label>
+                    <button type="button" class="profile-eye" @click="n = !n" tabindex="-1">
+                        <i class="bi" :class="n ? 'bi-eye-slash' : 'bi-eye'"></i>
+                    </button>
+                </div>
+                <div class="form-floating mb-3 position-relative">
+                    <input id="pw_confirm"
+                           :type="r ? 'text' : 'password'"
+                           class="form-control pe-5"
+                           name="password_confirmation" placeholder=" "
+                           autocomplete="new-password" required>
+                    <label for="pw_confirm">Pakartoti slaptažodį</label>
+                    <button type="button" class="profile-eye" @click="r = !r" tabindex="-1">
+                        <i class="bi" :class="r ? 'bi-eye-slash' : 'bi-eye'"></i>
+                    </button>
+                </div>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary btn-sm px-4">
+                        <i class="bi bi-key me-1"></i>Nustatyti slaptažodį
+                    </button>
+                </div>
+            </form>
+
+            @else
+            {{-- Regular user: change existing password --}}
             <div class="sb-card-title"><i class="bi bi-shield-lock me-1"></i>Slaptažodžio keitimas</div>
 
             @if($errors->hasBag('updatePassword'))
@@ -129,7 +183,6 @@
                   x-data="{ c: false, n: false, r: false }">
                 @csrf
                 @method('PUT')
-
                 <div class="form-floating mb-2 position-relative">
                     <input id="pw_current"
                            :type="c ? 'text' : 'password'"
@@ -163,13 +216,14 @@
                         <i class="bi" :class="r ? 'bi-eye-slash' : 'bi-eye'"></i>
                     </button>
                 </div>
-
                 <div class="text-end">
                     <button type="submit" class="btn btn-outline-secondary btn-sm px-4">
                         <i class="bi bi-lock me-1"></i>Keisti slaptažodį
                     </button>
                 </div>
             </form>
+            @endif
+
         </div>
     </div>
 
