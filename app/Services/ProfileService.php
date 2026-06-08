@@ -2,7 +2,15 @@
 
 namespace App\Services;
 
+use App\Models\PointResult;
+use App\Models\PointStanding;
+use App\Models\PointSurvival;
+use App\Models\PredictionResult;
+use App\Models\PredictionStanding;
+use App\Models\PredictionSurvival;
 use App\Models\User;
+use App\Models\UserGroup;
+use App\Models\UserSetting;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -34,16 +42,25 @@ class ProfileService
      *
      * @throws ValidationException
      */
-    public function deleteAccount(User $user, string $password): void
+    public function deleteAccount(User $user, ?string $password): void
     {
-        if (! Hash::check($password, $user->password)) {
+        if ($user->password !== null && ! Hash::check($password, $user->password)) {
             throw ValidationException::withMessages([
                 'password' => 'The password is incorrect.',
             ]);
         }
 
-        // Reload fresh instance to ensure proper deletion
-        $user = User::find($user->id);
-        $user->delete();
+        $id = $user->id;
+
+        UserGroup::where('user_id', $id)->delete();
+        PointResult::where('user_id', $id)->delete();
+        PointStanding::where('user_id', $id)->delete();
+        PointSurvival::where('user_id', $id)->delete();
+        UserSetting::where('user_id', $id)->delete();
+        PredictionSurvival::where('user_id', $id)->delete();
+        PredictionResult::where('user_id', $id)->delete();
+        PredictionStanding::where('user_id', $id)->delete();
+
+        User::where('id', $id)->delete();
     }
 }
