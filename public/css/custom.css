@@ -848,7 +848,7 @@ a:hover { color: var(--sb-accent-h); }
 .lb-header-rank   { width: 26px; text-align: center; flex-shrink: 0; }
 .lb-header-name   { flex: 1; }
 .lb-header-sub    { width: 38px; text-align: center; flex-shrink: 0; }
-.lb-header-sub-bingo { color: var(--sb-gold); }
+.lb-header-sub-bingo { color: var(--sb-muted); }
 .lb-header-total  { min-width: 44px; text-align: right; flex-shrink: 0; font-weight: 700; }
 .lb-header-chevron { width: 12px; flex-shrink: 0; }
 
@@ -860,7 +860,7 @@ a:hover { color: var(--sb-accent-h); }
   flex-shrink: 0;
   width: 38px;
 }
-.lb-sub-bingo { color: var(--sb-gold); font-weight: 700; }
+.lb-sub-bingo { color: var(--sb-text); font-weight: 700; }
 
 .lb-row {
   display: flex;
@@ -890,9 +890,9 @@ a:hover { color: var(--sb-accent-h); }
   flex-shrink: 0;
 }
 
-.lb-rank-1 { color: #d97706; }
-.lb-rank-2 { color: #94a3b8; }
-.lb-rank-3 { color: #c47c2e; }
+.lb-rank-1 { color: var(--sb-text); }
+.lb-rank-2 { color: var(--sb-text); }
+.lb-rank-3 { color: var(--sb-text); }
 .lb-rank-n { color: var(--sb-muted); font-weight: 500; }
 
 .lb-name {
