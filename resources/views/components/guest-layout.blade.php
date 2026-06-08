@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SportBet</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('img/favicon.svg') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/cerulean/bootstrap.min.css">
     <link rel="stylesheet" href="{{ asset('/css/custom.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
@@ -17,7 +17,7 @@
 
             <div class="text-center mb-4">
                 <a href="{{ url('/') }}" class="text-decoration-none d-inline-flex align-items-center gap-2">
-                    <span class="material-icons" style="color:var(--sb-accent); font-size:2rem;">sports_soccer</span>
+                    <span style="font-size:2rem;">⚽</span>
                     <span class="fw-bold fs-4" style="color:#fff; letter-spacing:.5px;">SportBet</span>
                 </a>
             </div>
