@@ -17,7 +17,7 @@
 
             <div class="text-center mb-4">
                 <a href="{{ url('/') }}" class="text-decoration-none d-inline-flex align-items-center gap-2">
-                    <span style="font-size:2rem;">⚽</span>
+                    <img src="{{ asset('img/favicon.svg') }}" alt="SportBet" style="height:2rem;">
                     <span class="fw-bold fs-4" style="color:#fff; letter-spacing:.5px;">SportBet</span>
                 </a>
             </div>
