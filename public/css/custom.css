@@ -1639,12 +1639,12 @@ a:hover { color: var(--sb-accent-h); }
 /* ============================================================
    Admin games table (.agm-*)
    ============================================================ */
-.agm-table { font-size: .875rem; table-layout: fixed; width: 100%; min-width: 780px; }
+.agm-table { font-size: .875rem; table-layout: fixed; width: 100%; min-width: 820px; }
 .agm-col-id      { width: 36px; }
-.agm-col-date    { width: 150px; }
-.agm-col-time    { width: 80px; }
-.agm-col-team    { width: 145px; }
-.agm-col-event   { width: 125px; }
+.agm-col-date    { width: 148px; }
+.agm-col-time    { width: 78px; }
+.agm-col-team    { width: 162px; }
+.agm-col-event   { width: 145px; }
 .agm-col-actions { width: 42px; }
 
 .agm-id { font-size: .75rem; color: var(--sb-muted); }
