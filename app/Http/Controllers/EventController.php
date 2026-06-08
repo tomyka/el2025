@@ -40,7 +40,10 @@ class EventController extends Controller
         }
 
         if ($request->has('delete')) {
-             Event::destroy($request->input('eventID'));
+            if (session('admin') < 9) {
+                return redirect()->route('admin.events')->with('error', 'Insufficient permissions to delete.');
+            }
+            Event::destroy($request->input('eventID'));
             return redirect()->route('admin.events')->with('info','Event '. $request->input('eventID') .' deleted');
         }
 

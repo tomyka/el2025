@@ -55,6 +55,9 @@ class GroupController extends Controller
         }
 
         if ($request->has('delete')) {
+            if (session('admin') < 9) {
+                return redirect()->route('admin.groups')->with('error', 'Insufficient permissions to delete.');
+            }
             Group::destroy($request->input('groupID'));
             return redirect()->route('admin.groups')->with('info','group '. $request->input('groupID') .' deleted');
         }
