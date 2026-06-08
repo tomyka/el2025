@@ -1609,6 +1609,30 @@ a:hover { color: var(--sb-accent-h); }
 .at-chk { width: 1.1rem; height: 1.1rem; cursor: pointer; }
 
 /* ============================================================
+   Admin groups table (.ag-*)
+   ============================================================ */
+.ag-table       { font-size: .875rem; }
+.ag-col-id      { width: 36px; }
+.ag-col-name    { min-width: 100px; }
+.ag-col-fee     { width: 70px; }
+.ag-col-ratio   { width: 70px; }
+.ag-col-desc    { min-width: 140px; }
+.ag-col-actions { width: 80px; }
+
+.ag-id          { font-size: .75rem; color: var(--sb-muted); }
+.ag-tiny-input  { width: 60px; display: inline-block; padding: 2px 4px; }
+
+.ag-action-btn {
+  width: 30px; height: 30px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: .85rem; transition: background .15s, border-color .15s, color .15s;
+}
+.ag-action-delete       { color: #dc2626; }
+.ag-action-delete:hover { background: #dc2626; border-color: #dc2626; color: #fff; }
+
+.ag-insert-row td { border-top: 2px solid var(--sb-border); background: #f9fafb; }
+
+/* ============================================================
    Legacy / Admin utility classes
    ============================================================ */
 p { margin: 0; }
