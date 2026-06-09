@@ -396,6 +396,45 @@ a:hover { color: var(--sb-accent-h); }
 }
 
 /* ============================================================
+   Cookie consent banner
+   ============================================================ */
+.sb-cookie-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  background: #1e293b;
+  color: #f1f5f9;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: .84rem;
+  box-shadow: 0 -2px 12px rgba(0,0,0,.25);
+}
+@media (max-width: 991px) {
+  .sb-cookie-banner { bottom: 56px; }
+}
+.sb-cookie-text a { color: #93c5fd; text-decoration: underline; }
+.sb-cookie-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.sb-cookie-btn {
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: .82rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.sb-cookie-btn-primary { background: var(--sb-accent); color: #fff; }
+.sb-cookie-btn-primary:hover { background: var(--sb-accent-h); }
+.sb-cookie-btn-secondary { background: transparent; color: #94a3b8; border: 1px solid #334155; }
+.sb-cookie-btn-secondary:hover { background: #334155; color: #f1f5f9; }
+
+/* ============================================================
    Bottom tab bar (mobile)
    ============================================================ */
 .sb-bottom-nav {

@@ -17,7 +17,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7290396604686794" crossorigin="anonymous"></script>
 </head>
 <body class="sb-layout">
 <script>
@@ -40,6 +39,7 @@
 </main>
 
 @include('partials.bottom-nav')
+@include('partials.cookie-consent')
 
 </body>
 </html>
