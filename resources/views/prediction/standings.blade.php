@@ -98,16 +98,20 @@
 @endsection
 
 <script>
+    var predictionLocked = {{ session('disabled') === 'disabled' ? 'true' : 'false' }};
+
     function enforceAllLimits() {
-        // Reset all disabled states
-        ['last32', 'last16', 'quarterfinal', 'semifinal'].forEach(function(prefix) {
-            document.querySelectorAll('input[type="checkbox"][id^="' + prefix + '"]').forEach(function(cb) {
-                cb.disabled = false;
+        // Only reset disabled states when prediction is still open
+        if (!predictionLocked) {
+            ['last32', 'last16', 'quarterfinal', 'semifinal'].forEach(function(prefix) {
+                document.querySelectorAll('input[type="checkbox"][id^="' + prefix + '"]').forEach(function(cb) {
+                    cb.disabled = false;
+                });
             });
-        });
-        document.querySelectorAll('input[type="number"][id^="final"]').forEach(function(inp) {
-            inp.disabled = false;
-        });
+            document.querySelectorAll('input[type="number"][id^="final"]').forEach(function(inp) {
+                inp.disabled = false;
+            });
+        }
 
         // Cascade: if team not in lower round, disable all higher rounds for that team
         document.querySelectorAll('input[type="checkbox"][id^="last32"]').forEach(function(cb) {
