@@ -17,61 +17,72 @@
         {{-- Center: ALL nav links together --}}
         <div class="sb-nav-center">
             @auth
-            {{-- Predictions --}}
-            <a class="sb-nav-link {{ request()->routeIs('prediction.results') ? 'active' : '' }}"
-               href="{{ route('prediction.results') }}">
-                <span class="material-icons" style="font-size:1rem;vertical-align:middle;">sports_soccer</span> Spėjimai
-            </a>
-            <a class="sb-nav-link {{ request()->routeIs('prediction.standings') ? 'active' : '' }}"
-               href="{{ route('prediction.standings') }}">
-                <i class="bi bi-table"></i> Eiga
-            </a>
-            @if(session('eventSurvival') == 1 && session('survivalGame') == 1)
-            <a class="sb-nav-link {{ request()->routeIs('prediction.survival') ? 'active' : '' }}"
-               href="{{ route('prediction.survival') }}">
-                <i class="bi bi-bullseye"></i> Išlikimas
-            </a>
-            @endif
+            {{-- Spėjimai group --}}
+            <div class="sb-nav-grp">
+                <span class="sb-nav-grp-label">Spėjimai</span>
+                <a class="sb-nav-link {{ request()->routeIs('prediction.results') ? 'active' : '' }}"
+                   href="{{ route('prediction.results') }}">
+                    <span class="material-icons" style="font-size:1rem;vertical-align:middle;">sports_soccer</span> Spėjimai
+                </a>
+                <a class="sb-nav-link {{ request()->routeIs('prediction.standings') ? 'active' : '' }}"
+                   href="{{ route('prediction.standings') }}">
+                    <i class="bi bi-table"></i> Eiga
+                </a>
+                @if(session('eventSurvival') == 1 && session('survivalGame') == 1)
+                <a class="sb-nav-link {{ request()->routeIs('prediction.survival') ? 'active' : '' }}"
+                   href="{{ route('prediction.survival') }}">
+                    <i class="bi bi-bullseye"></i> Išlikimas
+                </a>
+                @endif
+            </div>
 
-            {{-- Summary (tournament started) --}}
+            {{-- Suvestinė group (tournament started) --}}
             @if(session('disabled') != '')
-            <span class="sb-nav-sep"></span>
-            <a class="sb-nav-link {{ request()->routeIs('summary.history') ? 'active' : '' }}"
-               href="{{ route('summary.history') }}">
-                <i class="bi bi-clock-history"></i> Varžybos
-            </a>
-            <a class="sb-nav-link {{ request()->routeIs('summary.prediction.results') ? 'active' : '' }}"
-               href="{{ route('summary.prediction.results') }}">
-                <i class="bi bi-list-check"></i> Prognozės
-            </a>
-            <a class="sb-nav-link {{ request()->routeIs('summary.prediction.standings') ? 'active' : '' }}"
-               href="{{ route('summary.prediction.standings') }}">
-                <i class="bi bi-table"></i> Eiga
-            </a>
-            @if(session('survivalGame') != 0)
-            <a class="sb-nav-link {{ request()->routeIs('summary.prediction.survivals') ? 'active' : '' }}"
-               href="{{ route('summary.prediction.survivals') }}">
-                <i class="bi bi-shield-check"></i> Išlikimas
-            </a>
-            @endif
-            <a class="sb-nav-link {{ request()->routeIs('summary.chart') ? 'active' : '' }}"
-               href="{{ route('summary.chart') }}">
-                <i class="bi bi-bar-chart-line"></i> Grafikas
-            </a>
+            <span class="sb-nav-grp-sep"></span>
+            <div class="sb-nav-grp">
+                <span class="sb-nav-grp-label">Suvestinė</span>
+                <a class="sb-nav-link {{ request()->routeIs('summary.history') ? 'active' : '' }}"
+                   href="{{ route('summary.history') }}">
+                    <i class="bi bi-clock-history"></i> Varžybos
+                </a>
+                <a class="sb-nav-link {{ request()->routeIs('summary.prediction.results') ? 'active' : '' }}"
+                   href="{{ route('summary.prediction.results') }}">
+                    <i class="bi bi-list-check"></i> Prognozės
+                </a>
+                <a class="sb-nav-link {{ request()->routeIs('summary.prediction.standings') ? 'active' : '' }}"
+                   href="{{ route('summary.prediction.standings') }}">
+                    <i class="bi bi-table"></i> Eiga
+                </a>
+                @if(session('survivalGame') != 0)
+                <a class="sb-nav-link {{ request()->routeIs('summary.prediction.survivals') ? 'active' : '' }}"
+                   href="{{ route('summary.prediction.survivals') }}">
+                    <i class="bi bi-shield-check"></i> Išlikimas
+                </a>
+                @endif
+                <a class="sb-nav-link {{ request()->routeIs('summary.chart') ? 'active' : '' }}"
+                   href="{{ route('summary.chart') }}">
+                    <i class="bi bi-bar-chart-line"></i> Grafikas
+                </a>
+            </div>
             @endif
 
-            {{-- Info --}}
-            <span class="sb-nav-sep"></span>
-            <a class="sb-nav-link {{ request()->routeIs('rules') ? 'active' : '' }}"
-               href="{{ route('rules') }}">
-                <i class="bi bi-journal-text"></i> Taisyklės
-            </a>
+            {{-- Informacija group --}}
+            <span class="sb-nav-grp-sep"></span>
+            <div class="sb-nav-grp">
+                <span class="sb-nav-grp-label">Informacija</span>
+                <a class="sb-nav-link {{ request()->routeIs('rules') ? 'active' : '' }}"
+                   href="{{ route('rules') }}">
+                    <i class="bi bi-journal-text"></i> Taisyklės
+                </a>
+            </div>
             @endauth
         </div>
 
         {{-- Right: profile dropdown (authenticated) or login pill (guest) --}}
         <div class="sb-nav-end">
             @auth
+            <div class="sb-nav-grp">
+                <span class="sb-nav-grp-label">Paskyra</span>
             <div class="dropdown">
                 <a class="sb-nav-link dropdown-toggle {{ request()->routeIs('userProfile', 'admin*') ? 'active' : '' }}"
                    href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -94,6 +105,7 @@
                         <i class="bi bi-box-arrow-right me-1"></i>Atsijungti</a></li>
                 </ul>
             </div>
+            </div>{{-- /sb-nav-grp --}}
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
             @else
             <a class="sb-nav-pill" href="{{ route('login') }}">Prisijungti</a>
