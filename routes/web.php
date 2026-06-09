@@ -48,6 +48,7 @@ Route::get('admin', function () {return redirect()->route('admin.index');})->nam
 
 Route::get('rules', [RulesController::class,'getRulesDetails'])->name('rules');
 Route::get('help', function () {return view('help');})->name('help');
+Route::get('privacy', function () {return view('privacy');})->name('privacy');
 Route::get('charity', function () {return view('charity');})->name('charity');
 Route::get('support', function () {return view('support');})->name('support');
 Route::get('sponsors', function () {return view('sponsors');})->name('sponsors');

@@ -78,6 +78,10 @@
                    href="{{ route('charity') }}">
                     <i class="bi bi-heart"></i> Jaunimo linija
                 </a>
+                <a class="sb-nav-link {{ request()->routeIs('privacy') ? 'active' : '' }}"
+                   href="{{ route('privacy') }}">
+                    <i class="bi bi-shield-lock"></i> Privatumas
+                </a>
             </div>
             @endauth
         </div>
@@ -193,6 +197,9 @@
             </a>
             <a class="sb-nav-link" href="{{ route('charity') }}">
                 <i class="bi bi-heart"></i> Jaunimo linija
+            </a>
+            <a class="sb-nav-link {{ request()->routeIs('privacy') ? 'active' : '' }}" href="{{ route('privacy') }}">
+                <i class="bi bi-shield-lock"></i> Privatumas
             </a>
         </div>
 
