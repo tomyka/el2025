@@ -16,7 +16,9 @@
         @endif
             @if(session('eventID') != 0)
                 @include('partials.games')
-                @include('partials.standings')
+                @if($firstGameStarted ?? false)
+                    @include('partials.standings')
+                @endif
             @else
                 @include('partials.points')
             @endif
