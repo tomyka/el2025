@@ -17,68 +17,55 @@
         {{-- Center: ALL nav links together --}}
         <div class="sb-nav-center">
             @auth
-            {{-- Spėjimai --}}
-            <div class="sb-nav-grp">
-                <span class="sb-nav-grp-label">Spėjimai</span>
-                <div class="sb-nav-grp-links">
-                    <a class="sb-nav-link {{ request()->routeIs('prediction.results') ? 'active' : '' }}"
-                       href="{{ route('prediction.results') }}">
-                        <span class="material-icons" style="font-size:1rem;vertical-align:middle;">sports_soccer</span> Spėjimai
-                    </a>
-                    <a class="sb-nav-link {{ request()->routeIs('prediction.standings') ? 'active' : '' }}"
-                       href="{{ route('prediction.standings') }}">
-                        <i class="bi bi-table"></i> Eiga
-                    </a>
-                    @if(session('eventSurvival') == 1 && session('survivalGame') == 1)
-                    <a class="sb-nav-link {{ request()->routeIs('prediction.survival') ? 'active' : '' }}"
-                       href="{{ route('prediction.survival') }}">
-                        <i class="bi bi-bullseye"></i> Išlikimas
-                    </a>
-                    @endif
-                </div>
-            </div>
-
-            {{-- Suvestinė (tournament started) --}}
-            @if(session('disabled') != '')
-            <div class="sb-nav-grp">
-                <span class="sb-nav-grp-label">Suvestinė</span>
-                <div class="sb-nav-grp-links">
-                    <a class="sb-nav-link {{ request()->routeIs('summary.history') ? 'active' : '' }}"
-                       href="{{ route('summary.history') }}">
-                        <i class="bi bi-clock-history"></i> Varžybos
-                    </a>
-                    <a class="sb-nav-link {{ request()->routeIs('summary.prediction.results') ? 'active' : '' }}"
-                       href="{{ route('summary.prediction.results') }}">
-                        <i class="bi bi-list-check"></i> Prognozės
-                    </a>
-                    <a class="sb-nav-link {{ request()->routeIs('summary.prediction.standings') ? 'active' : '' }}"
-                       href="{{ route('summary.prediction.standings') }}">
-                        <i class="bi bi-table"></i> Eiga
-                    </a>
-                    @if(session('survivalGame') != 0)
-                    <a class="sb-nav-link {{ request()->routeIs('summary.prediction.survivals') ? 'active' : '' }}"
-                       href="{{ route('summary.prediction.survivals') }}">
-                        <i class="bi bi-shield-check"></i> Išlikimas
-                    </a>
-                    @endif
-                    <a class="sb-nav-link {{ request()->routeIs('summary.chart') ? 'active' : '' }}"
-                       href="{{ route('summary.chart') }}">
-                        <i class="bi bi-bar-chart-line"></i> Grafikas
-                    </a>
-                </div>
-            </div>
+            {{-- Predictions --}}
+            <a class="sb-nav-link {{ request()->routeIs('prediction.results') ? 'active' : '' }}"
+               href="{{ route('prediction.results') }}">
+                <span class="material-icons" style="font-size:1rem;vertical-align:middle;">sports_soccer</span> Spėjimai
+            </a>
+            <a class="sb-nav-link {{ request()->routeIs('prediction.standings') ? 'active' : '' }}"
+               href="{{ route('prediction.standings') }}">
+                <i class="bi bi-table"></i> Eiga
+            </a>
+            @if(session('eventSurvival') == 1 && session('survivalGame') == 1)
+            <a class="sb-nav-link {{ request()->routeIs('prediction.survival') ? 'active' : '' }}"
+               href="{{ route('prediction.survival') }}">
+                <i class="bi bi-bullseye"></i> Išlikimas
+            </a>
             @endif
 
-            {{-- Informacija --}}
-            <div class="sb-nav-grp">
-                <span class="sb-nav-grp-label">Informacija</span>
-                <div class="sb-nav-grp-links">
-                    <a class="sb-nav-link {{ request()->routeIs('rules') ? 'active' : '' }}"
-                       href="{{ route('rules') }}">
-                        <i class="bi bi-journal-text"></i> Taisyklės
-                    </a>
-                </div>
-            </div>
+            {{-- Summary (tournament started) --}}
+            @if(session('disabled') != '')
+            <span class="sb-nav-sep"></span>
+            <a class="sb-nav-link {{ request()->routeIs('summary.history') ? 'active' : '' }}"
+               href="{{ route('summary.history') }}">
+                <i class="bi bi-clock-history"></i> Varžybos
+            </a>
+            <a class="sb-nav-link {{ request()->routeIs('summary.prediction.results') ? 'active' : '' }}"
+               href="{{ route('summary.prediction.results') }}">
+                <i class="bi bi-list-check"></i> Prognozės
+            </a>
+            <a class="sb-nav-link {{ request()->routeIs('summary.prediction.standings') ? 'active' : '' }}"
+               href="{{ route('summary.prediction.standings') }}">
+                <i class="bi bi-table"></i> Eiga
+            </a>
+            @if(session('survivalGame') != 0)
+            <a class="sb-nav-link {{ request()->routeIs('summary.prediction.survivals') ? 'active' : '' }}"
+               href="{{ route('summary.prediction.survivals') }}">
+                <i class="bi bi-shield-check"></i> Išlikimas
+            </a>
+            @endif
+            <a class="sb-nav-link {{ request()->routeIs('summary.chart') ? 'active' : '' }}"
+               href="{{ route('summary.chart') }}">
+                <i class="bi bi-bar-chart-line"></i> Grafikas
+            </a>
+            @endif
+
+            {{-- Info --}}
+            <span class="sb-nav-sep"></span>
+            <a class="sb-nav-link {{ request()->routeIs('rules') ? 'active' : '' }}"
+               href="{{ route('rules') }}">
+                <i class="bi bi-journal-text"></i> Taisyklės
+            </a>
             @endauth
         </div>
 
