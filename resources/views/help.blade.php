@@ -28,7 +28,6 @@
                 </ul>
                 <strong><i class="bi bi-file-earmark-bar-graph-fill h4"></i> Suvestinė</strong> - totalizatoriaus suvestinė (prieinamas tik prasidėjus totalizatoriui).<BR>
                 <ul>
-                    <li><strong>Įvykusios varžybos</strong> - jau įvykusių varžybų sąrašas su gautais taškais.</li>
                     <li><strong>Rezultatų suvestinė</strong> - totalizatoriaus dalyvių rungtynių prognozių suvestinė.</li>
                     <li><strong>Eigos suvestinė</strong> - totalizatoriaus dalyvių eigos prognozių suvestinė.</li>
                     <li><strong>Grafikas</strong> - varžybų dalyvių taškų ir vietų kitimo dinamika.</li>
