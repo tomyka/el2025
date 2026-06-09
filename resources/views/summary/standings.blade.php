@@ -1,95 +1,114 @@
 @extends('layouts.master')
 @section('content')
 
-<div class="sb-card p-0">
-<div class="table-responsive">
-    <table class="table table-sm table-bordered table-hover mb-0">
-        <thead>
-        <tr class="table-dark">
-            <td rowspan="2" style="vertical-align: middle; text-align: center; border-right: double"><strong>Komanda</strong></td>
-            @foreach($predictionStandings as $predictionStanding)
-                @if($predictionStanding->team_id == 1)
-                    <td class="text-center" style="border-right: double" colspan="6"><strong>{{ $predictionStanding->username }}</strong></td>
-                @endif
-            @endforeach
-        </tr>
-        <tr class="table-dark">
-            @foreach($predictionStandings as $predictionStanding)
-                @if($predictionStanding->team_id == 1)
-                    <td class="text-center"><strong>V</strong></td>
-                    <td class="text-center"><strong>1/16</strong></td>
-                    <td class="text-center"><strong>1/8</strong></td>
-                    <td class="text-center"><strong>1/4</strong></td>
-                    <td class="text-center"><strong>1/2</strong></td>
-                    <td class="text-center" style="border-right: double"><strong>&nbsp;F&nbsp;</strong></td>
-                @endif
-            @endforeach
-        </tr>
-        </thead>
-        <tbody>
-        @foreach($teams as $team)
-            <tr class="table-default">
-                <td class="align-middle" style="white-space: nowrap; border-right: double;" rowspan="2"><strong>{{ $team->team }}</strong></td>
+@php
+    $players = collect($predictionStandings)
+        ->pluck('username')->unique()->values()->toArray();
 
-                @foreach(array_filter($predictionStandings, fn($ps) => $ps->team_id == $team->id) as $predictionStanding)
-                    <td class="text-center align-middle">{{ $predictionStanding->group_position }}</td>
-                    <td class="text-center align-middle">
-                        @if($predictionStanding->last32 == 1){{ "x" }}@endif
+    $psMap = [];
+    foreach ($predictionStandings as $ps) {
+        $psMap[$ps->team_id][$ps->username] = $ps;
+    }
+
+    $teamGroups = $teams->groupBy('group_name')->sortKeys();
+
+    // Returns a CSS class based on predicted vs actual value (nullable = pending)
+    $cmpClass = function($predicted, $actual) {
+        if ($predicted === null || $predicted == 0) return 'sst-none';
+        if ($actual   === null)                     return 'sst-pending';
+        return $predicted == $actual ? 'sst-hit' : 'sst-miss';
+    };
+
+    $advClass = function($predicted, $actual) {
+        if (!$predicted) return 'sst-none';
+        if ($actual === null) return 'sst-pending';
+        return ($predicted == 1 && $actual == 1) ? 'sst-hit' : 'sst-miss';
+    };
+@endphp
+
+<div class="sb-card p-0">
+
+    {{-- Legend --}}
+    <div class="sst-legend">
+        <div class="sst-legend-colors">
+            <span class="sst-badge sst-hit">2</span> Pataikyta
+            <span class="sst-badge sst-miss">2</span> Praleista
+            <span class="sst-badge sst-pending">2</span> Laukiama
+            <span class="sst-badge sst-none">2</span> Nespėta
+        </div>
+        <div class="sst-legend-stages">
+            <span class="sst-stage-lbl">G</span>Grupė
+            <span class="sst-stage-lbl">32</span>1/16
+            <span class="sst-stage-lbl">16</span>1/8
+            <span class="sst-stage-lbl">QF</span>1/4
+            <span class="sst-stage-lbl">SF</span>1/2
+            <span class="sst-stage-lbl">F</span>Finalas
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="sst-table">
+            <thead>
+                <tr class="sst-head-row">
+                    <th class="sst-team-hdr">Komanda</th>
+                    @foreach($players as $player)
+                    <th class="sst-player-hdr">{{ $player }}</th>
+                    @endforeach
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($teamGroups as $groupName => $groupTeams)
+                @if($groupName)
+                <tr class="sst-group-row">
+                    <td colspan="{{ count($players) + 1 }}">Grupė {{ $groupName }}</td>
+                </tr>
+                @endif
+                @foreach($groupTeams as $team)
+                <tr class="sst-team-row">
+                    <td class="sst-team-cell">
+                        <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($team->team)) . '.svg') }}"
+                             class="sst-flag" alt="{{ $team->team }}">
+                        <span class="sst-team-name">{{ $team->team }}</span>
                     </td>
-                    <td class="text-center align-middle">
-                        @if($predictionStanding->last16 == 1){{ "x" }}@endif
+                    @foreach($players as $player)
+                    @php
+                        $ps = $psMap[$team->id][$player] ?? null;
+                        $totalPts = $ps
+                            ? (($ps->group_position_points ?? 0) + ($ps->last32_points ?? 0) + ($ps->last16_points ?? 0)
+                               + ($ps->quarterfinal_points ?? 0) + ($ps->semifinal_points ?? 0) + ($ps->final_points ?? 0))
+                            : 0;
+                    @endphp
+                    <td class="sst-pred-cell">
+                        @if($ps)
+                        <div class="sst-badges">
+                            {{-- Group position --}}
+                            <span class="sst-badge sst-pos {{ $cmpClass($ps->group_position, $team->group_position) }}"
+                                  title="Grupės vieta: spėta {{ $ps->group_position ?? '—' }}">{{ $ps->group_position ?? '—' }}</span>
+                            {{-- Knockout rounds --}}
+                            <span class="sst-badge {{ $advClass($ps->last32, $team->last32) }}"
+                                  title="1/16">{{ $ps->last32 ? '✓' : '—' }}</span>
+                            <span class="sst-badge {{ $advClass($ps->last16, $team->last16) }}"
+                                  title="1/8">{{ $ps->last16 ? '✓' : '—' }}</span>
+                            <span class="sst-badge {{ $advClass($ps->quarterfinal, $team->quarterfinal) }}"
+                                  title="1/4">{{ $ps->quarterfinal ? '✓' : '—' }}</span>
+                            <span class="sst-badge {{ $advClass($ps->semifinal, $team->semifinal) }}"
+                                  title="1/2">{{ $ps->semifinal ? '✓' : '—' }}</span>
+                            {{-- Final position --}}
+                            <span class="sst-badge sst-fin {{ $cmpClass($ps->final, $team->final) }}"
+                                  title="Finalas: spėta {{ $ps->final ?? '—' }}">{{ $ps->final ?? '—' }}</span>
+                        </div>
+                        @if($totalPts > 0)
+                        <div class="sst-pts">{{ number_format($totalPts, 0) }}</div>
+                        @endif
+                        @endif
                     </td>
-                    <td class="text-center align-middle">
-                        @if($predictionStanding->quarterfinal == 1){{ "x" }}@endif
-                    </td>
-                    <td class="text-center align-middle">
-                        @if($predictionStanding->semifinal == 1){{ "x" }}@endif
-                    </td>
-                    <td class="text-center align-middle" style="border-right: double">{{ $predictionStanding->final }}</td>
+                    @endforeach
+                </tr>
                 @endforeach
-            </tr>
-            <tr class="table-default">
-                @foreach(array_filter($predictionStandings, fn($ps) => $ps->team_id == $team->id) as $predictionStanding)
-                    <td class="text-center align-middle">
-                        <span @if ($predictionStanding->group_position == $team->group_position) class="badge bg-success" @elseif(isset($predictionStanding->group_position)) class="badge bg-light" @endif>
-                            {{ $predictionStanding->group_position_points }}
-                        </span>
-                    </td>
-                    <td class="text-center align-middle">
-                        <span @if ($predictionStanding->last32 == 1 && $team->last32 == 1) class="badge bg-success"
-                              @elseif ($predictionStanding->last32 == 1 && isset($team->last32)) class="badge bg-danger"
-                              @elseif ($predictionStanding->last32 == 1 && !isset($team->last32)) class="badge bg-light" @endif>
-                            @if($predictionStanding->last32 == 1){{ $predictionStanding->last32_points }}@endif
-                        </span>
-                    </td>
-                    <td class="text-center align-middle">
-                        <span @if ($predictionStanding->last16 == 1 && $team->last16 == 1) class="badge bg-success"
-                              @elseif ($predictionStanding->last16 == 1 && isset($team->last16)) class="badge bg-danger"
-                              @elseif ($predictionStanding->last16 == 1 && !isset($team->last16)) class="badge bg-light" @endif>
-                            @if($predictionStanding->last16 == 1){{ $predictionStanding->last16_points }}@endif
-                        </span>
-                    </td>
-                    <td class="text-center align-middle">
-                        <span @if ($predictionStanding->quarterfinal == 1 && $team->quarterfinal == 1) class="badge bg-success"
-                              @elseif ($predictionStanding->quarterfinal == 1 && isset($team->quarterfinal)) class="badge bg-danger"
-                              @elseif ($predictionStanding->quarterfinal == 1 && !isset($team->quarterfinal)) class="badge bg-light" @endif>
-                            @if($predictionStanding->quarterfinal == 1){{ $predictionStanding->quarterfinal_points }}@endif
-                        </span>
-                    </td>
-                    <td class="text-center align-middle">
-                        <span @if ($predictionStanding->semifinal == 1 && $team->semifinal == 1) class="badge bg-success"
-                              @elseif ($predictionStanding->semifinal == 1 && isset($team->semifinal)) class="badge bg-danger"
-                              @elseif ($predictionStanding->semifinal == 1 && !isset($team->semifinal)) class="badge bg-light" @endif>
-                            @if($predictionStanding->semifinal == 1){{ $predictionStanding->semifinal_points }}@endif
-                        </span>
-                    </td>
-                    <td class="text-center align-middle" style="border-right: double">{{ $predictionStanding->final_points }}</td>
                 @endforeach
-            </tr>
-        @endforeach
-        </tbody>
-    </table>
-</div>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 @endsection
