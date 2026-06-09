@@ -41,7 +41,7 @@
                 <i class="bi bi-clock-history"></i> Varžybos
             </a>
             <a class="sb-nav-link {{ request()->routeIs('summary.prediction.results') ? 'active' : '' }}"
-               href="{{ route('summary.prediction.results') }}" target="_blank">
+               href="{{ route('summary.prediction.results') }}">
                 <i class="bi bi-list-check"></i> Prognozės
             </a>
             <a class="sb-nav-link {{ request()->routeIs('summary.prediction.standings') ? 'active' : '' }}"
@@ -150,7 +150,7 @@
                href="{{ route('summary.history') }}">
                 <i class="bi bi-clock-history"></i> Įvykę varžybos
             </a>
-            <a class="sb-nav-link" href="{{ route('summary.prediction.results') }}" target="_blank">
+            <a class="sb-nav-link" href="{{ route('summary.prediction.results') }}">
                 <i class="bi bi-list-check"></i> Prognozės
             </a>
             <a class="sb-nav-link {{ request()->routeIs('summary.prediction.standings') ? 'active' : '' }}"
