@@ -1,5 +1,5 @@
 
-                @if ($groupDetails->fee!="")
+                @if ($groupDetails->fee > 0)
                     <div class="col col-12 col-sm-12 col-md-12 ">
                     @if(session('fee')==0)
                         <strong class="text-primary">

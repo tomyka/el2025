@@ -9,7 +9,7 @@
         {{-- Left: brand --}}
         <div class="sb-nav-start">
             <a class="sb-brand" @auth href="{{ route('main') }}" @else href="{{ route('/') }}" @endauth>
-                <img src="{{ asset('img/favicon-512.png') }}" alt="SportBet" style="height:36px;">
+                <img src="{{ asset('img/logo.png') }}" alt="SportBet" style="height:36px;">
                 <span>Sport<span class="sb-brand-dot">Bet</span></span>
             </a>
         </div>
@@ -103,7 +103,7 @@
          ============================================================ --}}
     <div class="sb-mobile-bar d-lg-none">
         <a class="sb-brand" @auth href="{{ route('main') }}" @else href="{{ route('/') }}" @endauth>
-            <img src="{{ asset('img/favicon-512.png') }}" alt="SportBet" style="height:36px;">
+            <img src="{{ asset('img/logo.png') }}" alt="SportBet" style="height:36px;">
         </a>
 
         @auth
