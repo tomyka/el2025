@@ -740,6 +740,8 @@ a:hover { color: var(--sb-accent-h); }
 }
 .upt-scored { color: var(--sb-accent); }
 .upt-empty  { color: transparent; }
+.upcoming-pts { display: flex; flex-direction: column; align-items: flex-end; }
+.upt-streak { font-size: .62rem; font-weight: 700; color: #f97316; line-height: 1; }
 
 .upcoming-all-link {
   font-size: .75rem;

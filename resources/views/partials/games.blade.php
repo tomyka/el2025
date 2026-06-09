@@ -35,8 +35,12 @@
                      class="upcoming-flag" alt="{{ $g->away_team }}">
             </span>
 
-            <span class="upcoming-pts {{ $played && $g->full_points > 0 ? 'upt-scored' : 'upt-empty' }}">
-                {{ $played ? number_format($g->full_points, 1) : '' }}
+            @php $streak = $played ? ($g->streak_bonus ?? 0) : 0; @endphp
+            <span class="upcoming-pts {{ $played && ($g->full_points + $streak) > 0 ? 'upt-scored' : 'upt-empty' }}">
+                {{ $played ? number_format($g->full_points + $streak, 1) : '' }}
+                @if($streak > 0)
+                    <span class="upt-streak"><i class="bi bi-fire"></i>+{{ number_format($streak, 1) }}</span>
+                @endif
             </span>
         </a>
         @endforeach
