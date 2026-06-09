@@ -131,7 +131,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'superadmin']], func
 
 Route::group(['prefix' => 'summary'],function(){
 
-    Route::get('history', [PredictionResultController::class,'getPredictionResultHistory'])->name('summary.history');
     Route::get('prediction/results', [PredictionResultController::class,'getPredictionResultSummary'])->name('summary.prediction.results');
     Route::get('prediction/standings', [PredictionStandingController::class,'getPredictionStandingSummary'])->name('summary.prediction.standings');
     Route::get('predictionSurvivals', [PredictionSurvivalController::class,'getPredictionSurvivalSummary'])->name('summary.prediction.survivals');

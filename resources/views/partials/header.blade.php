@@ -41,10 +41,6 @@
             <span class="sb-nav-grp-sep"></span>
             <div class="sb-nav-grp">
                 <span class="sb-nav-grp-label">Suvestinė</span>
-                <a class="sb-nav-link {{ request()->routeIs('summary.history') ? 'active' : '' }}"
-                   href="{{ route('summary.history') }}">
-                    <i class="bi bi-clock-history"></i> Varžybos
-                </a>
                 <a class="sb-nav-link {{ request()->routeIs('summary.prediction.results') ? 'active' : '' }}"
                    href="{{ route('summary.prediction.results') }}">
                     <i class="bi bi-list-check"></i> Prognozės
@@ -166,10 +162,6 @@
         @if(session('disabled') != '')
         <div class="sb-mobile-group">
             <div class="sb-mobile-label">Suvestinė</div>
-            <a class="sb-nav-link {{ request()->routeIs('summary.history') ? 'active' : '' }}"
-               href="{{ route('summary.history') }}">
-                <i class="bi bi-clock-history"></i> Įvykę varžybos
-            </a>
             <a class="sb-nav-link" href="{{ route('summary.prediction.results') }}">
                 <i class="bi bi-list-check"></i> Prognozės
             </a>

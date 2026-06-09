@@ -67,27 +67,6 @@ class SqlInjectionRegressionTest extends TestCase
         $this->assertEquals($data['game']->id, $results[0]->id);
     }
 
-    public function test_get_prediction_games_user_history_returns_results(): void
-    {
-        $data = $this->seedMinimal();
-
-        $game = $data['game'];
-        $game->home_team_score = 75;
-        $game->away_team_score = 65;
-        $game->save();
-
-        $futureEvent = Event::create(['event' => 'Future', 'event_day' => 2, 'event_survival' => 0, 'active' => 1, 'rate' => 1]);
-
-        $controller = new PredictionResultController();
-        $results = $controller->getPredictionGamesUserHistory(
-            $data['user']->id,
-            $futureEvent->id
-        );
-
-        $this->assertCount(1, $results);
-        $this->assertEquals($data['game']->id, $results[0]->game_id);
-    }
-
     public function test_get_prediction_games_profile_returns_results(): void
     {
         $data = $this->seedMinimal();

@@ -18,7 +18,7 @@
     </a>
     @endif
     <a class="sb-tab {{ request()->routeIs('summary.*') ? 'active' : '' }}"
-       href="{{ route('summary.history') }}">
+       href="{{ route('summary.prediction.results') }}">
         <i class="bi bi-file-earmark-bar-graph-fill" style="font-size:1.2rem;"></i>
         <span class="sb-tab-label">Suvestinė</span>
     </a>

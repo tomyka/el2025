@@ -118,7 +118,8 @@ class PredictionResultController extends Controller
                               IFNULL(por.bingo_points,0) AS bingo_points,
                               IFNULL(ROUND((CASE WHEN game_date > DATE_ADD(NOW(),INTERVAL ? HOUR) THEN NULL ELSE por.odds END),4),0) AS odds,
                               IFNULL(por.odds_points,0) AS odds_points,
-                              ROUND(IFNULL(por.full_points,0),2) AS full_points
+                              ROUND(IFNULL(por.full_points,0),2) AS full_points,
+                              ROUND(IFNULL(por.streak_bonus,0),2) AS streak_bonus
                           FROM games AS g
                               JOIN events AS e ON e.id=g.event_id
                               JOIN prediction_results AS prr ON g.id=prr.game_id
@@ -136,44 +137,6 @@ class PredictionResultController extends Controller
             [$timeDiff, $userID, $eventID, $groupID]);
 
         return $predictionGamesUserProfileEventDay;
-    }
-
-    public function getPredictionGamesUserHistory($userID, $eventID)
-    {
-        $timeDiff = session('timeDifference');
-        $predictionGamesUserHistory = DB::select('select
-                            g.id as game_id,
-                             g.home_team_id,
-                              g.away_team_id,
-                              ht.team as home_team,
-                              at.team as away_team,
-                              g.home_team_score,
-                              g.away_team_score,
-                              g.game_winner_id,
-                              pr.home_team_score as home_team_score_prediction,
-                              pr.away_team_score as away_team_score_prediction,
-                              pr.game_winner_id as game_winner_id_prediction,
-                              ROUND(IFNULL(por.difference_points,0),2) AS difference_points,
-                              ROUND(IFNULL(por.winner_points,0),2) AS winner_points,
-                              ROUND(IFNULL(por.bingo_points,0),2) AS bingo_points,
-                              IFNULL(ROUND((CASE WHEN game_date > DATE_ADD(NOW(),INTERVAL ? HOUR) THEN NULL ELSE por.Odds END),4),0) AS odds,
-                              ROUND(IFNULL(por.odds_points,0),2) AS odds_points,
-                              ROUND(IFNULL(por.full_points,0),2) AS full_points
-                          from games as g
-                              join prediction_results as pr on g.id = pr.game_id
-                              join users as u on u.id = pr.user_id
-                              join user_settings AS us on u.id = us.user_id
-                              join teams as ht on g.home_team_id=ht.id
-                              join teams as at on g.away_team_id=at.id
-                              join events as e ON e.id = g.event_id
-                              left join point_results as por on pr.user_id=por.user_id and pr.game_id=por.game_id
-                          where
-                              pr.user_id = ?
-                              and e.id < ?
-                          order by g.id asc',
-            [$timeDiff, $userID, $eventID]);
-
-        return $predictionGamesUserHistory;
     }
 
     public function getPredictionGamesProfile($groupID, $eventID){
@@ -245,16 +208,7 @@ class PredictionResultController extends Controller
         return $predictionGamesUser;
     }
 
-    public function getPredictionResultHistory(){
 
-        $userID = session('userID');
-        $eventID = session('eventID');
-
-        $predictionResultController = new PredictionResultController();
-        $predictionResultsHistory = $predictionResultController->getPredictionGamesUserHistory($userID, $eventID);
-
-        return view('summary.history')->with('predictionResults', $predictionResultsHistory);
-    }
 
     public function getPredictionResultSummary() {
 
