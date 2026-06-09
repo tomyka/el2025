@@ -62,7 +62,7 @@ class GameController extends Controller
         $predictionResult = new PredictionResult();
         $gameOdds = new GameOdds();
 
-        $game->game_date = $request->input('gameDate').' '.$request->input('gameHour').':'.$request->input('gameMinute');;
+        $game->game_date = str_replace('T', ' ', $request->input('gameDateTime')) . ':00';
         $game->home_team_id = $request->input('homeTeamID');
         $game->away_team_id = $request->input('awayTeamID');
         $game->event_id = $request->input('eventID');
@@ -92,7 +92,7 @@ class GameController extends Controller
         $eventID    = $request->input('eventID');
 
         $game = game::find($gameID);
-        $game->game_date    = $request->input('gameDate') . ' ' . $request->input('gameHour') . ':' . $request->input('gameMinute') . ':00';
+        $game->game_date    = str_replace('T', ' ', $request->input('gameDateTime')) . ':00';
         $game->home_team_id = $homeTeamID;
         $game->away_team_id = $awayTeamID;
         $game->event_id     = $eventID;
