@@ -15,7 +15,7 @@
             <span class="upcoming-team upcoming-home">
                 <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($g->home_team)) . '.svg') }}"
                      class="upcoming-flag" alt="{{ $g->home_team }}">
-                <span class="upcoming-name">{{ $g->home_team }}</span>
+                <span class="upcoming-name d-none d-md-inline">{{ $g->home_team }}</span>
             </span>
 
             <span class="upcoming-scores">
@@ -27,7 +27,7 @@
             </span>
 
             <span class="upcoming-team upcoming-away">
-                <span class="upcoming-name">{{ $g->away_team }}</span>
+                <span class="upcoming-name d-none d-md-inline">{{ $g->away_team }}</span>
                 <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($g->away_team)) . '.svg') }}"
                      class="upcoming-flag" alt="{{ $g->away_team }}">
             </span>
