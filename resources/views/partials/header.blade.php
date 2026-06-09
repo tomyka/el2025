@@ -74,6 +74,14 @@
                    href="{{ route('rules') }}">
                     <i class="bi bi-journal-text"></i> Taisyklės
                 </a>
+                <a class="sb-nav-link {{ request()->routeIs('help') ? 'active' : '' }}"
+                   href="{{ route('help') }}">
+                    <i class="bi bi-question-circle"></i> Pagalba
+                </a>
+                <a class="sb-nav-link {{ request()->routeIs('charity') ? 'active' : '' }}"
+                   href="{{ route('charity') }}">
+                    <i class="bi bi-heart"></i> Jaunimo linija
+                </a>
             </div>
             @endauth
         </div>
