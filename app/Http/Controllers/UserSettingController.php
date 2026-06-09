@@ -23,7 +23,7 @@ class UserSettingController extends Controller
     public function insertUserSettings($user_id){
         $userSettings = new UserSetting();
         $userSettings->user_id =$user_id;
-        $userSettings->admin=(($user_id==1)?9:1);
+        $userSettings->admin=(($user_id==1)?9:0);
         $userSettings->save();
     }
 
