@@ -15,7 +15,6 @@
                 <div class="pred-day-card">
                     <div class="pred-day-header">
                         <span>{{ $groupName ? 'Grupė ' . $groupName : 'Rungtynės' }}</span>
-                        <span class="pred-day-date">{{ \Carbon\Carbon::parse($games->first()->game_date)->format('d.m') }}</span>
                     </div>
                     @foreach($games as $game)
                     <div class="pred-game">
@@ -25,7 +24,7 @@
                             <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->home_team)).'.svg') }}" class="pred-flag" alt="{{ $game->home_team }}">
                         </div>
                         <div class="pred-scores">
-                            <span class="pred-time">{{ \Carbon\Carbon::parse($game->game_date)->format('H:i') }}</span>
+                            <span class="pred-time">{{ \Carbon\Carbon::parse($game->game_date)->format('d.m · H:i') }}</span>
                             <div class="pred-scores-inputs">
                                 <input type="text" class="form-control pred-score" id="homeTeamScore{{$game->game_id}}" onkeyup="checkPrediction({{$game->game_id}})" value="{{ $game->home_team_score }}" maxlength="2" autocomplete="off">
                                 <span class="pred-sep">:</span>
