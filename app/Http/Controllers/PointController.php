@@ -84,8 +84,8 @@ class PointController extends Controller
             ->where('point_results.user_id','=',$userID)
             ->where('events.id','=',$eventID)
             ->selectRaw('
-        IFNULL(ROUND(SUM(full_points), 1), 0) AS full_points,
-        IFNULL(ROUND(AVG(full_points), 1), 0) AS avg_points,
+        IFNULL(ROUND(SUM(full_points + COALESCE(streak_bonus, 0)), 1), 0) AS full_points,
+        IFNULL(ROUND(AVG(full_points + COALESCE(streak_bonus, 0)), 1), 0) AS avg_points,
         IFNULL(SUM(CASE WHEN winner_points > 0 THEN 1 ELSE 0 END), 0) AS correct_guess
     ')->first();
         return $points;
@@ -129,7 +129,7 @@ class PointController extends Controller
         // All result points keyed by game_id → user_id
         $allResults = DB::table('point_results')
             ->whereIn('user_id', $userIDs)
-            ->select('user_id', 'game_id', 'full_points')
+            ->selectRaw('user_id, game_id, full_points + COALESCE(streak_bonus, 0) as full_points')
             ->get()
             ->groupBy('game_id')
             ->map(fn ($rows) => $rows->keyBy('user_id'));
@@ -225,7 +225,7 @@ class PointController extends Controller
         $rows = DB::table('point_results')
             ->whereIn('user_id', $userIDs)
             ->whereIn('game_id', $gameIDs)
-            ->select('user_id', 'game_id', 'full_points')
+            ->selectRaw('user_id, game_id, full_points + COALESCE(streak_bonus, 0) as full_points')
             ->get();
 
         $pointsMap = [];

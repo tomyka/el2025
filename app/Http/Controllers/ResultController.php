@@ -53,7 +53,7 @@ class ResultController extends Controller
 
             $pointsResultController = app(PointResultController::class);
             $pointsResultController->updateGamePoints($gameID);
-
+            $pointsResultController->recalculateStreaks();
 
         }
         return response()->json([

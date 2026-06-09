@@ -17,5 +17,6 @@ class PointResult extends Model
         'odds',
         'odds_points',
         'full_points',
+        'streak_bonus',
     ];
 }

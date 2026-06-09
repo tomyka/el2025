@@ -31,16 +31,82 @@ class PointResultController extends Controller
         $pointResult->bingo_points       = $points->bingoPoints;
         $pointResult->odds_points        = $points->oddsPoints;
         $pointResult->full_points        = $points->fullPoints;
+        $pointResult->streak_bonus       = 0;
         $pointResult->save();
+    }
+
+    public function recalculateStreaks(): void
+    {
+        $gameIDs = DB::table('games')
+            ->whereNotNull('home_team_score')
+            ->whereNotNull('away_team_score')
+            ->orderBy('id')
+            ->pluck('id')
+            ->toArray();
+
+        if (empty($gameIDs)) return;
+
+        // Load all point_results for scored games, joined with prediction_results
+        // to determine whether each prediction was genuine (not auto-generated)
+        $rows = DB::table('point_results')
+            ->leftJoin('prediction_results', function ($join) {
+                $join->on('point_results.user_id', '=', 'prediction_results.user_id')
+                     ->on('point_results.game_id', '=', 'prediction_results.game_id');
+            })
+            ->whereIn('point_results.game_id', $gameIDs)
+            ->select(
+                'point_results.id',
+                'point_results.user_id',
+                'point_results.game_id',
+                'point_results.winner_points',
+                'prediction_results.generated'
+            )
+            ->get();
+
+        // Build lookup: user_id → game_id → {id, correct}
+        $lookup  = [];
+        $userIDs = [];
+        foreach ($rows as $row) {
+            $correct = $row->winner_points > 0 && !$row->generated;
+            $lookup[$row->user_id][$row->game_id] = ['id' => $row->id, 'correct' => $correct];
+            $userIDs[$row->user_id] = true;
+        }
+
+        // Walk games in ID order per user, accumulate streak
+        $updates = [];
+        foreach (array_keys($userIDs) as $userID) {
+            $streak = 0;
+            foreach ($gameIDs as $gameID) {
+                if (!isset($lookup[$userID][$gameID])) {
+                    $streak = 0;
+                    continue;
+                }
+                $entry  = $lookup[$userID][$gameID];
+                $streak = $entry['correct'] ? $streak + 1 : 0;
+                $updates[$entry['id']] = $streak;
+            }
+        }
+
+        if (empty($updates)) return;
+
+        // Single batch update via CASE WHEN
+        $cases  = '';
+        $ids    = [];
+        foreach ($updates as $id => $bonus) {
+            $cases .= " WHEN {$id} THEN {$bonus}";
+            $ids[]  = $id;
+        }
+        $idList = implode(',', $ids);
+        DB::statement("UPDATE point_results SET streak_bonus = CASE id {$cases} END WHERE id IN ({$idList})");
     }
 
     public function getUserProfilePoints(int $userID): array
     {
         return PointResult::where('user_id', $userID)
-            ->select('winner_points', 'difference_points', 'bingo_points', 'odds_points', 'full_points')
+            ->select('winner_points', 'difference_points', 'bingo_points', 'odds_points', 'full_points', 'streak_bonus')
             ->get()
             ->map(fn ($r) => [
-                'full_points'  => round($r->full_points, 1),
+                'full_points'  => round($r->full_points + ($r->streak_bonus ?? 0), 1),
                 'bingo_points' => $r->bingo_points != 0 ? 1 : 0,
             ])
             ->all();
