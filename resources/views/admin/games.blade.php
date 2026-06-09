@@ -1,7 +1,7 @@
 @extends('admin.layouts.master')
 @section('content')
 
-<div class="sb-card" x-data="gameModal()">
+<div class="sb-card">
     <div class="sb-card-title">
         <i class="bi bi-calendar-event-fill sb-card-icon"></i> Žaidimai
         <span class="badge bg-secondary fw-normal ms-1">{{ $games->count() }}</span>
@@ -10,12 +10,6 @@
     @if(Session::has('info'))
     <div class="alert alert-success py-2 mb-3">{{ Session::get('info') }}</div>
     @endif
-
-    {{-- Hidden delete form — inside x-data scope so :value="gameID" works --}}
-    <form id="agmDeleteForm" method="post" action="{{ route('admin.deleteGame') }}" style="display:none">
-        @csrf
-        <input type="hidden" name="gameID" :value="gameID">
-    </form>
 
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0 agm-table">
@@ -29,7 +23,9 @@
             </thead>
             <tbody>
                 @foreach($games as $game)
-                <tr @if(session('admin') >= 1) style="cursor:pointer" x-on:dblclick="openModal('{{ $game->id }}', '{{ substr(str_replace(' ', 'T', $game->game_date), 0, 16) }}', '{{ $game->home_team_id ?? '' }}', '{{ $game->away_team_id ?? '' }}', '{{ $game->event_id ?? '' }}')" @endif>
+                <tr @if(session('admin') >= 1) style="cursor:pointer"
+                    ondblclick="agmOpenModal('{{ $game->id }}', '{{ substr(str_replace(' ', 'T', $game->game_date), 0, 16) }}', '{{ $game->home_team_id ?? '' }}', '{{ $game->away_team_id ?? '' }}', '{{ $game->event_id ?? '' }}')"
+                    @endif>
                     <td class="agm-id">{{ $game->id }}</td>
                     <td class="agm-datetime">
                         {{ \Carbon\Carbon::parse($game->game_date)->format('d M · H:i') }}
@@ -98,23 +94,22 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        Redaguoti žaidimą
-                        <span class="text-muted fw-normal fs-6" x-text="'#' + gameID"></span>
+                        Redaguoti žaidimą <span id="agmModalTitle" class="text-muted fw-normal fs-6"></span>
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form method="post" action="{{ route('admin.updateGame') }}">
                     @csrf
-                    <input type="hidden" name="gameID" :value="gameID">
+                    <input type="hidden" name="gameID" id="agmGameID">
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Data ir laikas</label>
                             <input type="datetime-local" class="form-control"
-                                   name="gameDateTime" x-model="gameDateTime">
+                                   name="gameDateTime" id="agmDateTime">
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Šeimininkai</label>
-                            <select name="homeTeamID" class="form-select" x-model="homeTeamID">
+                            <select name="homeTeamID" class="form-select" id="agmHomeTeamID">
                                 <option value="">—</option>
                                 @foreach($teams as $teamID => $teamName)
                                 <option value="{{ $teamID }}">{{ $teamName }}</option>
@@ -123,7 +118,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Svečiai</label>
-                            <select name="awayTeamID" class="form-select" x-model="awayTeamID">
+                            <select name="awayTeamID" class="form-select" id="agmAwayTeamID">
                                 <option value="">—</option>
                                 @foreach($teams as $teamID => $teamName)
                                 <option value="{{ $teamID }}">{{ $teamName }}</option>
@@ -132,7 +127,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Etapas</label>
-                            <select name="eventID" class="form-select" x-model="eventID">
+                            <select name="eventID" class="form-select" id="agmEventID">
                                 <option value="">—</option>
                                 @foreach($events as $eventID => $eventName)
                                 <option value="{{ $eventID }}">{{ $eventName }}</option>
@@ -144,7 +139,7 @@
                         @if(session('admin') >= 9)
                         <button type="button"
                                 class="btn btn-outline-danger btn-sm"
-                                x-on:click="confirmDelete()">
+                                onclick="agmConfirmDelete()">
                             Ištrinti žaidimą
                         </button>
                         @else
@@ -160,29 +155,30 @@
             </div>
         </div>
     </div>
+
+    {{-- Hidden delete form --}}
+    <form id="agmDeleteForm" method="post" action="{{ route('admin.deleteGame') }}" style="display:none">
+        @csrf
+        <input type="hidden" name="gameID" id="agmDeleteGameID">
+    </form>
 </div>
 
 <script>
-function gameModal() {
-    return {
-        gameID: '',
-        gameDateTime: '',
-        homeTeamID: '',
-        awayTeamID: '',
-        eventID: '',
-        openModal(id, dateTime, homeTeamID, awayTeamID, eventID) {
-            this.gameID     = String(id);
-            this.gameDateTime = dateTime;
-            this.homeTeamID = String(homeTeamID);
-            this.awayTeamID = String(awayTeamID);
-            this.eventID    = String(eventID);
-            bootstrap.Modal.getOrCreateInstance(document.getElementById('agmEditModal')).show();
-        },
-        confirmDelete() {
-            if (confirm('Ištrinti žaidimą #' + this.gameID + '?')) {
-                document.getElementById('agmDeleteForm').submit();
-            }
-        }
+function agmOpenModal(id, dateTime, homeTeamID, awayTeamID, eventID) {
+    document.getElementById('agmModalTitle').textContent = '#' + id;
+    document.getElementById('agmGameID').value = id;
+    document.getElementById('agmDeleteGameID').value = id;
+    document.getElementById('agmDateTime').value = dateTime;
+    document.getElementById('agmHomeTeamID').value = homeTeamID;
+    document.getElementById('agmAwayTeamID').value = awayTeamID;
+    document.getElementById('agmEventID').value = eventID;
+    new bootstrap.Modal(document.getElementById('agmEditModal')).show();
+}
+
+function agmConfirmDelete() {
+    var id = document.getElementById('agmDeleteGameID').value;
+    if (confirm('Ištrinti žaidimą #' + id + '?')) {
+        document.getElementById('agmDeleteForm').submit();
     }
 }
 </script>
