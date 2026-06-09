@@ -1884,6 +1884,30 @@ a:hover { color: var(--sb-accent-h); }
 .ch-wrap  { padding: 16px 8px 16px; height: 460px; }
 
 /* ============================================================
+   Position trend card
+   ============================================================ */
+.pt-card { padding: 16px 20px; }
+.pt-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.pt-title-group { display: flex; align-items: center; gap: 8px; }
+.pt-icon { font-size: .9rem; }
+.pt-title { font-weight: 700; font-size: .9rem; color: #1e293b; }
+.pt-subtitle { font-size: .75rem; color: #94a3b8; }
+.pt-game-count { font-size: .72rem; color: #94a3b8; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 2px 10px; }
+.pt-stats { display: flex; margin-bottom: 16px; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden; }
+.pt-stat { flex: 1; text-align: center; padding: 10px 8px; border-right: 1px solid #e2e8f0; }
+.pt-stat:last-child { border-right: none; }
+.pt-stat-val { font-size: 1.6rem; font-weight: 800; line-height: 1; }
+.pt-stat-lbl { font-size: .68rem; color: #94a3b8; margin-top: 3px; text-transform: uppercase; letter-spacing: .04em; }
+.pt-accent { color: #3b82f6; }
+.pt-up { color: #22c55e; }
+.pt-down { color: #ef4444; }
+.pt-neutral { color: #94a3b8; }
+.pt-amber { color: #f59e0b; }
+.pt-chart-wrap { position: relative; }
+.pt-chart-hint { display: flex; justify-content: space-between; margin-top: 4px; font-size: .68rem; color: #94a3b8; }
+.pt-chart-axis-lbl { text-align: center; }
+
+/* ============================================================
    Legacy / Admin utility classes
    ============================================================ */
 p { margin: 0; }

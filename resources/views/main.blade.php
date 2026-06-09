@@ -40,6 +40,14 @@
             </div>
         @endif
     </div>
+
+    @if(isset($rankHistory) && count($rankHistory) >= 2)
+    <div class="row mt-3">
+        <div class="col-12">
+            @include('partials.positionTrend')
+        </div>
+    </div>
+    @endif
 @else
     @include('welcome')
 @endauth
