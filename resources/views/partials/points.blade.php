@@ -5,10 +5,7 @@
     @endphp
     <div class="lb-header">
         <span class="lb-header-rank">#</span>
-        <span class="lb-header-name">
-            <span class="d-md-none">Žaidėjas</span>
-            <i class="bi bi-person-fill d-none d-md-inline"></i>
-        </span>
+        <span class="lb-header-name">Žaidėjas</span>
         <span class="lb-header-sub d-none d-md-block" title="Rungtynių taškai"><i class="bi bi-check2-all"></i></span>
         <span class="lb-header-sub d-none d-md-block" title="Eigos taškai"><i class="bi bi-bar-chart-steps"></i></span>
         @if(session('survivalGame') == 1)
