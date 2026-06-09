@@ -22,17 +22,19 @@ class PointResultController extends Controller
 
     public function insertPointResultUser(int $userID, int $gameID, object $points): void
     {
-        $pointResult                     = new PointResult();
-        $pointResult->user_id            = $userID;
-        $pointResult->game_id            = $gameID;
-        $pointResult->odds               = $points->odds;
-        $pointResult->winner_points      = $points->winnerPoints;
-        $pointResult->difference_points  = $points->differencePoints;
-        $pointResult->bingo_points       = $points->bingoPoints;
-        $pointResult->odds_points        = $points->oddsPoints;
-        $pointResult->full_points        = $points->fullPoints;
-        $pointResult->streak_bonus       = 0;
-        $pointResult->save();
+        DB::table('point_results')->updateOrInsert(
+            ['user_id' => $userID, 'game_id' => $gameID],
+            [
+                'winner_points'     => $points->winnerPoints,
+                'difference_points' => $points->differencePoints,
+                'bingo_points'      => $points->bingoPoints,
+                'odds'              => $points->odds,
+                'odds_points'       => $points->oddsPoints,
+                'full_points'       => $points->fullPoints,
+                'streak_bonus'      => 0,
+                'updated_at'        => now(),
+            ]
+        );
     }
 
     public function recalculateStreaks(): void
