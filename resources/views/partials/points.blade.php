@@ -5,7 +5,7 @@
     @endphp
     <div class="lb-header">
         <span class="lb-header-rank">#</span>
-        <span class="lb-header-name">Žaidėjas</span>
+        <span class="lb-header-name"><i class="bi bi-person-fill"></i></span>
         <span class="lb-header-sub" title="Rungtynių taškai"><i class="bi bi-check2-all"></i></span>
         <span class="lb-header-sub" title="Eigos taškai"><i class="bi bi-bar-chart-steps"></i></span>
         @if(session('survivalGame') == 1)
@@ -13,7 +13,7 @@
         @endif
         <span class="lb-header-sub" title="Vidurkis"><i class="bi bi-graph-up"></i></span>
         <span class="lb-header-sub lb-header-sub-bingo" title="Bingo"><i class="bi bi-bullseye"></i></span>
-        <span class="lb-header-total">Taškai</span>
+        <span class="lb-header-total"><i class="bi bi-star-fill"></i></span>
         <span class="lb-header-chevron"></span>
     </div>
     @foreach($points as $point)
