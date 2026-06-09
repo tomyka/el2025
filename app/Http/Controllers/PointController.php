@@ -212,6 +212,7 @@ class PointController extends Controller
 
         $gameIDs = DB::table('games')
             ->whereNotNull('home_team_score')
+            ->whereNotNull('away_team_score')
             ->orderBy('game_date')
             ->orderBy('id')
             ->pluck('id')
