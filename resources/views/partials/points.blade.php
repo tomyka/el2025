@@ -12,7 +12,7 @@
         <span class="lb-header-sub" title="Išlikimo taškai"><i class="bi bi-shield-check"></i></span>
         @endif
         <span class="lb-header-sub d-none d-md-block" title="Vidurkis"><i class="bi bi-graph-up"></i></span>
-        <span class="lb-header-sub lb-header-sub-bingo" title="Bingo"><i class="bi bi-bullseye"></i></span>
+        <span class="lb-header-sub lb-header-sub-bingo d-none d-md-block" title="Bingo"><i class="bi bi-bullseye"></i></span>
         <span class="lb-header-total"><i class="bi bi-star-fill"></i></span>
         <span class="lb-header-chevron"></span>
     </div>
@@ -41,7 +41,7 @@
             <div class="lb-sub-col">{{ $point['survivalPoints'] }}</div>
             @endif
             <div class="lb-sub-col d-none d-md-block">{{ number_format($point['averagePoints'], 1) }}</div>
-            <div class="lb-sub-col {{ $point['userGameBingo'] > 0 ? 'lb-sub-bingo' : '' }}">{{ $point['userGameBingo'] > 0 ? '★'.$point['userGameBingo'] : '' }}</div>
+            <div class="lb-sub-col d-none d-md-block {{ $point['userGameBingo'] > 0 ? 'lb-sub-bingo' : '' }}">{{ $point['userGameBingo'] > 0 ? '★'.$point['userGameBingo'] : '' }}</div>
             <div class="lb-total {{ $isMe ? 'lb-me-total' : '' }}">{{ number_format($total, 1) }}</div>
             @if($hasHistory)
                 <span class="lb-trend-chevron" x-text="open ? '▾' : '▸'"></span>
