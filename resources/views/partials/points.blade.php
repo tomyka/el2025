@@ -9,14 +9,14 @@
             <span class="d-md-none">Žaidėjas</span>
             <i class="bi bi-person-fill d-none d-md-inline"></i>
         </span>
-        <span class="lb-header-sub" title="Rungtynių taškai"><i class="bi bi-check2-all"></i></span>
-        <span class="lb-header-sub" title="Eigos taškai"><i class="bi bi-bar-chart-steps"></i></span>
+        <span class="lb-header-sub d-none d-md-block" title="Rungtynių taškai"><i class="bi bi-check2-all"></i></span>
+        <span class="lb-header-sub d-none d-md-block" title="Eigos taškai"><i class="bi bi-bar-chart-steps"></i></span>
         @if(session('survivalGame') == 1)
-        <span class="lb-header-sub" title="Išlikimo taškai"><i class="bi bi-shield-check"></i></span>
+        <span class="lb-header-sub d-none d-md-block" title="Išlikimo taškai"><i class="bi bi-shield-check"></i></span>
         @endif
         <span class="lb-header-sub d-none d-md-block" title="Vidurkis"><i class="bi bi-graph-up"></i></span>
         <span class="lb-header-sub lb-header-sub-bingo d-none d-md-block" title="Bingo"><i class="bi bi-bullseye"></i></span>
-        <span class="lb-header-total"><i class="bi bi-star-fill"></i></span>
+        <span class="lb-header-total">Taškai</span>
         <span class="lb-header-chevron"></span>
     </div>
     @foreach($points as $point)
@@ -38,10 +38,10 @@
                       @if($tooltipTitle) data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $tooltipTitle }}" @endif
                 >{{ $point['username'] }}</span>
             </div>
-            <div class="lb-sub-col">{{ number_format($point['userGamePoints'], 1) }}</div>
-            <div class="lb-sub-col">{{ number_format($point['standingPoints']->total_points, 1) }}</div>
+            <div class="lb-sub-col d-none d-md-block">{{ number_format($point['userGamePoints'], 1) }}</div>
+            <div class="lb-sub-col d-none d-md-block">{{ number_format($point['standingPoints']->total_points, 1) }}</div>
             @if(session('survivalGame') == 1)
-            <div class="lb-sub-col">{{ $point['survivalPoints'] }}</div>
+            <div class="lb-sub-col d-none d-md-block">{{ $point['survivalPoints'] }}</div>
             @endif
             <div class="lb-sub-col d-none d-md-block">{{ number_format($point['averagePoints'], 1) }}</div>
             <div class="lb-sub-col d-none d-md-block {{ $point['userGameBingo'] > 0 ? 'lb-sub-bingo' : '' }}">{{ $point['userGameBingo'] > 0 ? '★'.$point['userGameBingo'] : '' }}</div>
