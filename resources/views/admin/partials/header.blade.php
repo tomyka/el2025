@@ -48,9 +48,11 @@
                href="{{ route('admin.events') }}">
                 <i class="bi bi-trophy"></i> Įvykiai
             </a>
+            @if(session('admin') >= 9)
             <a class="sb-nav-link" href="{{ route('admin.updateStandingPoints') }}">
                 <i class="bi bi-calculator"></i> Taškai už eigą
             </a>
+            @endif
             @endif
         </div>
 
@@ -132,9 +134,11 @@
                href="{{ route('admin.events') }}">
                 <i class="bi bi-trophy"></i> Įvykiai
             </a>
+            @if(session('admin') >= 9)
             <a class="sb-nav-link" href="{{ route('admin.updateStandingPoints') }}">
                 <i class="bi bi-calculator"></i> Taškai už eigą
             </a>
+            @endif
             @endif
         </div>
         <div class="sb-mobile-group">
