@@ -99,9 +99,9 @@ class ScoringService
             return 1.0;
         }
 
-        return $homeScorePrediction > $awayScorePrediction
-            ? (float) $gameOdds->home_odds
-            : (float) $gameOdds->away_odds;
+        if ($homeScorePrediction > $awayScorePrediction) return (float) $gameOdds->home_odds;
+        if ($homeScorePrediction < $awayScorePrediction) return (float) $gameOdds->away_odds;
+        return (float) $gameOdds->draw_odds;
     }
 
     /**

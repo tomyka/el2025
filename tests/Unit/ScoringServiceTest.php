@@ -225,6 +225,17 @@ class ScoringServiceTest extends TestCase
         $this->assertSame(2.1, $this->service->getGameOdds(0, 2, $gameOdds, 0));
     }
 
+    public function test_game_odds_draw_prediction_returns_draw_odds(): void
+    {
+        $gameOdds             = new GameOdds();
+        $gameOdds->home_odds  = 1.9;
+        $gameOdds->draw_odds  = 3.2;
+        $gameOdds->away_odds  = 2.1;
+
+        $this->assertSame(3.2, $this->service->getGameOdds(0, 0, $gameOdds, 0));
+        $this->assertSame(3.2, $this->service->getGameOdds(1, 1, $gameOdds, 0));
+    }
+
     // ── calculateGamePoints ──────────────────────────────────────────────────
 
     public function test_calculate_game_points_applies_rate(): void
