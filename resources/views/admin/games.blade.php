@@ -185,7 +185,7 @@ function gameModal() {
             this.homeTeamID = String(homeTeamID);
             this.awayTeamID = String(awayTeamID);
             this.eventID    = String(eventID);
-            new bootstrap.Modal(document.getElementById('agmEditModal')).show();
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('agmEditModal')).show();
         },
         confirmDelete() {
             if (confirm('Ištrinti žaidimą #' + this.gameID + '?')) {
