@@ -24,7 +24,7 @@
                             <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->home_team)).'.svg') }}" class="pred-flag" alt="{{ $game->home_team }}">
                         </div>
                         <div class="pred-scores">
-                            <span class="pred-time">{{ \Carbon\Carbon::parse($game->game_date)->format('d.m · H:i') }}</span>
+                            <span class="pred-time">{{ ucfirst(\Carbon\Carbon::parse($game->game_date)->locale('lt')->isoFormat('MMMM D')) }} · {{ \Carbon\Carbon::parse($game->game_date)->format('H:i') }}</span>
                             <div class="pred-scores-inputs">
                                 <input type="text" class="form-control pred-score" id="homeTeamScore{{$game->game_id}}" onkeyup="checkPrediction({{$game->game_id}})" value="{{ $game->home_team_score }}" maxlength="2" autocomplete="off">
                                 <span class="pred-sep">:</span>
