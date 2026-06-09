@@ -10,7 +10,10 @@
             $played  = $g->home_team_score !== null;
         @endphp
         <a href="{{ route('prediction.results') }}" class="upcoming-row">
-            <span class="upcoming-date">{{ \Carbon\Carbon::parse($g->game_date)->format('d.m') }}</span>
+            <span class="upcoming-date">
+                <span>{{ \Carbon\Carbon::parse($g->game_date)->format('d.m') }}</span>
+                <span class="upcoming-time">{{ \Carbon\Carbon::parse($g->game_date)->format('H:i') }}</span>
+            </span>
 
             <span class="upcoming-team upcoming-home">
                 <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($g->home_team)) . '.svg') }}"

@@ -38,7 +38,8 @@ class PredictionResultController extends Controller
                 at.team AS away_team,
                 at.id AS away_team_id,
                 prr.home_team_score,
-                prr.away_team_score
+                prr.away_team_score,
+                IF(g.game_date <= DATE_ADD(NOW(), INTERVAL ? HOUR), 1, 0) AS locked
             FROM prediction_results AS prr
                 JOIN users u ON prr.user_id = u.id
                 JOIN games g ON g.id = prr.game_id
@@ -47,9 +48,9 @@ class PredictionResultController extends Controller
                 JOIN events e ON e.id = g.event_id
             WHERE
                 prr.user_id = ? AND
-                g.game_date > DATE_ADD(NOW(), INTERVAL ? HOUR)
+                (g.game_date > DATE_ADD(NOW(), INTERVAL ? HOUR) OR g.home_team_score IS NULL)
             ORDER BY g.event_id ASC, ht.group_name ASC, g.game_date ASC',
-            [$userID, $timeDiff]);
+            [$timeDiff, $userID, $timeDiff]);
     }
 
     public function updatePredictionResultUser(UpdatePredictionResultRequest $request)
@@ -131,7 +132,7 @@ class PredictionResultController extends Controller
                               u.id = ?
                               AND e.id = ?
                               AND ug.group_id = ?
-                          ORDER BY g.game_date ASC',
+                          ORDER BY g.id ASC',
             [$timeDiff, $userID, $eventID, $groupID]);
 
         return $predictionGamesUserProfileEventDay;
