@@ -29,7 +29,7 @@
             </thead>
             <tbody>
                 @foreach($games as $game)
-                <tr @if(session('admin') >= 9) style="cursor:pointer" @dblclick="openModal('{{ $game->id }}', '{{ substr(str_replace(' ', 'T', $game->game_date), 0, 16) }}', '{{ $game->home_team_id ?? '' }}', '{{ $game->away_team_id ?? '' }}', '{{ $game->event_id ?? '' }}')" @endif>
+                <tr @if(session('admin') >= 1) style="cursor:pointer" @dblclick="openModal('{{ $game->id }}', '{{ substr(str_replace(' ', 'T', $game->game_date), 0, 16) }}', '{{ $game->home_team_id ?? '' }}', '{{ $game->away_team_id ?? '' }}', '{{ $game->event_id ?? '' }}')" @endif>
                     <td class="agm-id">{{ $game->id }}</td>
                     <td class="agm-datetime">
                         {{ \Carbon\Carbon::parse($game->game_date)->format('d M · H:i') }}
@@ -141,11 +141,15 @@
                         </div>
                     </div>
                     <div class="modal-footer justify-content-between">
+                        @if(session('admin') >= 9)
                         <button type="button"
                                 class="btn btn-outline-danger btn-sm"
                                 @click="confirmDelete()">
                             Ištrinti žaidimą
                         </button>
+                        @else
+                        <span></span>
+                        @endif
                         <div>
                             <button type="button" class="btn btn-secondary btn-sm me-2"
                                     data-bs-dismiss="modal">Atšaukti</button>
