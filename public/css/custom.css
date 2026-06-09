@@ -1659,16 +1659,19 @@ a:hover { color: var(--sb-accent-h); }
 /* ============================================================
    Admin games table (.agm-*)
    ============================================================ */
-.agm-table { font-size: .875rem; table-layout: fixed; width: 100%; min-width: 820px; }
-.agm-col-id      { width: 36px; }
-.agm-col-date    { width: 148px; }
-.agm-col-time    { width: 78px; }
-.agm-col-team    { width: 162px; }
-.agm-col-event   { width: 145px; }
-.agm-col-actions { width: 42px; }
-
-.agm-id { font-size: .75rem; color: var(--sb-muted); }
-.agm-insert-row td { border-top: 2px solid var(--sb-border); background: #f9fafb; }
+/* Admin games table (.agm-*) */
+.agm-table          { font-size: .875rem; table-layout: auto; width: 100%; }
+.agm-col-id         { width: 32px; }
+.agm-col-date       { width: 148px; white-space: nowrap; }
+.agm-col-stage      { width: 130px; }
+.agm-col-actions    { width: 48px; }
+.agm-id             { font-size: .75rem; color: var(--sb-muted); }
+.agm-datetime       { color: var(--sb-muted); font-size: .8rem; }
+.agm-match          { font-weight: 500; }
+.agm-vs             { color: var(--sb-muted); font-size: .75rem; margin: 0 .35rem; font-weight: 400; }
+.agm-badge-stage    { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: .72rem; background: var(--sb-surface); color: var(--sb-muted); border: 1px solid var(--sb-border); }
+.agm-action-btn     { width: 30px; padding-left: 0; padding-right: 0; }
+.agm-insert-row td  { border-top: 2px solid var(--sb-border); background: #f9fafb; }
 
 /* ============================================================
    Admin events table (.ae-*)
