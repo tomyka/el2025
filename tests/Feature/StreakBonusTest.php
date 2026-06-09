@@ -56,7 +56,7 @@ class StreakBonusTest extends TestCase
         ]);
     }
 
-    public function test_first_correct_prediction_gets_bonus_of_one(): void
+    public function test_first_correct_prediction_gets_no_bonus(): void
     {
         $user = User::factory()->create();
         $game = $this->makeGame();
@@ -68,7 +68,7 @@ class StreakBonusTest extends TestCase
             ->where('user_id', $user->id)->where('game_id', $game->id)
             ->value('streak_bonus');
 
-        $this->assertEquals(1, $bonus);
+        $this->assertEquals(0, $bonus);
     }
 
     public function test_consecutive_correct_predictions_increment_streak(): void
@@ -91,7 +91,7 @@ class StreakBonusTest extends TestCase
             ->pluck('streak_bonus')
             ->toArray();
 
-        $this->assertEquals([1, 2, 3], $bonuses);
+        $this->assertEquals([0, 1, 2], $bonuses);
     }
 
     public function test_wrong_prediction_resets_streak_to_zero(): void
@@ -113,7 +113,7 @@ class StreakBonusTest extends TestCase
             ->pluck('streak_bonus')
             ->toArray();
 
-        $this->assertEquals([1, 0, 1], $bonuses);
+        $this->assertEquals([0, 0, 0], $bonuses);
     }
 
     public function test_generated_prediction_resets_streak(): void
@@ -135,7 +135,7 @@ class StreakBonusTest extends TestCase
             ->pluck('streak_bonus')
             ->toArray();
 
-        $this->assertEquals([1, 0, 1], $bonuses);
+        $this->assertEquals([0, 0, 0], $bonuses);
     }
 
     public function test_missing_point_result_row_resets_streak(): void
@@ -157,8 +157,8 @@ class StreakBonusTest extends TestCase
             ->pluck('streak_bonus')
             ->toArray();
 
-        // g1=1, g2 missing (streak resets), g3=1
-        $this->assertEquals([1, 1], $bonuses);
+        // g1=0, g2 missing (streak resets), g3=0
+        $this->assertEquals([0, 0], $bonuses);
     }
 
     public function test_streaks_are_independent_per_user(): void
@@ -179,8 +179,8 @@ class StreakBonusTest extends TestCase
         $u1bonuses = DB::table('point_results')->where('user_id', $u1->id)->orderBy('game_id')->pluck('streak_bonus')->toArray();
         $u2bonuses = DB::table('point_results')->where('user_id', $u2->id)->orderBy('game_id')->pluck('streak_bonus')->toArray();
 
-        $this->assertEquals([1, 0], $u1bonuses);
-        $this->assertEquals([1, 2], $u2bonuses);
+        $this->assertEquals([0, 0], $u1bonuses);
+        $this->assertEquals([0, 1], $u2bonuses);
     }
 
     public function test_recalculate_is_idempotent(): void
@@ -202,7 +202,7 @@ class StreakBonusTest extends TestCase
             ->pluck('streak_bonus')
             ->toArray();
 
-        $this->assertEquals([1, 2], $bonuses);
+        $this->assertEquals([0, 1], $bonuses);
     }
 
     public function test_streak_bonus_returned_separately_in_user_profile_points(): void
@@ -221,6 +221,6 @@ class StreakBonusTest extends TestCase
         $streakTotal      = array_sum(array_column($profilePoints, 'streak_bonus'));
 
         $this->assertEquals(10.0, $baseTotal);   // base: 5+5
-        $this->assertEquals(3.0,  $streakTotal);  // streak: 1+2
+        $this->assertEquals(1.0,  $streakTotal);  // streak: 0+1
     }
 }
