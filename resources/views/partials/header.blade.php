@@ -44,6 +44,10 @@
                href="{{ route('summary.prediction.results') }}" target="_blank">
                 <i class="bi bi-list-check"></i> Prognozės
             </a>
+            <a class="sb-nav-link {{ request()->routeIs('summary.prediction.standings') ? 'active' : '' }}"
+               href="{{ route('summary.prediction.standings') }}">
+                <i class="bi bi-table"></i> Eiga
+            </a>
             @if(session('survivalGame') != 0)
             <a class="sb-nav-link {{ request()->routeIs('summary.prediction.survivals') ? 'active' : '' }}"
                href="{{ route('summary.prediction.survivals') }}">
@@ -148,6 +152,10 @@
             </a>
             <a class="sb-nav-link" href="{{ route('summary.prediction.results') }}" target="_blank">
                 <i class="bi bi-list-check"></i> Prognozės
+            </a>
+            <a class="sb-nav-link {{ request()->routeIs('summary.prediction.standings') ? 'active' : '' }}"
+               href="{{ route('summary.prediction.standings') }}">
+                <i class="bi bi-table"></i> Eiga
             </a>
             @if(session('survivalGame') != 0)
             <a class="sb-nav-link {{ request()->routeIs('summary.prediction.survivals') ? 'active' : '' }}"
