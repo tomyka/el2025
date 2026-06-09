@@ -2,9 +2,16 @@
 @section('content')
 
 <div class="sb-card">
-    <div class="sb-card-title">
-        <i class="bi bi-calendar-event-fill sb-card-icon"></i> Žaidimai
-        <span class="badge bg-secondary fw-normal ms-1">{{ $games->count() }}</span>
+    <div class="sb-card-title d-flex align-items-center justify-content-between">
+        <span>
+            <i class="bi bi-calendar-event-fill sb-card-icon"></i> Žaidimai
+            <span class="badge bg-secondary fw-normal ms-1">{{ $games->count() }}</span>
+        </span>
+        @if(session('admin') >= 9)
+        <button class="btn btn-sm btn-primary" onclick="agmOpenInsert()">
+            <i class="bi bi-plus-lg"></i> Naujas
+        </button>
+        @endif
     </div>
 
     @if(Session::has('info'))
@@ -38,67 +45,19 @@
                     </td>
                 </tr>
                 @endforeach
-
-                {{-- Insert row — superadmin only --}}
-                @if(session('admin') >= 9)
-                <tr class="agm-insert-row">
-                    <form method="post" action="{{ route('admin.insertGame') }}">
-                    @csrf
-                    <td class="agm-id"><i class="bi bi-plus-lg text-muted"></i></td>
-                    <td>
-                        <input type="datetime-local" class="form-control form-control-sm"
-                               name="gameDateTime"
-                               value="{{ substr(str_replace(' ', 'T', $gameMaxDateTime), 0, 16) }}">
-                    </td>
-                    <td>
-                        <div class="d-flex gap-2">
-                            <select name="homeTeamID" class="form-select form-select-sm">
-                                <option value="">— Šeimininkai —</option>
-                                @foreach($teams as $teamID => $teamName)
-                                <option value="{{ $teamID }}">{{ $teamName }}</option>
-                                @endforeach
-                            </select>
-                            <select name="awayTeamID" class="form-select form-select-sm">
-                                <option value="">— Svečiai —</option>
-                                @foreach($teams as $teamID => $teamName)
-                                <option value="{{ $teamID }}">{{ $teamName }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="d-flex gap-2 align-items-center">
-                            <select name="eventID" class="form-select form-select-sm">
-                                <option value="">— Etapas —</option>
-                                @foreach($events as $eventID => $eventName)
-                                <option value="{{ $eventID }}" {{ $eventID == $lastEnteredEventID ? 'selected' : '' }}>{{ $eventName }}</option>
-                                @endforeach
-                            </select>
-                            <button type="submit"
-                                    class="btn btn-sm btn-primary flex-shrink-0"
-                                    title="Pridėti žaidimą">
-                                <i class="bi bi-plus-lg"></i>
-                            </button>
-                        </div>
-                    </td>
-                    </form>
-                </tr>
-                @endif
             </tbody>
         </table>
     </div>
 
-    {{-- Edit modal --}}
+    {{-- Shared insert/edit modal --}}
     <div class="modal fade" id="agmEditModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">
-                        Redaguoti žaidimą <span id="agmModalTitle" class="text-muted fw-normal fs-6"></span>
-                    </h5>
+                    <h5 class="modal-title" id="agmModalHeading"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="post" action="{{ route('admin.updateGame') }}">
+                <form method="post" id="agmForm">
                     @csrf
                     <input type="hidden" name="gameID" id="agmGameID">
                     <div class="modal-body">
@@ -137,7 +96,7 @@
                     </div>
                     <div class="modal-footer justify-content-between">
                         @if(session('admin') >= 9)
-                        <button type="button"
+                        <button type="button" id="agmDeleteBtn"
                                 class="btn btn-outline-danger btn-sm"
                                 onclick="agmConfirmDelete()">
                             Ištrinti žaidimą
@@ -164,14 +123,35 @@
 </div>
 
 <script>
+var agmInsertAction = '{{ route('admin.insertGame') }}';
+var agmUpdateAction = '{{ route('admin.updateGame') }}';
+var agmDefaultDateTime = '{{ substr(str_replace(' ', 'T', $gameMaxDateTime), 0, 16) }}';
+
+function agmOpenInsert() {
+    document.getElementById('agmModalHeading').textContent = 'Naujas žaidimas';
+    document.getElementById('agmForm').action = agmInsertAction;
+    document.getElementById('agmGameID').value = '';
+    document.getElementById('agmDeleteGameID').value = '';
+    document.getElementById('agmDateTime').value = agmDefaultDateTime;
+    document.getElementById('agmHomeTeamID').value = '';
+    document.getElementById('agmAwayTeamID').value = '';
+    document.getElementById('agmEventID').value = '';
+    var deleteBtn = document.getElementById('agmDeleteBtn');
+    if (deleteBtn) deleteBtn.style.display = 'none';
+    new bootstrap.Modal(document.getElementById('agmEditModal')).show();
+}
+
 function agmOpenModal(id, dateTime, homeTeamID, awayTeamID, eventID) {
-    document.getElementById('agmModalTitle').textContent = '#' + id;
+    document.getElementById('agmModalHeading').textContent = 'Redaguoti žaidimą #' + id;
+    document.getElementById('agmForm').action = agmUpdateAction;
     document.getElementById('agmGameID').value = id;
     document.getElementById('agmDeleteGameID').value = id;
     document.getElementById('agmDateTime').value = dateTime;
     document.getElementById('agmHomeTeamID').value = homeTeamID;
     document.getElementById('agmAwayTeamID').value = awayTeamID;
     document.getElementById('agmEventID').value = eventID;
+    var deleteBtn = document.getElementById('agmDeleteBtn');
+    if (deleteBtn) deleteBtn.style.display = '';
     new bootstrap.Modal(document.getElementById('agmEditModal')).show();
 }
 
