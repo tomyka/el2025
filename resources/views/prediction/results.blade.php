@@ -25,9 +25,12 @@
                             <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->home_team)).'.svg') }}" class="pred-flag" alt="{{ $game->home_team }}">
                         </div>
                         <div class="pred-scores">
-                            <input type="text" class="form-control pred-score" id="homeTeamScore{{$game->game_id}}" onkeyup="checkPrediction({{$game->game_id}})" value="{{ $game->home_team_score }}" maxlength="2" autocomplete="off">
-                            <span class="pred-sep">:</span>
-                            <input type="text" class="form-control pred-score" id="awayTeamScore{{$game->game_id}}" onkeyup="checkPrediction({{$game->game_id}})" value="{{ $game->away_team_score }}" maxlength="2" autocomplete="off">
+                            <span class="pred-time">{{ \Carbon\Carbon::parse($game->game_date)->format('H:i') }}</span>
+                            <div class="pred-scores-inputs">
+                                <input type="text" class="form-control pred-score" id="homeTeamScore{{$game->game_id}}" onkeyup="checkPrediction({{$game->game_id}})" value="{{ $game->home_team_score }}" maxlength="2" autocomplete="off">
+                                <span class="pred-sep">:</span>
+                                <input type="text" class="form-control pred-score" id="awayTeamScore{{$game->game_id}}" onkeyup="checkPrediction({{$game->game_id}})" value="{{ $game->away_team_score }}" maxlength="2" autocomplete="off">
+                            </div>
                         </div>
                         <div class="pred-team-away">
                             <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->away_team)).'.svg') }}" class="pred-flag" alt="{{ $game->away_team }}">

@@ -1181,9 +1181,24 @@ a:hover { color: var(--sb-accent-h); }
 
 .pred-scores {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0 8px;
+}
+
+.pred-scores-inputs {
+  display: flex;
   align-items: center;
   gap: 3px;
-  padding: 0 8px;
+}
+
+.pred-time {
+  font-size: .68rem;
+  font-weight: 600;
+  color: var(--sb-muted);
+  letter-spacing: .3px;
+  line-height: 1;
 }
 
 .pred-score {
