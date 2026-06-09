@@ -1,7 +1,9 @@
-@extends('layouts.master_blank')
+@extends('layouts.master')
 @section('content')
 
-    <table class="table table-sm table-bordered table-hover table-nonfluid">
+<div class="sb-card p-0">
+<div class="table-responsive">
+    <table class="table table-sm table-bordered table-hover mb-0">
         <thead>
         <tr class="table-dark">
             <td rowspan="2" style="vertical-align: middle; text-align: center; border-right: double"><strong>Komanda</strong></td>
@@ -87,5 +89,7 @@
         @endforeach
         </tbody>
     </table>
+</div>
+</div>
 
 @endsection

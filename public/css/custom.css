@@ -1717,6 +1717,143 @@ a:hover { color: var(--sb-accent-h); }
 .am-insert-row td { border-top: 2px solid var(--sb-border); background: #f9fafb; }
 
 /* ============================================================
+   Summary results table (.sr-*)
+   ============================================================ */
+.sr-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 0 12px;
+}
+
+.sr-tab {
+  font-size: .78rem;
+  font-weight: 600;
+  padding: 4px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--sb-border);
+  background: white;
+  color: var(--sb-muted);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+  line-height: 1.5;
+}
+.sr-tab:hover { border-color: var(--sb-accent); color: var(--sb-accent); }
+.sr-tab-active { background: var(--sb-accent) !important; border-color: var(--sb-accent) !important; color: #fff !important; }
+
+.sr-scroll-wrap {
+  overflow: auto;
+  max-height: calc(100vh - 180px);
+  border: 1px solid var(--sb-border);
+  border-radius: 12px;
+}
+
+.sr-table {
+  font-size: .8rem;
+  white-space: nowrap;
+  border-collapse: separate;
+  border-spacing: 0;
+  width: max-content;
+  min-width: 100%;
+  margin: 0;
+}
+
+.sr-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--sb-nav);
+  color: rgba(255,255,255,.88);
+  padding: 8px 10px;
+  border-bottom: 2px solid rgba(255,255,255,.1);
+  border-right: 1px solid rgba(255,255,255,.07);
+}
+
+.sr-sticky-col {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--sb-card);
+  box-shadow: 3px 0 6px rgba(0,0,0,.06);
+}
+
+.sr-table thead .sr-sticky-col { z-index: 3; }
+
+.sr-hdr-game { min-width: 170px; text-align: left !important; }
+.sr-hdr-user { min-width: 72px; text-align: center; font-size: .72rem; font-weight: 600; }
+
+.sr-game-td {
+  padding: 6px 10px !important;
+  border-right: 2px solid var(--sb-border);
+  border-bottom: 1px solid var(--sb-border);
+  vertical-align: middle;
+}
+
+.sr-game-flags {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 2px;
+}
+
+.sr-flag { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
+
+.sr-actual-score {
+  font-weight: 700;
+  font-size: .85rem;
+  min-width: 36px;
+  text-align: center;
+}
+
+.sr-game-names {
+  font-size: .68rem;
+  color: var(--sb-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 155px;
+}
+
+.sr-pred-td {
+  text-align: center;
+  padding: 5px 8px !important;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--sb-border);
+  border-right: 1px solid var(--sb-border);
+}
+
+.sr-pts-link {
+  display: block;
+  font-weight: 700;
+  font-size: .82rem;
+  color: var(--sb-text);
+  text-decoration: none;
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+.sr-pts-link:hover { color: var(--sb-accent); }
+
+.sr-pred-badge {
+  font-size: .68rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  display: inline-block;
+  line-height: 1.5;
+}
+.sr-pred-ok      { background: #dcfce7; color: #15803d; }
+.sr-pred-fail    { background: #fee2e2; color: #b91c1c; }
+.sr-pred-pending { background: #f1f5f9; color: var(--sb-muted); }
+
+.sr-table tbody tr:hover .sr-pred-td  { background: #f8fafc; }
+.sr-table tbody tr:hover .sr-sticky-col { background: #f1f5f9; }
+
+.sr-pop { font-size: .78rem; min-width: 160px; }
+.sr-pop-row { display: flex; justify-content: space-between; gap: 16px; padding: 1px 0; }
+.sr-pop-row span { color: var(--sb-muted); }
+.sr-pop-row strong { font-weight: 700; }
+
+/* ============================================================
    Legacy / Admin utility classes
    ============================================================ */
 p { margin: 0; }

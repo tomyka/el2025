@@ -1,7 +1,9 @@
-@extends('layouts.master_blank')
+@extends('layouts.master')
 @section('content')
 
-    <table class="table table-sm table-bordered table-hover">
+<div class="sb-card p-0">
+<div class="table-responsive">
+    <table class="table table-sm table-bordered table-hover mb-0">
         <tr class="align-middle">
             <th class="table-primary">Rungtynės</th>
             @foreach($predictionResults as $predictionResult)
@@ -58,7 +60,7 @@
 
 
     </table>
-
-
+</div>
+</div>
 
 @endsection

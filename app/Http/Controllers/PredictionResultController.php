@@ -261,22 +261,25 @@ class PredictionResultController extends Controller
         $eventID = session('eventID');
 
         $timeDiff = session('timeDifference');
-        $games = DB::select('  select
+        $games = DB::select('select
                                 g.id
-                                ,ht.team AS home_team
-                                ,at.team  AS away_team
-                                ,g.home_team_id
-                                ,g.away_team_id
-                                ,g.home_team_score
-                                ,g.away_team_score
-                                ,g.game_winner_id
-                              from games AS g
-                                join teams AS ht ON g.home_team_id=ht.id
-                                join teams AS at ON g.away_team_id=at.id
-                              where g.game_date < DATE_ADD(NOW(), INTERVAL ? HOUR)
-                              order by g.id DESC
-                              LIMIT 32
-                              ', [$timeDiff]);
+                               ,ht.team  AS home_team
+                               ,at.team  AS away_team
+                               ,g.home_team_id
+                               ,g.away_team_id
+                               ,g.home_team_score
+                               ,g.away_team_score
+                               ,g.game_winner_id
+                               ,e.event  AS event_name
+                               ,g.game_date
+                             from games AS g
+                               join teams  AS ht ON g.home_team_id = ht.id
+                               join teams  AS at ON g.away_team_id = at.id
+                               join events AS e  ON e.id = g.event_id
+                             where g.game_date < DATE_ADD(NOW(), INTERVAL ? HOUR)
+                             order by g.id DESC
+                             LIMIT 32
+                             ', [$timeDiff]);
 
         $predictionResultController = new PredictionResultController();
         $predictionResults = $predictionResultController->getPredictionGamesProfile($groupID, $eventID);
