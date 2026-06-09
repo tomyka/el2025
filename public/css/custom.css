@@ -919,7 +919,8 @@ a:hover { color: var(--sb-accent-h); }
   flex-shrink: 0;
   width: 38px;
 }
-.lb-sub-bingo { color: var(--sb-text); font-weight: 700; }
+.lb-sub-bingo  { color: var(--sb-text); font-weight: 700; }
+.lb-sub-streak { color: #f97316; font-weight: 700; }
 
 .lb-row {
   display: flex;

@@ -11,6 +11,7 @@
         @if(session('survivalGame') == 1)
         <span class="lb-header-sub d-none d-md-block" title="Išlikimo taškai"><i class="bi bi-shield-check"></i></span>
         @endif
+        <span class="lb-header-sub d-none d-md-block" title="Serija (iš eilės pataikytų spėjimų premija)"><i class="bi bi-fire"></i></span>
         <span class="lb-header-sub d-none d-md-block" title="Vidurkis"><i class="bi bi-graph-up"></i></span>
         <span class="lb-header-sub lb-header-sub-bingo d-none d-md-block" title="Bingo"><i class="bi bi-bullseye"></i></span>
         <span class="lb-header-total">Taškai</span>
@@ -18,7 +19,7 @@
     </div>
     @foreach($points as $point)
     @php
-        $total     = $point['userGamePoints'] + $point['standingPoints']->total_points + $point['survivalPoints'];
+        $total     = $point['userGamePoints'] + ($point['userStreakPoints'] ?? 0) + $point['standingPoints']->total_points + $point['survivalPoints'];
         $rank      = $loop->iteration;
         $isMe      = session('userID') == $point['userID'];
         $fullName  = trim($point['name'] . ' ' . $point['surname']);
@@ -40,6 +41,9 @@
             @if(session('survivalGame') == 1)
             <div class="lb-sub-col d-none d-md-block">{{ $point['survivalPoints'] }}</div>
             @endif
+            <div class="lb-sub-col d-none d-md-block {{ ($point['userStreakPoints'] ?? 0) > 0 ? 'lb-sub-streak' : '' }}">
+                {{ ($point['userStreakPoints'] ?? 0) > 0 ? '+'.number_format($point['userStreakPoints'], 1) : '—' }}
+            </div>
             <div class="lb-sub-col d-none d-md-block">{{ number_format($point['averagePoints'], 1) }}</div>
             <div class="lb-sub-col d-none d-md-block {{ $point['userGameBingo'] > 0 ? 'lb-sub-bingo' : '' }}">{{ $point['userGameBingo'] > 0 ? '★'.$point['userGameBingo'] : '' }}</div>
             <div class="lb-total {{ $isMe ? 'lb-me-total' : '' }}">{{ number_format($total, 1) }}</div>

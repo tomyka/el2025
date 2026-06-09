@@ -106,8 +106,9 @@ class PointResultController extends Controller
             ->select('winner_points', 'difference_points', 'bingo_points', 'odds_points', 'full_points', 'streak_bonus')
             ->get()
             ->map(fn ($r) => [
-                'full_points'  => round($r->full_points + ($r->streak_bonus ?? 0), 1),
-                'bingo_points' => $r->bingo_points != 0 ? 1 : 0,
+                'full_points'   => round($r->full_points, 1),
+                'streak_bonus'  => round($r->streak_bonus ?? 0, 1),
+                'bingo_points'  => $r->bingo_points != 0 ? 1 : 0,
             ])
             ->all();
     }

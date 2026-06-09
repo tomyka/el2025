@@ -205,7 +205,7 @@ class StreakBonusTest extends TestCase
         $this->assertEquals([1, 2], $bonuses);
     }
 
-    public function test_streak_bonus_included_in_user_profile_points(): void
+    public function test_streak_bonus_returned_separately_in_user_profile_points(): void
     {
         $user = User::factory()->create();
         $g1   = $this->makeGame();
@@ -216,10 +216,11 @@ class StreakBonusTest extends TestCase
 
         app(PointResultController::class)->recalculateStreaks();
 
-        $profilePoints = app(PointResultController::class)->getUserProfilePoints($user->id);
-        $total = array_sum(array_column($profilePoints, 'full_points'));
+        $profilePoints   = app(PointResultController::class)->getUserProfilePoints($user->id);
+        $baseTotal        = array_sum(array_column($profilePoints, 'full_points'));
+        $streakTotal      = array_sum(array_column($profilePoints, 'streak_bonus'));
 
-        // base: 5+5=10, streak: 1+2=3, total=13
-        $this->assertEquals(13.0, $total);
+        $this->assertEquals(10.0, $baseTotal);   // base: 5+5
+        $this->assertEquals(3.0,  $streakTotal);  // streak: 1+2
     }
 }

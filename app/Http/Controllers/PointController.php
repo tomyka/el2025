@@ -17,12 +17,13 @@ class PointController extends Controller
         $pointSurvivalController = new PointSurvivalController();
 
         foreach ($users as $user){
-            $userGamePoints = array_sum(array_column($pointsResultController->getUserProfilePoints($user->id),'full_points'));
-            $userGameBingo = array_sum(array_column($pointsResultController->getUserProfilePoints($user->id),'bingo_points'));
-            $gameCount = count($pointsResultController->getUserProfilePoints($user->id));
+            $profile        = $pointsResultController->getUserProfilePoints($user->id);
+            $userGamePoints = array_sum(array_column($profile, 'full_points'));
+            $userStreakPoints= array_sum(array_column($profile, 'streak_bonus'));
+            $userGameBingo  = array_sum(array_column($profile, 'bingo_points'));
+            $gameCount      = count($profile);
             $standingPoints = $pointStandingController->getStandingsUserPoints($user->id);
             $survivalPoints = $pointSurvivalController->getPredictionSurvivalUserPoints($user->id);
-
 
             $userAllPoints[] = [
                 'userID'            => $user->id,
@@ -31,6 +32,7 @@ class PointController extends Controller
                 'surname'           => $user->surname,
                 'userFee'           => $user->user_fee,
                 'userGamePoints'    => round((($userGamePoints=="")?0:$userGamePoints),1),
+                'userStreakPoints'   => round($userStreakPoints, 1),
                 'userGameBingo'     => (($userGameBingo=="")?0:$userGameBingo),
                 'averagePoints'     => (($gameCount==0)?0:round($userGamePoints/$gameCount,1)),
                 'standingPoints'    => $standingPoints,
@@ -40,7 +42,8 @@ class PointController extends Controller
 
         if (!empty($userAllPoints)) {
             usort($userAllPoints, function ($a, $b) {
-                return $b['userGamePoints'] + $b['standingPoints']->total_points + $b['survivalPoints'] <=> $a['userGamePoints'] + $a['standingPoints']->total_points + $a['survivalPoints'];
+                return $b['userGamePoints'] + $b['userStreakPoints'] + $b['standingPoints']->total_points + $b['survivalPoints']
+                   <=> $a['userGamePoints'] + $a['userStreakPoints'] + $a['standingPoints']->total_points + $a['survivalPoints'];
             });
         }
         else {
