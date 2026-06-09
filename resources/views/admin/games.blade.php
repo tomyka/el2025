@@ -25,14 +25,11 @@
                     <th class="agm-col-date">Data / laikas</th>
                     <th>Rungtynės</th>
                     <th class="agm-col-stage">Etapas</th>
-                    @if(session('admin') >= 9)
-                    <th class="agm-col-actions"></th>
-                    @endif
                 </tr>
             </thead>
             <tbody>
                 @foreach($games as $game)
-                <tr>
+                <tr @if(session('admin') >= 9) style="cursor:pointer" @dblclick="openModal('{{ $game->id }}', '{{ substr(str_replace(' ', 'T', $game->game_date), 0, 16) }}', '{{ $game->home_team_id ?? '' }}', '{{ $game->away_team_id ?? '' }}', '{{ $game->event_id ?? '' }}')" @endif>
                     <td class="agm-id">{{ $game->id }}</td>
                     <td class="agm-datetime">
                         {{ \Carbon\Carbon::parse($game->game_date)->format('d M · H:i') }}
@@ -43,16 +40,6 @@
                     <td>
                         <span class="agm-badge-stage">{{ $game->event->event ?? '—' }}</span>
                     </td>
-                    @if(session('admin') >= 9)
-                    <td class="text-end">
-                        <button type="button"
-                                class="btn btn-sm btn-outline-secondary agm-action-btn"
-                                title="Redaguoti"
-                                @click="openModal('{{ $game->id }}', '{{ substr(str_replace(' ', 'T', $game->game_date), 0, 16) }}', '{{ $game->home_team_id ?? '' }}', '{{ $game->away_team_id ?? '' }}', '{{ $game->event_id ?? '' }}')">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                    </td>
-                    @endif
                 </tr>
                 @endforeach
 
@@ -84,19 +71,19 @@
                         </div>
                     </td>
                     <td>
-                        <select name="eventID" class="form-select form-select-sm">
-                            <option value="">— Etapas —</option>
-                            @foreach($events as $eventID => $eventName)
-                            <option value="{{ $eventID }}" {{ $eventID == $lastEnteredEventID ? 'selected' : '' }}>{{ $eventName }}</option>
-                            @endforeach
-                        </select>
-                    </td>
-                    <td class="text-end">
-                        <button type="submit"
-                                class="btn btn-sm btn-primary agm-action-btn"
-                                title="Pridėti žaidimą">
-                            <i class="bi bi-plus-lg"></i>
-                        </button>
+                        <div class="d-flex gap-2 align-items-center">
+                            <select name="eventID" class="form-select form-select-sm">
+                                <option value="">— Etapas —</option>
+                                @foreach($events as $eventID => $eventName)
+                                <option value="{{ $eventID }}" {{ $eventID == $lastEnteredEventID ? 'selected' : '' }}>{{ $eventName }}</option>
+                                @endforeach
+                            </select>
+                            <button type="submit"
+                                    class="btn btn-sm btn-primary flex-shrink-0"
+                                    title="Pridėti žaidimą">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
                     </td>
                     </form>
                 </tr>
