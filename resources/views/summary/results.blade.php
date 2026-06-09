@@ -2,23 +2,29 @@
 @section('content')
 
 @php
-$users  = collect($predictionResults)->pluck('username')->unique()->values();
-$byGame = collect($predictionResults)->groupBy('game_id')->map(fn($g) => $g->keyBy('username'));
-$rounds = collect($games)->pluck('event_name')->unique()->filter()->values();
+$users   = collect($predictionResults)->pluck('username')->unique()->values();
+$byGame  = collect($predictionResults)->groupBy('game_id')->map(fn($g) => $g->keyBy('username'));
+$grouped = collect($games)->groupBy('event_name');
+
+// Precompute per-round totals per user
+$roundTotals = $grouped->map(function ($roundGames) use ($byGame, $users) {
+    $totals = [];
+    foreach ($users as $username) {
+        $sum = 0;
+        foreach ($roundGames as $game) {
+            $pred = $byGame->get($game->id, collect([]))->get($username);
+            if ($pred) $sum += (float) $pred->full_points;
+        }
+        $totals[$username] = $sum;
+    }
+    return $totals;
+});
+
+// Initialise all rounds as open
+$openInit = $grouped->keys()->mapWithKeys(fn($r) => [$r => true])->toJson();
 @endphp
 
-<div x-data="{ round: '' }">
-
-    {{-- Round filter tabs --}}
-    @if($rounds->count() > 1)
-    <div class="sr-tabs">
-        <button class="sr-tab" :class="{ 'sr-tab-active': round === '' }" @click="round = ''">Visi</button>
-        @foreach($rounds as $r)
-        <button class="sr-tab" :class="{ 'sr-tab-active': round === {{ json_encode($r) }} }" @click="round = {{ json_encode($r) }}">{{ $r }}</button>
-        @endforeach
-    </div>
-    @endif
-
+<div x-data="{ open: {{ $openInit }} }">
     <div class="sr-scroll-wrap">
         <table class="sr-table">
             <thead>
@@ -30,9 +36,32 @@ $rounds = collect($games)->pluck('event_name')->unique()->filter()->values();
                 </tr>
             </thead>
             <tbody>
-                @foreach($games as $game)
+                @foreach($grouped as $roundName => $roundGames)
+                @php $totals = $roundTotals[$roundName]; @endphp
+
+                {{-- Round group header --}}
+                <tr class="sr-round-header" @click="open[{{ json_encode($roundName) }}] = !open[{{ json_encode($roundName) }}]">
+                    <td class="sr-sticky-col sr-round-name-td">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi flex-shrink-0"
+                               :class="open[{{ json_encode($roundName) }}] ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+                            <span class="sr-round-label">{{ $roundName }}</span>
+                            <span class="sr-round-count">({{ $roundGames->count() }})</span>
+                        </div>
+                    </td>
+                    @foreach($users as $username)
+                    <td class="sr-round-total">
+                        @if(($totals[$username] ?? 0) > 0)
+                        {{ number_format($totals[$username], 1) }}
+                        @endif
+                    </td>
+                    @endforeach
+                </tr>
+
+                {{-- Game rows --}}
+                @foreach($roundGames as $game)
                 @php $preds = $byGame->get($game->id, collect([])); @endphp
-                <tr x-show="round === '' || round === {{ json_encode($game->event_name) }}">
+                <tr x-show="open[{{ json_encode($roundName) }}]">
                     <td class="sr-sticky-col sr-game-td">
                         <div class="sr-game-flags">
                             <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->home_team)).'.svg') }}" class="sr-flag" alt="{{ $game->home_team }}">
@@ -75,6 +104,8 @@ $rounds = collect($games)->pluck('event_name')->unique()->filter()->values();
                     </td>
                     @endforeach
                 </tr>
+                @endforeach
+
                 @endforeach
             </tbody>
         </table>

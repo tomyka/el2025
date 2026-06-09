@@ -32,10 +32,12 @@ $grouped = collect($games)
             <div class="pred-day-card">
                 <div class="pred-day-header">
                     <span>{{ $groupName ? 'Grupė ' . $groupName : 'Rungtynės' }}</span>
-                    <span class="pred-day-date">{{ \Carbon\Carbon::parse($firstGame->game_date)->format('d.m') }}</span>
                 </div>
                 @foreach($groupGames as $game)
-                @php $hasResult = $game->home_team_score !== null; @endphp
+                @php
+                    $hasResult = $game->home_team_score !== null;
+                    $isFuture  = \Carbon\Carbon::parse($game->game_date)->gt($now);
+                @endphp
                 <div class="pred-game">
                     <div class="pred-team-home">
                         <span class="pred-team-name">{{ $game->home_team->team }}</span>
@@ -43,23 +45,28 @@ $grouped = collect($games)
                              class="pred-flag" alt="{{ $game->home_team->team }}">
                     </div>
                     <div class="pred-scores">
-                        <input type="text"
-                               class="form-control pred-score"
-                               id="homeTeamScore{{ $game->id }}"
-                               onchange="saveResult({{ $game->id }})"
-                               value="{{ $game->home_team_score }}"
-                               maxlength="2"
-                               style="{{ $hasResult ? 'border-color:#22c55e' : '' }}"
-                               autocomplete="off">
-                        <span class="pred-sep">:</span>
-                        <input type="text"
-                               class="form-control pred-score"
-                               id="awayTeamScore{{ $game->id }}"
-                               onchange="saveResult({{ $game->id }})"
-                               value="{{ $game->away_team_score }}"
-                               maxlength="2"
-                               style="{{ $hasResult ? 'border-color:#22c55e' : '' }}"
-                               autocomplete="off">
+                        <span class="pred-time">{{ ucfirst(\Carbon\Carbon::parse($game->game_date)->locale('lt')->isoFormat('MMMM D')) }} · {{ \Carbon\Carbon::parse($game->game_date)->format('H:i') }}</span>
+                        <div class="pred-scores-inputs">
+                            <input type="text"
+                                   class="form-control pred-score"
+                                   id="homeTeamScore{{ $game->id }}"
+                                   onchange="saveResult({{ $game->id }})"
+                                   value="{{ $game->home_team_score }}"
+                                   maxlength="2"
+                                   style="{{ $hasResult ? 'border-color:#22c55e' : '' }}"
+                                   {{ $isFuture ? 'disabled' : '' }}
+                                   autocomplete="off">
+                            <span class="pred-sep">:</span>
+                            <input type="text"
+                                   class="form-control pred-score"
+                                   id="awayTeamScore{{ $game->id }}"
+                                   onchange="saveResult({{ $game->id }})"
+                                   value="{{ $game->away_team_score }}"
+                                   maxlength="2"
+                                   style="{{ $hasResult ? 'border-color:#22c55e' : '' }}"
+                                   {{ $isFuture ? 'disabled' : '' }}
+                                   autocomplete="off">
+                        </div>
                     </div>
                     <div class="pred-team-away">
                         <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($game->away_team->team)) . '.svg') }}"

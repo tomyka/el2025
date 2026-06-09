@@ -1848,10 +1848,40 @@ a:hover { color: var(--sb-accent-h); }
 .sr-table tbody tr:hover .sr-pred-td  { background: #f8fafc; }
 .sr-table tbody tr:hover .sr-sticky-col { background: #f1f5f9; }
 
+/* Round group header rows */
+.sr-round-header { cursor: pointer; user-select: none; }
+.sr-round-header td {
+  background: var(--sb-surface);
+  border-bottom: 1px solid var(--sb-border);
+  border-right: 1px solid var(--sb-border);
+  padding: 7px 10px !important;
+}
+.sr-round-header:hover td { background: #e2e8f0; }
+.sr-round-header .sr-sticky-col { background: var(--sb-surface); border-right: 2px solid var(--sb-border) !important; }
+.sr-round-header:hover .sr-sticky-col { background: #e2e8f0; }
+
+.sr-round-label { font-weight: 700; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; color: var(--sb-text); }
+.sr-round-count { font-size: .72rem; color: var(--sb-muted); font-weight: 400; }
+.sr-round-total { font-weight: 700; font-size: .8rem; color: var(--sb-text); text-align: center; padding: 7px 8px !important; border-right: 1px solid var(--sb-border); }
+
 .sr-pop { font-size: .78rem; min-width: 160px; }
 .sr-pop-row { display: flex; justify-content: space-between; gap: 16px; padding: 1px 0; }
 .sr-pop-row span { color: var(--sb-muted); }
 .sr-pop-row strong { font-weight: 700; }
+
+/* ============================================================
+   Trend chart (.ch-*)
+   ============================================================ */
+.ch-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--sb-border);
+}
+.ch-title { font-weight: 700; font-size: 1rem; color: var(--sb-text); }
+.ch-meta  { font-size: .8rem; color: var(--sb-muted); }
+.ch-wrap  { padding: 16px 8px 16px; height: 460px; }
 
 /* ============================================================
    Legacy / Admin utility classes

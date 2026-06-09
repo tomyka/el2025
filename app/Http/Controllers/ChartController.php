@@ -2,58 +2,96 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\PredictionStandingController;
 use DB;
-
 
 class ChartController extends Controller
 {
-    public function getChartData() {
-        $pointStandingController = app(PointStandingController::class);
-    $history_rounds = 5;
-    $labels = DB::table('events')->join('games','games.event_id','=','events.id')->where('event_id','>=',session('eventID')-$history_rounds)->whereNotNull('games.home_team_score')->distinct()->pluck('events.id');
-    $users = DB::table('user_groups')->where('group_id','=',session('groupID'))->join('colors','user_groups.user_id','=','colors.id')->join('users','user_groups.user_id','=','users.id')->select('users.id','users.username','colors.color_code')->get();
-    $userResults = DB::select('select
-                                      e.id as event_id,
-	                                  pr.user_id,
-				                      SUM(full_points)+SUM(IFNULL(ps.survival_points,0)) AS points
-                        			from prediction_results as pr
-                                      join games as g ON pr.game_id=g.id
-                                      join events as e ON g.event_id=e.id
-                              			left join point_results as por on pr.user_id=por.user_id AND pr.game_id=por.game_id
-                                        left join point_survivals AS ps ON pr.user_id=ps.user_id AND e.id=ps.event_id AND (g.home_team_id=ps.team_id OR g.away_team_id=ps.team_id)
-                                    where g.home_team_score IS NOT NULL
-                                    group by pr.user_id,e.id
-                                   ');
+    public function getChartData()
+    {
+        $groupID = session('groupID');
+        $guest   = session('guest', 0);
 
-        foreach ($users as $user){
-            $runningtotal = $pointStandingController->getStandingsUserPoints($user->id)->total_points;
-            $data = array();
-            foreach ($userResults as $userResult) {
-                if ($user->id == $userResult->user_id) {
-                    $runningtotal += $userResult->points;
-                    if ($userResult->event_id >= session('eventID')-$history_rounds) {
-                        $data[] = Round($runningtotal, 2);
-                    }
-                }
+        // All scored games in chronological order
+        $games = DB::select('
+            SELECT g.id, g.game_date,
+                   ht.team AS home_team,
+                   at.team AS away_team
+            FROM games g
+                JOIN teams ht ON g.home_team_id = ht.id
+                JOIN teams at ON g.away_team_id = at.id
+            WHERE g.home_team_score IS NOT NULL
+            ORDER BY g.game_date ASC, g.id ASC
+        ');
 
-            }
-            $datasets[] = array(
-                'data' => $data,
-                'label' => $user->username,
-                'backgroundColor' => $user->color_code,
-                'borderColor' => $user->color_code,
-                'fill' => false
+        // Users in this group (respect guest visibility setting)
+        $users = DB::table('user_groups')
+            ->where('user_groups.group_id', $groupID)
+            ->where('user_groups.guest', '<=', $guest)
+            ->join('users', 'user_groups.user_id', '=', 'users.id')
+            ->leftJoin('colors', 'user_groups.user_id', '=', 'colors.id')
+            ->select('users.id', 'users.username', 'colors.color_code')
+            ->get();
 
-            );
-            reset ($data);
+        // Full points per user per game
+        $rows = DB::select('
+            SELECT pr.game_id, pr.user_id,
+                   ROUND(IFNULL(por.full_points, 0), 2) AS points
+            FROM prediction_results pr
+                JOIN games g ON pr.game_id = g.id
+                JOIN user_groups ug ON pr.user_id = ug.user_id
+                    AND ug.group_id = ?
+                    AND ug.guest <= ?
+                LEFT JOIN point_results por
+                    ON por.user_id = pr.user_id AND por.game_id = pr.game_id
+            WHERE g.home_team_score IS NOT NULL
+        ', [$groupID, $guest]);
+
+        // Index: pointsMap[user_id][game_id] = points
+        $pointsMap = [];
+        foreach ($rows as $row) {
+            $pointsMap[$row->user_id][$row->game_id] = (float) $row->points;
         }
-        $json_datasets = json_encode($datasets);
-        $chart_datasets =  preg_replace('/"([a-zA-Z]+[a-zA-Z0-9_]*)":/','$1:',$json_datasets);
-        //return $labels;
-        return view('summary.chart')->with('labels',$labels)->with('datasets',$chart_datasets);
-    }
 
+        $palette = [
+            '#3b82f6', '#ef4444', '#22c55e', '#f59e0b', '#8b5cf6',
+            '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16',
+        ];
+
+        $gameIds = array_column($games, 'id');
+
+        $datasets = [];
+        foreach ($users as $idx => $user) {
+            $color      = $user->color_code ?: $palette[$idx % count($palette)];
+            $cumulative = 0;
+            $data       = [];
+            foreach ($gameIds as $gameId) {
+                $cumulative += $pointsMap[$user->id][$gameId] ?? 0;
+                $data[] = round($cumulative, 1);
+            }
+            $datasets[] = [
+                'label'           => $user->username,
+                'data'            => $data,
+                'borderColor'     => $color,
+                'backgroundColor' => $color . '26',
+                'borderWidth'     => 2,
+                'pointRadius'     => count($games) > 40 ? 0 : 3,
+                'pointHoverRadius'=> 6,
+                'tension'         => 0.3,
+                'fill'            => false,
+            ];
+        }
+
+        // Game labels for tooltip (team abbreviations)
+        $gameLabels = array_map(
+            fn($g) => strtoupper(substr($g->home_team, 0, 3))
+                    . ' - '
+                    . strtoupper(substr($g->away_team, 0, 3)),
+            $games
+        );
+
+        return view('summary.chart')
+            ->with('datasets',   json_encode($datasets))
+            ->with('gameLabels', json_encode($gameLabels))
+            ->with('gameCount',  count($games));
+    }
 }
