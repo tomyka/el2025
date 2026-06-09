@@ -86,7 +86,7 @@ a:hover { color: var(--sb-accent-h); }
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 20px;
-  height: 56px;
+  height: 62px;
   width: 100%;
 }
 
@@ -117,8 +117,40 @@ a:hover { color: var(--sb-accent-h); }
 
 .sb-nav-center {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 2px;
+}
+
+/* Desktop nav link groups with ghost section labels */
+.sb-nav-grp {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  padding: 0 2px;
+}
+.sb-nav-grp + .sb-nav-grp {
+  border-left: 1px solid rgba(255,255,255,.1);
+  margin-left: 6px;
+  padding-left: 8px;
+}
+.sb-nav-grp-label {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: .5rem;
+  font-weight: 700;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.28);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+.sb-nav-grp-links {
+  display: flex;
+  align-items: center;
+  padding-top: 16px;
 }
 
 .sb-nav-end {
