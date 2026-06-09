@@ -22,6 +22,7 @@ class MainController extends Controller
         $predictionStandingController = new PredictionStandingController();
         $messageController = new MessageController();
         $user = Auth::user();
+        $rankHistory = [];
 
         if (isset($user)) {
             $sessionController = new SessionController();
@@ -30,6 +31,7 @@ class MainController extends Controller
             $userID = session('userID');
             $eventID = session('eventID');
             $points = $pointController->getAllUserPoints($groupID);
+            $rankHistory = $pointController->getRankHistory($groupID, $userID);
             $gameHistory = $pointController->getAllUsersGameHistory($groupID);
             foreach ($points as $i => &$point) {
                 $history               = $gameHistory[$point['userID']] ?? [];
@@ -54,7 +56,7 @@ class MainController extends Controller
             $eventDaySurvivalStatus=$predictionSurvivalController->getEventDaySurvivalStatus($userID,$eventID);
             $predictionStandingsPoints = $pointController->getPredictionStandingsUserPoints($userID);
 
-            return view('main')->with('messages', $messages)->with('points', $points)->with('predictionGames', $predictionResultsWithStats)->with('eventDaySurvivalStatus',$eventDaySurvivalStatus)->with('groupDetails',$feeController->getGroupDetails())->with('userDetails',$feeController->getUserDetails())->with('fund',$feeController->getFund())->with('fundCollected',$feeController->getFundCollected())->with('standings',$standings)->with('predictionStandingsPoints',$predictionStandingsPoints);
+            return view('main')->with('messages', $messages)->with('points', $points)->with('predictionGames', $predictionResultsWithStats)->with('eventDaySurvivalStatus',$eventDaySurvivalStatus)->with('groupDetails',$feeController->getGroupDetails())->with('userDetails',$feeController->getUserDetails())->with('fund',$feeController->getFund())->with('fundCollected',$feeController->getFundCollected())->with('standings',$standings)->with('predictionStandingsPoints',$predictionStandingsPoints)->with('rankHistory', $rankHistory);
         }
         else {
             $games = Game::with('away_team')->with('home_team')->take(9)->get();
