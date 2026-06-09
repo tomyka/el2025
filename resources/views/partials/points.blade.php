@@ -5,7 +5,10 @@
     @endphp
     <div class="lb-header">
         <span class="lb-header-rank">#</span>
-        <span class="lb-header-name"><i class="bi bi-person-fill"></i></span>
+        <span class="lb-header-name">
+            <span class="d-md-none">Žaidėjas</span>
+            <i class="bi bi-person-fill d-none d-md-inline"></i>
+        </span>
         <span class="lb-header-sub" title="Rungtynių taškai"><i class="bi bi-check2-all"></i></span>
         <span class="lb-header-sub" title="Eigos taškai"><i class="bi bi-bar-chart-steps"></i></span>
         @if(session('survivalGame') == 1)
@@ -45,6 +48,8 @@
             <div class="lb-total {{ $isMe ? 'lb-me-total' : '' }}">{{ number_format($total, 1) }}</div>
             @if($hasHistory)
                 <span class="lb-trend-chevron" x-text="open ? '▾' : '▸'"></span>
+            @else
+                <span class="lb-header-chevron"></span>
             @endif
         </div>
 
