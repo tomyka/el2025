@@ -196,6 +196,64 @@ class PointController extends Controller
         return $history;
     }
 
+    public function getRankHistory(int $groupID, int $userID): array
+    {
+        $guest = session('guest', 0);
+
+        $userIDs = DB::table('user_groups')
+            ->where('group_id', $groupID)
+            ->where('guest', '<=', $guest)
+            ->pluck('user_id')
+            ->toArray();
+
+        if (empty($userIDs) || !in_array($userID, $userIDs)) {
+            return [];
+        }
+
+        $gameIDs = DB::table('games')
+            ->whereNotNull('home_team_score')
+            ->orderBy('game_date')
+            ->orderBy('id')
+            ->pluck('id')
+            ->toArray();
+
+        if (empty($gameIDs)) {
+            return [];
+        }
+
+        $rows = DB::table('point_results')
+            ->whereIn('user_id', $userIDs)
+            ->whereIn('game_id', $gameIDs)
+            ->select('user_id', 'game_id', 'full_points')
+            ->get();
+
+        $pointsMap = [];
+        foreach ($rows as $row) {
+            $pointsMap[$row->user_id][$row->game_id] = (float) $row->full_points;
+        }
+
+        $totals = array_fill_keys($userIDs, 0.0);
+        $ranks  = [];
+
+        foreach ($gameIDs as $gameID) {
+            foreach ($userIDs as $uid) {
+                $totals[$uid] += $pointsMap[$uid][$gameID] ?? 0.0;
+            }
+            $sorted = $totals;
+            arsort($sorted);
+            $rank = 1;
+            foreach ($sorted as $uid => $_) {
+                if ($uid === $userID) {
+                    $ranks[] = $rank;
+                    break;
+                }
+                $rank++;
+            }
+        }
+
+        return $ranks;
+    }
+
     public function getPredictionStandingsUserPoints($userID){
         $PredictionStandingsUserPoints = DB::select('SELECT
                                         t.id,

@@ -198,4 +198,65 @@ class PointTrendTest extends TestCase
         $this->assertEquals(130.0, $history[0]['cumulative_points']);
         $this->assertEquals(130.0, $history[0]['round_points']);
     }
+
+    public function test_getRankHistory_returns_empty_with_no_scored_games(): void
+    {
+        $group = Group::factory()->create();
+        $user  = $this->makeUser($group->id);
+
+        $result = app(\App\Http\Controllers\PointController::class)
+            ->getRankHistory($group->id, $user->id);
+
+        $this->assertSame([], $result);
+    }
+
+    public function test_getRankHistory_single_player_always_rank_one(): void
+    {
+        $group = Group::factory()->create();
+        $user  = $this->makeUser($group->id);
+        $event = $this->makeEvent(1);
+        $game  = $this->makeGame($event->id);
+        $game->update(['home_team_score' => 1, 'away_team_score' => 0]);
+        $this->insertResult($user->id, $game->id, 50.0);
+
+        $result = app(\App\Http\Controllers\PointController::class)
+            ->getRankHistory($group->id, $user->id);
+
+        $this->assertSame([1], $result);
+    }
+
+    public function test_getRankHistory_rank_reflects_cumulative_points(): void
+    {
+        $group  = Group::factory()->create();
+        $u1     = $this->makeUser($group->id);
+        $u2     = $this->makeUser($group->id);
+        $event  = $this->makeEvent(1);
+        $g1     = $this->makeGame($event->id);
+        $g2     = $this->makeGame($event->id);
+        $g1->update(['home_team_score' => 1, 'away_team_score' => 0, 'game_date' => now()->subHours(2)]);
+        $g2->update(['home_team_score' => 2, 'away_team_score' => 0, 'game_date' => now()->subHour()]);
+
+        // After g1: u2 leads (100 vs 50) → u1 is #2
+        $this->insertResult($u1->id, $g1->id, 50.0);
+        $this->insertResult($u2->id, $g1->id, 100.0);
+        // After g2: u1 overtakes (250 total vs 100) → u1 is #1
+        $this->insertResult($u1->id, $g2->id, 200.0);
+        $this->insertResult($u2->id, $g2->id, 0.0);
+
+        $result = app(\App\Http\Controllers\PointController::class)
+            ->getRankHistory($group->id, $u1->id);
+
+        $this->assertSame([2, 1], $result);
+    }
+
+    public function test_getRankHistory_user_not_in_group_returns_empty(): void
+    {
+        $group   = Group::factory()->create();
+        $outsider = User::factory()->create(); // NOT added to group
+
+        $result = app(\App\Http\Controllers\PointController::class)
+            ->getRankHistory($group->id, $outsider->id);
+
+        $this->assertSame([], $result);
+    }
 }
