@@ -249,6 +249,32 @@ class PointTrendTest extends TestCase
         $this->assertSame([2, 1], $result);
     }
 
+    public function test_getRankHistory_tied_users_get_same_rank(): void
+    {
+        $group = Group::factory()->create();
+        $u1    = $this->makeUser($group->id);
+        $u2    = $this->makeUser($group->id);
+        $u3    = $this->makeUser($group->id);
+        $event = $this->makeEvent(1);
+        $game  = $this->makeGame($event->id);
+        $game->update(['home_team_score' => 1, 'away_team_score' => 0]);
+
+        // u1=100, u2=100, u3=50 → u1 and u2 both rank 1, u3 rank 2 (dense)
+        $this->insertResult($u1->id, $game->id, 100.0);
+        $this->insertResult($u2->id, $game->id, 100.0);
+        $this->insertResult($u3->id, $game->id, 50.0);
+
+        $result = app(\App\Http\Controllers\PointController::class)
+            ->getRankHistory($group->id, $u1->id);
+
+        $this->assertSame([1], $result);
+
+        $result3 = app(\App\Http\Controllers\PointController::class)
+            ->getRankHistory($group->id, $u3->id);
+
+        $this->assertSame([2], $result3);
+    }
+
     public function test_getRankHistory_user_not_in_group_returns_empty(): void
     {
         $group   = Group::factory()->create();

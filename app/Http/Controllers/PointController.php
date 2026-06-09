@@ -239,16 +239,10 @@ class PointController extends Controller
             foreach ($userIDs as $uid) {
                 $totals[$uid] += $pointsMap[$uid][$gameID] ?? 0.0;
             }
-            $sorted = $totals;
-            arsort($sorted);
-            $rank = 1;
-            foreach ($sorted as $uid => $_) {
-                if ($uid === $userID) {
-                    $ranks[] = $rank;
-                    break;
-                }
-                $rank++;
-            }
+            $myTotal = $totals[$userID];
+            $higher  = array_filter($totals, fn($t) => $t > $myTotal);
+            $rank    = count(array_unique($higher)) + 1;
+            $ranks[] = $rank;
         }
 
         return $ranks;
