@@ -108,6 +108,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'superadmin']], func
     Route::get('teaminsert', [TeamController::class,'getTeam'])->name('admin.teaminsert');
     Route::post('teams', [TeamController::class,'updateTeams'])->name('admin.teams');
     Route::post('teaminsert', [TeamController::class,'insertTeams'])->name('admin.teamsinsert');
+    Route::post('updateTeamDetails', [TeamController::class,'updateTeamDetails'])->name('admin.updateTeamDetails');
 
     Route::get('events', [EventController::class,'getEvent'])->name('admin.events');
     Route::post('events', [EventController::class,'updateEvent'])->name('admin.events');

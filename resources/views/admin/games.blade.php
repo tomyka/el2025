@@ -24,7 +24,9 @@
                 <tr>
                     <th class="agm-col-id text-muted">#</th>
                     <th class="agm-col-date">Data / laikas</th>
-                    <th>Rungtynės</th>
+                    <th class="agm-col-home text-end">Šeimininkai</th>
+                    <th class="agm-col-vs"></th>
+                    <th class="agm-col-away">Svečiai</th>
                     <th class="agm-col-stage">Etapas</th>
                 </tr>
             </thead>
@@ -37,9 +39,9 @@
                     <td class="agm-datetime">
                         {{ \Carbon\Carbon::parse($game->game_date)->format('d M · H:i') }}
                     </td>
-                    <td class="agm-match">
-                        {{ $game->home_team->team ?? '—' }}<span class="agm-vs">vs</span>{{ $game->away_team->team ?? '—' }}
-                    </td>
+                    <td class="agm-team text-end">{{ $game->home_team->team ?? '—' }}</td>
+                    <td class="agm-vs-sep text-center">vs</td>
+                    <td class="agm-team">{{ $game->away_team->team ?? '—' }}</td>
                     <td>
                         <span class="agm-badge-stage">{{ $game->event->event ?? '—' }}</span>
                     </td>
