@@ -68,26 +68,20 @@
   @php $league = $membership->league; $isOwner = $league->owner_id === session('userID'); @endphp
   <div class="league-row {{ $membership->active ? 'league-row-active' : '' }}">
 
-    {{-- Name + optional description --}}
+    {{-- Name + badges --}}
     <div class="league-row-main">
-      <span class="league-row-name">{{ $league->name }}</span>
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <span class="league-row-name">{{ $league->name }}</span>
+        @if($isOwner)
+          <span class="league-status-badge owner"><i class="bi bi-star-fill"></i> Savininkas</span>
+        @else
+          <span class="league-status-badge member">Narys</span>
+        @endif
+        <span class="league-member-count"><i class="bi bi-people"></i> {{ $league->members()->count() }}</span>
+      </div>
       @if($league->description)
       <span class="league-row-desc">{{ $league->description }}</span>
       @endif
-    </div>
-
-    {{-- Status + member count --}}
-    <div class="league-row-meta">
-      @if($isOwner)
-        <span class="league-status-badge owner">
-          <i class="bi bi-star-fill"></i> Savininkas
-        </span>
-      @else
-        <span class="league-status-badge member">Narys</span>
-      @endif
-      <span class="league-member-count">
-        <i class="bi bi-people"></i> {{ $league->members()->count() }}
-      </span>
     </div>
 
     {{-- Actions --}}
@@ -179,12 +173,6 @@
   text-overflow: ellipsis;
 }
 
-.league-row-meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-}
 .league-status-badge {
   font-size: .65rem;
   font-weight: 700;
