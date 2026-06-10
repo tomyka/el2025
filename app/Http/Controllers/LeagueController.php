@@ -44,7 +44,7 @@ class LeagueController extends Controller
             'owner_id'           => $userId,
             'base_fee'           => $request->input('base_fee'),
             'penalty_step'       => $request->input('penalty_step'),
-            'use_league_odds'    => false,
+            'use_league_odds'    => (bool) $request->input('use_league_odds', false),
             'reward_description' => $request->input('reward_description'),
         ]);
 
@@ -53,7 +53,35 @@ class LeagueController extends Controller
             ['is_admin' => true, 'is_guest' => false, 'active' => false]
         );
 
-        return redirect()->route('leagues.index')->with('info', 'Liga sukurta');
+        return redirect()->route('leagues.index')->with('info', 'Lyga sukurta');
+    }
+
+    public function update(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $leagueId = (int) $request->input('leagueID');
+        $userId   = session('userID');
+
+        LeagueMember::where('league_id', $leagueId)
+            ->where('user_id', $userId)
+            ->where('is_admin', true)
+            ->firstOrFail();
+
+        $request->validate([
+            'name'         => 'required|string|max:100',
+            'description'  => 'nullable|string|max:500',
+            'base_fee'     => 'nullable|integer|min:0',
+            'penalty_step' => 'nullable|integer|min:0',
+        ]);
+
+        League::findOrFail($leagueId)->update([
+            'name'            => $request->input('name'),
+            'description'     => $request->input('description'),
+            'base_fee'        => $request->input('base_fee'),
+            'penalty_step'    => $request->input('penalty_step'),
+            'use_league_odds' => (bool) $request->input('use_league_odds', false),
+        ]);
+
+        return redirect()->route('leagues.index')->with('info', 'Lyga atnaujinta');
     }
 
     public function invite(Request $request): \Illuminate\Http\RedirectResponse

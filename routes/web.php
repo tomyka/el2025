@@ -81,6 +81,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/leagues/switch', [LeagueController::class, 'switchLeague'])->name('leagues.switch');
     Route::post('/leagues/leave',  [LeagueController::class, 'leaveLeague'])->name('leagues.leave');
     Route::get('/leagues/searchUsers', [LeagueController::class, 'searchUsers'])->name('leagues.searchUsers');
+    Route::post('/leagues/update',     [LeagueController::class, 'update'])->name('leagues.update');
     Route::post('/leagues/toggleOdds', [LeagueController::class, 'toggleOdds'])->name('leagues.toggleOdds');
 });
 
