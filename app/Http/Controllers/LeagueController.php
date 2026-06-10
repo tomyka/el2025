@@ -133,7 +133,7 @@ class LeagueController extends Controller
             session(['fee' => $newMembership->league->base_fee]);
         }
 
-        return redirect()->back()->with('info', 'Liga pakeista');
+        return redirect()->back()->with('info', 'Lyga pakeista');
     }
 
     public function searchUsers(Request $request): \Illuminate\Http\JsonResponse

@@ -93,7 +93,7 @@
     {{-- Actions --}}
     <div class="league-row-actions">
       @if(!$membership->active)
-      <form method="POST" action="{{ route('leagues.switch') }}">
+      <form method="POST" action="{{ route('leagues.switch') }}" style="display:contents;">
         @csrf
         <input type="hidden" name="leagueID" value="{{ $league->id }}">
         <button type="submit" class="league-action-btn" title="Perjungti į šią lygą"
@@ -117,7 +117,7 @@
       @endif
 
       @if(!$league->is_public && !$isOwner)
-      <form method="POST" action="{{ route('leagues.leave') }}"
+      <form method="POST" action="{{ route('leagues.leave') }}" style="display:contents;"
             onsubmit="return confirm('Palikti lygą {{ addslashes($league->name) }}?')">
         @csrf
         <input type="hidden" name="leagueID" value="{{ $league->id }}">
