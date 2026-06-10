@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\DB;
 return new class extends Migration {
     public function up(): void
     {
+        // messages table may not exist if the DB is in a partially-migrated state
+        if (!Schema::hasTable('messages')) {
+            return;
+        }
+
         $isSqlite = DB::connection()->getDriverName() === 'sqlite';
 
         if ($isSqlite) {

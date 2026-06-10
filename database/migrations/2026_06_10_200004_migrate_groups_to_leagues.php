@@ -1,6 +1,7 @@
 <?php
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void
@@ -37,8 +38,10 @@ return new class extends Migration {
             ]);
         }
 
-        // 3. Migrate user_groups → league_members
-        $userGroups = DB::table('user_groups')->get();
+        // 3. Migrate user_groups → league_members (table may not exist if already dropped)
+        $userGroups = Schema::hasTable('user_groups')
+            ? DB::table('user_groups')->get()
+            : collect();
         foreach ($userGroups as $ug) {
             DB::table('league_members')->insertOrIgnore([
                 'league_id'  => $ug->group_id,
