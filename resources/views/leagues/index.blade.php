@@ -79,7 +79,7 @@
             </div>
             @if($league->base_fee)
             <div style="font-size:.72rem;color:var(--sb-muted);margin-top:2px;">
-              {{ $league->base_fee }}€@if($league->penalty_step) +{{ $league->penalty_step }}€/vieta@endif
+              {{ $league->base_fee }}€{{ $league->penalty_step ? ' +' . $league->penalty_step . '€/vieta' : '' }}
             </div>
             @endif
           </div>
