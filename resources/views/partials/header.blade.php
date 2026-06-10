@@ -102,11 +102,15 @@
       </div>
       @endif
 
+      {{-- League dropdown --}}
+      @if(session('userID'))
+      @include('partials.league-switcher')
+      @endif
+
       <div class="dropdown">
         <a class="sb-nav-link {{ request()->routeIs('rules','help','charity','privacy') ? 'active' : '' }} dropdown-toggle"
-           href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-           title="Informacija">
-          <i class="bi bi-info-circle"></i>
+           href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-info-circle"></i> Informacija
         </a>
         <ul class="dropdown-menu">
           <li><a class="dropdown-item {{ request()->routeIs('rules') ? 'active' : '' }}"
@@ -124,13 +128,6 @@
               <i class="bi bi-shield-lock"></i> Privatumas</a></li>
         </ul>
       </div>
-
-      {{-- League switcher (right) --}}
-      @if(session('userID'))
-      <div class="ms-auto">
-        @include('partials.league-switcher')
-      </div>
-      @endif
 
     </div>
   </div>
