@@ -52,7 +52,7 @@ class PredictionStandingController extends Controller
     }
 
     public function getPredictionStandingSummary() {
-        $groupID=session('groupID');
+        $groupID = session('leagueID');
         $teams = Team::all();
 
         $predictionStandingController = new PredictionStandingController();
@@ -82,8 +82,8 @@ class PredictionStandingController extends Controller
                                 JOIN prediction_standings AS ps ON u.id=ps.user_id
                                 LEFT JOIN point_standings AS pos ON u.id = pos.user_id and ps.team_id=pos.team_id
                                 JOIN teams AS t ON ps.team_id=t.id
-                                JOIN user_groups AS ug ON u.id=ug.user_id
-                              WHERE ug.group_id = ?',
+                                JOIN league_members AS lm ON u.id=lm.user_id
+                              WHERE lm.league_id = ?',
             [$groupID]);
 
         return $predictionStandingProfile;
@@ -98,8 +98,8 @@ class PredictionStandingController extends Controller
   ,SUM(CASE WHEN ps.final = 4 then 1 else 0 END) as fourthPlacePrediction
   from prediction_standings AS ps
     join teams as t on ps.team_id=t.id
-    join user_groups AS ug on ps.user_id=ug.user_id
-  where ps.final is not null and ug.group_id = ?
+    join league_members AS lm on ps.user_id=lm.user_id
+  where ps.final is not null and lm.league_id = ?
 group by team
   order by
      firstPlacePrediction desc

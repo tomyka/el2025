@@ -124,7 +124,7 @@ class PredictionResultController extends Controller
                               JOIN events AS e ON e.id=g.event_id
                               JOIN prediction_results AS prr ON g.id=prr.game_id
                               JOIN users AS u ON u.id=prr.user_id
-                              JOIN user_groups AS ug ON u.id=ug.user_id
+                              JOIN league_members AS lm ON u.id=lm.user_id
                               JOIN user_settings AS us ON u.id=us.user_id
                               JOIN teams AS ht ON g.home_team_id=ht.id
                               JOIN teams AS at ON g.away_team_id=at.id
@@ -132,7 +132,7 @@ class PredictionResultController extends Controller
                           WHERE
                               u.id = ?
                               AND e.id = ?
-                              AND ug.group_id = ?
+                              AND lm.league_id = ?
                           ORDER BY g.id ASC',
             [$timeDiff, $userID, $eventID, $groupID]);
 
@@ -163,7 +163,7 @@ class PredictionResultController extends Controller
                           join users as u ON u.id = pr.user_id
                           join games as g ON g.id = pr.game_id
                           join events AS e ON e.id = g.event_id
-                          join user_groups as ug on pr.user_id=ug.user_id AND ug.group_id = ? AND ug.guest <= ?
+                          join league_members as lm on pr.user_id=lm.user_id AND lm.league_id = ? AND lm.is_guest <= ?
                           left join point_results as por on por.user_id=pr.user_id AND por.game_id=pr.game_id
                         where g.game_date < DATE_ADD(NOW(), INTERVAL ? HOUR) AND e.id <= ?
                         ORDER BY pr.user_id ASC, g.id DESC',
@@ -212,7 +212,7 @@ class PredictionResultController extends Controller
 
     public function getPredictionResultSummary() {
 
-        $groupID = session('groupID');
+        $groupID = session('leagueID');
         $eventID = session('eventID');
 
         $timeDiff = session('timeDifference');

@@ -8,7 +8,7 @@ class ChartController extends Controller
 {
     public function getChartData()
     {
-        $groupID = session('groupID');
+        $groupID = session('leagueID');
         $guest   = session('guest', 0);
 
         // All scored games in chronological order
@@ -24,11 +24,11 @@ class ChartController extends Controller
         ');
 
         // Users in this group (respect guest visibility setting)
-        $users = DB::table('user_groups')
-            ->where('user_groups.group_id', $groupID)
-            ->where('user_groups.guest', '<=', $guest)
-            ->join('users', 'user_groups.user_id', '=', 'users.id')
-            ->leftJoin('colors', 'user_groups.user_id', '=', 'colors.id')
+        $users = DB::table('league_members')
+            ->where('league_members.league_id', $groupID)
+            ->where('league_members.is_guest', '<=', $guest)
+            ->join('users', 'league_members.user_id', '=', 'users.id')
+            ->leftJoin('colors', 'league_members.user_id', '=', 'colors.id')
             ->select('users.id', 'users.username', 'colors.color_code')
             ->get();
 
@@ -38,9 +38,9 @@ class ChartController extends Controller
                    ROUND(IFNULL(por.full_points, 0), 2) AS points
             FROM prediction_results pr
                 JOIN games g ON pr.game_id = g.id
-                JOIN user_groups ug ON pr.user_id = ug.user_id
-                    AND ug.group_id = ?
-                    AND ug.guest <= ?
+                JOIN league_members lm ON pr.user_id = lm.user_id
+                    AND lm.league_id = ?
+                    AND lm.is_guest <= ?
                 LEFT JOIN point_results por
                     ON por.user_id = pr.user_id AND por.game_id = pr.game_id
             WHERE g.home_team_score IS NOT NULL
