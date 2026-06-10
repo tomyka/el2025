@@ -16,7 +16,6 @@
         ['icon' => 'bi-people-fill',     'label' => 'Vartotojai',          'route' => 'admin.users',                 'super' => true],
         ['icon' => 'bi-flag-fill',       'label' => 'Komandos',            'route' => 'admin.teams',                 'super' => true],
         ['icon' => 'bi-calendar-event',  'label' => 'Turai',               'route' => 'admin.events',                'super' => true],
-        ['icon' => 'bi-diagram-3-fill',  'label' => 'Grupės',              'route' => 'admin.groups',                'super' => true],
         ['icon' => 'bi-chat-left-text',  'label' => 'Žinutės',             'route' => 'admin.messages',              'super' => true],
     ];
     @endphp

@@ -32,14 +32,6 @@
                href="{{ route('admin.users') }}">
                 <i class="bi bi-people"></i> Dalyviai
             </a>
-            <a class="sb-nav-link {{ request()->routeIs('admin.groups') ? 'active' : '' }}"
-               href="{{ route('admin.groups') }}">
-                <i class="bi bi-diagram-3"></i> Grupės
-            </a>
-            <a class="sb-nav-link {{ request()->routeIs('admin.userGroups') ? 'active' : '' }}"
-               href="{{ route('admin.userGroups') }}">
-                <i class="bi bi-person-lines-fill"></i> Dalyvių grupės
-            </a>
             <a class="sb-nav-link {{ request()->routeIs('admin.messages') ? 'active' : '' }}"
                href="{{ route('admin.messages') }}">
                 <i class="bi bi-chat-left-text"></i> Pranešimai
@@ -117,14 +109,6 @@
             <a class="sb-nav-link {{ request()->routeIs('admin.users') ? 'active' : '' }}"
                href="{{ route('admin.users') }}">
                 <i class="bi bi-people"></i> Dalyviai
-            </a>
-            <a class="sb-nav-link {{ request()->routeIs('admin.groups') ? 'active' : '' }}"
-               href="{{ route('admin.groups') }}">
-                <i class="bi bi-diagram-3"></i> Grupės
-            </a>
-            <a class="sb-nav-link {{ request()->routeIs('admin.userGroups') ? 'active' : '' }}"
-               href="{{ route('admin.userGroups') }}">
-                <i class="bi bi-person-lines-fill"></i> Dalyvių grupės
             </a>
             <a class="sb-nav-link {{ request()->routeIs('admin.messages') ? 'active' : '' }}"
                href="{{ route('admin.messages') }}">

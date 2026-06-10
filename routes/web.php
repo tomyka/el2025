@@ -10,10 +10,8 @@ use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\GameController;
-use App\Http\Controllers\GroupController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\MessageController;
-use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\RulesController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ChartController;
@@ -64,11 +62,6 @@ Route::middleware('auth')->group(function () {
     Route::get('userSettings', [UserSettingController::class, 'getUserSettings'])->name('userSettings');
     Route::post('userSettings', [UserSettingController::class, 'updateUserSettings']);
 
-    Route::get('userGroup', [UserGroupController::class, 'getUserGroup'])->name('userGroup');
-    Route::post('updateUserGroup', [UserGroupController::class, 'updateUserGroup'])->name('updateUserGroup');
-    Route::post('deleteUserGroup', [UserGroupController::class, 'deleteUserGroup'])->name('deleteUserGroup');
-    Route::post('insertUserGroup', [UserGroupController::class, 'insertUserGroup'])->name('insertUserGroup');
-
     Route::group(['prefix' => 'prediction'], function () {
         Route::get('results', [PredictionResultController::class, 'getPredictionResultsUser'])->name('prediction.results');
         Route::post('results', [PredictionResultController::class, 'updatePredictionResultUser']);
@@ -114,9 +107,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'superadmin']], func
     Route::post('updateUser', [UserController::class,'updateUser'])->name('admin.updateUser');
     Route::post('deleteUser', [UserController::class,'deleteUser'])->name('admin.deleteUser');
 
-    Route::get('userGroups', [UserGroupController::class,'getUserGroupAll'])->name('admin.userGroups');
-
-    Route::get('teams', [TeamController::class,'getTeam'])->name('admin.teams');
+    Route::get('teams',[TeamController::class,'getTeam'])->name('admin.teams');
     Route::get('teaminsert', [TeamController::class,'getTeam'])->name('admin.teaminsert');
     Route::post('teams', [TeamController::class,'updateTeams'])->name('admin.teams');
     Route::post('teaminsert', [TeamController::class,'insertTeams'])->name('admin.teamsinsert');
@@ -126,11 +117,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'superadmin']], func
     Route::post('events', [EventController::class,'updateEvent'])->name('admin.events');
     Route::post('eventInsert', [EventController::class,'insertEvent'])->name('admin.eventInsert');
 
-    Route::get('groups', [GroupController::class,'getGroup'])->name('admin.groups');
-    Route::post('groups', [GroupController::class,'updateGroup'])->name('admin.groups');
-    Route::post('groupInsert', [GroupController::class,'insertGroup'])->name('admin.groupInsert');
-
-    Route::get('messages', [MessageController::class,'getMessageAll'])->name('admin.messages');
+    Route::get('messages',[MessageController::class,'getMessageAll'])->name('admin.messages');
     Route::post('messages', [MessageController::class,'updateMessage'])->name('admin.messages');
     Route::post('messageInsert', [MessageController::class,'insertMessage'])->name('admin.messageInsert');
 
