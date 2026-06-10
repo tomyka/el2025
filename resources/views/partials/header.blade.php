@@ -89,6 +89,9 @@
         {{-- Right: profile dropdown (authenticated) or login pill (guest) --}}
         <div class="sb-nav-end">
             @auth
+            @if(session('userID'))
+            @include('partials.league-switcher')
+            @endif
             <div class="sb-nav-grp">
                 <span class="sb-nav-grp-label">Paskyra</span>
             <div class="dropdown">
@@ -202,6 +205,13 @@
                 <i class="bi bi-shield-lock"></i> Privatumas
             </a>
         </div>
+
+        @if(session('userID'))
+        <div class="sb-mobile-group">
+            <div class="sb-mobile-label">Lyga</div>
+            @include('partials.league-switcher')
+        </div>
+        @endif
 
         <div class="sb-mobile-group">
             <div class="sb-mobile-label">Paskyra</div>
