@@ -32,7 +32,9 @@ class GameOddsController extends Controller
                 continue;
             }
 
-            $memberIds = \App\Models\LeagueMember::where('league_id', $league->id)->pluck('user_id');
+            $memberIds = \App\Models\LeagueMember::where('league_id', $league->id)
+                ->where('is_guest', false)
+                ->pluck('user_id');
 
             $leaguePredictions = DB::table('prediction_results')
                 ->where('game_id', $gameID)
