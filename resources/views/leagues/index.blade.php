@@ -90,7 +90,7 @@
 
             @if($membership->is_admin)
             <button type="button" class="btn btn-outline-secondary btn-sm"
-                    onclick="openManageModal({{ $league->id }}, {{ json_encode($league->name) }})">
+                    onclick="openManageModal({{ $league->id }}, {{ json_encode($league->name) }}, {{ $league->use_league_odds ? 'true' : 'false' }})">
               Valdyti
             </button>
             @endif
@@ -169,6 +169,23 @@
           <input type="hidden" id="inviteLeagueID" name="leagueID">
           <input type="hidden" id="invitedUserID" name="invitedUserID">
         </form>
+
+        {{-- Odds Toggle --}}
+        <div class="mt-3">
+          <h6>Koeficientai</h6>
+          <p class="text-muted small mb-2">Per-lygos koeficientai aktyvuojami kai lyga turi ≥ 20 narių.</p>
+          <form method="POST" action="{{ route('leagues.toggleOdds') }}" id="oddsToggleForm">
+            @csrf
+            <input type="hidden" name="leagueID" id="oddsLeagueID">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" name="use_league_odds" id="useLeagueOddsToggle"
+                     value="1" onchange="document.getElementById('oddsToggleForm').submit()">
+              <label class="form-check-label small" for="useLeagueOddsToggle">
+                Naudoti per-lygos koeficientus
+              </label>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -177,10 +194,12 @@
 <script>
 let activeManageLeagueId = null;
 
-function openManageModal(leagueId, leagueName) {
+function openManageModal(leagueId, leagueName, useLeagueOdds) {
     activeManageLeagueId = leagueId;
     document.getElementById('manageModalTitle').textContent = 'Valdyti: ' + leagueName;
     document.getElementById('inviteLeagueID').value = leagueId;
+    document.getElementById('oddsLeagueID').value = leagueId;
+    document.getElementById('useLeagueOddsToggle').checked = useLeagueOdds;
     document.getElementById('searchResults').innerHTML = '';
     document.getElementById('inviteSearch').value = '';
     new bootstrap.Modal(document.getElementById('manageModal')).show();

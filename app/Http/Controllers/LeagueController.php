@@ -166,6 +166,22 @@ class LeagueController extends Controller
         return response()->json($users);
     }
 
+    public function toggleOdds(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $userId   = session('userID');
+        $leagueId = (int) $request->input('leagueID');
+
+        LeagueMember::where('user_id', $userId)
+            ->where('league_id', $leagueId)
+            ->where('is_admin', true)
+            ->firstOrFail();
+
+        $league = League::findOrFail($leagueId);
+        $league->update(['use_league_odds' => (bool) $request->input('use_league_odds', false)]);
+
+        return redirect()->route('leagues.index')->with('info', 'Lygos koeficientai atnaujinti');
+    }
+
     public function leaveLeague(Request $request): \Illuminate\Http\RedirectResponse
     {
         $userId   = session('userID');

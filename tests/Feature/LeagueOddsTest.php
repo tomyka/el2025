@@ -80,6 +80,19 @@ class LeagueOddsTest extends TestCase
         $this->assertDatabaseMissing('league_game_odds', ['league_id' => $league->id, 'game_id' => $game->id]);
     }
 
+    public function test_league_admin_can_toggle_use_league_odds(): void
+    {
+        $owner = User::factory()->create();
+        $league = League::create(['name' => 'Tog', 'is_public' => false, 'owner_id' => $owner->id, 'use_league_odds' => false]);
+        LeagueMember::create(['league_id' => $league->id, 'user_id' => $owner->id, 'is_admin' => true, 'active' => true, 'is_guest' => false]);
+
+        $this->actingAs($owner)->withSession(['userID' => $owner->id])
+            ->post(route('leagues.toggleOdds'), ['leagueID' => $league->id, 'use_league_odds' => 1])
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('leagues', ['id' => $league->id, 'use_league_odds' => true]);
+    }
+
     public function test_league_odds_recalculated_in_leaderboard_when_active(): void
     {
         $event    = \App\Models\Event::create(['event' => 'E3', 'event_day' => 1, 'event_survival' => 0, 'active' => 1, 'rate' => 1]);
