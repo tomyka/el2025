@@ -17,7 +17,7 @@
                 <tr>
                     <th class="am-col-id text-muted">#</th>
                     <th class="am-col-msg">Žinutė</th>
-                    <th class="am-col-group">Grupė</th>
+                    <th class="am-col-group">Lyga</th>
                     <th class="am-col-active text-center">Aktyvi</th>
                     <th class="am-col-actions"></th>
                 </tr>
@@ -34,11 +34,11 @@
                                name="message" value="{{ $message->message }}">
                     </td>
                     <td>
-                        <select name="groupID" class="form-select form-select-sm am-select">
-                            <option value="">— grupė —</option>
-                            @foreach($groups as $groupID => $groupName)
-                            <option value="{{ $groupID }}" {{ $groupID == $message->group_id ? 'selected' : '' }}>
-                                {{ $groupName }}
+                        <select name="leagueID" class="form-select form-select-sm am-select">
+                            <option value="">— lyga —</option>
+                            @foreach($groups as $leagueID => $leagueName)
+                            <option value="{{ $leagueID }}" {{ $leagueID == $message->league_id ? 'selected' : '' }}>
+                                {{ $leagueName }}
                             </option>
                             @endforeach
                         </select>
@@ -78,10 +78,10 @@
                                name="message" placeholder="Nauja žinutė…">
                     </td>
                     <td>
-                        <select name="groupID" class="form-select form-select-sm am-select">
-                            <option value="">— grupė —</option>
-                            @foreach($groups as $groupID => $groupName)
-                            <option value="{{ $groupID }}">{{ $groupName }}</option>
+                        <select name="leagueID" class="form-select form-select-sm am-select">
+                            <option value="">— lyga —</option>
+                            @foreach($groups as $leagueID => $leagueName)
+                            <option value="{{ $leagueID }}">{{ $leagueName }}</option>
                             @endforeach
                         </select>
                     </td>

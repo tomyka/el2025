@@ -2,54 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserGroup;
-use DB;
-use App\Models\Group;
+use App\Models\League;
+use Illuminate\Support\Facades\DB;
 
 class FeeController extends Controller
 {
-    public function getGroupDetails ()
+    public function getGroupDetails()
     {
-        $groupDetails = Group::where('id',session('groupID'))->select('fee','fee_description','reward_ratio','reward_description')->firstOrFail();
-        return $groupDetails;
+        return League::where('id', session('leagueID'))
+            ->select('base_fee', 'penalty_step', 'reward_description')
+            ->firstOrFail();
     }
 
-
-    public function getUserDetails ()
+    public function getUserDetails()
     {
         $userDetails = DB::select('SELECT
                                      COUNT(u.id) AS users
-                                    ,SUM(CASE WHEN Fee!=0 THEN 1 ELSE 0 END) AS usersActive
+                                    ,SUM(CASE WHEN lm.is_guest = 0 THEN 1 ELSE 0 END) AS usersActive
                                    FROM users AS u
-                                    JOIN user_groups AS ug ON u.id=ug.user_id
-                                   WHERE ug.group_id = ? AND ug.guest=0',
-            [session('groupID')]);
+                                    JOIN league_members AS lm ON u.id = lm.user_id
+                                   WHERE lm.league_id = ? AND lm.is_guest = 0',
+            [session('leagueID')]);
 
         return $userDetails[0];
     }
 
-    public function getFund ()
+    public function getFund()
     {
-        $group = Group::where('id',session('groupID'))->select('fee','reward_ratio')->firstOrFail();
+        $league = League::where('id', session('leagueID'))
+            ->select('base_fee')
+            ->firstOrFail();
 
-        $userCount = UserGroup::where('group_id',session('groupID'))->where('guest',0)->count();
+        $userCount = DB::table('league_members')
+            ->where('league_id', session('leagueID'))
+            ->where('is_guest', 0)
+            ->count();
 
-            $fund = $group->fee*$group->reward_ratio*$userCount;
-            return $fund;
+        return $league->base_fee * $userCount;
     }
 
-    public function getFundCollected ()
+    public function getFundCollected()
     {
-        $groupDetails = DB::select('SELECT
-                                   SUM(ug.fee) AS fee
-                                  ,MAX(g.reward_ratio) AS reward_ratio
-                                FROM `groups` AS g
-                                  JOIN user_groups AS ug ON g.id=ug.group_id
-                                WHERE g.id = ?',
-            [session('groupID')]);
-
-        $fundCollected = $groupDetails[0]->fee * $groupDetails[0]->reward_ratio;
-
-        return $fundCollected;
+        return $this->getFund();
     }
 }

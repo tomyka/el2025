@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Game;
 use App\Models\GameOdds;
-use App\Models\Group;
 use App\Models\PointResult;
 use App\Models\PointsCalculation;
 use App\Services\ScoringService;
@@ -135,24 +134,20 @@ class PointResultController extends Controller
             $o->away_odds = 1.0;
         });
 
-        foreach (Group::all() as $group) {
-            $predictionResults = DB::table('prediction_results')
-                ->join('user_groups', 'prediction_results.user_id', '=', 'user_groups.user_id')
-                ->where('user_groups.group_id', '=', $group->id)
-                ->where('prediction_results.game_id', '=', $gameID)
-                ->get();
+        $predictionResults = DB::table('prediction_results')
+            ->where('game_id', $gameID)
+            ->get();
 
-            foreach ($predictionResults as $predictionResult) {
-                $tablePoints  = $this->scoring->getTablePoints($homeTeamScore, $awayTeamScore, $predictionResult->home_team_score, $predictionResult->away_team_score, $pointsLookup);
-                $winnerDir    = $this->scoring->getWinnerPoints($homeTeamScore, $awayTeamScore, $predictionResult->home_team_score, $predictionResult->away_team_score);
-                $winnerBonus  = $winnerDir > 0 ? 5.0 : 0.0;
-                $bingoPoints  = $this->scoring->getBingoPoints($homeTeamScore, $awayTeamScore, (int) $predictionResult->home_team_score, (int) $predictionResult->away_team_score);
-                $odds         = $this->scoring->getGameOdds($predictionResult->home_team_score, $predictionResult->away_team_score, $gameOdds, $predictionResult->generated);
-                $oddsPoints   = $this->scoring->getOddsPoints($odds, $winnerDir);
-                $points       = $this->scoring->calculateGamePoints($winnerBonus, $tablePoints, $oddsPoints, $bingoPoints, $odds, $event->rate);
+        foreach ($predictionResults as $predictionResult) {
+            $tablePoints  = $this->scoring->getTablePoints($homeTeamScore, $awayTeamScore, $predictionResult->home_team_score, $predictionResult->away_team_score, $pointsLookup);
+            $winnerDir    = $this->scoring->getWinnerPoints($homeTeamScore, $awayTeamScore, $predictionResult->home_team_score, $predictionResult->away_team_score);
+            $winnerBonus  = $winnerDir > 0 ? 5.0 : 0.0;
+            $bingoPoints  = $this->scoring->getBingoPoints($homeTeamScore, $awayTeamScore, (int) $predictionResult->home_team_score, (int) $predictionResult->away_team_score);
+            $odds         = $this->scoring->getGameOdds($predictionResult->home_team_score, $predictionResult->away_team_score, $gameOdds, $predictionResult->generated);
+            $oddsPoints   = $this->scoring->getOddsPoints($odds, $winnerDir);
+            $points       = $this->scoring->calculateGamePoints($winnerBonus, $tablePoints, $oddsPoints, $bingoPoints, $odds, $event->rate);
 
-                $this->insertPointResultUser($predictionResult->user_id, $gameID, $points);
-            }
+            $this->insertPointResultUser($predictionResult->user_id, $gameID, $points);
         }
     }
 }

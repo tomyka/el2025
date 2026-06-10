@@ -2,8 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Models\Group;
-use App\Models\Team;
+use App\Models\League;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -11,30 +10,29 @@ class GroupModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_group_can_be_created(): void
+    public function test_league_can_be_created(): void
     {
-        $group = Group::factory()->create([
-            'group' => 'Euro 2024',
-            'group_description' => 'Group A',
-            'fee' => 50,
+        $league = League::factory()->create([
+            'name'     => 'Euro 2024',
+            'base_fee' => 50,
         ]);
 
-        $this->assertSame('Euro 2024', $group->group);
-        $this->assertSame('Group A', $group->group_description);
-        $this->assertSame(50, $group->fee);
+        $this->assertSame('Euro 2024', $league->name);
+        $this->assertSame(50, $league->base_fee);
     }
 
-    public function test_group_fillable_attributes(): void
+    public function test_league_fillable_attributes(): void
     {
-        $group = Group::create([
-            'group' => 'Champions League',
-            'group_description' => 'Group Stage',
-            'fee' => 100,
-            'reward_ratio' => 2.5,
+        $league = League::create([
+            'name'               => 'Champions League',
+            'base_fee'           => 100,
+            'penalty_step'       => 10,
             'reward_description' => '2.5x payout',
+            'is_public'          => false,
+            'use_league_odds'    => false,
         ]);
 
-        $this->assertNotNull($group->id);
-        $this->assertSame('Champions League', $group->group);
+        $this->assertNotNull($league->id);
+        $this->assertSame('Champions League', $league->name);
     }
 }

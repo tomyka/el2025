@@ -11,14 +11,14 @@ use App\Http\Controllers\PredictionSurvivalController;
 use App\Http\Controllers\TeamStatisticsController;
 use App\Models\Event;
 use App\Models\Game;
-use App\Models\Group;
+use App\Models\League;
+use App\Models\LeagueMember;
 use App\Models\PointResult;
 use App\Models\PointStanding;
 use App\Models\PredictionResult;
 use App\Models\PredictionStanding;
 use App\Models\Team;
 use App\Models\User;
-use App\Models\UserGroup;
 use App\Models\UserSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Session;
@@ -30,17 +30,17 @@ class SqlInjectionRegressionTest extends TestCase
 
     private function seedMinimal(): array
     {
-        $user = User::factory()->create();
-        $group = Group::factory()->create();
-        UserGroup::factory()->create(['user_id' => $user->id, 'group_id' => $group->id, 'active' => true, 'guest' => 0]);
+        $user   = User::factory()->create();
+        $league = League::factory()->create();
+        LeagueMember::factory()->create(['user_id' => $user->id, 'league_id' => $league->id, 'active' => true, 'is_guest' => 0]);
         UserSetting::factory()->create(['user_id' => $user->id]);
 
         $homeTeam = Team::create(['team' => 'TeamA']);
         $awayTeam = Team::create(['team' => 'TeamB']);
         $event = Event::create(['event' => 'Test', 'event_day' => 1, 'event_survival' => 0, 'active' => 1, 'rate' => 1]);
         $game = Game::create([
-            'game_date' => now()->addDay(),
-            'event_id' => $event->id,
+            'game_date'    => now()->addDay(),
+            'event_id'     => $event->id,
             'home_team_id' => $homeTeam->id,
             'away_team_id' => $awayTeam->id,
         ]);
@@ -49,7 +49,7 @@ class SqlInjectionRegressionTest extends TestCase
         Session::put('timeDifference', 0);
         Session::put('guest', 0);
 
-        return compact('user', 'group', 'event', 'game', 'homeTeam', 'awayTeam');
+        return compact('user', 'league', 'event', 'game', 'homeTeam', 'awayTeam');
     }
 
     public function test_get_prediction_results_user_group_event_day_returns_results(): void
@@ -59,7 +59,7 @@ class SqlInjectionRegressionTest extends TestCase
         $controller = new PredictionResultController();
         $results = $controller->getPredictionResultsUserGroupEventDay(
             $data['event']->id,
-            $data['group']->id,
+            $data['league']->id,
             $data['user']->id
         );
 
@@ -78,7 +78,7 @@ class SqlInjectionRegressionTest extends TestCase
         $game->save();
 
         $controller = new PredictionResultController();
-        $results = $controller->getPredictionGamesProfile($data['group']->id, $data['event']->id);
+        $results = $controller->getPredictionGamesProfile($data['league']->id, $data['event']->id);
 
         $this->assertIsArray($results);
     }
@@ -99,7 +99,7 @@ class SqlInjectionRegressionTest extends TestCase
         PredictionStanding::create(['user_id' => $data['user']->id, 'team_id' => $data['homeTeam']->id]);
 
         $controller = new PredictionStandingController();
-        $results = $controller->getPredictionStandingProfile($data['group']->id);
+        $results = $controller->getPredictionStandingProfile($data['league']->id);
 
         $this->assertIsArray($results);
         $this->assertCount(1, $results);
@@ -111,7 +111,7 @@ class SqlInjectionRegressionTest extends TestCase
         PredictionStanding::create(['user_id' => $data['user']->id, 'team_id' => $data['homeTeam']->id, 'final' => 1]);
 
         $controller = new PredictionStandingController();
-        $results = $controller->getPredictionStandingTop4($data['group']->id);
+        $results = $controller->getPredictionStandingTop4($data['league']->id);
 
         $this->assertIsArray($results);
     }
@@ -120,13 +120,13 @@ class SqlInjectionRegressionTest extends TestCase
     {
         $data = $this->seedMinimal();
         PointStanding::create([
-            'user_id' => $data['user']->id,
-            'team_id' => $data['homeTeam']->id,
+            'user_id'               => $data['user']->id,
+            'team_id'               => $data['homeTeam']->id,
             'group_position_points' => 10,
-            'last16_points' => 0,
-            'quarterfinal_points' => 0,
-            'semifinal_points' => 0,
-            'final_points' => 0,
+            'last16_points'         => 0,
+            'quarterfinal_points'   => 0,
+            'semifinal_points'      => 0,
+            'final_points'          => 0,
         ]);
 
         $controller = new PointController();
@@ -139,7 +139,7 @@ class SqlInjectionRegressionTest extends TestCase
     public function test_get_user_details_returns_counts(): void
     {
         $data = $this->seedMinimal();
-        Session::put('groupID', $data['group']->id);
+        Session::put('leagueID', $data['league']->id);
 
         $controller = new FeeController();
         $result = $controller->getUserDetails();
@@ -151,7 +151,7 @@ class SqlInjectionRegressionTest extends TestCase
     public function test_get_fund_collected_returns_numeric(): void
     {
         $data = $this->seedMinimal();
-        Session::put('groupID', $data['group']->id);
+        Session::put('leagueID', $data['league']->id);
 
         $controller = new FeeController();
         $result = $controller->getFundCollected();
@@ -185,14 +185,14 @@ class SqlInjectionRegressionTest extends TestCase
     {
         $data = $this->seedMinimal();
         PointResult::create([
-            'user_id' => $data['user']->id,
-            'game_id' => $data['game']->id,
-            'winner_points' => 50,
+            'user_id'           => $data['user']->id,
+            'game_id'           => $data['game']->id,
+            'winner_points'     => 50,
             'difference_points' => 40,
-            'bingo_points' => 0,
-            'odds' => 1.5,
-            'odds_points' => 25,
-            'full_points' => 115,
+            'bingo_points'      => 0,
+            'odds'              => 1.5,
+            'odds_points'       => 25,
+            'full_points'       => 115,
         ]);
 
         $controller = app(PointResultController::class);

@@ -2,12 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Models\League;
+use App\Models\LeagueMember;
 use App\Models\PointResult;
 use App\Models\PointStanding;
 use App\Models\PredictionResult;
 use App\Models\PredictionStanding;
 use App\Models\User;
-use App\Models\UserGroup;
 use App\Models\UserSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -40,18 +41,18 @@ class UserDeletionTest extends TestCase
     {
         $admin  = $this->makeAdmin();
         $target = User::factory()->create();
-        $group  = \App\Models\Group::factory()->create();
+        $league = League::factory()->create();
 
-        UserGroup::factory()->create(['user_id' => $target->id, 'group_id' => $group->id]);
+        LeagueMember::factory()->create(['user_id' => $target->id, 'league_id' => $league->id]);
         UserSetting::factory()->create(['user_id' => $target->id]);
 
         $this->actingAs($admin)
-            ->withSession(['admin' => 9, 'groupID' => $group->id, 'userID' => $admin->id])
+            ->withSession(['admin' => 9, 'leagueID' => $league->id, 'userID' => $admin->id])
             ->post(route('admin.deleteUser'), ['userID' => $target->id])
             ->assertRedirect(route('admin.users'));
 
         $this->assertNull(User::find($target->id));
-        $this->assertDatabaseMissing('user_groups', ['user_id' => $target->id]);
+        $this->assertDatabaseMissing('league_members', ['user_id' => $target->id]);
         $this->assertDatabaseMissing('user_settings', ['user_id' => $target->id]);
     }
 
@@ -59,13 +60,13 @@ class UserDeletionTest extends TestCase
     {
         $admin  = $this->makeAdmin();
         $target = User::factory()->create();
-        $group  = \App\Models\Group::factory()->create();
+        $league = League::factory()->create();
 
-        UserGroup::factory()->create(['user_id' => $target->id, 'group_id' => $group->id]);
+        LeagueMember::factory()->create(['user_id' => $target->id, 'league_id' => $league->id]);
         UserSetting::factory()->create(['user_id' => $target->id]);
 
         $this->actingAs($admin)
-            ->withSession(['admin' => 9, 'groupID' => $group->id, 'userID' => $admin->id])
+            ->withSession(['admin' => 9, 'leagueID' => $league->id, 'userID' => $admin->id])
             ->post(route('admin.deleteUser'), ['userID' => $target->id]);
 
         $this->assertDatabaseMissing('prediction_results',  ['user_id' => $target->id]);

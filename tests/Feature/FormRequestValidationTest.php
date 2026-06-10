@@ -4,11 +4,11 @@ namespace Tests\Feature;
 
 use App\Models\Event;
 use App\Models\Game;
-use App\Models\Group;
+use App\Models\League;
+use App\Models\LeagueMember;
 use App\Models\PredictionResult;
 use App\Models\Team;
 use App\Models\User;
-use App\Models\UserGroup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -51,8 +51,8 @@ class FormRequestValidationTest extends TestCase
     public function test_update_prediction_result_accepts_valid_scores(): void
     {
         $user = User::factory()->create();
-        $group = Group::factory()->create();
-        UserGroup::factory()->create(['user_id' => $user->id, 'group_id' => $group->id]);
+        $league = League::factory()->create();
+        LeagueMember::factory()->create(['user_id' => $user->id, 'league_id' => $league->id]);
 
         $homeTeam = Team::create(['team' => 'TeamA']);
         $awayTeam = Team::create(['team' => 'TeamB']);

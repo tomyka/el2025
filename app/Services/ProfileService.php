@@ -9,7 +9,7 @@ use App\Models\PredictionResult;
 use App\Models\PredictionStanding;
 use App\Models\PredictionSurvival;
 use App\Models\User;
-use App\Models\UserGroup;
+use App\Models\LeagueMember;
 use App\Models\UserSetting;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -52,7 +52,7 @@ class ProfileService
 
         $id = $user->id;
 
-        UserGroup::where('user_id', $id)->delete();
+        LeagueMember::where('user_id', $id)->delete();
         PointResult::where('user_id', $id)->delete();
         PointStanding::where('user_id', $id)->delete();
         PointSurvival::where('user_id', $id)->delete();

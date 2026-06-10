@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Game;
-use App\Models\Group;
 use App\Models\Team;
 use App\Models\Event;
 use App\Models\PredictionResult;

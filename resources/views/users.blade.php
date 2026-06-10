@@ -13,9 +13,6 @@
             <span class="text-muted ms-1" style="font-size:.78rem;font-weight:400;">{{ $userGroup->user->name }}</span>
             @endif
         </div>
-        @if($userGroup->fee)
-        <span class="match-pts">{{ $userGroup->fee }} €</span>
-        @endif
     </div>
     @endforeach
 </div>

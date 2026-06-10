@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\UserSetting;
-use App\Models\UserGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Factory;

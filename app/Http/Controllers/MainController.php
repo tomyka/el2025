@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
-use App\Models\Group;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +27,7 @@ class MainController extends Controller
         if (isset($user)) {
             $sessionController = new SessionController();
             $sessionController->setSession($user);
-            $groupID = session('groupID');
+            $groupID = session('leagueID');
             $userID = session('userID');
             $eventID = session('eventID');
             $points = $pointController->getAllUserPoints($groupID);

@@ -4,10 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\Event;
 use App\Models\Game;
-use App\Models\Group;
+use App\Models\League;
+use App\Models\LeagueMember;
 use App\Models\Team;
 use App\Models\User;
-use App\Models\UserGroup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -22,10 +22,10 @@ class PointTrendTest extends TestCase
         session(['guest' => 0]);
     }
 
-    private function makeUser(int $groupId): User
+    private function makeUser(int $leagueId): User
     {
         $user = User::factory()->create();
-        UserGroup::factory()->create(['user_id' => $user->id, 'group_id' => $groupId, 'guest' => 0]);
+        LeagueMember::factory()->create(['user_id' => $user->id, 'league_id' => $leagueId, 'is_guest' => 0]);
         return $user;
     }
 
@@ -79,75 +79,76 @@ class PointTrendTest extends TestCase
 
     public function test_returns_empty_when_no_scored_games(): void
     {
-        $group = Group::factory()->create();
-        $user  = $this->makeUser($group->id);
+        $league = League::factory()->create();
+        $user   = $this->makeUser($league->id);
 
         $result = app(\App\Http\Controllers\PointController::class)
-            ->getAllUsersRoundHistory($group->id);
+            ->getAllUsersGameHistory($league->id);
 
         $this->assertEmpty($result[$user->id] ?? []);
     }
 
-    public function test_returns_one_entry_per_scored_event(): void
+    public function test_returns_one_entry_per_scored_game(): void
     {
-        $group = Group::factory()->create();
-        $user  = $this->makeUser($group->id);
-        $e1    = $this->makeEvent(1);
-        $e2    = $this->makeEvent(2);
+        $league = League::factory()->create();
+        $user   = $this->makeUser($league->id);
+        $e1     = $this->makeEvent(1);
+        $e2     = $this->makeEvent(2);
         $this->insertResult($user->id, $this->makeGame($e1->id)->id, 80.0);
         $this->insertResult($user->id, $this->makeGame($e2->id)->id, 100.0);
 
         $history = app(\App\Http\Controllers\PointController::class)
-            ->getAllUsersRoundHistory($group->id)[$user->id];
+            ->getAllUsersGameHistory($league->id)[$user->id];
 
         $this->assertCount(2, $history);
-        $this->assertEquals(1, $history[0]['event_day']);
-        $this->assertEquals(2, $history[1]['event_day']);
+        $this->assertEquals(1, $history[0]['game_idx']);
+        $this->assertEquals(2, $history[1]['game_idx']);
     }
 
-    public function test_cumulative_points_accumulate_across_rounds(): void
+    public function test_cumulative_points_accumulate_across_games(): void
     {
-        $group = Group::factory()->create();
-        $user  = $this->makeUser($group->id);
-        $e1    = $this->makeEvent(1);
-        $e2    = $this->makeEvent(2);
+        $league = League::factory()->create();
+        $user   = $this->makeUser($league->id);
+        $e1     = $this->makeEvent(1);
+        $e2     = $this->makeEvent(2);
         $this->insertResult($user->id, $this->makeGame($e1->id)->id, 80.0);
         $this->insertResult($user->id, $this->makeGame($e2->id)->id, 100.0);
 
         $history = app(\App\Http\Controllers\PointController::class)
-            ->getAllUsersRoundHistory($group->id)[$user->id];
+            ->getAllUsersGameHistory($league->id)[$user->id];
 
         $this->assertEquals(80.0,  $history[0]['cumulative_points']);
         $this->assertEquals(180.0, $history[1]['cumulative_points']);
     }
 
-    public function test_round_points_is_delta_per_round(): void
+    public function test_game_points_is_per_game_value(): void
     {
-        $group = Group::factory()->create();
-        $user  = $this->makeUser($group->id);
-        $e1    = $this->makeEvent(1);
-        $e2    = $this->makeEvent(2);
+        $league = League::factory()->create();
+        $user   = $this->makeUser($league->id);
+        $e1     = $this->makeEvent(1);
+        $e2     = $this->makeEvent(2);
         $this->insertResult($user->id, $this->makeGame($e1->id)->id, 80.0);
         $this->insertResult($user->id, $this->makeGame($e2->id)->id, 100.0);
 
         $history = app(\App\Http\Controllers\PointController::class)
-            ->getAllUsersRoundHistory($group->id)[$user->id];
+            ->getAllUsersGameHistory($league->id)[$user->id];
 
-        $this->assertEquals(80.0,  $history[0]['round_points']);
-        $this->assertEquals(100.0, $history[1]['round_points']);
+        $this->assertEquals(80.0,  $history[0]['game_points']);
+        $this->assertEquals(100.0, $history[1]['game_points']);
     }
 
     public function test_rank_computed_correctly_across_users(): void
     {
-        $group = Group::factory()->create();
-        $u1    = $this->makeUser($group->id);
-        $u2    = $this->makeUser($group->id);
-        $e1    = $this->makeEvent(1);
-        $this->insertResult($u1->id, $this->makeGame($e1->id)->id, 80.0);
-        $this->insertResult($u2->id, $this->makeGame($e1->id)->id, 120.0);
+        $league = League::factory()->create();
+        $u1     = $this->makeUser($league->id);
+        $u2     = $this->makeUser($league->id);
+        $e1     = $this->makeEvent(1);
+        $game   = $this->makeGame($e1->id);
+        $this->insertResult($u1->id, $game->id, 80.0);
+        $this->insertResult($u2->id, $game->id, 120.0);
 
         $result = app(\App\Http\Controllers\PointController::class)
-            ->getAllUsersRoundHistory($group->id);
+            ->getAllUsersGameHistory($league->id);
 
         $this->assertEquals(2, $result[$u1->id][0]['rank']);
         $this->assertEquals(1, $result[$u2->id][0]['rank']);
@@ -155,81 +156,81 @@ class PointTrendTest extends TestCase
 
     public function test_standing_points_included_in_cumulative(): void
     {
-        $group = Group::factory()->create();
-        $user  = $this->makeUser($group->id);
-        $e1    = $this->makeEvent(1);
+        $league = League::factory()->create();
+        $user   = $this->makeUser($league->id);
+        $e1     = $this->makeEvent(1);
         $this->insertResult($user->id, $this->makeGame($e1->id)->id, 80.0);
         $this->insertStanding($user->id, 100);
 
         $history = app(\App\Http\Controllers\PointController::class)
-            ->getAllUsersRoundHistory($group->id)[$user->id];
+            ->getAllUsersGameHistory($league->id)[$user->id];
 
         $this->assertEquals(180.0, $history[0]['cumulative_points']);
     }
 
-    public function test_standing_points_excluded_from_round_points(): void
+    public function test_standing_points_excluded_from_game_points(): void
     {
-        $group = Group::factory()->create();
-        $user  = $this->makeUser($group->id);
-        $e1    = $this->makeEvent(1);
-        $e2    = $this->makeEvent(2);
+        $league = League::factory()->create();
+        $user   = $this->makeUser($league->id);
+        $e1     = $this->makeEvent(1);
+        $e2     = $this->makeEvent(2);
         $this->insertResult($user->id, $this->makeGame($e1->id)->id, 80.0);
         $this->insertResult($user->id, $this->makeGame($e2->id)->id, 100.0);
         $this->insertStanding($user->id, 100);
 
         $history = app(\App\Http\Controllers\PointController::class)
-            ->getAllUsersRoundHistory($group->id)[$user->id];
+            ->getAllUsersGameHistory($league->id)[$user->id];
 
-        $this->assertEquals(80.0,  $history[0]['round_points']);
-        $this->assertEquals(100.0, $history[1]['round_points']);
+        $this->assertEquals(80.0,  $history[0]['game_points']);
+        $this->assertEquals(100.0, $history[1]['game_points']);
     }
 
-    public function test_survival_points_included_in_round_and_cumulative(): void
+    public function test_survival_points_included_in_cumulative(): void
     {
-        $group = Group::factory()->create();
-        $user  = $this->makeUser($group->id);
-        $e1    = $this->makeEvent(1);
+        $league = League::factory()->create();
+        $user   = $this->makeUser($league->id);
+        $e1     = $this->makeEvent(1);
         $this->insertResult($user->id, $this->makeGame($e1->id)->id, 80.0);
         $this->insertSurvival($user->id, $e1->id, 50);
 
         $history = app(\App\Http\Controllers\PointController::class)
-            ->getAllUsersRoundHistory($group->id)[$user->id];
+            ->getAllUsersGameHistory($league->id)[$user->id];
 
         $this->assertEquals(130.0, $history[0]['cumulative_points']);
-        $this->assertEquals(130.0, $history[0]['round_points']);
+        $this->assertEquals(80.0,  $history[0]['game_points']);
     }
 
     public function test_getRankHistory_returns_empty_with_no_scored_games(): void
     {
-        $group = Group::factory()->create();
-        $user  = $this->makeUser($group->id);
+        $league = League::factory()->create();
+        $user   = $this->makeUser($league->id);
 
         $result = app(\App\Http\Controllers\PointController::class)
-            ->getRankHistory($group->id, $user->id);
+            ->getRankHistory($league->id, $user->id);
 
         $this->assertSame([], $result);
     }
 
     public function test_getRankHistory_single_player_always_rank_one(): void
     {
-        $group = Group::factory()->create();
-        $user  = $this->makeUser($group->id);
-        $event = $this->makeEvent(1);
-        $game  = $this->makeGame($event->id);
+        $league = League::factory()->create();
+        $user   = $this->makeUser($league->id);
+        $event  = $this->makeEvent(1);
+        $game   = $this->makeGame($event->id);
         $game->update(['home_team_score' => 1, 'away_team_score' => 0]);
         $this->insertResult($user->id, $game->id, 50.0);
 
         $result = app(\App\Http\Controllers\PointController::class)
-            ->getRankHistory($group->id, $user->id);
+            ->getRankHistory($league->id, $user->id);
 
         $this->assertSame([1], $result);
     }
 
     public function test_getRankHistory_rank_reflects_cumulative_points(): void
     {
-        $group  = Group::factory()->create();
-        $u1     = $this->makeUser($group->id);
-        $u2     = $this->makeUser($group->id);
+        $league = League::factory()->create();
+        $u1     = $this->makeUser($league->id);
+        $u2     = $this->makeUser($league->id);
         $event  = $this->makeEvent(1);
         $g1     = $this->makeGame($event->id);
         $g2     = $this->makeGame($event->id);
@@ -244,19 +245,19 @@ class PointTrendTest extends TestCase
         $this->insertResult($u2->id, $g2->id, 0.0);
 
         $result = app(\App\Http\Controllers\PointController::class)
-            ->getRankHistory($group->id, $u1->id);
+            ->getRankHistory($league->id, $u1->id);
 
         $this->assertSame([2, 1], $result);
     }
 
     public function test_getRankHistory_tied_users_get_same_rank(): void
     {
-        $group = Group::factory()->create();
-        $u1    = $this->makeUser($group->id);
-        $u2    = $this->makeUser($group->id);
-        $u3    = $this->makeUser($group->id);
-        $event = $this->makeEvent(1);
-        $game  = $this->makeGame($event->id);
+        $league = League::factory()->create();
+        $u1     = $this->makeUser($league->id);
+        $u2     = $this->makeUser($league->id);
+        $u3     = $this->makeUser($league->id);
+        $event  = $this->makeEvent(1);
+        $game   = $this->makeGame($event->id);
         $game->update(['home_team_score' => 1, 'away_team_score' => 0]);
 
         // u1=100, u2=100, u3=50 → u1 and u2 both rank 1, u3 rank 2 (dense)
@@ -265,23 +266,23 @@ class PointTrendTest extends TestCase
         $this->insertResult($u3->id, $game->id, 50.0);
 
         $result = app(\App\Http\Controllers\PointController::class)
-            ->getRankHistory($group->id, $u1->id);
+            ->getRankHistory($league->id, $u1->id);
 
         $this->assertSame([1], $result);
 
         $result3 = app(\App\Http\Controllers\PointController::class)
-            ->getRankHistory($group->id, $u3->id);
+            ->getRankHistory($league->id, $u3->id);
 
         $this->assertSame([2], $result3);
     }
 
-    public function test_getRankHistory_user_not_in_group_returns_empty(): void
+    public function test_getRankHistory_user_not_in_league_returns_empty(): void
     {
-        $group   = Group::factory()->create();
-        $outsider = User::factory()->create(); // NOT added to group
+        $league   = League::factory()->create();
+        $outsider = User::factory()->create(); // NOT added to league
 
         $result = app(\App\Http\Controllers\PointController::class)
-            ->getRankHistory($group->id, $outsider->id);
+            ->getRankHistory($league->id, $outsider->id);
 
         $this->assertSame([], $result);
     }

@@ -5,12 +5,12 @@ namespace Tests\Feature;
 use App\Models\Event;
 use App\Models\Game;
 use App\Models\GameOdds;
-use App\Models\Group;
+use App\Models\League;
+use App\Models\LeagueMember;
 use App\Models\PointResult;
 use App\Models\PredictionResult;
 use App\Models\Team;
 use App\Models\User;
-use App\Models\UserGroup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -26,9 +26,9 @@ class ScoringIntegrationTest extends TestCase
 
     private function scaffoldGame(int $homeScore, int $awayScore): array
     {
-        $group = Group::factory()->create();
-        $user  = User::factory()->create();
-        UserGroup::factory()->create(['user_id' => $user->id, 'group_id' => $group->id]);
+        $league = League::factory()->create();
+        $user   = User::factory()->create();
+        LeagueMember::factory()->create(['user_id' => $user->id, 'league_id' => $league->id]);
 
         $event = Event::create([
             'event'          => 'Test Event',

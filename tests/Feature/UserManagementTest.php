@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\LeagueMember;
 use App\Models\User;
-use App\Models\UserGroup;
 use App\Models\UserSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -35,7 +35,7 @@ class UserManagementTest extends TestCase
         $admin = User::factory()->create();
         $targetUser = User::factory()->create();
         UserSetting::factory()->create(['user_id' => $targetUser->id]);
-        UserGroup::factory()->create(['user_id' => $targetUser->id]);
+        LeagueMember::factory()->create(['user_id' => $targetUser->id]);
 
         $response = $this->actingAs($admin)
             ->withSession(['admin' => 1])

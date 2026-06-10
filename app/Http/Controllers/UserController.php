@@ -6,7 +6,7 @@ use App\Models\PointResult;
 use App\Models\PointStanding;
 use App\Models\PointSurvival;
 use App\Models\User;
-use App\Models\UserGroup;
+use App\Models\LeagueMember;
 use App\Models\UserSetting;
 use App\Models\PredictionResult;
 use App\Models\PredictionStanding;
@@ -17,8 +17,8 @@ class UserController extends Controller
 {
     public function getAllUsers(): \Illuminate\View\View
     {
-        $userGroups = UserGroup::where('group_id', session('groupID'))
-            ->where('guest', 0)
+        $userGroups = LeagueMember::where('league_id', session('leagueID'))
+            ->where('is_guest', 0)
             ->with('user')
             ->get();
 
@@ -56,7 +56,7 @@ class UserController extends Controller
             return redirect()->route('admin.users')->with('error', 'Cannot delete your own account.');
         }
 
-        UserGroup::where('user_id', $userID)->delete();
+        LeagueMember::where('user_id', $userID)->delete();
         PointResult::where('user_id', $userID)->delete();
         PointStanding::where('user_id', $userID)->delete();
         PointSurvival::where('user_id', $userID)->delete();
