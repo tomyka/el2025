@@ -158,4 +158,18 @@ class LeagueMembershipTest extends TestCase
             ->post(route('leagues.leave'), ['leagueID' => $publicLeague->id])
             ->assertStatus(403);
     }
+
+    public function test_league_admin_can_search_users(): void
+    {
+        $admin = User::factory()->create(['username' => 'tomas_k', 'name' => 'Tomas', 'surname' => 'K']);
+        $other = User::factory()->create(['username' => 'john_d',  'name' => 'John',  'surname' => 'D']);
+        $league = League::create(['name' => 'Test', 'is_public' => false, 'owner_id' => $admin->id]);
+        LeagueMember::create(['league_id' => $league->id, 'user_id' => $admin->id, 'is_admin' => true, 'active' => false, 'is_guest' => false]);
+
+        $this->actingAs($admin)->withSession(['userID' => $admin->id])
+            ->getJson(route('leagues.searchUsers', ['query' => 'john', 'leagueID' => $league->id]))
+            ->assertOk()
+            ->assertJsonCount(1)
+            ->assertJsonFragment(['id' => $other->id]);
+    }
 }

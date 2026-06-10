@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\League;
 use App\Models\LeagueMember;
 use App\Models\LeagueInvite;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class LeagueController extends Controller
@@ -133,6 +134,36 @@ class LeagueController extends Controller
         }
 
         return redirect()->back()->with('info', 'Liga pakeista');
+    }
+
+    public function searchUsers(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $userId   = session('userID');
+        $leagueId = (int) $request->input('leagueID');
+        $query    = $request->input('query', '');
+
+        LeagueMember::where('league_id', $leagueId)
+            ->where('user_id', $userId)
+            ->where('is_admin', true)
+            ->firstOrFail();
+
+        if (strlen($query) < 2) {
+            return response()->json([]);
+        }
+
+        $existingMemberIds = LeagueMember::where('league_id', $leagueId)->pluck('user_id');
+
+        $users = User::where(function ($q) use ($query) {
+                $q->where('name',     'like', "%{$query}%")
+                  ->orWhere('surname',  'like', "%{$query}%")
+                  ->orWhere('username', 'like', "%{$query}%");
+            })
+            ->whereNotIn('id', $existingMemberIds)
+            ->select('id', 'username', 'name', 'surname')
+            ->limit(10)
+            ->get();
+
+        return response()->json($users);
     }
 
     public function leaveLeague(Request $request): \Illuminate\Http\RedirectResponse

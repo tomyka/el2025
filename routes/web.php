@@ -87,6 +87,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/leagues/decline', [LeagueController::class, 'declineInvite'])->name('leagues.decline');
     Route::post('/leagues/switch', [LeagueController::class, 'switchLeague'])->name('leagues.switch');
     Route::post('/leagues/leave',  [LeagueController::class, 'leaveLeague'])->name('leagues.leave');
+    Route::get('/leagues/searchUsers', [LeagueController::class, 'searchUsers'])->name('leagues.searchUsers');
 });
 
 // Admin (level 1+): dashboard, games, results
