@@ -18,6 +18,7 @@ use App\Http\Controllers\RulesController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\PointStandingController;
+use App\Http\Controllers\LeagueController;
 use Illuminate\Support\Facades\Route;
 
 /*Original routes start*/
@@ -78,6 +79,9 @@ Route::middleware('auth')->group(function () {
         Route::get('predictionSurvival', [PredictionSurvivalController::class, 'getPredictionSurvivalUser'])->name('prediction.survival');
         Route::post('predictionSurvival', [PredictionSurvivalController::class, 'updatePredictionSurvivalUser']);
     });
+
+    Route::get('/leagues', [LeagueController::class, 'index'])->name('leagues.index');
+    Route::post('/leagues/create', [LeagueController::class, 'create'])->name('leagues.create');
 });
 
 // Admin (level 1+): dashboard, games, results
