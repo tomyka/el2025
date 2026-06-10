@@ -54,4 +54,63 @@ class LeagueController extends Controller
 
         return redirect()->route('leagues.index')->with('info', 'Liga sukurta');
     }
+
+    public function invite(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $leagueId = (int) $request->input('leagueID');
+        $userId   = session('userID');
+
+        LeagueMember::where('league_id', $leagueId)
+            ->where('user_id', $userId)
+            ->where('is_admin', true)
+            ->firstOrFail();
+
+        $inviteeId = (int) $request->input('invitedUserID');
+
+        $alreadyMember  = LeagueMember::where('league_id', $leagueId)->where('user_id', $inviteeId)->exists();
+        $alreadyInvited = LeagueInvite::where('league_id', $leagueId)->where('invited_user_id', $inviteeId)->where('status', 'pending')->exists();
+
+        if ($alreadyMember || $alreadyInvited) {
+            return redirect()->back()->with('error', 'Vartotojas jau narys arba pakviestas');
+        }
+
+        LeagueInvite::create([
+            'league_id'       => $leagueId,
+            'invited_user_id' => $inviteeId,
+            'invited_by_id'   => $userId,
+            'status'          => 'pending',
+        ]);
+
+        return redirect()->back()->with('info', 'Kvietimas išsiųstas');
+    }
+
+    public function acceptInvite(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $userId = session('userID');
+        $invite = LeagueInvite::where('id', $request->input('inviteID'))
+            ->where('invited_user_id', $userId)
+            ->where('status', 'pending')
+            ->firstOrFail();
+
+        LeagueMember::firstOrCreate(
+            ['league_id' => $invite->league_id, 'user_id' => $userId],
+            ['is_admin' => false, 'is_guest' => false, 'active' => false]
+        );
+
+        $invite->delete();
+
+        return redirect()->route('leagues.index')->with('info', 'Prisijungta prie lygos');
+    }
+
+    public function declineInvite(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $userId = session('userID');
+        $invite = LeagueInvite::where('id', $request->input('inviteID'))
+            ->where('invited_user_id', $userId)
+            ->firstOrFail();
+
+        $invite->delete();
+
+        return redirect()->route('leagues.index')->with('info', 'Kvietimas atmestas');
+    }
 }

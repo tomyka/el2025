@@ -41,4 +41,73 @@ class LeagueMembershipTest extends TestCase
         $this->assertNotNull($member);
         $this->assertTrue($member->is_admin);
     }
+
+    public function test_league_admin_can_invite_user(): void
+    {
+        $owner   = User::factory()->create();
+        $invitee = User::factory()->create();
+
+        $league = League::create(['name' => 'Test', 'is_public' => false, 'owner_id' => $owner->id]);
+        LeagueMember::create(['league_id' => $league->id, 'user_id' => $owner->id, 'is_admin' => true, 'active' => false, 'is_guest' => false]);
+
+        $this->actingAs($owner)->withSession(['userID' => $owner->id])
+            ->post(route('leagues.invite'), [
+                'leagueID'      => $league->id,
+                'invitedUserID' => $invitee->id,
+            ])->assertRedirect();
+
+        $this->assertDatabaseHas('league_invites', [
+            'league_id'       => $league->id,
+            'invited_user_id' => $invitee->id,
+            'status'          => 'pending',
+        ]);
+    }
+
+    public function test_user_can_accept_invite(): void
+    {
+        $owner   = User::factory()->create();
+        $invitee = User::factory()->create();
+
+        $league = League::create(['name' => 'Test', 'is_public' => false, 'owner_id' => $owner->id]);
+        LeagueMember::create(['league_id' => $league->id, 'user_id' => $owner->id, 'is_admin' => true, 'active' => false, 'is_guest' => false]);
+
+        $invite = \App\Models\LeagueInvite::create([
+            'league_id'       => $league->id,
+            'invited_user_id' => $invitee->id,
+            'invited_by_id'   => $owner->id,
+            'status'          => 'pending',
+        ]);
+
+        $this->actingAs($invitee)->withSession(['userID' => $invitee->id])
+            ->post(route('leagues.accept'), ['inviteID' => $invite->id])
+            ->assertRedirect(route('leagues.index'));
+
+        $this->assertDatabaseHas('league_members', [
+            'league_id' => $league->id,
+            'user_id'   => $invitee->id,
+        ]);
+        $this->assertDatabaseMissing('league_invites', ['id' => $invite->id]);
+    }
+
+    public function test_user_can_decline_invite(): void
+    {
+        $owner   = User::factory()->create();
+        $invitee = User::factory()->create();
+
+        $league = League::create(['name' => 'Test', 'is_public' => false, 'owner_id' => $owner->id]);
+
+        $invite = \App\Models\LeagueInvite::create([
+            'league_id'       => $league->id,
+            'invited_user_id' => $invitee->id,
+            'invited_by_id'   => $owner->id,
+            'status'          => 'pending',
+        ]);
+
+        $this->actingAs($invitee)->withSession(['userID' => $invitee->id])
+            ->post(route('leagues.decline'), ['inviteID' => $invite->id])
+            ->assertRedirect(route('leagues.index'));
+
+        $this->assertDatabaseMissing('league_invites', ['id' => $invite->id]);
+        $this->assertDatabaseMissing('league_members', ['league_id' => $league->id, 'user_id' => $invitee->id]);
+    }
 }
