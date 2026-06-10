@@ -90,24 +90,41 @@ a:hover { color: var(--sb-accent-h); }
   width: 100%;
 }
 
-/* Dropdown from dark navbar */
+/* Dropdown from dark navbar — dark-themed to match bar */
 .sb-navbar .dropdown-menu {
-  margin-top: 6px;
-  border: 1px solid var(--sb-border);
+  margin-top: 8px;
+  background: #0c1f4a;
+  border: 1px solid rgba(255,255,255,.1);
   border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+  box-shadow: 0 8px 28px rgba(0,0,0,.45);
   padding: 6px;
-  min-width: 160px;
+  min-width: 170px;
 }
 
 .sb-navbar .dropdown-item {
   border-radius: 6px;
   font-size: .85rem;
   padding: 7px 12px;
+  color: rgba(255,255,255,.8);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.sb-navbar .dropdown-item:hover {
-  background: #f1f5f9;
+.sb-navbar .dropdown-item:hover,
+.sb-navbar .dropdown-item:focus {
+  background: rgba(255,255,255,.1);
+  color: #fff;
+}
+
+.sb-navbar .dropdown-item.active {
+  background: rgba(37,99,235,.5);
+  color: #fff;
+}
+
+.sb-navbar .dropdown-divider {
+  border-color: rgba(255,255,255,.1);
+  margin: 4px 0;
 }
 
 .sb-nav-start {

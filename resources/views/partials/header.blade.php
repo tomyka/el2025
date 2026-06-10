@@ -62,26 +62,29 @@
             </div>
             @endif
 
-            {{-- Informacija group --}}
+            {{-- Informacija dropdown --}}
             <span class="sb-nav-grp-sep"></span>
-            <div class="sb-nav-grp">
-                <span class="sb-nav-grp-label">Informacija</span>
-                <a class="sb-nav-link {{ request()->routeIs('rules') ? 'active' : '' }}"
-                   href="{{ route('rules') }}">
-                    <i class="bi bi-journal-text"></i> Taisyklės
+            <div class="dropdown">
+                <a class="sb-nav-link {{ request()->routeIs('rules','help','charity','privacy') ? 'active' : '' }}"
+                   href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                   title="Informacija">
+                    <i class="bi bi-info-circle"></i>
                 </a>
-                <a class="sb-nav-link {{ request()->routeIs('help') ? 'active' : '' }}"
-                   href="{{ route('help') }}">
-                    <i class="bi bi-question-circle"></i> Pagalba
-                </a>
-                <a class="sb-nav-link {{ request()->routeIs('charity') ? 'active' : '' }}"
-                   href="{{ route('charity') }}">
-                    <i class="bi bi-heart"></i> Jaunimo linija
-                </a>
-                <a class="sb-nav-link {{ request()->routeIs('privacy') ? 'active' : '' }}"
-                   href="{{ route('privacy') }}">
-                    <i class="bi bi-shield-lock"></i> Privatumas
-                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item {{ request()->routeIs('rules') ? 'active' : '' }}" href="{{ route('rules') }}">
+                        <i class="bi bi-journal-text"></i> Taisyklės
+                    </a></li>
+                    <li><a class="dropdown-item {{ request()->routeIs('help') ? 'active' : '' }}" href="{{ route('help') }}">
+                        <i class="bi bi-question-circle"></i> Pagalba
+                    </a></li>
+                    <li><a class="dropdown-item {{ request()->routeIs('charity') ? 'active' : '' }}" href="{{ route('charity') }}">
+                        <i class="bi bi-heart"></i> Jaunimo linija
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item {{ request()->routeIs('privacy') ? 'active' : '' }}" href="{{ route('privacy') }}">
+                        <i class="bi bi-shield-lock"></i> Privatumas
+                    </a></li>
+                </ul>
             </div>
             @endauth
         </div>
