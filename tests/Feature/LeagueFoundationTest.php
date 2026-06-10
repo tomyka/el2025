@@ -50,4 +50,27 @@ class LeagueFoundationTest extends TestCase
         $this->assertTrue(\Illuminate\Support\Facades\Schema::hasColumn('messages', 'league_id'));
         $this->assertFalse(\Illuminate\Support\Facades\Schema::hasColumn('messages', 'group_id'));
     }
+
+    public function test_set_session_puts_league_id_in_session(): void
+    {
+        $user = \App\Models\User::factory()->create();
+        \App\Models\UserSetting::factory()->create(['user_id' => $user->id, 'admin' => 0]);
+        \App\Models\Setting::firstOrCreate(['setting' => 'survivalGame'], ['value' => 0]);
+        \App\Models\Setting::firstOrCreate(['setting' => 'timeDifference'], ['value' => 0]);
+
+        $league = \App\Models\League::create(['name' => 'My League', 'is_public' => false]);
+        \App\Models\LeagueMember::create([
+            'league_id' => $league->id,
+            'user_id'   => $user->id,
+            'active'    => true,
+            'is_guest'  => false,
+        ]);
+
+        $sessionController = new \App\Http\Controllers\SessionController();
+        $sessionController->setSession($user);
+
+        $this->assertEquals($league->id, session('leagueID'));
+        $this->assertNull(session('groupID'));
+        $this->assertEquals(0, session('guest'));
+    }
 }
