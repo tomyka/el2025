@@ -22,9 +22,9 @@ class PointController extends Controller
         $pointSurvivalController = new PointSurvivalController();
 
         foreach ($users as $user){
-            $profile        = $pointsResultController->getUserProfilePoints($user->id);
-            $userGamePoints = array_sum(array_column($profile, 'full_points'));
-            $userStreakPoints= array_sum(array_column($profile, 'streak_bonus'));
+            $profile         = $pointsResultController->getUserProfilePoints($user->id, $leagueID);
+            $userGamePoints  = array_sum(array_column($profile, 'full_points_league'));
+            $userStreakPoints = array_sum(array_column($profile, 'streak_bonus'));
             $userGameBingo  = array_sum(array_column($profile, 'bingo_points'));
             $gameCount      = count($profile);
             $standingPoints = $pointStandingController->getStandingsUserPoints($user->id);

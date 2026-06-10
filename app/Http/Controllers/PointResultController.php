@@ -101,17 +101,101 @@ class PointResultController extends Controller
         DB::statement("UPDATE point_results SET streak_bonus = CASE id {$cases} END WHERE id IN ({$idList})");
     }
 
-    public function getUserProfilePoints(int $userID): array
+    public function getUserProfilePoints(int $userID, ?int $leagueId = null): array
     {
-        return PointResult::where('user_id', $userID)
-            ->select('winner_points', 'difference_points', 'bingo_points', 'odds_points', 'full_points', 'streak_bonus')
-            ->get()
-            ->map(fn ($r) => [
-                'full_points'   => round($r->full_points, 1),
-                'streak_bonus'  => round($r->streak_bonus ?? 0, 1),
-                'bingo_points'  => $r->bingo_points != 0 ? 1 : 0,
-            ])
-            ->all();
+        $rows = DB::table('point_results as pr')
+            ->join('games as g', 'pr.game_id', '=', 'g.id')
+            ->join('events as e', 'g.event_id', '=', 'e.id')
+            ->join('teams as ht', 'g.home_team_id', '=', 'ht.id')
+            ->join('teams as at', 'g.away_team_id', '=', 'at.id')
+            ->where('pr.user_id', $userID)
+            ->select(
+                'pr.game_id',
+                'pr.winner_points',
+                'pr.difference_points',
+                'pr.bingo_points',
+                'pr.odds_points',
+                'pr.full_points',
+                'pr.streak_bonus',
+                'g.home_team_score',
+                'g.away_team_score',
+                'ht.team as home_team',
+                'at.team as away_team',
+                'g.game_date',
+                'e.rate'
+            )
+            ->get();
+
+        $useLeagueOdds = false;
+        if ($leagueId !== null) {
+            $league = \App\Models\League::find($leagueId);
+            if ($league && $league->use_league_odds) {
+                $memberCount = \App\Models\LeagueMember::where('league_id', $leagueId)
+                    ->where('is_guest', false)
+                    ->count();
+                $useLeagueOdds = $memberCount >= 20;
+            }
+        }
+
+        $leagueOddsMap = [];
+        if ($useLeagueOdds) {
+            $gameIds = $rows->pluck('game_id');
+            $leagueOddsMap = DB::table('league_game_odds')
+                ->where('league_id', $leagueId)
+                ->whereIn('game_id', $gameIds)
+                ->get()
+                ->keyBy('game_id');
+        }
+
+        $profile = [];
+        foreach ($rows as $row) {
+            $oddsPointsLeague = (float) $row->odds_points;
+            $fullPointsLeague = (float) $row->full_points;
+
+            if ($useLeagueOdds && isset($leagueOddsMap[$row->game_id])) {
+                $lo = $leagueOddsMap[$row->game_id];
+
+                if ($row->home_team_score !== null && $row->away_team_score !== null) {
+                    if ($row->home_team_score > $row->away_team_score) {
+                        $leagueOddsRate = (float) $lo->home_odds;
+                    } elseif ($row->home_team_score == $row->away_team_score) {
+                        $leagueOddsRate = (float) $lo->draw_odds;
+                    } else {
+                        $leagueOddsRate = (float) $lo->away_odds;
+                    }
+
+                    $oddsPointsLeague = $row->winner_points > 0
+                        ? round((float) $row->winner_points * ($leagueOddsRate - 1), 1)
+                        : 0.0;
+
+                    $fullPointsLeague = round(
+                        (float) $row->winner_points
+                        + (float) $row->difference_points
+                        + (float) $row->bingo_points
+                        + $oddsPointsLeague,
+                        1
+                    );
+                }
+            }
+
+            $profile[] = [
+                'game_id'            => $row->game_id,
+                'home_team'          => $row->home_team,
+                'away_team'          => $row->away_team,
+                'game_date'          => $row->game_date,
+                'winner_points'      => $row->winner_points,
+                'difference_points'  => $row->difference_points,
+                'bingo_points'       => $row->bingo_points != 0 ? 1 : 0,
+                'odds_points'        => $row->odds_points,
+                'odds_points_league' => $oddsPointsLeague,
+                'full_points'        => round((float) $row->full_points, 1),
+                'full_points_league' => $fullPointsLeague,
+                'streak_bonus'       => round((float) ($row->streak_bonus ?? 0), 1),
+                'rate'               => $row->rate,
+            ];
+        }
+
+        return $profile;
     }
 
     public function updateGamePoints(int $gameID): void

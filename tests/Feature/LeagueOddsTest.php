@@ -79,4 +79,64 @@ class LeagueOddsTest extends TestCase
 
         $this->assertDatabaseMissing('league_game_odds', ['league_id' => $league->id, 'game_id' => $game->id]);
     }
+
+    public function test_league_odds_recalculated_in_leaderboard_when_active(): void
+    {
+        $event    = \App\Models\Event::create(['event' => 'E3', 'event_day' => 1, 'event_survival' => 0, 'active' => 1, 'rate' => 1]);
+        $homeTeam = \App\Models\Team::create(['team' => 'H3']);
+        $awayTeam = \App\Models\Team::create(['team' => 'A3']);
+        $game = \App\Models\Game::create([
+            'event_id'        => $event->id,
+            'home_team_id'    => $homeTeam->id,
+            'away_team_id'    => $awayTeam->id,
+            'game_date'       => now()->subDay()->toDateTimeString(),
+            'home_team_score' => 1,
+            'away_team_score' => 0,
+        ]);
+
+        [$league, $users] = $this->makeLeagueWith20Members(true);
+        $user = $users[0];
+
+        // Global odds: home_odds = 1.8
+        DB::table('game_odds')->insert([
+            'game_id'    => $game->id,
+            'home_odds'  => 1.8,
+            'draw_odds'  => 1.5,
+            'away_odds'  => 1.9,
+            'updated_at' => now(),
+        ]);
+
+        // League odds: home_odds = 1.5
+        DB::table('league_game_odds')->insert([
+            'league_id'  => $league->id,
+            'game_id'    => $game->id,
+            'home_odds'  => 1.5,
+            'draw_odds'  => 1.6,
+            'away_odds'  => 1.7,
+            'updated_at' => now(),
+        ]);
+
+        // User predicted home win, got points
+        DB::table('point_results')->insert([
+            'user_id'           => $user->id,
+            'game_id'           => $game->id,
+            'winner_points'     => 50,
+            'difference_points' => 30,
+            'bingo_points'      => 0,
+            'odds'              => 1.8,
+            'odds_points'       => 40, // global: 50 * (1.8-1)
+            'full_points'       => 120,
+            'streak_bonus'      => 0,
+        ]);
+
+        $controller = app(\App\Http\Controllers\PointResultController::class);
+        $profile    = $controller->getUserProfilePoints($user->id, $league->id);
+
+        // With league odds (1.5): odds_points_league = 50 * (1.5-1) = 25
+        $row = collect($profile)->firstWhere('game_id', $game->id);
+        $this->assertNotNull($row);
+        $this->assertEquals(25.0, (float) $row['odds_points_league']);
+        // full_points_league = 50 + 30 + 0 + 25 = 105
+        $this->assertEquals(105.0, (float) $row['full_points_league']);
+    }
 }
