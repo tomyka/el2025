@@ -113,4 +113,59 @@ class LeagueController extends Controller
 
         return redirect()->route('leagues.index')->with('info', 'Kvietimas atmestas');
     }
+
+    public function switchLeague(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $userId      = session('userID');
+        $newLeagueId = (int) $request->input('leagueID');
+
+        $newMembership = LeagueMember::where('user_id', $userId)
+            ->where('league_id', $newLeagueId)
+            ->firstOrFail();
+
+        LeagueMember::where('user_id', $userId)->update(['active' => false]);
+        $newMembership->update(['active' => true]);
+
+        session(['leagueID' => $newLeagueId]);
+        $newMembership->load('league');
+        if ($newMembership->league) {
+            session(['fee' => $newMembership->league->base_fee]);
+        }
+
+        return redirect()->back()->with('info', 'Liga pakeista');
+    }
+
+    public function leaveLeague(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $userId   = session('userID');
+        $leagueId = (int) $request->input('leagueID');
+
+        $league = League::findOrFail($leagueId);
+
+        if ($league->is_public) {
+            abort(403, 'Negalima palikti viešos lygos');
+        }
+
+        if ($league->owner_id === $userId) {
+            return redirect()->back()->with('error', 'Perduokite lygos valdymą kitam nariui prieš išeidami');
+        }
+
+        $membership = LeagueMember::where('user_id', $userId)
+            ->where('league_id', $leagueId)
+            ->firstOrFail();
+
+        $wasActive = (bool) $membership->active;
+        $membership->delete();
+
+        if ($wasActive) {
+            $publicLeague     = League::where('is_public', true)->firstOrFail();
+            $publicMembership = LeagueMember::where('user_id', $userId)
+                ->where('league_id', $publicLeague->id)
+                ->firstOrFail();
+            $publicMembership->update(['active' => true]);
+            session(['leagueID' => $publicLeague->id]);
+        }
+
+        return redirect()->route('leagues.index')->with('info', 'Palikote lygą');
+    }
 }

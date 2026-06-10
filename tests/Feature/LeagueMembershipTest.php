@@ -110,4 +110,52 @@ class LeagueMembershipTest extends TestCase
         $this->assertDatabaseMissing('league_invites', ['id' => $invite->id]);
         $this->assertDatabaseMissing('league_members', ['league_id' => $league->id, 'user_id' => $invitee->id]);
     }
+
+    public function test_user_can_switch_active_league(): void
+    {
+        $user = User::factory()->create();
+
+        $publicLeague  = League::where('is_public', true)->first();
+        $privateLeague = League::create(['name' => 'Private', 'is_public' => false, 'owner_id' => $user->id]);
+
+        LeagueMember::create(['league_id' => $publicLeague->id,  'user_id' => $user->id, 'active' => true,  'is_guest' => false, 'is_admin' => false]);
+        LeagueMember::create(['league_id' => $privateLeague->id, 'user_id' => $user->id, 'active' => false, 'is_guest' => false, 'is_admin' => true]);
+
+        $this->actingAs($user)->withSession(['userID' => $user->id, 'leagueID' => $publicLeague->id])
+            ->post(route('leagues.switch'), ['leagueID' => $privateLeague->id])
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('league_members', ['league_id' => $publicLeague->id,  'user_id' => $user->id, 'active' => false]);
+        $this->assertDatabaseHas('league_members', ['league_id' => $privateLeague->id, 'user_id' => $user->id, 'active' => true]);
+    }
+
+    public function test_user_can_leave_private_league(): void
+    {
+        $owner = User::factory()->create();
+        $user  = User::factory()->create();
+        $publicLeague  = League::where('is_public', true)->first();
+        $privateLeague = League::create(['name' => 'Private', 'is_public' => false, 'owner_id' => $owner->id]);
+
+        LeagueMember::create(['league_id' => $publicLeague->id,  'user_id' => $user->id, 'active' => false, 'is_guest' => false, 'is_admin' => false]);
+        LeagueMember::create(['league_id' => $privateLeague->id, 'user_id' => $user->id, 'active' => true,  'is_guest' => false, 'is_admin' => false]);
+
+        $this->actingAs($user)->withSession(['userID' => $user->id, 'leagueID' => $privateLeague->id])
+            ->post(route('leagues.leave'), ['leagueID' => $privateLeague->id])
+            ->assertRedirect(route('leagues.index'));
+
+        $this->assertDatabaseMissing('league_members', ['league_id' => $privateLeague->id, 'user_id' => $user->id]);
+        $this->assertDatabaseHas('league_members', ['league_id' => $publicLeague->id, 'user_id' => $user->id, 'active' => true]);
+    }
+
+    public function test_user_cannot_leave_public_league(): void
+    {
+        $user         = User::factory()->create();
+        $publicLeague = League::where('is_public', true)->first();
+
+        LeagueMember::create(['league_id' => $publicLeague->id, 'user_id' => $user->id, 'active' => true, 'is_guest' => false, 'is_admin' => false]);
+
+        $this->actingAs($user)->withSession(['userID' => $user->id])
+            ->post(route('leagues.leave'), ['leagueID' => $publicLeague->id])
+            ->assertStatus(403);
+    }
 }
