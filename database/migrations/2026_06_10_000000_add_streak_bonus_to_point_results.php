@@ -8,9 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('point_results', function (Blueprint $table) {
-            $table->decimal('streak_bonus', 8, 2)->default(0)->after('full_points');
-        });
+        if (!Schema::hasColumn('point_results', 'streak_bonus')) {
+            Schema::table('point_results', function (Blueprint $table) {
+                $table->decimal('streak_bonus', 8, 2)->default(0)->after('full_points');
+            });
+        }
     }
 
     public function down(): void
