@@ -319,7 +319,7 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px 20px;">
-        <p style="font-size:.78rem;color:var(--sb-muted);margin-bottom:14px;">Per-lygos koeficientai aktyvuojami kai lyga turi ≥ 20 narių.</p>
+        <p style="font-size:.78rem;color:var(--sb-muted);margin-bottom:14px;">Lygos koeficientai aktyvuojami kai lyga turi ≥ 20 narių.</p>
         <form method="POST" action="{{ route('leagues.toggleOdds') }}" id="oddsToggleForm">
           @csrf
           <input type="hidden" name="leagueID" id="oddsLeagueID">
@@ -327,7 +327,7 @@
             <input class="form-check-input" type="checkbox" name="use_league_odds" id="useLeagueOddsToggle"
                    value="1" onchange="document.getElementById('oddsToggleForm').submit()">
             <label class="form-check-label" for="useLeagueOddsToggle" style="font-size:.82rem;">
-              Naudoti per-lygos koeficientus
+              Naudoti lygos koeficientus
             </label>
           </div>
         </form>
