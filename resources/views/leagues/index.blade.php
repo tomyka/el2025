@@ -284,12 +284,12 @@
                      style="border-radius:8px;border-color:var(--sb-border);">
             </div>
             <div class="col-6">
-              <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted);">Bazinė įmoka (€)</label>
+              <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted);">Dalyvio mokestis (€)</label>
               <input type="number" name="base_fee" class="form-control form-control-sm" min="0"
                      style="border-radius:8px;border-color:var(--sb-border);">
             </div>
             <div class="col-6">
-              <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted);">Bauda už vietą (€)</label>
+              <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted);">Papildomas mokestis už vietą (€)</label>
               <input type="number" name="penalty_step" class="form-control form-control-sm" min="0"
                      style="border-radius:8px;border-color:var(--sb-border);">
             </div>
