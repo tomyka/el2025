@@ -19,7 +19,7 @@ class LeagueFoundationTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('leagues', ['name' => 'Test League', 'is_public' => true]);
-        $this->assertEquals('Test League', League::first()->name);
+        $this->assertEquals('Test League', League::where('name', 'Test League')->first()->name);
     }
 
     public function test_league_member_belongs_to_league(): void
@@ -34,5 +34,14 @@ class LeagueFoundationTest extends TestCase
         ]);
 
         $this->assertEquals($league->id, $user->leagueMembers()->first()->league_id);
+    }
+
+    public function test_data_migration_creates_public_league(): void
+    {
+        // RefreshDatabase runs all migrations fresh, including the data migration.
+        // So the public league already exists — just verify it was created correctly.
+        $publicLeague = \App\Models\League::where('is_public', true)->first();
+        $this->assertNotNull($publicLeague);
+        $this->assertEquals('Public League', $publicLeague->name);
     }
 }
