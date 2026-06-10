@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 use App\Models\League;
 use App\Models\LeagueMember;
 use App\Models\LeagueInvite;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class LeagueController extends Controller
@@ -28,7 +27,11 @@ class LeagueController extends Controller
     public function create(Request $request): \Illuminate\Http\RedirectResponse
     {
         $request->validate([
-            'name' => 'required|string|max:100',
+            'name'               => 'required|string|max:100',
+            'description'        => 'nullable|string|max:500',
+            'base_fee'           => 'nullable|integer|min:0',
+            'penalty_step'       => 'nullable|integer|min:0',
+            'reward_description' => 'nullable|string|max:500',
         ]);
 
         $userId = session('userID');
@@ -44,13 +47,10 @@ class LeagueController extends Controller
             'reward_description' => $request->input('reward_description'),
         ]);
 
-        LeagueMember::create([
-            'league_id' => $league->id,
-            'user_id'   => $userId,
-            'is_admin'  => true,
-            'is_guest'  => false,
-            'active'    => false,
-        ]);
+        LeagueMember::firstOrCreate(
+            ['league_id' => $league->id, 'user_id' => $userId],
+            ['is_admin' => true, 'is_guest' => false, 'active' => false]
+        );
 
         return redirect()->route('leagues.index')->with('info', 'Liga sukurta');
     }

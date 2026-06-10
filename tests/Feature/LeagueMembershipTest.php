@@ -4,7 +4,6 @@ namespace Tests\Feature;
 use App\Models\League;
 use App\Models\LeagueMember;
 use App\Models\User;
-use App\Models\UserSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -21,7 +20,6 @@ class LeagueMembershipTest extends TestCase
     public function test_authenticated_user_can_create_league(): void
     {
         $user = User::factory()->create();
-        UserSetting::factory()->create(['user_id' => $user->id, 'admin' => 0]);
 
         $this->actingAs($user)
             ->withSession(['userID' => $user->id])
@@ -35,12 +33,12 @@ class LeagueMembershipTest extends TestCase
         $league = League::where('name', 'Friends Liga')->first();
         $this->assertNotNull($league);
         $this->assertEquals($user->id, $league->owner_id);
-        $this->assertFalse((bool) $league->is_public);
+        $this->assertFalse($league->is_public);
 
         $member = LeagueMember::where('league_id', $league->id)
             ->where('user_id', $user->id)
             ->first();
         $this->assertNotNull($member);
-        $this->assertTrue((bool) $member->is_admin);
+        $this->assertTrue($member->is_admin);
     }
 }
