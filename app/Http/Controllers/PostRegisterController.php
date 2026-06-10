@@ -2,32 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\League;
+use App\Models\LeagueMember;
+
 class PostRegisterController extends Controller
 {
-   public function postRegisterActions($userID){
-
-        $fee = 0;
-        $guest = 0;
-        $active = 1;
-        $default_user_group = 1;
-
-        // Ensure default group exists to avoid FK errors in tests and fresh databases.
-        if (!\App\Models\Group::find($default_user_group)) {
-            \App\Models\Group::factory()->create([
-                'id' => $default_user_group,
-                'group' => 'Default',
-                'group_description' => 'Default group',
-                'fee' => 0,
-                'reward_ratio' => 0,
-                'reward_description' => 'Default',
-            ]);
-        }
-
+    public function postRegisterActions(int $userID): \Illuminate\Http\RedirectResponse
+    {
         $userSettingsController = new UserSettingController();
         $userSettingsController->insertUserSettings($userID);
 
-        $userGroupController = new UserGroupController();
-        $userGroupController->insertNewUserIntoGroup($userID, $default_user_group, $active, $fee, $guest);
+        // Auto-join the public league (created in data migration)
+        $publicLeague = League::where('is_public', true)->firstOrFail();
+        LeagueMember::create([
+            'league_id' => $publicLeague->id,
+            'user_id'   => $userID,
+            'is_admin'  => false,
+            'is_guest'  => false,
+            'active'    => true,
+        ]);
 
         $predictionResultController = new PredictionResultController();
         $predictionResultController->insertPredictionResultsUser($userID);
@@ -38,8 +31,6 @@ class PostRegisterController extends Controller
         $predictionSurvivalController = new PredictionSurvivalController();
         $predictionSurvivalController->insertPredictionSurvivalUser($userID);
 
-
-       return redirect(route('main', absolute: false));
-
+        return redirect(route('main', absolute: false));
     }
 }

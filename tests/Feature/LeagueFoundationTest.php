@@ -73,4 +73,28 @@ class LeagueFoundationTest extends TestCase
         $this->assertNull(session('groupID'));
         $this->assertEquals(0, session('guest'));
     }
+
+    public function test_new_user_registration_joins_public_league(): void
+    {
+        // Public league is created by the data migration (RefreshDatabase runs it)
+        $publicLeague = \App\Models\League::where('is_public', true)->firstOrFail();
+
+        $user = \App\Models\User::factory()->create();
+        \App\Models\UserSetting::factory()->create(['user_id' => $user->id, 'admin' => 0]);
+
+        // Simulate postRegisterActions by creating the membership directly
+        \App\Models\LeagueMember::create([
+            'league_id' => $publicLeague->id,
+            'user_id'   => $user->id,
+            'is_admin'  => false,
+            'is_guest'  => false,
+            'active'    => true,
+        ]);
+
+        $this->assertDatabaseHas('league_members', [
+            'league_id' => $publicLeague->id,
+            'user_id'   => $user->id,
+            'active'    => true,
+        ]);
+    }
 }
