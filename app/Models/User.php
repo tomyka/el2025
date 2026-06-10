@@ -57,4 +57,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\UserGroup','user_id','id');
     }
+
+    public function leagueMembers()
+    {
+        return $this->hasMany(LeagueMember::class);
+    }
 }
