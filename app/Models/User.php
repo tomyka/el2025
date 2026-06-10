@@ -62,4 +62,19 @@ class User extends Authenticatable
     {
         return $this->hasMany(LeagueMember::class);
     }
+
+    public function ownedLeagues()
+    {
+        return $this->hasMany(League::class, 'owner_id');
+    }
+
+    public function receivedInvites()
+    {
+        return $this->hasMany(LeagueInvite::class, 'invited_user_id');
+    }
+
+    public function sentInvites()
+    {
+        return $this->hasMany(LeagueInvite::class, 'invited_by_id');
+    }
 }

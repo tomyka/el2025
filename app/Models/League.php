@@ -13,6 +13,11 @@ class League extends Model
         'base_fee', 'penalty_step', 'use_league_odds', 'reward_description',
     ];
 
+    protected $casts = [
+        'is_public'       => 'boolean',
+        'use_league_odds' => 'boolean',
+    ];
+
     public function members()
     {
         return $this->hasMany(LeagueMember::class);
