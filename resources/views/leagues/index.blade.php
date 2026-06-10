@@ -92,7 +92,7 @@
         <input type="hidden" name="leagueID" value="{{ $league->id }}">
         <button type="submit" class="league-action-btn" title="Perjungti į šią lygą"
                 style="color:var(--sb-accent);border-color:var(--sb-accent);">
-          <i class="bi bi-toggle-on"></i>
+          <i class="bi bi-toggle-off"></i>
         </button>
       </form>
       @endif
