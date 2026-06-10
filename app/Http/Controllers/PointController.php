@@ -9,8 +9,13 @@ use Illuminate\Support\Facades\DB;
 class PointController extends Controller
 {
 
-    public function getAllUserPoints($groupID){
-        $users=DB::table('users')->join('user_groups','users.id','=','user_groups.user_id')->where('user_groups.group_id','=',$groupID)->where('user_groups.guest','<=',session('guest'))->select('users.id','users.username','users.name','users.surname','user_groups.fee as user_fee')->get();
+    public function getAllUserPoints($leagueID){
+        $users = DB::table('users')
+            ->join('league_members', 'users.id', '=', 'league_members.user_id')
+            ->where('league_members.league_id', '=', $leagueID)
+            ->where('league_members.is_guest', '<=', session('guest'))
+            ->select('users.id', 'users.username', 'users.name', 'users.surname')
+            ->get();
 
         $pointStandingController = app(PointStandingController::class);
         $pointsResultController = app(PointResultController::class);
@@ -30,7 +35,7 @@ class PointController extends Controller
                 'username'          => $user->username,
                 'name'              => $user->name,
                 'surname'           => $user->surname,
-                'userFee'           => $user->user_fee,
+                'userFee'           => null,
                 'userGamePoints'    => round((($userGamePoints=="")?0:$userGamePoints),1),
                 'userStreakPoints'   => round($userStreakPoints, 1),
                 'userGameBingo'     => (($userGameBingo=="")?0:$userGameBingo),
@@ -57,8 +62,13 @@ class PointController extends Controller
     /**
      * @deprecated No longer used — Praėjusio turo lyderiai section removed from main view.
      */
-    public function getPointEventTotal($eventID, $groupID){
-        $users=DB::table('users')->join('user_groups','users.id','=','user_groups.user_id')->where('user_groups.group_id','=',$groupID)->where('user_groups.guest','<=',session('guest'))->select('users.id','users.username')->get();
+    public function getPointEventTotal($eventID, $leagueID){
+        $users = DB::table('users')
+            ->join('league_members', 'users.id', '=', 'league_members.user_id')
+            ->where('league_members.league_id', '=', $leagueID)
+            ->where('league_members.is_guest', '<=', session('guest'))
+            ->select('users.id', 'users.username')
+            ->get();
 
         foreach ($users as $user){
             $pointResultUserEvent = $this->getPointPredictionUserEvent($user->id,$eventID);
@@ -98,12 +108,12 @@ class PointController extends Controller
         $points = PointSurvival::where('user_id',$userID)->where('event_id',$eventID)->first();
         return $points->survival_points ?? 0;
     }
-    public function getAllUsersGameHistory(int $groupID): array
+    public function getAllUsersGameHistory(int $leagueID): array
     {
         $userIDs = DB::table('users')
-            ->join('user_groups', 'users.id', '=', 'user_groups.user_id')
-            ->where('user_groups.group_id', '=', $groupID)
-            ->where('user_groups.guest', '<=', session('guest'))
+            ->join('league_members', 'users.id', '=', 'league_members.user_id')
+            ->where('league_members.league_id', '=', $leagueID)
+            ->where('league_members.is_guest', '<=', session('guest'))
             ->pluck('users.id')
             ->toArray();
 
@@ -199,13 +209,13 @@ class PointController extends Controller
         return $history;
     }
 
-    public function getRankHistory(int $groupID, int $userID): array
+    public function getRankHistory(int $leagueID, int $userID): array
     {
         $guest = session('guest', 0);
 
-        $userIDs = DB::table('user_groups')
-            ->where('group_id', $groupID)
-            ->where('guest', '<=', $guest)
+        $userIDs = DB::table('league_members')
+            ->where('league_id', $leagueID)
+            ->where('is_guest', '<=', $guest)
             ->pluck('user_id')
             ->toArray();
 

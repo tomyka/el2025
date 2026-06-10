@@ -74,6 +74,29 @@ class LeagueFoundationTest extends TestCase
         $this->assertEquals(0, session('guest'));
     }
 
+    public function test_get_all_user_points_filters_by_league(): void
+    {
+        session(['guest' => 0]);
+
+        $leagueA = \App\Models\League::create(['name' => 'League A', 'is_public' => false]);
+        $leagueB = \App\Models\League::create(['name' => 'League B', 'is_public' => false]);
+
+        $userA = \App\Models\User::factory()->create();
+        $userB = \App\Models\User::factory()->create();
+        \App\Models\UserSetting::factory()->create(['user_id' => $userA->id, 'admin' => 0]);
+        \App\Models\UserSetting::factory()->create(['user_id' => $userB->id, 'admin' => 0]);
+
+        \App\Models\LeagueMember::create(['league_id' => $leagueA->id, 'user_id' => $userA->id, 'active' => true, 'is_guest' => false]);
+        \App\Models\LeagueMember::create(['league_id' => $leagueB->id, 'user_id' => $userB->id, 'active' => true, 'is_guest' => false]);
+
+        $pointController = new \App\Http\Controllers\PointController();
+        $points = $pointController->getAllUserPoints($leagueA->id);
+
+        $userIds = array_column($points, 'userID');
+        $this->assertContains($userA->id, $userIds);
+        $this->assertNotContains($userB->id, $userIds);
+    }
+
     public function test_new_user_registration_joins_public_league(): void
     {
         // Public league is created by the data migration (RefreshDatabase runs it)
