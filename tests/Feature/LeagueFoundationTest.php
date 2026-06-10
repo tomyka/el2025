@@ -44,4 +44,10 @@ class LeagueFoundationTest extends TestCase
         $this->assertNotNull($publicLeague);
         $this->assertEquals('Public League', $publicLeague->name);
     }
+
+    public function test_messages_table_has_league_id_column(): void
+    {
+        $this->assertTrue(\Illuminate\Support\Facades\Schema::hasColumn('messages', 'league_id'));
+        $this->assertFalse(\Illuminate\Support\Facades\Schema::hasColumn('messages', 'group_id'));
+    }
 }
