@@ -233,7 +233,7 @@
 
 {{-- ── Invite Modal ── --}}
 <div class="modal fade" id="inviteModal" tabindex="-1">
-  <div class="modal-dialog modal-sm">
+  <div class="modal-dialog" style="max-width:450px;">
     <div class="modal-content" style="border-radius:12px;overflow:hidden;">
       <div class="modal-header" style="background:var(--sb-nav);border-bottom:1px solid rgba(255,255,255,.1);padding:14px 20px;">
         <h5 class="modal-title" id="inviteModalTitle" style="color:#fff;font-size:.88rem;font-weight:700;">
