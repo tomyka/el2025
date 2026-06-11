@@ -82,6 +82,31 @@ class RegistrationDeadlineTest extends TestCase
         $this->assertDatabaseHas('users', ['email' => 'new@test.com']);
     }
 
+    // ── Rate limiting ────────────────────────────────────────────────
+
+    public function test_registration_rate_limited_after_three_attempts(): void
+    {
+        for ($i = 0; $i < 3; $i++) {
+            $this->post(route('register'), [
+                'username'              => 'bot' . $i,
+                'name'                  => 'Bot',
+                'email'                 => 'bot' . $i . '@test.com',
+                'password'              => 'password123',
+                'password_confirmation' => 'password123',
+            ]);
+        }
+
+        $response = $this->post(route('register'), [
+            'username'              => 'bot4',
+            'name'                  => 'Bot',
+            'email'                 => 'bot4@test.com',
+            'password'              => 'password123',
+            'password_confirmation' => 'password123',
+        ]);
+
+        $response->assertStatus(429);
+    }
+
     // ── Helpers ──────────────────────────────────────────────────────
 
     private function makeGame(\Illuminate\Support\Carbon $date): Game
