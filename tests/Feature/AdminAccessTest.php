@@ -106,4 +106,72 @@ class AdminAccessTest extends TestCase
 
         $this->assertDatabaseMissing('users', ['id' => $target->id]);
     }
+
+    // ── Level 5 blocked from leagues delete ──────────────────────────────
+
+    public function test_level5_blocked_from_league_delete(): void
+    {
+        $admin  = $this->makeUser(5);
+        $league = \App\Models\League::factory()->create(['is_public' => false]);
+
+        $this->actingAs($admin)
+            ->withSession(['userID' => $admin->id])
+            ->post(route('admin.leagues.delete'), ['leagueID' => $league->id])
+            ->assertRedirect(route('admin.index'));
+
+        $this->assertDatabaseHas('leagues', ['id' => $league->id]);
+    }
+
+    public function test_level9_can_delete_league(): void
+    {
+        $admin  = $this->makeUser(9);
+        $league = \App\Models\League::factory()->create(['is_public' => false]);
+
+        $this->actingAs($admin)
+            ->withSession(['userID' => $admin->id])
+            ->post(route('admin.leagues.delete'), ['leagueID' => $league->id])
+            ->assertRedirect();
+
+        $this->assertDatabaseMissing('leagues', ['id' => $league->id]);
+    }
+
+    // ── Level-9 event delete ─────────────────────────────────────────────
+
+    public function test_level5_blocked_from_event_delete(): void
+    {
+        $admin = $this->makeUser(5);
+        $event = \App\Models\Event::create([
+            'event'          => 'Test Event',
+            'event_day'      => 1,
+            'event_survival' => 0,
+            'active'         => 1,
+            'rate'           => 1,
+        ]);
+
+        $this->actingAs($admin)
+            ->withSession(['userID' => $admin->id])
+            ->post(route('admin.events'), ['delete' => 1, 'eventID' => $event->id])
+            ->assertRedirect(route('admin.events'));
+
+        $this->assertDatabaseHas('events', ['id' => $event->id]);
+    }
+
+    public function test_level9_can_delete_event(): void
+    {
+        $admin = $this->makeUser(9);
+        $event = \App\Models\Event::create([
+            'event'          => 'Test Event',
+            'event_day'      => 1,
+            'event_survival' => 0,
+            'active'         => 1,
+            'rate'           => 1,
+        ]);
+
+        $this->actingAs($admin)
+            ->withSession(['userID' => $admin->id])
+            ->post(route('admin.events'), ['delete' => 1, 'eventID' => $event->id])
+            ->assertRedirect(route('admin.events'));
+
+        $this->assertDatabaseMissing('events', ['id' => $event->id]);
+    }
 }
