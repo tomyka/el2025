@@ -38,10 +38,9 @@ class ChartXssTest extends TestCase
             ->get(route('summary.chart'));
 
         $response->assertOk();
-        // Literal <script> tag injected via username must NOT appear in inline JS.
-        // JSON_HEX_TAG encodes < as < so the raw tag cannot break out of the JS string.
+        // Literal <script> tag injected via username must NOT appear in inline JS
         $this->assertStringNotContainsString('<script>alert(1)', $response->getContent());
-        // The unicode-escaped form (<) must be present, proving JSON_HEX_TAG ran
+        // JSON_HEX_TAG encodes < as < — verify the escaped form is present
         $this->assertStringContainsString('<', $response->getContent());
     }
 
@@ -70,7 +69,7 @@ class ChartXssTest extends TestCase
         $response->assertOk();
         // Raw <b> tag must not appear in the JSON-encoded game labels
         $this->assertStringNotContainsString('<b>Bold', $response->getContent());
-        // Unicode-escaped form (<) must be present, proving JSON_HEX_TAG ran
+        // JSON_HEX_TAG encodes < as < — verify the escaped form is present
         $this->assertStringContainsString('<', $response->getContent());
     }
 }
