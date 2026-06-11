@@ -30,7 +30,8 @@ class EventController extends Controller
     public function updateEvent(Request $request)
     {
         if ($request->has('delete')) {
-            if (!UserSetting::where('user_id', session('userID'))->where('admin', '>=', 9)->exists()) {
+            $userID = session('userID');
+            if (!$userID || !UserSetting::where('user_id', $userID)->where('admin', '>=', 9)->exists()) {
                 return redirect()->route('admin.events')->with('error', 'Insufficient permissions to delete.');
             }
             Event::destroy($request->input('eventID'));
