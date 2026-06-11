@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdatePredictionResultRequest;
+use App\Models\Event;
 use App\Models\Game;
 use App\Models\PredictionResult;
 use App\Models\Team;
@@ -13,20 +14,33 @@ class PredictionResultController extends Controller
 {
     public function getPredictionResultsUser() {
         if (session('userID') != '') {
-            $userID = session('userID');
-            $raw = $this->getPredictionGamesGrouped($userID);
+            $userID      = session('userID');
+            $eventFilter = request()->integer('event', 0);
+
+            $raw = $this->getPredictionGamesGrouped($userID, $eventFilter ?: null);
             $groupedResults = collect($raw)
                 ->groupBy('event_day')
                 ->map(fn($day) => $day->groupBy('group_name'));
-            return view('prediction.results')->with('groupedResults', $groupedResults);
+
+            $events = Event::orderBy('id')->pluck('event', 'id');
+
+            return view('prediction.results')
+                ->with('groupedResults', $groupedResults)
+                ->with('events', $events)
+                ->with('selectedEvent', $eventFilter);
         } else {
             return redirect('/');
         }
     }
 
-    private function getPredictionGamesGrouped($userID) {
+    private function getPredictionGamesGrouped($userID, ?int $eventId = null) {
         $nowUtc = Carbon::now('UTC')->format('Y-m-d H:i:s');
-        return DB::select('SELECT DISTINCT
+        $eventClause = $eventId ? 'AND g.event_id = ?' : '';
+        $bindings = $eventId
+            ? [$nowUtc, $userID, $nowUtc, $eventId]
+            : [$nowUtc, $userID, $nowUtc];
+
+        return DB::select("SELECT DISTINCT
                 prr.id,
                 g.id as game_id,
                 g.game_date,
@@ -50,8 +64,9 @@ class PredictionResultController extends Controller
             WHERE
                 prr.user_id = ? AND
                 (g.game_date > ? OR g.home_team_score IS NULL)
-            ORDER BY g.event_id ASC, ht.group_name ASC, g.game_date ASC',
-            [$nowUtc, $userID, $nowUtc]);
+                {$eventClause}
+            ORDER BY g.event_id ASC, ht.group_name ASC, g.game_date ASC",
+            $bindings);
     }
 
     public function updatePredictionResultUser(UpdatePredictionResultRequest $request)

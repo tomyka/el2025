@@ -2,6 +2,18 @@
 @section('content')
 
 @auth
+    @if($events->count() > 1)
+    <div class="d-flex justify-content-end mb-2">
+        <select class="form-select form-select-sm"
+                style="width:auto;font-size:.78rem;border-radius:8px;border-color:var(--sb-border);"
+                onchange="window.location='{{ route('prediction.results') }}' + (this.value ? '?event=' + this.value : '')">
+            <option value="" {{ $selectedEvent == 0 ? 'selected' : '' }}>Visi etapai</option>
+            @foreach($events as $id => $name)
+            <option value="{{ $id }}" {{ $selectedEvent == $id ? 'selected' : '' }}>{{ $name }}</option>
+            @endforeach
+        </select>
+    </div>
+    @endif
     @if($groupedResults->isEmpty())
         <p class="text-center text-muted py-4">Nėra artėjančių rungtynių.</p>
     @else
