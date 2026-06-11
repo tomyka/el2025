@@ -82,22 +82,27 @@
         <div class="rules-section">
             <p>Eilutė — namų komandos prognozės klaida, stulpelis — svečių komandos prognozės klaida (ta pati kryptis). Priešinga kryptis arba didesnė klaida mažina taškus.</p>
 
-            <table class="rules-table mt-2" style="max-width:380px;">
+            <div style="overflow-x:auto;">
+            <table class="rules-table mt-2">
                 <thead>
                     <tr>
                         <th>Namų Δ \ Svečių Δ</th>
-                        <th>±0</th><th>±1</th><th>±2</th><th>±3</th><th>±4</th>
+                        <th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><th>0</th><td class="rules-pts-pos">5.0</td><td>4.0</td><td>3.0</td><td>2.0</td><td>1.0</td></tr>
-                    <tr><th>1</th><td>4.0</td><td class="rules-pts-pos">4.5</td><td>3.5</td><td>2.5</td><td>1.5</td></tr>
-                    <tr><th>2</th><td>3.0</td><td>3.5</td><td class="rules-pts-pos">4.0</td><td>3.0</td><td>2.0</td></tr>
-                    <tr><th>3</th><td>2.0</td><td>2.5</td><td>3.0</td><td class="rules-pts-pos">3.5</td><td>2.5</td></tr>
-                    <tr><th>4</th><td>1.0</td><td>1.5</td><td>2.0</td><td>2.5</td><td class="rules-pts-pos">3.0</td></tr>
+                    <tr><th>0</th><td class="rules-pts-pos">5.0</td><td>4.0</td><td>3.0</td><td>2.0</td><td>1.0</td><td class="rules-pts-zero">0.0</td><td class="rules-pts-zero">−1.0</td><td class="rules-pts-zero">−2.0</td></tr>
+                    <tr><th>1</th><td>4.0</td><td class="rules-pts-pos">4.5</td><td>3.5</td><td>2.5</td><td>1.5</td><td>0.5</td><td class="rules-pts-zero">−0.5</td><td class="rules-pts-zero">−1.5</td></tr>
+                    <tr><th>2</th><td>3.0</td><td>3.5</td><td class="rules-pts-pos">4.0</td><td>3.0</td><td>2.0</td><td>1.0</td><td class="rules-pts-zero">0.0</td><td class="rules-pts-zero">−1.0</td></tr>
+                    <tr><th>3</th><td>2.0</td><td>2.5</td><td>3.0</td><td class="rules-pts-pos">3.5</td><td>2.5</td><td>1.5</td><td>0.5</td><td class="rules-pts-zero">−0.5</td></tr>
+                    <tr><th>4</th><td>1.0</td><td>1.5</td><td>2.0</td><td>2.5</td><td class="rules-pts-pos">3.0</td><td>2.0</td><td>1.0</td><td class="rules-pts-zero">0.0</td></tr>
+                    <tr><th>5</th><td class="rules-pts-zero">0.0</td><td>0.5</td><td>1.0</td><td>1.5</td><td>2.0</td><td class="rules-pts-pos">2.5</td><td>1.5</td><td>0.5</td></tr>
+                    <tr><th>6</th><td class="rules-pts-zero">−1.0</td><td class="rules-pts-zero">−0.5</td><td class="rules-pts-zero">0.0</td><td>0.5</td><td>1.0</td><td>1.5</td><td class="rules-pts-pos">2.0</td><td>1.0</td></tr>
+                    <tr><th>7</th><td class="rules-pts-zero">−2.0</td><td class="rules-pts-zero">−1.5</td><td class="rules-pts-zero">−1.0</td><td class="rules-pts-zero">−0.5</td><td class="rules-pts-zero">0.0</td><td>0.5</td><td>1.0</td><td class="rules-pts-pos">1.5</td></tr>
                 </tbody>
             </table>
-            <p class="rules-table-caption">Pažymėtas įstrižainė — klaida abiejose pusėse lygi (teisingas įvarčių skirtumas, nors abu skaičiai netikslūs).</p>
+            </div>
+            <p class="rules-table-caption">Pažymėta įstrižainė — lygi klaida abiejose pusėse (teisingas įvarčių skirtumas). Pilka — nulinis arba neigiamas taškai.</p>
         </div>
     </div>
 
