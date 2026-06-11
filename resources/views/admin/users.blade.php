@@ -76,10 +76,17 @@
                         </form>
                     </td>
 
-                    <td class="text-center">
+                    <td class="text-center" style="white-space:nowrap;">
+                        @if(session('admin') >= 5)
+                        <a href="{{ route('admin.audit', ['user' => $user->id]) }}"
+                           class="au-action-btn" title="Auditas" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">
+                            <i class="bi bi-clock-history"></i>
+                        </a>
+                        @endif
                         @if(session('admin') >= 9)
                         <form method="post" action="{{ route('admin.deleteUser') }}"
-                              onsubmit="return confirm('Ištrinti vartotoją {{ addslashes($user->username) }}?')">
+                              onsubmit="return confirm('Ištrinti vartotoją {{ addslashes($user->username) }}?')"
+                              style="display:inline;">
                             @csrf
                             <input type="hidden" name="userID"   value="{{ $user->id }}">
                             <input type="hidden" name="username" value="{{ $user->username }}">
