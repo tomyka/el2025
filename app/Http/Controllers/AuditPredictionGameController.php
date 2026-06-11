@@ -12,9 +12,9 @@ class AuditPredictionGameController extends Controller
         $homeTeamScore,
         $awayTeamScore,
         $gameWinnerID,
-        $oldHomeTeamScore,
-        $oldAwayTeamScore,
-        $oldGameWinnerId
+        ?int $oldHomeTeamScore,
+        ?int $oldAwayTeamScore,
+        ?int $oldGameWinnerId
     ): void {
         $audit = new AuditPredictionGame();
         $audit->user_id             = $userID;
