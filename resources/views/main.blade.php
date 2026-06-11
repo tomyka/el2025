@@ -16,6 +16,9 @@
         @endif
             @if(session('eventID') != 0)
                 @include('partials.games')
+                @if(($firstGameStarted ?? false) && isset($rankHistory) && count($rankHistory) >= 2)
+                    @include('partials.positionTrend')
+                @endif
                 @if($firstGameStarted ?? false)
                     @include('partials.standings')
                 @endif
@@ -42,14 +45,6 @@
             </div>
         @endif
     </div>
-
-    @if(($firstGameStarted ?? false) && isset($rankHistory) && count($rankHistory) >= 2)
-    <div class="row mt-3">
-        <div class="col-12">
-            @include('partials.positionTrend')
-        </div>
-    </div>
-    @endif
 
 @else
     @include('welcome')
