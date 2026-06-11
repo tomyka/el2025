@@ -32,6 +32,11 @@ class RegisteredUserController extends Controller
             return redirect()->route('main');
         }
 
+        // Honeypot: real users never fill this field; bots typically do
+        if ($request->filled('website')) {
+            return redirect()->route('main');
+        }
+
         $request->validate([
             'username' => ['required', 'string', 'max:255'],
             'name'     => ['required', 'string', 'max:255'],
