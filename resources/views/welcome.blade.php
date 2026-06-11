@@ -11,7 +11,8 @@
 </div>
 
 <div class="text-center mt-2">
-    <a href="{{ route('login') }}" class="sb-auth-btn-primary d-inline-block" style="max-width:280px;">
+    <a href="#" class="sb-auth-btn-primary d-inline-block" style="max-width:280px;"
+       data-bs-toggle="modal" data-bs-target="#loginModal">
         Prisijungti ir pradėti
     </a>
 </div>

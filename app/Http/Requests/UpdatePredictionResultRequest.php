@@ -16,8 +16,8 @@ class UpdatePredictionResultRequest extends FormRequest
         return [
             'gameID'            => ['required', 'integer'],
             'prediction_gameID' => ['required', 'integer'],
-            'homeTeamScore'     => ['nullable', 'integer', 'min:0', 'max:7'],
-            'awayTeamScore'     => ['nullable', 'integer', 'min:0', 'max:7'],
+            'homeTeamScore'     => ['nullable', 'integer', 'min:0', 'max:150'],
+            'awayTeamScore'     => ['nullable', 'integer', 'min:0', 'max:150'],
             'gameWinnerID'      => ['nullable', 'integer'],
         ];
     }

@@ -9,6 +9,7 @@ use App\Models\LeagueMember;
 use App\Models\PredictionResult;
 use App\Models\Team;
 use App\Models\User;
+use App\Models\UserSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -40,7 +41,7 @@ class FormRequestValidationTest extends TestCase
             ->postJson(route('prediction.results'), [
                 'gameID' => 1,
                 'prediction_gameID' => 1,
-                'homeTeamScore' => 10,
+                'homeTeamScore' => -1,
                 'awayTeamScore' => 80,
             ]);
 
@@ -109,9 +110,10 @@ class FormRequestValidationTest extends TestCase
     public function test_update_result_rejects_missing_game_id(): void
     {
         $admin = User::factory()->create();
+        UserSetting::factory()->create(['user_id' => $admin->id, 'admin' => 1]);
 
         $response = $this->actingAs($admin)
-            ->withSession(['admin' => 1])
+            ->withSession(['admin' => 1, 'userID' => $admin->id])
             ->postJson(route('admin.updateResult'), [
                 'homeTeamScore' => 80,
                 'awayTeamScore' => 70,
@@ -124,9 +126,10 @@ class FormRequestValidationTest extends TestCase
     public function test_update_result_rejects_negative_scores(): void
     {
         $admin = User::factory()->create();
+        UserSetting::factory()->create(['user_id' => $admin->id, 'admin' => 1]);
 
         $response = $this->actingAs($admin)
-            ->withSession(['admin' => 1])
+            ->withSession(['admin' => 1, 'userID' => $admin->id])
             ->postJson(route('admin.updateResult'), [
                 'gameID' => 1,
                 'homeTeamScore' => -1,

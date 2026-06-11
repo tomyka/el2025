@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Models\UserSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -28,9 +29,10 @@ class AdminMiddlewareTest extends TestCase
     public function test_authenticated_admin_can_access_admin_routes(): void
     {
         $user = User::factory()->create();
+        UserSetting::factory()->create(['user_id' => $user->id, 'admin' => 1]);
 
         $response = $this->actingAs($user)
-            ->withSession(['admin' => 1, 'eventID' => 0])
+            ->withSession(['admin' => 1, 'eventID' => 0, 'userID' => $user->id])
             ->get(route('admin.index'));
 
         $response->assertOk();

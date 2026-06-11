@@ -32,9 +32,9 @@ class UserDeletionTest extends TestCase
         UserSetting::factory()->create(['user_id' => $actor->id, 'admin' => 0]);
 
         $this->actingAs($actor)
-            ->withSession(['admin' => 0])
+            ->withSession(['admin' => 0, 'userID' => $actor->id])
             ->post(route('admin.deleteUser'), ['userID' => $target->id])
-            ->assertRedirect('/');
+            ->assertRedirect(route('admin.index'));
     }
 
     public function test_admin_can_delete_user_and_cascade(): void

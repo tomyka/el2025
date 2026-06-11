@@ -53,6 +53,7 @@
 
 @else
     @include('welcome')
+    @include('modals.main')
 @endauth
 
 @endsection

@@ -101,7 +101,7 @@ class PredictionResultController extends Controller
     }
 
     public function getPredictionResultsUserGroupEventDay($eventID, $groupID, $userID){
-        $timeDiff = session('timeDifference');
+        $now = now()->addHours((int) session('timeDifference'))->format('Y-m-d H:i:s');
         $predictionGamesUserProfileEventDay = DB::select('SELECT
                             g.id,
                               g.game_date,
@@ -116,7 +116,7 @@ class PredictionResultController extends Controller
                               IFNULL(por.difference_points,0) AS difference_points,
                               IFNULL(por.winner_points,0) AS winner_points,
                               IFNULL(por.bingo_points,0) AS bingo_points,
-                              IFNULL(ROUND((CASE WHEN game_date > DATE_ADD(NOW(),INTERVAL ? HOUR) THEN NULL ELSE por.odds END),4),0) AS odds,
+                              IFNULL(ROUND((CASE WHEN game_date > ? THEN NULL ELSE por.odds END),4),0) AS odds,
                               IFNULL(por.odds_points,0) AS odds_points,
                               ROUND(IFNULL(por.full_points,0),2) AS full_points,
                               ROUND(IFNULL(por.streak_bonus,0),2) AS streak_bonus
@@ -134,13 +134,13 @@ class PredictionResultController extends Controller
                               AND e.id = ?
                               AND lm.league_id = ?
                           ORDER BY g.id ASC',
-            [$timeDiff, $userID, $eventID, $groupID]);
+            [$now, $userID, $eventID, $groupID]);
 
         return $predictionGamesUserProfileEventDay;
     }
 
     public function getPredictionGamesProfile($groupID, $eventID){
-        $timeDiff = session('timeDifference');
+        $now = now()->addHours((int) session('timeDifference'))->format('Y-m-d H:i:s');
         $guest = session('guest');
         $eventIDValue = ($eventID === '') ? 99 : (int) $eventID;
 
@@ -156,7 +156,7 @@ class PredictionResultController extends Controller
                           ROUND(IFNULL(por.difference_points,0),1) AS difference_points,
                           ROUND(IFNULL(por.winner_points,0),1) AS winner_points,
                           ROUND(IFNULL(por.bingo_points,0),1) AS bingo_points,
-                          IFNULL(ROUND((CASE WHEN game_date > DATE_ADD(NOW(),INTERVAL ? HOUR) THEN NULL ELSE por.Odds END),4),0) AS odds,
+                          IFNULL(ROUND((CASE WHEN game_date > ? THEN NULL ELSE por.Odds END),4),0) AS odds,
                           ROUND(IFNULL(por.odds_points,0),1) AS odds_points,
                           ROUND(IFNULL(por.full_points,0),1) AS full_points
                     from prediction_results as pr
@@ -165,15 +165,15 @@ class PredictionResultController extends Controller
                           join events AS e ON e.id = g.event_id
                           join league_members as lm on pr.user_id=lm.user_id AND lm.league_id = ? AND lm.is_guest <= ?
                           left join point_results as por on por.user_id=pr.user_id AND por.game_id=pr.game_id
-                        where g.game_date < DATE_ADD(NOW(), INTERVAL ? HOUR) AND e.id <= ?
+                        where g.game_date < ? AND e.id <= ?
                         ORDER BY pr.user_id ASC, g.id DESC',
-            [$timeDiff, $groupID, $guest, $timeDiff, $eventIDValue]);
+            [$now, $groupID, $guest, $now, $eventIDValue]);
 
         return $predictionGames;
     }
 
     public function getPredictionGamesUserResultAmount($userID, $resultAmount){
-        $timeDiff = session('timeDifference');
+        $now = now()->addHours((int) session('timeDifference'))->format('Y-m-d H:i:s');
         $predictionGamesUser = DB::select('SELECT
              DISTINCT
                 prr.id,
@@ -189,7 +189,7 @@ class PredictionResultController extends Controller
                 prr.away_team_score as away_team_score,
                 prr.game_winner_id as game_winner_id,
                 prr.prediction_date as prediction_date,
-                DATE_ADD(NOW(), INTERVAL ? HOUR) as Now,
+                ? as Now,
                 e.active,
                 e.rate
             from prediction_results as prr
@@ -200,10 +200,10 @@ class PredictionResultController extends Controller
                 join events e on e.id=g.event_id
             where
                 prr.user_id = ? and
-                g.game_date > DATE_ADD(NOW(), INTERVAL ? HOUR)
+                g.game_date > ?
             order by g.game_date asc, prr.id ASC
             LIMIT ?',
-            [$timeDiff, $userID, $timeDiff, (int) $resultAmount]);
+            [$now, $userID, $now, (int) $resultAmount]);
 
         return $predictionGamesUser;
     }

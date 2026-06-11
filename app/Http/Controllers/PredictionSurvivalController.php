@@ -94,14 +94,14 @@ class PredictionSurvivalController extends Controller
     }
 
     public function getPredictionSurvivalUserEventID($userID, $eventID){
-        $timeDiff = session('timeDifference');
+        $now = now()->addHours((int) session('timeDifference'))->format('Y-m-d H:i:s');
         $predictionSurvivalUserEvent = DB::select('
         SELECT distinct
    t.id as team_id
   ,t.team
   ,ps.event_id AS event_id
   ,ps.team_id AS survival_team_id
-  ,CASE WHEN g.game_date > DATE_ADD(NOW(), INTERVAL ? HOUR) AND (ps.event_id = ? or ps.event_id IS NULL) AND g.home_team_score IS NULL AND g.away_team_score IS NULL  THEN 1 ELSE 0 END AS active
+  ,CASE WHEN g.game_date > ? AND (ps.event_id = ? or ps.event_id IS NULL) AND g.home_team_score IS NULL AND g.away_team_score IS NULL  THEN 1 ELSE 0 END AS active
   ,o.team AS opponent
   , CASE WHEN t.id=g.home_team_id THEN \'H\' ELSE \'A\' END AS location
 FROM teams AS t
@@ -110,7 +110,7 @@ FROM teams AS t
   JOIN teams AS o ON o.id=CASE WHEN t.id=g.home_team_id THEN g.away_team_id WHEN t.id=g.away_team_id THEN g.home_team_id END
   LEFT JOIN prediction_survivals AS ps ON t.id=ps.team_id AND ps.user_id = ?
 ORDER BY t.id',
-            [$timeDiff, $eventID, $eventID, $userID]);
+            [$now, $eventID, $eventID, $userID]);
 
         return $predictionSurvivalUserEvent;
     }

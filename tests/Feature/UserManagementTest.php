@@ -15,11 +15,12 @@ class UserManagementTest extends TestCase
     public function test_admin_user_update_profile(): void
     {
         $admin = User::factory()->create();
+        UserSetting::factory()->create(['user_id' => $admin->id, 'admin' => 9]);
         $targetUser = User::factory()->create();
         $userSetting = UserSetting::factory()->create(['user_id' => $targetUser->id, 'admin' => 0]);
 
         $response = $this->actingAs($admin)
-            ->withSession(['admin' => 1])
+            ->withSession(['admin' => 9, 'userID' => $admin->id])
             ->post(route('admin.updateUser'), [
                 'userID' => $targetUser->id,
                 'username' => $targetUser->email,
@@ -33,12 +34,13 @@ class UserManagementTest extends TestCase
     public function test_admin_user_delete_user_and_related_data(): void
     {
         $admin = User::factory()->create();
+        UserSetting::factory()->create(['user_id' => $admin->id, 'admin' => 9]);
         $targetUser = User::factory()->create();
         UserSetting::factory()->create(['user_id' => $targetUser->id]);
         LeagueMember::factory()->create(['user_id' => $targetUser->id]);
 
         $response = $this->actingAs($admin)
-            ->withSession(['admin' => 1])
+            ->withSession(['admin' => 9, 'userID' => $admin->id])
             ->post(route('admin.deleteUser'), ['userID' => $targetUser->id]);
 
         $response->assertRedirect(route('admin.users'));
