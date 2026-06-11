@@ -213,7 +213,10 @@
     @if(session('userID'))
     <div class="sb-mobile-group">
       <div class="sb-mobile-label">Lyga</div>
-      @include('partials.league-switcher')
+      <a class="sb-nav-link {{ request()->routeIs('leagues.*') ? 'active' : '' }}"
+         href="{{ route('leagues.index') }}">
+        <i class="bi bi-gear"></i> Tvarkyti lygą
+      </a>
     </div>
     @endif
 

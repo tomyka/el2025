@@ -39,9 +39,6 @@
             </li>
             @endif
             @endforeach
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{{ route('leagues.index') }}">
-                <i class="bi bi-gear me-1"></i>Tvarkyti lygą</a></li>
         </ul>
     </div>
 </nav>
