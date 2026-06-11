@@ -165,7 +165,7 @@ class PointResultController extends Controller
                     }
 
                     $oddsPointsLeague = $row->winner_points > 0
-                        ? round((float) $row->winner_points * ($leagueOddsRate - 1), 1)
+                        ? round((float) $row->winner_points * $leagueOddsRate, 1)
                         : 0.0;
 
                     $fullPointsLeague = round(

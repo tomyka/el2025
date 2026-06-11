@@ -52,9 +52,9 @@ class GameOddsController extends Controller
             $draws    = $leaguePredictions->filter(fn($p) => $p->home_team_score == $p->away_team_score)->count();
             $awayWins = $leaguePredictions->filter(fn($p) => $p->home_team_score < $p->away_team_score)->count();
 
-            $homeOdds = round(max(1.01, 2 - ($homeWins / $total)), 2);
-            $drawOdds = round(max(1.01, 2 - ($draws    / $total)), 2);
-            $awayOdds = round(max(1.01, 2 - ($awayWins / $total)), 2);
+            $homeOdds = $homeWins > 0 ? round(log($total / $homeWins, 2), 4) : 0.0;
+            $drawOdds = $draws    > 0 ? round(log($total / $draws,    2), 4) : 0.0;
+            $awayOdds = $awayWins > 0 ? round(log($total / $awayWins, 2), 4) : 0.0;
 
             DB::table('league_game_odds')->upsert(
                 [
@@ -73,27 +73,27 @@ class GameOddsController extends Controller
 
     private function calculateGameOdds($gameID): object
     {
-        $predictionResults      = PredictionResult::where('game_id', $gameID)->where('generated', 0)->get();
-        $predictionResultCCount = count($predictionResults);
+        $predictionResults = PredictionResult::where('game_id', $gameID)->where('generated', 0)->get();
+        $total             = count($predictionResults);
 
-        if ($predictionResultCCount === 0) {
-            return (object) ['homeOdds' => 1.0, 'drawOdds' => 1.0, 'awayOdds' => 1.0];
+        if ($total === 0) {
+            return (object) ['homeOdds' => 0.0, 'drawOdds' => 0.0, 'awayOdds' => 0.0];
         }
 
-        $homeOddsCount = 0;
-        $drawOddsCount = 0;
-        $awayOddsCount = 0;
+        $homeCount = 0;
+        $drawCount = 0;
+        $awayCount = 0;
 
-        foreach ($predictionResults as $predictionResult) {
-            $homeOddsCount += $this->calculateHomeOdds($predictionResult->home_team_score, $predictionResult->away_team_score);
-            $drawOddsCount += $this->calculateDrawOdds($predictionResult->home_team_score, $predictionResult->away_team_score);
-            $awayOddsCount += $this->calculateAwayOdds($predictionResult->home_team_score, $predictionResult->away_team_score);
+        foreach ($predictionResults as $p) {
+            $homeCount += $this->calculateHomeOdds($p->home_team_score, $p->away_team_score);
+            $drawCount += $this->calculateDrawOdds($p->home_team_score, $p->away_team_score);
+            $awayCount += $this->calculateAwayOdds($p->home_team_score, $p->away_team_score);
         }
 
         return (object) [
-            'homeOdds' => 2 - $homeOddsCount / $predictionResultCCount,
-            'drawOdds' => 2 - $drawOddsCount / $predictionResultCCount,
-            'awayOdds' => 2 - $awayOddsCount / $predictionResultCCount,
+            'homeOdds' => $homeCount > 0 ? round(log($total / $homeCount, 2), 4) : 0.0,
+            'drawOdds' => $drawCount > 0 ? round(log($total / $drawCount, 2), 4) : 0.0,
+            'awayOdds' => $awayCount > 0 ? round(log($total / $awayCount, 2), 4) : 0.0,
         ];
     }
 

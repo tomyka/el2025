@@ -96,7 +96,7 @@ class ScoringService
         mixed $generated
     ): float {
         if ((int) $generated === 1) {
-            return 1.0;
+            return 0.0;
         }
 
         if ($homeScorePrediction > $awayScorePrediction) return (float) $gameOdds->home_odds;
@@ -105,11 +105,12 @@ class ScoringService
     }
 
     /**
-     * Odds bonus: winner_points × (odds − 1), only when the winner was correctly called.
+     * Odds bonus: winner_points × log₂(1/fraction), only when the winner was correctly called.
+     * odds is stored as log₂(total/votes), so this is simply winner_points × odds.
      */
     public function getOddsPoints(float $odds, float $winnerPoints): float
     {
-        return $winnerPoints > 0 ? $winnerPoints * ($odds - 1) : 0.0;
+        return $winnerPoints > 0 ? $winnerPoints * $odds : 0.0;
     }
 
     /**

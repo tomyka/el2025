@@ -110,16 +110,16 @@ class LeagueOddsTest extends TestCase
         [$league, $users] = $this->makeLeagueWith20Members(true);
         $user = $users[0];
 
-        // Global odds: home_odds = 1.8
+        // Global odds stored as log₂ values: log₂(20/5)=2.0 means 25% predicted home
         DB::table('game_odds')->insert([
             'game_id'    => $game->id,
-            'home_odds'  => 1.8,
-            'draw_odds'  => 1.5,
-            'away_odds'  => 1.9,
+            'home_odds'  => 2.0,
+            'draw_odds'  => 1.0,
+            'away_odds'  => 0.5,
             'updated_at' => now(),
         ]);
 
-        // League odds: home_odds = 1.5
+        // League odds: home_odds = 1.5 (log₂ value)
         DB::table('league_game_odds')->insert([
             'league_id'  => $league->id,
             'game_id'    => $game->id,
@@ -133,23 +133,23 @@ class LeagueOddsTest extends TestCase
         DB::table('point_results')->insert([
             'user_id'           => $user->id,
             'game_id'           => $game->id,
-            'winner_points'     => 50,
+            'winner_points'     => 5,
             'difference_points' => 30,
             'bingo_points'      => 0,
-            'odds'              => 1.8,
-            'odds_points'       => 40, // global: 50 * (1.8-1)
-            'full_points'       => 120,
+            'odds'              => 2.0,
+            'odds_points'       => 10, // global: 5 * 2.0
+            'full_points'       => 45,
             'streak_bonus'      => 0,
         ]);
 
         $controller = app(\App\Http\Controllers\PointResultController::class);
         $profile    = $controller->getUserProfilePoints($user->id, $league->id);
 
-        // With league odds (1.5): odds_points_league = 50 * (1.5-1) = 25
+        // With league odds (1.5): odds_points_league = 5 * 1.5 = 7.5
         $row = collect($profile)->firstWhere('game_id', $game->id);
         $this->assertNotNull($row);
-        $this->assertEquals(25.0, (float) $row['odds_points_league']);
-        // full_points_league = 50 + 30 + 0 + 25 = 105
-        $this->assertEquals(105.0, (float) $row['full_points_league']);
+        $this->assertEquals(7.5, (float) $row['odds_points_league']);
+        // full_points_league = 5 + 30 + 0 + 7.5 = 42.5
+        $this->assertEquals(42.5, (float) $row['full_points_league']);
     }
 }

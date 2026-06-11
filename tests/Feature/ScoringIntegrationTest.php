@@ -51,9 +51,9 @@ class ScoringIntegrationTest extends TestCase
 
         GameOdds::create([
             'game_id'   => $game->id,
-            'home_odds' => 1.8,
-            'draw_odds' => 3.0,
-            'away_odds' => 2.2,
+            'home_odds' => 2.0,  // log₂(4): 25% predicted home win
+            'draw_odds' => 3.0,  // log₂(8): 12.5% predicted draw
+            'away_odds' => 1.0,  // log₂(2): 50% predicted away win
         ]);
 
         return compact('user', 'game', 'event');
@@ -82,8 +82,8 @@ class ScoringIntegrationTest extends TestCase
         $this->assertSame(5.0,  (float) $r->winner_points);       // correct direction → +5
         $this->assertSame(2.5,  (float) $r->bingo_points);        // exact score → +2.5
         $this->assertSame(5.0,  (float) $r->difference_points);   // table 10/2 × rate(1)
-        $this->assertEqualsWithDelta(4.0,  (float) $r->odds_points, 0.01); // 5*(1.8-1)*1
-        $this->assertEqualsWithDelta(16.5, (float) $r->full_points, 0.01); // 5+2.5+5+4
+        $this->assertEqualsWithDelta(10.0, (float) $r->odds_points, 0.01); // 5*2.0*1
+        $this->assertEqualsWithDelta(22.5, (float) $r->full_points, 0.01); // 5+2.5+5+10
     }
 
     // Wrong direction: no odds bonus; winner_points always 0 in new model
@@ -126,7 +126,7 @@ class ScoringIntegrationTest extends TestCase
 
         $r = PointResult::where('user_id', $user->id)->where('game_id', $game->id)->firstOrFail();
 
-        $this->assertSame(1.0, (float) $r->odds);
+        $this->assertSame(0.0, (float) $r->odds);
         $this->assertSame(0.0, (float) $r->odds_points);
     }
 
