@@ -17,10 +17,36 @@
         <span class="sb-tab-label">Išlikimas</span>
     </a>
     @endif
-    <a class="sb-tab {{ request()->routeIs('summary.*') ? 'active' : '' }}"
-       href="{{ route('summary.prediction.results') }}">
-        <i class="bi bi-file-earmark-bar-graph-fill" style="font-size:1.2rem;"></i>
-        <span class="sb-tab-label">Suvestinė</span>
-    </a>
+    @php
+        $activeLeagueId = session('leagueID');
+        $myLeagues = \App\Models\LeagueMember::where('user_id', session('userID'))->with('league')->get();
+        $activeLeague = $myLeagues->firstWhere('league_id', $activeLeagueId);
+    @endphp
+    <div class="dropup">
+        <button class="sb-tab dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-trophy" style="font-size:1.2rem;"></i>
+            <span class="sb-tab-label">{{ Str::limit($activeLeague?->league->name ?? 'Lyga', 10) }}</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end mb-1">
+            @foreach($myLeagues as $membership)
+            <li>
+                @if($membership->league_id === $activeLeagueId)
+                    <span class="dropdown-item active">
+                        <i class="bi bi-check2 me-1"></i>{{ $membership->league->name }}
+                    </span>
+                @else
+                    <form method="POST" action="{{ route('leagues.switch') }}">
+                        @csrf
+                        <input type="hidden" name="leagueID" value="{{ $membership->league_id }}">
+                        <button type="submit" class="dropdown-item">{{ $membership->league->name }}</button>
+                    </form>
+                @endif
+            </li>
+            @endforeach
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ route('leagues.index') }}">
+                <i class="bi bi-gear me-1"></i>Tvarkyti lygą</a></li>
+        </ul>
+    </div>
 </nav>
 @endauth

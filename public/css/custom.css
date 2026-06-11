@@ -561,6 +561,8 @@ a:hover { color: var(--sb-accent-h); }
 .sb-tab.active { color: #fff; }
 
 .sb-tab-label { font-size: .62rem; }
+button.sb-tab { background: none; border: none; outline: none; }
+button.sb-tab::after { display: none; }
 
 /* ============================================================
    Auth  (Pickdee-style, light)

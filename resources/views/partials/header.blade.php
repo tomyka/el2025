@@ -104,11 +104,6 @@
       </div>
       @endif
 
-      <a class="sb-nav-link {{ request()->routeIs('leagues.*') ? 'active' : '' }}"
-         href="{{ route('leagues.index') }}">
-        <i class="bi bi-trophy"></i> Lygos
-      </a>
-
       <div class="dropdown">
         <a class="sb-nav-link {{ request()->routeIs('rules','help','charity','privacy') ? 'active' : '' }} dropdown-toggle"
            href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -130,6 +125,13 @@
               <i class="bi bi-shield-lock"></i> Privatumas</a></li>
         </ul>
       </div>
+
+      <span class="sb-nav-sep"></span>
+
+      <a class="sb-nav-link {{ request()->routeIs('leagues.*') ? 'active' : '' }}"
+         href="{{ route('leagues.index') }}">
+        <i class="bi bi-trophy"></i> Lygos
+      </a>
 
       {{-- League switcher (right) --}}
       @if(session('userID'))
