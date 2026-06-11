@@ -9,10 +9,3 @@
         <li>Sek savo rezultatus, lygink su kitais, džiaukis kiekviena pataikyta prognoze.</li>
     </ul>
 </div>
-
-<div class="text-center mt-2">
-    <a href="#" class="sb-auth-btn-primary d-inline-block" style="max-width:280px;"
-       data-bs-toggle="modal" data-bs-target="#loginModal">
-        Prisijungti ir pradėti
-    </a>
-</div>
