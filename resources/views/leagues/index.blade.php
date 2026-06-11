@@ -242,20 +242,20 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px 20px;">
-        <p id="inviteModalLeagueName" style="font-size:.78rem;color:var(--sb-muted);margin-bottom:12px;"></p>
-        <div id="memberList" style="margin-bottom:14px;display:none;">
-          <div style="font-size:.72rem;font-weight:700;color:var(--sb-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">Nariai</div>
-          <div id="memberListItems" style="display:flex;flex-direction:column;gap:4px;max-height:140px;overflow-y:auto;"></div>
-        </div>
-        <div id="pendingList" style="margin-bottom:14px;display:none;">
-          <div style="font-size:.72rem;font-weight:700;color:var(--sb-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">Laukiama atsakymo</div>
-          <div id="pendingListItems" style="display:flex;flex-direction:column;gap:4px;max-height:100px;overflow-y:auto;"></div>
-        </div>
+        <p id="inviteModalLeagueName" style="font-size:.95rem;font-weight:700;color:var(--sb-text);margin-bottom:12px;"></p>
         <input type="text" id="inviteSearch" class="form-control form-control-sm"
                style="border-radius:8px;border-color:var(--sb-border);"
                placeholder="Ieškoti vartotojo..."
                oninput="searchUsers(this.value)">
         <div id="searchResults" style="border:1px solid var(--sb-border);border-radius:8px;overflow:hidden;display:none;margin-top:6px;"></div>
+        <div id="memberList" style="margin-top:14px;display:none;">
+          <div style="font-size:.72rem;font-weight:700;color:var(--sb-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">Nariai</div>
+          <div id="memberListItems" style="display:flex;flex-direction:column;gap:4px;max-height:140px;overflow-y:auto;"></div>
+        </div>
+        <div id="pendingList" style="margin-top:14px;display:none;">
+          <div style="font-size:.72rem;font-weight:700;color:var(--sb-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">Laukiama atsakymo</div>
+          <div id="pendingListItems" style="display:flex;flex-direction:column;gap:4px;max-height:100px;overflow-y:auto;"></div>
+        </div>
         <form id="inviteForm" method="POST" action="{{ route('leagues.invite') }}">
           @csrf
           <input type="hidden" id="inviteLeagueID" name="leagueID">
