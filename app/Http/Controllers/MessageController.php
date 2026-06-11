@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\League;
 use App\Models\Message;
+use App\Models\UserSetting;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
@@ -43,7 +44,7 @@ class MessageController extends Controller
         }
 
         if ($request->has('delete')) {
-            if (session('admin') < 9) {
+            if (!UserSetting::where('user_id', session('userID'))->where('admin', '>=', 9)->exists()) {
                 return redirect()->route('admin.messages')->with('error', 'Insufficient permissions to delete.');
             }
             Message::destroy($request->input('messageID'));

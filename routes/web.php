@@ -109,7 +109,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'superadmin']], func
 
     Route::get('users', [UserController::class,'getAllUsersFull'])->name('admin.users');
     Route::post('updateUser', [UserController::class,'updateUser'])->name('admin.updateUser');
-    Route::post('deleteUser', [UserController::class,'deleteUser'])->name('admin.deleteUser');
+    Route::post('deleteUser', [UserController::class,'deleteUser'])->middleware('level9admin')->name('admin.deleteUser');
 
     Route::get('teams',[TeamController::class,'getTeam'])->name('admin.teams');
     Route::get('teaminsert', [TeamController::class,'getTeam'])->name('admin.teaminsert');
@@ -127,7 +127,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'superadmin']], func
 
     Route::get('updateStandingPoints', [PointStandingController::class,'updateStandingPoints'])->name('admin.updateStandingPoints');
 
-    Route::post('leagues/delete', [LeagueController::class, 'adminDelete'])->name('admin.leagues.delete');
+    Route::post('leagues/delete', [LeagueController::class, 'adminDelete'])->middleware('level9admin')->name('admin.leagues.delete');
 
     // @deprecated — settings removed from admin panel; routes kept to avoid 404 on stale bookmarks
     Route::get('settings', [SettingController::class,'getSettingAll'])->name('admin.settings');

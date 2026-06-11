@@ -225,10 +225,6 @@ class LeagueController extends Controller
 
     public function adminDelete(Request $request): \Illuminate\Http\RedirectResponse
     {
-        if (session('admin') < 9) {
-            abort(403);
-        }
-
         $leagueId = (int) $request->input('leagueID');
         $league   = League::findOrFail($leagueId);
 
