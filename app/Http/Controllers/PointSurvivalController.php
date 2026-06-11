@@ -13,6 +13,26 @@ class PointSurvivalController extends Controller
         return $pointUserSurvival;
     }
 
+    public function getBulkUserSurvivalPoints(array $userIds): array
+    {
+        if (empty($userIds)) {
+            return [];
+        }
+
+        $rows = DB::table('point_survivals')
+            ->selectRaw('user_id, SUM(survival_points) as total')
+            ->whereIn('user_id', $userIds)
+            ->groupBy('user_id')
+            ->get();
+
+        $result = array_fill_keys($userIds, 0.0);
+        foreach ($rows as $row) {
+            $result[$row->user_id] = (float) $row->total;
+        }
+
+        return $result;
+    }
+
     public function getPointSurvivalEventID($eventID){
         $predictionSurvivals = DB::table('users as u')
             ->crossJoin('events as e') // Simulate CROSS JOIN

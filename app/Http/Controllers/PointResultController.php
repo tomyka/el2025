@@ -207,6 +207,88 @@ class PointResultController extends Controller
         return $profile;
     }
 
+    public function getBulkUserGamePoints(array $userIds, int $leagueId): array
+    {
+        if (empty($userIds)) {
+            return [];
+        }
+
+        $rows = DB::table('point_results as pr')
+            ->join('games as g', 'pr.game_id', '=', 'g.id')
+            ->join('events as e', 'g.event_id', '=', 'e.id')
+            ->whereIn('pr.user_id', $userIds)
+            ->select(
+                'pr.user_id', 'pr.game_id',
+                'pr.full_points', 'pr.streak_bonus', 'pr.bingo_points',
+                'pr.winner_points', 'pr.difference_points',
+                'g.home_team_score', 'g.away_team_score',
+                'e.rate'
+            )
+            ->get();
+
+        $leagueOddsMap = [];
+        $league = \App\Models\League::find($leagueId);
+        if ($league && $league->use_league_odds) {
+            $memberCount = \App\Models\LeagueMember::where('league_id', $leagueId)
+                ->where('is_guest', false)->count();
+            if ($memberCount >= 20) {
+                $gameIds = $rows->pluck('game_id')->unique();
+                $leagueOddsMap = DB::table('league_game_odds')
+                    ->where('league_id', $leagueId)
+                    ->whereIn('game_id', $gameIds)
+                    ->get()->keyBy('game_id');
+            }
+        }
+
+        $result = [];
+        foreach ($rows as $row) {
+            $uid = $row->user_id;
+            if (!isset($result[$uid])) {
+                $result[$uid] = [
+                    'game_points'   => 0.0,
+                    'streak_points' => 0.0,
+                    'bingo_count'   => 0,
+                    'game_count'    => 0,
+                ];
+            }
+
+            $fullPointsLeague = (float) $row->full_points;
+
+            if (!empty($leagueOddsMap)
+                && isset($leagueOddsMap[$row->game_id])
+                && $row->home_team_score !== null
+                && $row->away_team_score !== null
+            ) {
+                $lo = $leagueOddsMap[$row->game_id];
+                if ($row->home_team_score > $row->away_team_score) {
+                    $leagueOddsRate = (float) $lo->home_odds;
+                } elseif ($row->home_team_score == $row->away_team_score) {
+                    $leagueOddsRate = (float) $lo->draw_odds;
+                } else {
+                    $leagueOddsRate = (float) $lo->away_odds;
+                }
+
+                $winnerPointsLeague = $row->winner_points > 0
+                    ? round((1 + $leagueOddsRate) * 5.0 * (float) $row->rate, 1)
+                    : 0.0;
+
+                $fullPointsLeague = round(
+                    $winnerPointsLeague
+                    + (float) $row->difference_points
+                    + (float) $row->bingo_points,
+                    1
+                );
+            }
+
+            $result[$uid]['game_points']   += $fullPointsLeague;
+            $result[$uid]['streak_points'] += (float) ($row->streak_bonus ?? 0);
+            $result[$uid]['bingo_count']   += ($row->bingo_points != 0 ? 1 : 0);
+            $result[$uid]['game_count']    += 1;
+        }
+
+        return $result;
+    }
+
     public function updateGamePoints(int $gameID): void
     {
         $game  = Game::where('id', $gameID)->firstOrFail();

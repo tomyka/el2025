@@ -48,6 +48,54 @@ class PointStandingController extends Controller
         return $points;
     }
 
+    public function getBulkUserStandingPoints(array $userIds): array
+    {
+        if (empty($userIds)) {
+            return [];
+        }
+
+        $rows = DB::table('point_standings')
+            ->selectRaw('
+                user_id,
+                SUM(IFNULL(group_position_points,0))  AS group_position_points,
+                SUM(IFNULL(last32_points,0))          AS last32_points,
+                SUM(IFNULL(last16_points,0))          AS last16_points,
+                SUM(IFNULL(quarterfinal_points,0))    AS quarterfinal_points,
+                SUM(IFNULL(semifinal_points,0))       AS semifinal_points,
+                SUM(IFNULL(final_points,0))           AS final_points,
+                SUM(
+                    IFNULL(group_position_points,0) + IFNULL(last32_points,0)
+                    + IFNULL(last16_points,0) + IFNULL(quarterfinal_points,0)
+                    + IFNULL(semifinal_points,0) + IFNULL(final_points,0)
+                ) AS total_points
+            ')
+            ->whereIn('user_id', $userIds)
+            ->groupBy('user_id')
+            ->get();
+
+        $result = [];
+        foreach ($rows as $row) {
+            $result[$row->user_id] = $row;
+        }
+
+        $zero                        = new \stdClass();
+        $zero->group_position_points = '0';
+        $zero->last32_points         = '0';
+        $zero->last16_points         = '0';
+        $zero->quarterfinal_points   = '0';
+        $zero->semifinal_points      = '0';
+        $zero->final_points          = '0';
+        $zero->total_points          = '0';
+
+        foreach ($userIds as $uid) {
+            if (!isset($result[$uid])) {
+                $result[$uid] = clone $zero;
+            }
+        }
+
+        return $result;
+    }
+
     public function updateStandingPoints(): \Illuminate\Http\RedirectResponse
     {
         PointStanding::truncate();
