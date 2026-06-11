@@ -57,7 +57,19 @@ class MainController extends Controller
             $predictionStandingsPoints = $pointController->getPredictionStandingsUserPoints($userID);
             $firstGameStarted = DB::table('games')->where('game_date', '<=', now())->exists();
 
-            return view('main')->with('messages', $messages)->with('points', $points)->with('predictionGames', $predictionResultsWithStats)->with('eventDaySurvivalStatus',$eventDaySurvivalStatus)->with('groupDetails',$feeController->getGroupDetails())->with('userDetails',$feeController->getUserDetails())->with('fund',$feeController->getFund())->with('fundCollected',$feeController->getFundCollected())->with('standings',$standings)->with('predictionStandingsPoints',$predictionStandingsPoints)->with('rankHistory', $rankHistory)->with('firstGameStarted', $firstGameStarted);
+            $standingsMissing = DB::table('prediction_standings')
+                ->where('user_id', $userID)
+                ->where(function ($q) {
+                    $q->whereNull('group_position')
+                      ->orWhereNull('last32')
+                      ->orWhereNull('last16')
+                      ->orWhereNull('quarterfinal')
+                      ->orWhereNull('semifinal')
+                      ->orWhereNull('final');
+                })
+                ->exists();
+
+            return view('main')->with('messages', $messages)->with('points', $points)->with('predictionGames', $predictionResultsWithStats)->with('eventDaySurvivalStatus',$eventDaySurvivalStatus)->with('groupDetails',$feeController->getGroupDetails())->with('userDetails',$feeController->getUserDetails())->with('fund',$feeController->getFund())->with('fundCollected',$feeController->getFundCollected())->with('standings',$standings)->with('predictionStandingsPoints',$predictionStandingsPoints)->with('rankHistory', $rankHistory)->with('firstGameStarted', $firstGameStarted)->with('standingsMissing', $standingsMissing);
         }
         else {
             $games = Game::with('away_team')->with('home_team')->take(9)->get();
