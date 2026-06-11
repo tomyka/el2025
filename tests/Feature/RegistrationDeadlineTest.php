@@ -17,6 +17,8 @@ class RegistrationDeadlineTest extends TestCase
     protected function tearDown(): void
     {
         RateLimiter::clear('register');
+        RateLimiter::clear('register-page');
+        RateLimiter::clear('password-reset');
         parent::tearDown();
     }
 

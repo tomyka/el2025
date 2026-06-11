@@ -41,7 +41,7 @@ class ChartXssTest extends TestCase
         // Literal <script> tag injected via username must NOT appear in inline JS
         $this->assertStringNotContainsString('<script>alert(1)', $response->getContent());
         // JSON_HEX_TAG encodes < as < — verify the escaped form is present
-        $this->assertStringContainsString('<', $response->getContent());
+        $this->assertStringContainsString('\u003C', $response->getContent());
     }
 
     public function test_chart_escapes_html_in_team_names(): void
@@ -70,6 +70,6 @@ class ChartXssTest extends TestCase
         // Raw <b> tag must not appear in the JSON-encoded game labels
         $this->assertStringNotContainsString('<b>Bold', $response->getContent());
         // JSON_HEX_TAG encodes < as < — verify the escaped form is present
-        $this->assertStringContainsString('<', $response->getContent());
+        $this->assertStringContainsString('\u003C', $response->getContent());
     }
 }
