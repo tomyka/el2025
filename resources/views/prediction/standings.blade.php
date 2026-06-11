@@ -154,7 +154,26 @@
         });
     }
 
-    document.addEventListener('DOMContentLoaded', enforceAllLimits);
+    function validateGroupPositions() {
+        document.querySelectorAll('.ps-group-card').forEach(function(card) {
+            var inputs = card.querySelectorAll('.ps-pos-input');
+            var seen = {};
+            inputs.forEach(function(inp) {
+                var v = inp.value;
+                if (v !== '') seen[v] = (seen[v] || 0) + 1;
+            });
+            inputs.forEach(function(inp) {
+                var v = inp.value;
+                if (v === '') { setInputState(inp, ''); return; }
+                setInputState(inp, seen[v] > 1 ? 'error' : 'ok');
+            });
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        enforceAllLimits();
+        validateGroupPositions();
+    });
 
     // Cascade UP: checking a round auto-checks all higher rounds for that team.
     // Capture phase ensures this runs before inline onchange → AJAX reads updated state.
@@ -220,6 +239,7 @@
         }).done(function () {
             if (groupPositionEl.value !== '') setInputState(groupPositionEl, 'ok');
             if (finalEl.value !== '')         setInputState(finalEl, 'ok');
+            validateGroupPositions();
         }).fail(function () {
             if (groupPositionEl.value !== '') setInputState(groupPositionEl, 'error');
             if (finalEl.value !== '')         setInputState(finalEl, 'error');

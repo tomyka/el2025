@@ -73,10 +73,18 @@ class MainController extends Controller
         $total = DB::table('prediction_standings')->where('user_id', $userID)->count();
         if ($total === 0) return false;
 
-        // group_position: every team must have one
+        // group_position: every team must have one, and no duplicates within a group
         if (DB::table('prediction_standings')->where('user_id', $userID)->whereNull('group_position')->exists()) {
             return true;
         }
+        $duplicatePositions = DB::table('prediction_standings as ps')
+            ->join('teams as t', 'ps.team_id', '=', 't.id')
+            ->where('ps.user_id', $userID)
+            ->whereNotNull('ps.group_position')
+            ->groupBy('t.group_name', 'ps.group_position')
+            ->havingRaw('COUNT(*) > 1')
+            ->exists();
+        if ($duplicatePositions) return true;
 
         // knockout stage counts must match expected bracket sizes
         $counts = DB::table('prediction_standings')
