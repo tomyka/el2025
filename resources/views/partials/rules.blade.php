@@ -75,6 +75,32 @@
         </div>
     </div>
 
+    {{-- ── Accuracy matrix ────────────────────────────────────────── --}}
+    <div class="sb-card">
+        <div class="sb-card-title"><i class="bi bi-grid-3x3-gap-fill sb-card-icon"></i> Tikslumo taškų lentelė</div>
+
+        <div class="rules-section">
+            <p>Eilutė — namų komandos prognozės klaida, stulpelis — svečių komandos prognozės klaida (ta pati kryptis). Priešinga kryptis arba didesnė klaida mažina taškus.</p>
+
+            <table class="rules-table mt-2" style="max-width:380px;">
+                <thead>
+                    <tr>
+                        <th>Namų Δ \ Svečių Δ</th>
+                        <th>±0</th><th>±1</th><th>±2</th><th>±3</th><th>±4</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><th>0</th><td class="rules-pts-pos">5.0</td><td>4.0</td><td>3.0</td><td>2.0</td><td>1.0</td></tr>
+                    <tr><th>1</th><td>4.0</td><td class="rules-pts-pos">4.5</td><td>3.5</td><td>2.5</td><td>1.5</td></tr>
+                    <tr><th>2</th><td>3.0</td><td>3.5</td><td class="rules-pts-pos">4.0</td><td>3.0</td><td>2.0</td></tr>
+                    <tr><th>3</th><td>2.0</td><td>2.5</td><td>3.0</td><td class="rules-pts-pos">3.5</td><td>2.5</td></tr>
+                    <tr><th>4</th><td>1.0</td><td>1.5</td><td>2.0</td><td>2.5</td><td class="rules-pts-pos">3.0</td></tr>
+                </tbody>
+            </table>
+            <p class="rules-table-caption">Pažymėtas įstrižainė — klaida abiejose pusėse lygi (teisingas įvarčių skirtumas, nors abu skaičiai netikslūs).</p>
+        </div>
+    </div>
+
     {{-- ── Odds ────────────────────────────────────────────────────── --}}
     <div class="sb-card">
         <div class="sb-card-title"><i class="bi bi-graph-up sb-card-icon"></i> Koeficientas (Odds)</div>
