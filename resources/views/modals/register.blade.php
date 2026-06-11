@@ -3,6 +3,12 @@
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
+        {{-- Honeypot: hidden from real users, bots fill it and get silently rejected --}}
+        <div style="position:absolute;left:-9999px;opacity:0;height:0;width:0;overflow:hidden" aria-hidden="true">
+            <label for="website">Leave this blank</label>
+            <input type="text" name="website" id="website" tabindex="-1" autocomplete="off" value="">
+        </div>
+
         <div class="mb-3">
             <div class="input-group">
                 <span class="input-group-text bg-light border-end-0 text-muted">

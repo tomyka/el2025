@@ -4,6 +4,11 @@
             <div class="modal-body" style="padding-bottom: 0px">
                 <form method="POST" action="{{ route('register') }}">
                     @csrf
+                    {{-- Honeypot: hidden from real users, bots fill it and get silently rejected --}}
+                    <div style="position:absolute;left:-9999px;opacity:0;height:0;width:0;overflow:hidden" aria-hidden="true">
+                        <label for="website">Leave this blank</label>
+                        <input type="text" name="website" id="website" tabindex="-1" autocomplete="off" value="">
+                    </div>
                     <div class="form-group row">
                         <div class="col-md-12">
                             <input id="username" placeholder="Vartotojo vardas" type="text" class="form-control{{ $errors->has('username') ? ' is-invalid' : '' }}" name="username" value="{{ old('usernname') }}" required autofocus>

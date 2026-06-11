@@ -33,6 +33,12 @@
         <form method="POST" action="{{ route('register') }}" x-data="{ showPwd: false, showPwd2: false }">
             @csrf
 
+            {{-- Honeypot: hidden from real users, bots fill it and get silently rejected --}}
+            <div style="position:absolute;left:-9999px;opacity:0;height:0;width:0;overflow:hidden" aria-hidden="true">
+                <label for="website">Leave this blank</label>
+                <input type="text" name="website" id="website" tabindex="-1" autocomplete="off" value="">
+            </div>
+
             <input type="text" name="username"
                    class="sb-auth-input @error('username') sb-auth-input-error @enderror"
                    placeholder="Vartotojo vardas *"
