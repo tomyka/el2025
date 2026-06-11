@@ -183,7 +183,7 @@ class ScoringServiceTest extends TestCase
 
     public function test_odds_points_winner_correct_with_odds(): void
     {
-        $this->assertEqualsWithDelta(37.5, $this->service->getOddsPoints(1.75, 50), 0.001);
+        $this->assertEqualsWithDelta(3.75, $this->service->getOddsPoints(1.75, 5.0), 0.001);
     }
 
     public function test_odds_points_no_bonus_when_winner_wrong(): void
@@ -193,7 +193,7 @@ class ScoringServiceTest extends TestCase
 
     public function test_odds_points_odds_of_one_gives_zero_bonus(): void
     {
-        $this->assertSame(0.0, $this->service->getOddsPoints(1.0, 50));
+        $this->assertSame(0.0, $this->service->getOddsPoints(1.0, 5.0));
     }
 
     // ── getGameOdds ──────────────────────────────────────────────────────────

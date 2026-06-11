@@ -107,9 +107,9 @@ class ScoringService
     /**
      * Odds bonus: winner_points × (odds − 1), only when the winner was correctly called.
      */
-    public function getOddsPoints(float $odds, int $winnerPoints): float
+    public function getOddsPoints(float $odds, float $winnerPoints): float
     {
-        return $winnerPoints === 50 ? $winnerPoints * ($odds - 1) : 0.0;
+        return $winnerPoints > 0 ? $winnerPoints * ($odds - 1) : 0.0;
     }
 
     /**

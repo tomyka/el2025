@@ -82,8 +82,8 @@ class ScoringIntegrationTest extends TestCase
         $this->assertSame(5.0,  (float) $r->winner_points);       // correct direction → +5
         $this->assertSame(2.5,  (float) $r->bingo_points);        // exact score → +2.5
         $this->assertSame(5.0,  (float) $r->difference_points);   // table 10/2 × rate(1)
-        $this->assertEqualsWithDelta(40.0, (float) $r->odds_points, 0.01); // 50*(1.8-1)*1
-        $this->assertEqualsWithDelta(52.5, (float) $r->full_points, 0.01); // 5+2.5+5+40
+        $this->assertEqualsWithDelta(4.0,  (float) $r->odds_points, 0.01); // 5*(1.8-1)*1
+        $this->assertEqualsWithDelta(16.5, (float) $r->full_points, 0.01); // 5+2.5+5+4
     }
 
     // Wrong direction: no odds bonus; winner_points always 0 in new model

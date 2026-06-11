@@ -228,7 +228,7 @@ class PointResultController extends Controller
             $winnerBonus  = $winnerDir > 0 ? 5.0 : 0.0;
             $bingoPoints  = $this->scoring->getBingoPoints($homeTeamScore, $awayTeamScore, (int) $predictionResult->home_team_score, (int) $predictionResult->away_team_score);
             $odds         = $this->scoring->getGameOdds($predictionResult->home_team_score, $predictionResult->away_team_score, $gameOdds, $predictionResult->generated);
-            $oddsPoints   = $this->scoring->getOddsPoints($odds, $winnerDir);
+            $oddsPoints   = $this->scoring->getOddsPoints($odds, $winnerBonus);
             $points       = $this->scoring->calculateGamePoints($winnerBonus, $tablePoints, $oddsPoints, $bingoPoints, $odds, $event->rate);
 
             $this->insertPointResultUser($predictionResult->user_id, $gameID, $points);
