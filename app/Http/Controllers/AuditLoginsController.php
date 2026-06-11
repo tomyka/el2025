@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Audit;
+namespace App\Http\Controllers;
 
-use App\AuditLogin;
-use App\Http\Controllers\Controller;
-
+use App\Models\AuditLogin;
 
 class AuditLoginsController extends Controller
 {
-    public function insertAuditLogin($userID) {
+    public function insertAuditLogin(int $userID, string $ipAddress, string $loginMethod): void
+    {
         $auditLogin = new AuditLogin();
-        $auditLogin->userID = $userID;
+        $auditLogin->user_id      = $userID;
+        $auditLogin->ip_address   = $ipAddress;
+        $auditLogin->login_method = $loginMethod;
         $auditLogin->save();
     }
-
 }

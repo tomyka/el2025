@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+
 class AuditLogin extends Model
 {
-    protected $primaryKey = 'id';
-
+    protected $fillable = ['user_id', 'ip_address', 'login_method'];
 }
