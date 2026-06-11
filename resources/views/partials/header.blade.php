@@ -102,10 +102,10 @@
       </div>
       @endif
 
-      {{-- League dropdown --}}
-      @if(session('userID'))
-      @include('partials.league-switcher')
-      @endif
+      <a class="sb-nav-link {{ request()->routeIs('leagues.*') ? 'active' : '' }}"
+         href="{{ route('leagues.index') }}">
+        <i class="bi bi-trophy"></i> Lygos
+      </a>
 
       <div class="dropdown">
         <a class="sb-nav-link {{ request()->routeIs('rules','help','charity','privacy') ? 'active' : '' }} dropdown-toggle"
@@ -128,6 +128,13 @@
               <i class="bi bi-shield-lock"></i> Privatumas</a></li>
         </ul>
       </div>
+
+      {{-- League switcher (right) --}}
+      @if(session('userID'))
+      <div class="ms-auto">
+        @include('partials.league-switcher')
+      </div>
+      @endif
 
     </div>
   </div>
