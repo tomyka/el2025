@@ -33,6 +33,11 @@ class League extends Model
         return $this->hasMany(LeagueInvite::class);
     }
 
+    public function pendingInvites()
+    {
+        return $this->hasMany(LeagueInvite::class)->where('status', 'pending');
+    }
+
     public function gameOdds()
     {
         return $this->hasMany(LeagueGameOdds::class);

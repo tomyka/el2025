@@ -98,9 +98,20 @@
       @endif
 
       @if($membership->is_admin)
+      @php
+        $memberList = $league->members->map(fn($m) => [
+            'display'  => trim(($m->user->name ?? '') . ' ' . ($m->user->surname ?? '')),
+            'username' => $m->user->username ?? '',
+            'is_admin' => $m->is_admin,
+        ])->values();
+        $pendingList = $league->pendingInvites->map(fn($i) => [
+            'display'  => trim(($i->invitedUser->name ?? '') . ' ' . ($i->invitedUser->surname ?? '')),
+            'username' => $i->invitedUser->username ?? '',
+        ])->values();
+      @endphp
       <button type="button" class="league-action-btn" title="Pakviesti narį"
               style="color:var(--sb-accent);border-color:var(--sb-accent);"
-              onclick="openInviteModal({{ $league->id }}, {{ json_encode($league->name) }})">
+              onclick="openInviteModal({{ $league->id }}, {{ json_encode($league->name) }}, {{ json_encode($memberList) }}, {{ json_encode($pendingList) }})">
         <i class="bi bi-person-plus"></i>
       </button>
       <button type="button" class="league-action-btn" title="Redaguoti lygą"
@@ -232,6 +243,14 @@
       </div>
       <div class="modal-body" style="padding:18px 20px;">
         <p id="inviteModalLeagueName" style="font-size:.78rem;color:var(--sb-muted);margin-bottom:12px;"></p>
+        <div id="memberList" style="margin-bottom:14px;display:none;">
+          <div style="font-size:.72rem;font-weight:700;color:var(--sb-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">Nariai</div>
+          <div id="memberListItems" style="display:flex;flex-direction:column;gap:4px;max-height:140px;overflow-y:auto;"></div>
+        </div>
+        <div id="pendingList" style="margin-bottom:14px;display:none;">
+          <div style="font-size:.72rem;font-weight:700;color:var(--sb-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">Laukiama atsakymo</div>
+          <div id="pendingListItems" style="display:flex;flex-direction:column;gap:4px;max-height:100px;overflow-y:auto;"></div>
+        </div>
         <input type="text" id="inviteSearch" class="form-control form-control-sm"
                style="border-radius:8px;border-color:var(--sb-border);"
                placeholder="Ieškoti vartotojo..."
@@ -371,7 +390,7 @@ function openCreateModal() {
     new bootstrap.Modal(document.getElementById('createModal')).show();
 }
 
-function openInviteModal(leagueId, leagueName) {
+function openInviteModal(leagueId, leagueName, members, pending) {
     activeInviteLeagueId = leagueId;
     document.getElementById('inviteLeagueID').value = leagueId;
     document.getElementById('inviteModalTitle').innerHTML = '<i class="bi bi-person-plus me-2"></i>Pakviesti narį';
@@ -380,6 +399,36 @@ function openInviteModal(leagueId, leagueName) {
     r.style.display = 'none';
     r.innerHTML = '';
     document.getElementById('inviteSearch').value = '';
+
+    const memberListEl = document.getElementById('memberList');
+    const memberItemsEl = document.getElementById('memberListItems');
+    if (members && members.length) {
+        memberItemsEl.innerHTML = members.map(m =>
+            `<div style="display:flex;align-items:center;gap:6px;padding:4px 8px;background:#f8fafc;border-radius:6px;font-size:.78rem;">
+               <span style="font-weight:600;">${m.display}</span>
+               <span style="color:var(--sb-muted);">${m.username}</span>
+               ${m.is_admin ? '<span style="font-size:.65rem;background:#fefce8;color:#a16207;border:1px solid #fde68a;border-radius:10px;padding:1px 7px;font-weight:700;">Admin</span>' : ''}
+             </div>`
+        ).join('');
+        memberListEl.style.display = 'block';
+    } else {
+        memberListEl.style.display = 'none';
+    }
+
+    const pendingListEl = document.getElementById('pendingList');
+    const pendingItemsEl = document.getElementById('pendingListItems');
+    if (pending && pending.length) {
+        pendingItemsEl.innerHTML = pending.map(p =>
+            `<div style="display:flex;align-items:center;gap:6px;padding:4px 8px;background:#fffbeb;border-radius:6px;font-size:.78rem;border:1px solid #fde68a;">
+               <span style="font-weight:600;">${p.display}</span>
+               <span style="color:var(--sb-muted);">${p.username}</span>
+             </div>`
+        ).join('');
+        pendingListEl.style.display = 'block';
+    } else {
+        pendingListEl.style.display = 'none';
+    }
+
     new bootstrap.Modal(document.getElementById('inviteModal')).show();
     setTimeout(() => document.getElementById('inviteSearch').focus(), 300);
 }

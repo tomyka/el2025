@@ -14,7 +14,7 @@ class LeagueController extends Controller
         $userId = session('userID');
 
         $myLeagues = LeagueMember::where('user_id', $userId)
-            ->with('league')
+            ->with(['league', 'league.members.user', 'league.pendingInvites.invitedUser'])
             ->get();
 
         $pendingInvites = LeagueInvite::where('invited_user_id', $userId)
@@ -179,14 +179,16 @@ class LeagueController extends Controller
             return response()->json([]);
         }
 
-        $existingMemberIds = LeagueMember::where('league_id', $leagueId)->pluck('user_id');
+        $existingMemberIds  = LeagueMember::where('league_id', $leagueId)->pluck('user_id');
+        $pendingInviteeIds  = LeagueInvite::where('league_id', $leagueId)->where('status', 'pending')->pluck('invited_user_id');
+        $excludeIds         = $existingMemberIds->merge($pendingInviteeIds)->unique();
 
         $users = User::where(function ($q) use ($query) {
                 $q->where('name',     'like', "%{$query}%")
                   ->orWhere('surname',  'like', "%{$query}%")
                   ->orWhere('username', 'like', "%{$query}%");
             })
-            ->whereNotIn('id', $existingMemberIds)
+            ->whereNotIn('id', $excludeIds)
             ->select('id', 'username', 'name', 'surname')
             ->limit(10)
             ->get();
