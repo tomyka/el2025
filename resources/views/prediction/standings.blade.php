@@ -142,6 +142,16 @@
                 boxes.forEach(function(cb) { if (!cb.checked) cb.disabled = true; });
             }
         });
+
+        // Per-group cap for last32: max 3 per group (at most 3 of 4 teams advance)
+        document.querySelectorAll('.ps-group-card').forEach(function(card) {
+            var boxes = card.querySelectorAll('input[type="checkbox"][id^="last32"]');
+            var checked = 0;
+            boxes.forEach(function(cb) { if (cb.checked) checked++; });
+            if (checked >= 3) {
+                boxes.forEach(function(cb) { if (!cb.checked) cb.disabled = true; });
+            }
+        });
     }
 
     document.addEventListener('DOMContentLoaded', enforceAllLimits);

@@ -57,17 +57,7 @@ class MainController extends Controller
             $predictionStandingsPoints = $pointController->getPredictionStandingsUserPoints($userID);
             $firstGameStarted = DB::table('games')->where('game_date', '<=', now())->exists();
 
-            $standingsMissing = DB::table('prediction_standings')
-                ->where('user_id', $userID)
-                ->where(function ($q) {
-                    $q->whereNull('group_position')
-                      ->orWhereNull('last32')
-                      ->orWhereNull('last16')
-                      ->orWhereNull('quarterfinal')
-                      ->orWhereNull('semifinal')
-                      ->orWhereNull('final');
-                })
-                ->exists();
+            $standingsMissing = $this->standingsMissing($userID);
 
             return view('main')->with('messages', $messages)->with('points', $points)->with('predictionGames', $predictionResultsWithStats)->with('eventDaySurvivalStatus',$eventDaySurvivalStatus)->with('groupDetails',$feeController->getGroupDetails())->with('userDetails',$feeController->getUserDetails())->with('fund',$feeController->getFund())->with('fundCollected',$feeController->getFundCollected())->with('standings',$standings)->with('predictionStandingsPoints',$predictionStandingsPoints)->with('rankHistory', $rankHistory)->with('firstGameStarted', $firstGameStarted)->with('standingsMissing', $standingsMissing);
         }
@@ -78,5 +68,38 @@ class MainController extends Controller
         }
     }
 
+    private function standingsMissing(int $userID): bool
+    {
+        $total = DB::table('prediction_standings')->where('user_id', $userID)->count();
+        if ($total === 0) return false;
+
+        // group_position: every team must have one
+        if (DB::table('prediction_standings')->where('user_id', $userID)->whereNull('group_position')->exists()) {
+            return true;
+        }
+
+        // knockout stage counts must match expected bracket sizes
+        $counts = DB::table('prediction_standings')
+            ->where('user_id', $userID)
+            ->selectRaw('
+                SUM(last32 = 1)       AS last32_count,
+                SUM(last16 = 1)       AS last16_count,
+                SUM(quarterfinal = 1) AS qf_count,
+                SUM(semifinal = 1)    AS sf_count,
+                SUM(final IS NOT NULL AND final BETWEEN 1 AND 4) AS final_count
+            ')
+            ->first();
+
+        // Derive expected last32 count: if total teams >= 32 a round of 32 exists
+        $expectedLast32 = $total >= 32 ? 32 : 0;
+        if ($expectedLast32 > 0 && (int) $counts->last32_count !== $expectedLast32) return true;
+
+        if ((int) $counts->last16_count !== 16) return true;
+        if ((int) $counts->qf_count     !== 8)  return true;
+        if ((int) $counts->sf_count     !== 4)  return true;
+        if ((int) $counts->final_count  !== 4)  return true;
+
+        return false;
+    }
 
 }
