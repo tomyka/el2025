@@ -89,9 +89,11 @@ class ChartController extends Controller
             $games
         );
 
+        $jsonFlags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
+
         return view('summary.chart')
-            ->with('datasets',   json_encode($datasets))
-            ->with('gameLabels', json_encode($gameLabels))
+            ->with('datasets',   json_encode($datasets,   $jsonFlags))
+            ->with('gameLabels', json_encode($gameLabels, $jsonFlags))
             ->with('gameCount',  count($games));
     }
 }
