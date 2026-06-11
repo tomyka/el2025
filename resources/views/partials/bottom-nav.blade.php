@@ -20,12 +20,11 @@
     @php
         $activeLeagueId = session('leagueID');
         $myLeagues = \App\Models\LeagueMember::where('user_id', session('userID'))->with('league')->get();
-        $activeLeague = $myLeagues->firstWhere('league_id', $activeLeagueId);
     @endphp
     <div class="dropup">
         <button class="sb-tab dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-trophy" style="font-size:1.2rem;"></i>
-            <span class="sb-tab-label">{{ Str::limit($activeLeague?->league->name ?? 'Lyga', 10) }}</span>
+            <span class="sb-tab-label">Lygos</span>
         </button>
         <ul class="dropdown-menu dropdown-menu-end mb-1">
             @foreach($myLeagues as $membership)
