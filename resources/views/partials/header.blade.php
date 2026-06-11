@@ -77,6 +77,8 @@
       </a>
       @endif
 
+      <span class="sb-nav-sep"></span>
+
       @if(session('disabled') != '')
       <div class="dropdown">
         <a class="sb-nav-link {{ request()->routeIs('summary.*') ? 'active' : '' }} dropdown-toggle"
