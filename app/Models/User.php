@@ -53,11 +53,6 @@ class User extends Authenticatable
         return $this->hasOne('App\Models\UserSetting','user_id','id');
     }
 
-    public function userGroup()
-    {
-        return $this->hasMany('App\Models\UserGroup','user_id','id');
-    }
-
     public function leagueMembers()
     {
         return $this->hasMany(LeagueMember::class);
