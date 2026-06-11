@@ -563,6 +563,7 @@ a:hover { color: var(--sb-accent-h); }
 .sb-tab-label { font-size: .62rem; }
 button.sb-tab { background: none; border: none; outline: none; }
 button.sb-tab::after { display: none; }
+.sb-bottom-nav .dropup { flex: 1; display: flex; }
 
 /* ============================================================
    Auth  (Pickdee-style, light)
