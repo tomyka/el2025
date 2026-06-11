@@ -59,12 +59,12 @@
                 <div class="rules-scoring-label">Bingo — tikslus rezultatas</div>
             </div>
             <div class="rules-scoring-item">
-                <div class="rules-scoring-pts">×1 / ×2</div>
-                <div class="rules-scoring-label">Etapo koeficientas (grupių / nokautų)</div>
-            </div>
-            <div class="rules-scoring-item">
                 <div class="rules-scoring-pts">+N−1</div>
                 <div class="rules-scoring-label">Seka — N atspėjimų iš eilės</div>
+            </div>
+            <div class="rules-scoring-item">
+                <div class="rules-scoring-pts">×1 / ×2</div>
+                <div class="rules-scoring-label">Etapo koeficientas (Grupių etapas / Atkrintamosios)</div>
             </div>
         </div>
 
