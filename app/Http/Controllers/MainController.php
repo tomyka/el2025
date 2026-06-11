@@ -81,6 +81,7 @@ class MainController extends Controller
             ->join('teams as t', 'ps.team_id', '=', 't.id')
             ->where('ps.user_id', $userID)
             ->whereNotNull('ps.group_position')
+            ->select('t.group_name', 'ps.group_position')
             ->groupBy('t.group_name', 'ps.group_position')
             ->havingRaw('COUNT(*) > 1')
             ->exists();
