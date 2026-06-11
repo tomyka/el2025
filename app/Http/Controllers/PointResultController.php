@@ -94,14 +94,22 @@ class PointResultController extends Controller
         if (empty($updates)) return;
 
         // Single batch update via CASE WHEN
-        $cases  = '';
-        $ids    = [];
+        $whenClauses    = implode(' ', array_fill(0, count($updates), 'WHEN ? THEN ?'));
+        $inPlaceholders = implode(',',  array_fill(0, count($updates), '?'));
+
+        $bindings = [];
         foreach ($updates as $id => $bonus) {
-            $cases .= " WHEN {$id} THEN {$bonus}";
-            $ids[]  = $id;
+            $bindings[] = (int)   $id;
+            $bindings[] = (float) $bonus;
         }
-        $idList = implode(',', $ids);
-        DB::statement("UPDATE point_results SET streak_bonus = CASE id {$cases} END WHERE id IN ({$idList})");
+        foreach (array_keys($updates) as $id) {
+            $bindings[] = (int) $id;
+        }
+
+        DB::statement(
+            "UPDATE point_results SET streak_bonus = CASE id {$whenClauses} END WHERE id IN ({$inPlaceholders})",
+            $bindings
+        );
     }
 
     public function getUserProfilePoints(int $userID, ?int $leagueId = null): array
