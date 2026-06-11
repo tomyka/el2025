@@ -67,7 +67,7 @@ class BulkPointsTest extends TestCase
             'odds'              => 1,
             'odds_points'       => 0,
             'full_points'       => 0,
-            'streak_bonus'      => null,
+            'streak_bonus'      => 0,
             'created_at'        => now(),
             'updated_at'        => now(),
         ], $data));
@@ -233,5 +233,46 @@ class BulkPointsTest extends TestCase
     {
         $controller = app(PointSurvivalController::class);
         $this->assertSame([], $controller->getBulkUserSurvivalPoints([]));
+    }
+
+    // ── getAllUserPoints integration ───────────────────────────────────
+
+    public function test_get_all_user_points_order_and_totals(): void
+    {
+        $userA = $this->makeUser();
+        $userB = $this->makeUser();
+        $userC = $this->makeUser();
+        $game  = $this->makeGame();
+
+        // userA: 100 game pts + 20 standing + 30 survival = 150
+        $this->insertResult($userA->id, $game->id, ['full_points' => 100.0]);
+        $this->insertStanding($userA->id, ['group_position_points' => 20]);
+        $event1 = \App\Models\Event::create([
+            'event' => 'S1', 'event_day' => 1, 'event_survival' => 1, 'active' => 1, 'rate' => 1,
+        ]);
+        $this->insertSurvival($userA->id, $event1->id, 30.0);
+
+        // userB: 200 game pts only = 200
+        $this->insertResult($userB->id, $game->id, ['full_points' => 200.0]);
+
+        // userC: no points at all
+
+        $this->withSession(['guest' => 0]);
+
+        $controller = app(\App\Http\Controllers\PointController::class);
+        $result     = $controller->getAllUserPoints($this->league->id);
+
+        $this->assertCount(3, $result);
+
+        // Sorted descending by total
+        $this->assertEquals($userB->id, $result[0]['userID']); // 200
+        $this->assertEquals($userA->id, $result[1]['userID']); // 150
+        $this->assertEquals($userC->id, $result[2]['userID']); // 0
+
+        $this->assertEquals(200.0, $result[0]['userGamePoints']);
+        $this->assertEquals(100.0, $result[1]['userGamePoints']);
+        $this->assertEquals(20,    $result[1]['standingPoints']->group_position_points);
+        $this->assertEquals(30.0,  $result[1]['survivalPoints']);
+        $this->assertEquals(0.0,   $result[2]['userGamePoints']);
     }
 }

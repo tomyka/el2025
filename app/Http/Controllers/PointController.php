@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\DB;
 class PointController extends Controller
 {
 
-    public function getAllUserPoints($leagueID){
+    public function getAllUserPoints($leagueID): array
+    {
         $users = DB::table('users')
             ->join('league_members', 'users.id', '=', 'league_members.user_id')
             ->where('league_members.league_id', '=', $leagueID)
@@ -15,43 +16,48 @@ class PointController extends Controller
             ->select('users.id', 'users.username', 'users.name', 'users.surname')
             ->get();
 
+        if ($users->isEmpty()) {
+            return [];
+        }
+
+        $userIds = $users->pluck('id')->toArray();
+
+        $pointsResultController  = app(PointResultController::class);
         $pointStandingController = app(PointStandingController::class);
-        $pointsResultController = app(PointResultController::class);
         $pointSurvivalController = new PointSurvivalController();
 
-        foreach ($users as $user){
-            $profile         = $pointsResultController->getUserProfilePoints($user->id, $leagueID);
-            $userGamePoints  = array_sum(array_column($profile, 'full_points_league'));
-            $userStreakPoints = array_sum(array_column($profile, 'streak_bonus'));
-            $userGameBingo  = array_sum(array_column($profile, 'bingo_points'));
-            $gameCount      = count($profile);
-            $standingPoints = $pointStandingController->getStandingsUserPoints($user->id);
-            $survivalPoints = $pointSurvivalController->getPredictionSurvivalUserPoints($user->id);
+        $gamePoints     = $pointsResultController->getBulkUserGamePoints($userIds, $leagueID);
+        $standingPoints = $pointStandingController->getBulkUserStandingPoints($userIds);
+        $survivalPoints = $pointSurvivalController->getBulkUserSurvivalPoints($userIds);
+
+        $userAllPoints = [];
+        foreach ($users as $user) {
+            $gp = $gamePoints[$user->id] ?? ['game_points' => 0.0, 'streak_points' => 0.0,
+                                              'bingo_count' => 0, 'game_count' => 0];
 
             $userAllPoints[] = [
-                'userID'            => $user->id,
-                'username'          => $user->username,
-                'name'              => $user->name,
-                'surname'           => $user->surname,
-                'userFee'           => null,
-                'userGamePoints'    => round((($userGamePoints=="")?0:$userGamePoints),1),
-                'userStreakPoints'   => round($userStreakPoints, 1),
-                'userGameBingo'     => (($userGameBingo=="")?0:$userGameBingo),
-                'averagePoints'     => (($gameCount==0)?0:round($userGamePoints/$gameCount,1)),
-                'standingPoints'    => $standingPoints,
-                'survivalPoints'    => (($survivalPoints=="")?0:$survivalPoints)
+                'userID'          => $user->id,
+                'username'        => $user->username,
+                'name'            => $user->name,
+                'surname'         => $user->surname,
+                'userFee'         => null,
+                'userGamePoints'  => round($gp['game_points'], 1),
+                'userStreakPoints' => round($gp['streak_points'], 1),
+                'userGameBingo'   => $gp['bingo_count'],
+                'averagePoints'   => $gp['game_count'] > 0
+                                        ? round($gp['game_points'] / $gp['game_count'], 1)
+                                        : 0,
+                'standingPoints'  => $standingPoints[$user->id],
+                'survivalPoints'  => $survivalPoints[$user->id],
             ];
         }
 
-        if (!empty($userAllPoints)) {
-            usort($userAllPoints, function ($a, $b) {
-                return $b['userGamePoints'] + $b['userStreakPoints'] + $b['standingPoints']->total_points + $b['survivalPoints']
-                   <=> $a['userGamePoints'] + $a['userStreakPoints'] + $a['standingPoints']->total_points + $a['survivalPoints'];
-            });
-        }
-        else {
-            $points = [];
-        }
+        usort($userAllPoints, function ($a, $b) {
+            return $b['userGamePoints'] + $b['userStreakPoints']
+                 + $b['standingPoints']->total_points + $b['survivalPoints']
+               <=> $a['userGamePoints'] + $a['userStreakPoints']
+                 + $a['standingPoints']->total_points + $a['survivalPoints'];
+        });
 
         return $userAllPoints;
     }
