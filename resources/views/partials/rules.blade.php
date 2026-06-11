@@ -63,12 +63,14 @@
         <div class="rules-section">
             <strong>Koeficientas</strong>
             <ul class="rules-list">
-                <li>Apskaičiuojamas: <code>1 + (1 − Spėjamų_baigties / Dalyvių_skaičius)</code></li>
-                <li>Pvz.: 20 dalyvių, 7 spėjo A pergalę → A koeficientas <strong>1.65</strong>; 6 spėjo B pergalę → B koeficientas <strong>1.70</strong>.</li>
+                <li>Apskaičiuojamas: <code>log₂(Dalyvių_skaičius / Spėjusiųjų_šią_baigtį)</code></li>
+                <li>Kuo rečiau atspėta baigties — tuo didesnis koeficientas.</li>
+                <li>Pvz.: 20 dalyvių, 7 spėjo A pergalę → koeficientas <strong>log₂(20/7) ≈ 1.51</strong>; tik 1 spėjo → koeficientas <strong>log₂(20/1) ≈ 4.32</strong>.</li>
                 <li>Koeficientas taikomas tik nugalėtojo taškams ir tik atspėjus nugalėtoją.</li>
+                <li>Automatiškai sugeneruotiems spėjimams koeficientas = 0 (be premijos).</li>
             </ul>
             <p class="rules-formula">
-                Taškai = (Nugalėtojas × Koeficientas) + Skirtumas + Bingo
+                Taškai = Nugalėtojas × (1 + Koeficientas) + Tikslumas + Bingo
             </p>
         </div>
     </div>
