@@ -116,7 +116,7 @@
       </button>
       <button type="button" class="league-action-btn" title="Redaguoti lygą"
               style="color:var(--sb-muted);border-color:var(--sb-border);"
-              onclick="openEditModal({{ $league->id }}, {{ json_encode($league->name) }}, {{ json_encode($league->description ?? '') }}, {{ (int)($league->base_fee ?? 0) }}, {{ (int)($league->penalty_step ?? 0) }}, {{ $league->use_league_odds ? 'true' : 'false' }})">
+              onclick="openEditModal({{ $league->id }}, {{ json_encode($league->name) }}, {{ json_encode($league->description ?? '') }}, {{ (int)($league->base_fee ?? 0) }}, {{ (int)($league->penalty_step ?? 0) }}, {{ $league->use_league_odds ? 'true' : 'false' }}, {{ $isOwner && !$league->is_public ? 'true' : 'false' }})">
         <i class="bi bi-gear"></i>
       </button>
       @endif
@@ -368,15 +368,26 @@
                 </label>
               </div>
             </div>
-            <div class="col-12 d-flex justify-content-end gap-2">
-              <button type="button" class="btn btn-sm"
-                      style="font-size:.82rem;padding:6px 18px;background:#f1f5f9;color:var(--sb-muted);border:1px solid var(--sb-border);"
-                      data-bs-dismiss="modal">Atšaukti</button>
-              <button type="submit" class="btn btn-primary btn-sm" style="padding:6px 22px;font-size:.82rem;">
-                <i class="bi bi-check-lg me-1"></i>Išsaugoti
+            <div class="col-12 d-flex justify-content-between align-items-center gap-2">
+              <button type="button" id="deleteLeagueBtn" class="btn btn-sm"
+                      style="font-size:.82rem;padding:6px 16px;background:#fff;color:#dc2626;border:1px solid #fca5a5;display:none;"
+                      onclick="confirmDeleteLeague()">
+                <i class="bi bi-trash me-1"></i>Ištrinti lygą
               </button>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-sm"
+                        style="font-size:.82rem;padding:6px 18px;background:#f1f5f9;color:var(--sb-muted);border:1px solid var(--sb-border);"
+                        data-bs-dismiss="modal">Atšaukti</button>
+                <button type="submit" class="btn btn-primary btn-sm" style="padding:6px 22px;font-size:.82rem;">
+                  <i class="bi bi-check-lg me-1"></i>Išsaugoti
+                </button>
+              </div>
             </div>
           </div>
+        </form>
+        <form id="deleteLeagueForm" method="POST" action="{{ route('leagues.delete') }}" style="display:none;">
+          @csrf
+          <input type="hidden" id="deleteLeagueID" name="leagueID">
         </form>
       </div>
     </div>
@@ -433,7 +444,7 @@ function openInviteModal(leagueId, leagueName, members, pending) {
     setTimeout(() => document.getElementById('inviteSearch').focus(), 300);
 }
 
-function openEditModal(leagueId, leagueName, leagueDesc, baseFee, penaltyStep, useLeagueOdds) {
+function openEditModal(leagueId, leagueName, leagueDesc, baseFee, penaltyStep, useLeagueOdds, canDelete) {
     document.getElementById('editModalTitle').innerHTML = '<i class="bi bi-pencil me-2"></i>' + leagueName;
     document.getElementById('editLeagueID').value = leagueId;
     document.getElementById('editName').value = leagueName;
@@ -441,7 +452,16 @@ function openEditModal(leagueId, leagueName, leagueDesc, baseFee, penaltyStep, u
     document.getElementById('editBaseFee').value = baseFee || '';
     document.getElementById('editPenaltyStep').value = penaltyStep || '';
     document.getElementById('editLeagueOdds').checked = useLeagueOdds;
+    document.getElementById('deleteLeagueID').value = leagueId;
+    document.getElementById('deleteLeagueBtn').style.display = canDelete ? 'inline-flex' : 'none';
     new bootstrap.Modal(document.getElementById('editModal')).show();
+}
+
+function confirmDeleteLeague() {
+    const name = document.getElementById('editName').value;
+    if (confirm('Ištrinti lygą "' + name + '"? Visi nariai bus pašalinti. Šis veiksmas negrįžtamas.')) {
+        document.getElementById('deleteLeagueForm').submit();
+    }
 }
 
 function searchUsers(query) {

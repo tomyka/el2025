@@ -212,6 +212,43 @@ class LeagueController extends Controller
         return redirect()->route('leagues.index')->with('info', 'Lygos koeficientai atnaujinti');
     }
 
+    public function deleteLeague(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $userId   = session('userID');
+        $leagueId = (int) $request->input('leagueID');
+
+        $league = League::findOrFail($leagueId);
+
+        if ($league->owner_id !== $userId) {
+            abort(403);
+        }
+
+        if ($league->is_public) {
+            return redirect()->back()->with('error', 'Viešos lygos ištrinti negalima');
+        }
+
+        $publicLeague    = League::where('is_public', true)->first();
+        $activeMemberIds = LeagueMember::where('league_id', $leagueId)
+            ->where('active', true)
+            ->pluck('user_id');
+
+        if ($publicLeague && $activeMemberIds->isNotEmpty()) {
+            LeagueMember::whereIn('user_id', $activeMemberIds)
+                ->where('league_id', $publicLeague->id)
+                ->update(['active' => true]);
+
+            if ($activeMemberIds->contains($userId)) {
+                session(['leagueID' => $publicLeague->id]);
+            }
+        }
+
+        \DB::table('messages')->where('league_id', $leagueId)->update(['league_id' => null]);
+
+        $league->delete();
+
+        return redirect()->route('leagues.index')->with('info', 'Lyga ištrinta');
+    }
+
     public function leaveLeague(Request $request): \Illuminate\Http\RedirectResponse
     {
         $userId   = session('userID');
