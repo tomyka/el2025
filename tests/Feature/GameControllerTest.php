@@ -39,7 +39,7 @@ class GameControllerTest extends TestCase
             ]);
 
         $response->assertRedirect(route('admin.games'));
-        $this->assertSame('2026-06-11 21:30:00', $game->fresh()->game_date);
+        $this->assertSame('2026-06-11 18:30:00', $game->fresh()->game_date);
     }
 
     public function test_insert_game_accepts_datetime_local_input(): void
@@ -62,6 +62,6 @@ class GameControllerTest extends TestCase
         $response->assertRedirect(route('admin.games'));
         $game = Game::where('home_team_id', $home->id)->where('away_team_id', $away->id)->first();
         $this->assertNotNull($game);
-        $this->assertSame('2026-06-12 19:00:00', $game->game_date);
+        $this->assertSame('2026-06-12 16:00:00', $game->game_date);
     }
 }

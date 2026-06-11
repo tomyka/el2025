@@ -14,8 +14,6 @@ class SessionController extends Controller
 {
     public function setSession($user): void
     {
-        date_default_timezone_set('Europe/Vilnius');
-
         if (Game::count() > 0) {
             $event = DB::table('games')
                 ->join('events', 'games.event_id', '=', 'events.id')

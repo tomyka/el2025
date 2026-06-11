@@ -13,15 +13,13 @@ class ResultController extends Controller
 
 
     public function getResultsAll() {
-        date_default_timezone_set('Europe/Vilnius');
         $games = Game::with('home_team')->with('away_team')->with('event')->orderBy('game_date')->get();
-        $now = Carbon::now();
+        $now = Carbon::now('UTC');
         return view('admin.results')->with('games',$games)->with('now',$now);
     }
     public function getResultsCurrentRound() {
-        date_default_timezone_set('Europe/Vilnius');
         $games = Game::with('home_team')->with('away_team')->with('event')->where('event_id', '=', session('eventID'))->orderBy('game_date')->get();
-        $now = Carbon::now();
+        $now = Carbon::now('UTC');
         return view('admin.results')->with('games',$games)->with('now',$now);
     }
 

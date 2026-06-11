@@ -11,8 +11,8 @@
         @endphp
         <a href="{{ route('prediction.results') }}" class="upcoming-row">
             <span class="upcoming-date">
-                <span>{{ \Carbon\Carbon::parse($g->game_date)->format('d.m') }}</span>
-                <span class="upcoming-time">{{ \Carbon\Carbon::parse($g->game_date)->format('H:i') }}</span>
+                <span>{{ \Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('d.m') }}</span>
+                <span class="upcoming-time">{{ \Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('H:i') }}</span>
             </span>
 
             <span class="upcoming-team upcoming-home">

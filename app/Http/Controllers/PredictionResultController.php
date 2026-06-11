@@ -6,6 +6,7 @@ use App\Http\Requests\UpdatePredictionResultRequest;
 use App\Models\Game;
 use App\Models\PredictionResult;
 use App\Models\Team;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class PredictionResultController extends Controller
@@ -24,7 +25,7 @@ class PredictionResultController extends Controller
     }
 
     private function getPredictionGamesGrouped($userID) {
-        $timeDiff = session('timeDifference');
+        $nowUtc = Carbon::now('UTC')->format('Y-m-d H:i:s');
         return DB::select('SELECT DISTINCT
                 prr.id,
                 g.id as game_id,
@@ -39,7 +40,7 @@ class PredictionResultController extends Controller
                 at.id AS away_team_id,
                 prr.home_team_score,
                 prr.away_team_score,
-                IF(g.game_date <= DATE_ADD(NOW(), INTERVAL ? HOUR), 1, 0) AS locked
+                IF(g.game_date <= ?, 1, 0) AS locked
             FROM prediction_results AS prr
                 JOIN users u ON prr.user_id = u.id
                 JOIN games g ON g.id = prr.game_id
@@ -48,9 +49,9 @@ class PredictionResultController extends Controller
                 JOIN events e ON e.id = g.event_id
             WHERE
                 prr.user_id = ? AND
-                (g.game_date > DATE_ADD(NOW(), INTERVAL ? HOUR) OR g.home_team_score IS NULL)
+                (g.game_date > ? OR g.home_team_score IS NULL)
             ORDER BY g.event_id ASC, ht.group_name ASC, g.game_date ASC',
-            [$timeDiff, $userID, $timeDiff]);
+            [$nowUtc, $userID, $nowUtc]);
     }
 
     public function updatePredictionResultUser(UpdatePredictionResultRequest $request)
@@ -62,7 +63,7 @@ class PredictionResultController extends Controller
         $gameWinnerID = $request->input('gameWinnerID');
 
         $game = Game::where('id', $gameID)->first();
-        $now = date('Y-m-d H:i:s');
+        $now = Carbon::now('UTC')->format('Y-m-d H:i:s');
 
         if ($game->game_date > $now) {
             $predictionResult = PredictionResult::where('id', $request->input('prediction_gameID'))
@@ -101,7 +102,7 @@ class PredictionResultController extends Controller
     }
 
     public function getPredictionResultsUserGroupEventDay($eventID, $groupID, $userID){
-        $now = now()->addHours((int) session('timeDifference'))->format('Y-m-d H:i:s');
+        $now = Carbon::now('UTC')->format('Y-m-d H:i:s');
         $predictionGamesUserProfileEventDay = DB::select('SELECT
                             g.id,
                               g.game_date,
@@ -140,7 +141,7 @@ class PredictionResultController extends Controller
     }
 
     public function getPredictionGamesProfile($groupID, $eventID){
-        $now = now()->addHours((int) session('timeDifference'))->format('Y-m-d H:i:s');
+        $now = Carbon::now('UTC')->format('Y-m-d H:i:s');
         $guest = session('guest');
         $eventIDValue = ($eventID === '') ? 99 : (int) $eventID;
 
@@ -173,7 +174,7 @@ class PredictionResultController extends Controller
     }
 
     public function getPredictionGamesUserResultAmount($userID, $resultAmount){
-        $now = now()->addHours((int) session('timeDifference'))->format('Y-m-d H:i:s');
+        $now = Carbon::now('UTC')->format('Y-m-d H:i:s');
         $predictionGamesUser = DB::select('SELECT
              DISTINCT
                 prr.id,
@@ -215,7 +216,7 @@ class PredictionResultController extends Controller
         $groupID = session('leagueID');
         $eventID = session('eventID');
 
-        $timeDiff = session('timeDifference');
+        $nowUtc = Carbon::now('UTC')->format('Y-m-d H:i:s');
         $games = DB::select('select
                                 g.id
                                ,ht.team  AS home_team
@@ -231,10 +232,10 @@ class PredictionResultController extends Controller
                                join teams  AS ht ON g.home_team_id = ht.id
                                join teams  AS at ON g.away_team_id = at.id
                                join events AS e  ON e.id = g.event_id
-                             where g.game_date < DATE_ADD(NOW(), INTERVAL ? HOUR)
+                             where g.game_date < ?
                              order by g.id DESC
                              LIMIT 32
-                             ', [$timeDiff]);
+                             ', [$nowUtc]);
 
         $predictionResultController = new PredictionResultController();
         $predictionResults = $predictionResultController->getPredictionGamesProfile($groupID, $eventID);

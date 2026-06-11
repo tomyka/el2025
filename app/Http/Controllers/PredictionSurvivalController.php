@@ -94,7 +94,7 @@ class PredictionSurvivalController extends Controller
     }
 
     public function getPredictionSurvivalUserEventID($userID, $eventID){
-        $now = now()->addHours((int) session('timeDifference'))->format('Y-m-d H:i:s');
+        $now = \Carbon\Carbon::now('UTC')->format('Y-m-d H:i:s');
         $predictionSurvivalUserEvent = DB::select('
         SELECT distinct
    t.id as team_id

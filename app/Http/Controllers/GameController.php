@@ -34,13 +34,12 @@ class GameController extends Controller
     }
 
     public function getGameAll() {
-        date_default_timezone_set('Europe/Vilnius');
         $games = Game::with('home_team')->with('away_team')->with('event')->orderByDesc('id')->get();
         $teams = Team::pluck('team','id');
         $events = Event::pluck('event','id');
         $maxEventID = Game::max('event_id');
         $gameMaxDateTime = GameController::getMaxGameDateTime();
-        $now = Carbon::now();
+        $now = Carbon::now('UTC');
         return view('admin.games')->with('games',$games)->with('teams',$teams)->with('events',$events)->with('lastEnteredEventID',$maxEventID)->with('gameMaxDateTime',$gameMaxDateTime)->with('now',$now);
 
     }
@@ -48,10 +47,9 @@ class GameController extends Controller
 
 
     public function getGamesResultsAll() {
-        date_default_timezone_set('Europe/Vilnius');
         $games = Game::with('homeTeam')->with('awayTeam')->with('event')->orderByDesc('gameID')->get();
         $teams = Team::pluck('team','teamID');
-        $now = Carbon::now();
+        $now = Carbon::now('UTC');
         return view('admin.gameResults')->with('games',$games)->with('teams',$teams)->with('now',$now);
 
     }
@@ -61,7 +59,7 @@ class GameController extends Controller
         $predictionResult = new PredictionResult();
         $gameOdds = new GameOdds();
 
-        $game->game_date = str_replace('T', ' ', $request->input('gameDateTime')) . ':00';
+        $game->game_date = Carbon::parse(str_replace('T', ' ', $request->input('gameDateTime')), 'Europe/Vilnius')->utc()->format('Y-m-d H:i:s');
         $game->home_team_id = $request->input('homeTeamID');
         $game->away_team_id = $request->input('awayTeamID');
         $game->event_id = $request->input('eventID');
@@ -91,7 +89,7 @@ class GameController extends Controller
         $eventID    = $request->input('eventID');
 
         $game = game::find($gameID);
-        $game->game_date    = str_replace('T', ' ', $request->input('gameDateTime')) . ':00';
+        $game->game_date    = Carbon::parse(str_replace('T', ' ', $request->input('gameDateTime')), 'Europe/Vilnius')->utc()->format('Y-m-d H:i:s');
         $game->home_team_id = $homeTeamID;
         $game->away_team_id = $awayTeamID;
         $game->event_id     = $eventID;

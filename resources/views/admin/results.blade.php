@@ -36,7 +36,7 @@ $grouped = collect($games)
                 @foreach($groupGames as $game)
                 @php
                     $hasResult = $game->home_team_score !== null;
-                    $isFuture  = \Carbon\Carbon::parse($game->game_date)->gt($now);
+                    $isFuture  = \Carbon\Carbon::parse($game->game_date, 'UTC')->gt($now);
                 @endphp
                 <div class="pred-game">
                     <div class="pred-team-home">
@@ -45,7 +45,7 @@ $grouped = collect($games)
                              class="pred-flag" alt="{{ $game->home_team->team }}">
                     </div>
                     <div class="pred-scores">
-                        <span class="pred-time">{{ ucfirst(\Carbon\Carbon::parse($game->game_date)->locale('lt')->isoFormat('MMMM D')) }} · {{ \Carbon\Carbon::parse($game->game_date)->format('H:i') }}</span>
+                        <span class="pred-time">{{ ucfirst(\Carbon\Carbon::parse($game->game_date, 'UTC')->setTimezone('Europe/Vilnius')->locale('lt')->isoFormat('MMMM D')) }} · {{ \Carbon\Carbon::parse($game->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('H:i') }}</span>
                         <div class="pred-scores-inputs">
                             <input type="text"
                                    class="form-control pred-score"

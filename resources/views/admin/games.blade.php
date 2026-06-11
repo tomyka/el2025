@@ -33,11 +33,11 @@
             <tbody>
                 @foreach($games as $game)
                 <tr @if(session('admin') >= 1) style="cursor:pointer"
-                    ondblclick="agmOpenModal('{{ $game->id }}', '{{ substr(str_replace(' ', 'T', $game->game_date), 0, 16) }}', '{{ $game->home_team_id ?? '' }}', '{{ $game->away_team_id ?? '' }}', '{{ $game->event_id ?? '' }}')"
+                    ondblclick="agmOpenModal('{{ $game->id }}', '{{ \Carbon\Carbon::parse($game->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('Y-m-d\TH:i') }}', '{{ $game->home_team_id ?? '' }}', '{{ $game->away_team_id ?? '' }}', '{{ $game->event_id ?? '' }}')"
                     @endif>
                     <td class="agm-id">{{ $game->id }}</td>
                     <td class="agm-datetime">
-                        {{ \Carbon\Carbon::parse($game->game_date)->format('d M · H:i') }}
+                        {{ \Carbon\Carbon::parse($game->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('d M · H:i') }}
                     </td>
                     <td class="agm-team text-end">{{ $game->home_team->team ?? '—' }}</td>
                     <td class="agm-vs-sep text-center">vs</td>
