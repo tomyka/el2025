@@ -46,7 +46,7 @@ class HoneypotTest extends TestCase
             'password'              => 'password123',
             'password_confirmation' => 'password123',
             'website'               => 'http://spam.example.com',
-        ])->assertRedirect();
+        ])->assertRedirect(route('main'));
 
         $this->assertDatabaseMissing('users', ['email' => 'bot@test.com']);
     }
