@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\AuditLoginsController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PostRegisterController;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -18,7 +20,7 @@ class GoogleAuthController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
-    public function callback()
+    public function callback(Request $request)
     {
         try {
             $googleUser = Socialite::driver('google')->user();
@@ -30,6 +32,7 @@ class GoogleAuthController extends Controller
 
         if ($user) {
             Auth::login($user);
+            (new AuditLoginsController())->insertAuditLogin($user->id, $request->ip(), 'google');
             return redirect()->route('main');
         }
 
@@ -38,6 +41,7 @@ class GoogleAuthController extends Controller
         if ($user) {
             $user->update(['google_id' => $googleUser->getId()]);
             Auth::login($user);
+            (new AuditLoginsController())->insertAuditLogin($user->id, $request->ip(), 'google');
             return redirect()->route('main');
         }
 
@@ -60,6 +64,7 @@ class GoogleAuthController extends Controller
         (new PostRegisterController())->postRegisterActions($user->id);
 
         Auth::login($user);
+        (new AuditLoginsController())->insertAuditLogin($user->id, $request->ip(), 'google');
         return redirect()->route('main');
     }
 }
