@@ -84,6 +84,11 @@ class PredictionResultController extends Controller
             $predictionResult = PredictionResult::where('id', $request->input('prediction_gameID'))
                 ->where('user_id', $userID)
                 ->firstOrFail();
+
+            $oldHomeScore    = $predictionResult->home_team_score;
+            $oldAwayScore    = $predictionResult->away_team_score;
+            $oldGameWinnerId = $predictionResult->game_winner_id;
+
             $predictionResult->home_team_score = (($homeTeamScore == "") ? null : $homeTeamScore);
             $predictionResult->away_team_score = (($awayTeamScore == "") ? null : $awayTeamScore);
             $predictionResult->game_winner_id = (($gameWinnerID == "") ? null : $gameWinnerID);
@@ -92,7 +97,11 @@ class PredictionResultController extends Controller
 
             if ($homeTeamScore != "" && $awayTeamScore != "") {
                 $auditPredictionGameController = new AuditPredictionGameController();
-                $auditPredictionGameController->insertAuditPredictionGame($userID, $gameID, $homeTeamScore, $awayTeamScore, $gameWinnerID);
+                $auditPredictionGameController->insertAuditPredictionGame(
+                    $userID, $gameID,
+                    $homeTeamScore, $awayTeamScore, $gameWinnerID,
+                    $oldHomeScore, $oldAwayScore, $oldGameWinnerId
+                );
             }
         }
 
