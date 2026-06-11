@@ -58,20 +58,74 @@
                 <div class="rules-scoring-pts">+2.5</div>
                 <div class="rules-scoring-label">Bingo — tikslus rezultatas</div>
             </div>
+            <div class="rules-scoring-item">
+                <div class="rules-scoring-pts">×1 / ×2</div>
+                <div class="rules-scoring-label">Etapo koeficientas (grupių / nokautų)</div>
+            </div>
+            <div class="rules-scoring-item">
+                <div class="rules-scoring-pts">+N−1</div>
+                <div class="rules-scoring-label">Seka — N atspėjimų iš eilės</div>
+            </div>
         </div>
 
         <div class="rules-section">
-            <strong>Koeficientas</strong>
-            <ul class="rules-list">
-                <li>Apskaičiuojamas: <code>log₂(Dalyvių_skaičius / Spėjusiųjų_šią_baigtį)</code></li>
-                <li>Kuo rečiau atspėta baigties — tuo didesnis koeficientas.</li>
-                <li>Pvz.: 20 dalyvių, 7 spėjo A pergalę → koeficientas <strong>log₂(20/7) ≈ 1.51</strong>; tik 1 spėjo → koeficientas <strong>log₂(20/1) ≈ 4.32</strong>.</li>
-                <li>Koeficientas taikomas tik nugalėtojo taškams ir tik atspėjus nugalėtoją.</li>
-                <li>Automatiškai sugeneruotiems spėjimams koeficientas = 0 (be premijos).</li>
-            </ul>
             <p class="rules-formula">
-                Taškai = Nugalėtojas × (1 + Koeficientas) + Tikslumas + Bingo
+                Taškai = (Nugalėtojas × (1 + Koef.) + Tikslumas + Bingo) × Etapo_koef + Seka
             </p>
+        </div>
+    </div>
+
+    {{-- ── Odds ────────────────────────────────────────────────────── --}}
+    <div class="sb-card">
+        <div class="sb-card-title"><i class="bi bi-graph-up sb-card-icon"></i> Koeficientas (Odds)</div>
+
+        <div class="rules-section">
+            <p>Koeficientas atlygina už drąsų, retai atspėtą spėjimą — kuo mažiau dalyvių pasirinko tą baigtį, tuo didesnė premija.</p>
+            <ul class="rules-list">
+                <li>Formulė: <code>log₂(Dalyvių_skaičius / Spėjusiųjų_šią_baigtį)</code></li>
+                <li>Taikomas tik nugalėtojo taškams ir tik atspėjus nugalėtoją.</li>
+                <li>Automatiškai sugeneruotiems spėjimams koeficientas = 0.</li>
+            </ul>
+
+            <table class="rules-table mt-3" style="max-width:360px;">
+                <thead>
+                    <tr><th>Spėjo šią baigtį</th><th>Koeficientas</th><th>Nugalėtojo taškai</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>93 % (28/30)</td><td>0.10</td><td>5 × (1 + 0.10) = <strong>5.5</strong></td></tr>
+                    <tr><td>50 % (15/30)</td><td>1.00</td><td>5 × (1 + 1.00) = <strong>10.0</strong></td></tr>
+                    <tr><td>33 % (10/30)</td><td>1.58</td><td>5 × (1 + 1.58) = <strong>12.9</strong></td></tr>
+                    <tr><td>10 % (3/30)</td><td>3.32</td><td>5 × (1 + 3.32) = <strong>21.6</strong></td></tr>
+                    <tr><td>3 % (1/30)</td><td>4.91</td><td>5 × (1 + 4.91) = <strong>29.5</strong></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{-- ── Streak ───────────────────────────────────────────────────── --}}
+    <div class="sb-card">
+        <div class="sb-card-title"><i class="bi bi-lightning-fill sb-card-icon"></i> Sekos premija</div>
+
+        <div class="rules-section">
+            <p>Už kiekvieną iš eilės teisingai atspėtą nugalėtoją kaupiama sekos premija.</p>
+            <ul class="rules-list">
+                <li>Skaičiuojama pagal rungtynių eilę (ID tvarka).</li>
+                <li>Vienas teisingas spėjimas iš eilės — premijos nėra.</li>
+                <li>Kiekvienas papildomas teisingas spėjimas iš eilės prideda <strong>+1</strong>.</li>
+                <li>Sekos premija <strong>nesidaugina</strong> iš etapo koeficiento.</li>
+            </ul>
+
+            <table class="rules-table mt-3" style="max-width:300px;">
+                <thead>
+                    <tr><th>Atspėjimų iš eilės</th><th>Sekos premija</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>+0</td></tr>
+                    <tr><td>2</td><td>+1</td></tr>
+                    <tr><td>3</td><td>+2</td></tr>
+                    <tr><td>N</td><td>+(N−1)</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
