@@ -7,11 +7,18 @@ use App\Models\Game;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\RateLimiter;
 use Tests\TestCase;
 
 class RegistrationDeadlineTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function tearDown(): void
+    {
+        RateLimiter::clear('register');
+        parent::tearDown();
+    }
 
     // ── UI tests ────────────────────────────────────────────────────
 
