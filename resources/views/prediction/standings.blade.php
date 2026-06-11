@@ -93,12 +93,69 @@
             <p><strong>F</strong> — galutinė vieta finalo etape (1–4).</p>
         </div>
 
+        <div id="ps-progress" class="mt-3 d-flex flex-wrap gap-2">
+            <span class="badge bg-secondary" id="prog-pos">Vieta: 0 / {{ count($predictionStandings) }}</span>
+            @php $totalTeams = count($predictionStandings); @endphp
+            @if ($totalTeams >= 32)
+            <span class="badge bg-secondary" id="prog-last32">1/16: 0 / 32</span>
+            @endif
+            <span class="badge bg-secondary" id="prog-last16">1/8: 0 / 16</span>
+            <span class="badge bg-secondary" id="prog-qf">1/4: 0 / 8</span>
+            <span class="badge bg-secondary" id="prog-sf">1/2: 0 / 4</span>
+            <span class="badge bg-secondary" id="prog-final">F: 0 / 4</span>
+        </div>
+
     </form>
 
 @endsection
 
 <script>
     var predictionLocked = {{ session('disabled') === 'disabled' ? 'true' : 'false' }};
+
+    function updateProgressCounters() {
+        var totalTeams = document.querySelectorAll('.prediction-row').length;
+
+        // group positions filled
+        var posFilled = 0;
+        document.querySelectorAll('.ps-pos-input').forEach(function(inp) {
+            if (inp.value !== '') posFilled++;
+        });
+        var posEl = document.getElementById('prog-pos');
+        if (posEl) {
+            posEl.textContent = 'Vieta: ' + posFilled + ' / ' + totalTeams;
+            posEl.className   = 'badge ' + (posFilled === totalTeams ? 'bg-success' : 'bg-danger');
+        }
+
+        // last32
+        var l32El = document.getElementById('prog-last32');
+        if (l32El) {
+            var l32 = document.querySelectorAll('input[type="checkbox"][id^="last32"]:checked').length;
+            l32El.textContent = '1/16: ' + l32 + ' / 32';
+            l32El.className   = 'badge ' + (l32 === 32 ? 'bg-success' : 'bg-danger');
+        }
+
+        var targets = [['last16', 'prog-last16', '1/8: ', 16],
+                       ['quarterfinal', 'prog-qf', '1/4: ', 8],
+                       ['semifinal', 'prog-sf', '1/2: ', 4]];
+        targets.forEach(function(t) {
+            var el = document.getElementById(t[1]);
+            if (!el) return;
+            var n = document.querySelectorAll('input[type="checkbox"][id^="' + t[0] + '"]:checked').length;
+            el.textContent = t[2] + n + ' / ' + t[3];
+            el.className   = 'badge ' + (n === t[3] ? 'bg-success' : 'bg-danger');
+        });
+
+        // final positions filled (non-empty number inputs with id^=final)
+        var finalFilled = 0;
+        document.querySelectorAll('input[type="number"][id^="final"]').forEach(function(inp) {
+            if (inp.value !== '') finalFilled++;
+        });
+        var finEl = document.getElementById('prog-final');
+        if (finEl) {
+            finEl.textContent = 'F: ' + finalFilled + ' / 4';
+            finEl.className   = 'badge ' + (finalFilled === 4 ? 'bg-success' : 'bg-danger');
+        }
+    }
 
     function enforceAllLimits() {
         // Only reset disabled states when prediction is still open
@@ -152,6 +209,8 @@
                 boxes.forEach(function(cb) { if (!cb.checked) cb.disabled = true; });
             }
         });
+
+        updateProgressCounters();
     }
 
     function validateGroupPositions() {
@@ -173,6 +232,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         enforceAllLimits();
         validateGroupPositions();
+        updateProgressCounters();
     });
 
     // Cascade UP: checking a round auto-checks all higher rounds for that team.
@@ -240,6 +300,7 @@
             if (groupPositionEl.value !== '') setInputState(groupPositionEl, 'ok');
             if (finalEl.value !== '')         setInputState(finalEl, 'ok');
             validateGroupPositions();
+            updateProgressCounters();
         }).fail(function () {
             if (groupPositionEl.value !== '') setInputState(groupPositionEl, 'error');
             if (finalEl.value !== '')         setInputState(finalEl, 'error');
