@@ -136,7 +136,7 @@
       {{-- League switcher (right) --}}
       @if(session('userID'))
       <div class="ms-auto d-flex align-items-center gap-1">
-        <span style="font-size:.8rem;opacity:.7;white-space:nowrap;">Lyga</span>
+        <span style="font-size:.8rem;color:#b0b8c9;white-space:nowrap;">Lyga</span>
         @include('partials.league-switcher')
       </div>
       @endif
