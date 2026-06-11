@@ -18,6 +18,7 @@
         ['icon' => 'bi-chat-left-text',  'label' => 'Žinutės',             'route' => 'admin.messages',              'super' => true],
         ['icon' => 'bi-bar-chart-fill',  'label' => 'Eigos taškai',        'route' => 'admin.updateStandingPoints',  'super' => true],
         ['icon' => 'bi-trophy-fill',     'label' => 'Lygos',               'route' => 'admin.leagues',               'super' => false],
+        ['icon' => 'bi-clock-history',   'label' => 'Auditas',             'route' => 'admin.audit',                 'super' => true],
     ];
     @endphp
 

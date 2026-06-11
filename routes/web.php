@@ -17,6 +17,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\PointStandingController;
 use App\Http\Controllers\LeagueController;
+use App\Http\Controllers\AuditController;
 use Illuminate\Support\Facades\Route;
 
 /*Original routes start*/
@@ -128,6 +129,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'superadmin']], func
     Route::get('updateStandingPoints', [PointStandingController::class,'updateStandingPoints'])->name('admin.updateStandingPoints');
 
     Route::post('leagues/delete', [LeagueController::class, 'adminDelete'])->middleware('level9admin')->name('admin.leagues.delete');
+
+    Route::get('audit', [AuditController::class, 'index'])->name('admin.audit');
 
     // @deprecated — settings removed from admin panel; routes kept to avoid 404 on stale bookmarks
     Route::get('settings', [SettingController::class,'getSettingAll'])->name('admin.settings');
