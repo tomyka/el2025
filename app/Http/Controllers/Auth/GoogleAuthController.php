@@ -11,6 +11,8 @@ use Laravel\Socialite\Facades\Socialite;
 
 class GoogleAuthController extends Controller
 {
+    use ChecksRegistrationDeadline;
+
     public function redirect()
     {
         return Socialite::driver('google')->redirect();
@@ -36,6 +38,10 @@ class GoogleAuthController extends Controller
         if ($user) {
             $user->update(['google_id' => $googleUser->getId()]);
             Auth::login($user);
+            return redirect()->route('main');
+        }
+
+        if (!$this->registrationIsOpen()) {
             return redirect()->route('main');
         }
 
