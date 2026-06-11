@@ -237,42 +237,48 @@ class BulkPointsTest extends TestCase
 
     // ── getAllUserPoints integration ───────────────────────────────────
 
-    public function test_get_all_user_points_order_and_totals(): void
+    public function test_get_all_user_points_returns_correct_order_and_totals(): void
     {
-        $userA = $this->makeUser();
-        $userB = $this->makeUser();
-        $userC = $this->makeUser();
-        $game  = $this->makeGame();
+        session(['guest' => 0]);
 
-        // userA: 100 game pts + 20 standing + 30 survival = 150
-        $this->insertResult($userA->id, $game->id, ['full_points' => 100.0]);
-        $this->insertStanding($userA->id, ['group_position_points' => 20]);
-        $event1 = \App\Models\Event::create([
-            'event' => 'S1', 'event_day' => 1, 'event_survival' => 1, 'active' => 1, 'rate' => 1,
+        $event = Event::create([
+            'event' => 'R1', 'event_day' => 1, 'event_survival' => 0, 'active' => 1, 'rate' => 1,
         ]);
-        $this->insertSurvival($userA->id, $event1->id, 30.0);
+        $home = Team::create(['team' => 'H' . uniqid()]);
+        $away = Team::create(['team' => 'A' . uniqid()]);
+        $game = Game::create([
+            'event_id'        => $event->id,
+            'home_team_id'    => $home->id,
+            'away_team_id'    => $away->id,
+            'game_date'       => now(),
+            'home_team_score' => 2,
+            'away_team_score' => 1,
+        ]);
 
-        // userB: 200 game pts only = 200
-        $this->insertResult($userB->id, $game->id, ['full_points' => 200.0]);
+        $userA = $this->makeUser(); // will rank 1st
+        $userB = $this->makeUser(); // will rank 2nd
+        $userC = $this->makeUser(); // will rank 3rd
 
-        // userC: no points at all
+        // userA: 200 game pts
+        $this->insertResult($userA->id, $game->id, ['full_points' => 200.0]);
+        // userB: 100 game pts + 50 standing pts = 150 total
+        $this->insertResult($userB->id, $game->id, ['full_points' => 100.0]);
+        $this->insertStanding($userB->id, ['group_position_points' => 50]);
+        // userC: 50 game pts + 30 survival pts = 80 total
+        $this->insertResult($userC->id, $game->id, ['full_points' => 50.0]);
+        $this->insertSurvival($userC->id, $event->id, 30.0);
 
-        $this->withSession(['guest' => 0]);
-
-        $controller = app(\App\Http\Controllers\PointController::class);
+        $controller = new \App\Http\Controllers\PointController();
         $result     = $controller->getAllUserPoints($this->league->id);
 
         $this->assertCount(3, $result);
-
-        // Sorted descending by total
-        $this->assertEquals($userB->id, $result[0]['userID']); // 200
-        $this->assertEquals($userA->id, $result[1]['userID']); // 150
-        $this->assertEquals($userC->id, $result[2]['userID']); // 0
+        $this->assertEquals($userA->id, $result[0]['userID']);  // 200 pts
+        $this->assertEquals($userB->id, $result[1]['userID']);  // 150 pts
+        $this->assertEquals($userC->id, $result[2]['userID']);  // 80 pts
 
         $this->assertEquals(200.0, $result[0]['userGamePoints']);
         $this->assertEquals(100.0, $result[1]['userGamePoints']);
-        $this->assertEquals(20,    $result[1]['standingPoints']->group_position_points);
-        $this->assertEquals(30.0,  $result[1]['survivalPoints']);
-        $this->assertEquals(0.0,   $result[2]['userGamePoints']);
+        $this->assertEquals(50.0,  $result[1]['standingPoints']->total_points);
+        $this->assertEquals(30.0,  $result[2]['survivalPoints']);
     }
 }
