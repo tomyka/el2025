@@ -212,6 +212,44 @@ class LeagueController extends Controller
         return redirect()->route('leagues.index')->with('info', 'Lygos koeficientai atnaujinti');
     }
 
+    public function adminIndex(): \Illuminate\View\View
+    {
+        $leagues = League::withCount('members')
+            ->with('owner')
+            ->orderBy('is_public', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.leagues', compact('leagues'));
+    }
+
+    public function adminDelete(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $leagueId = (int) $request->input('leagueID');
+        $league   = League::findOrFail($leagueId);
+
+        if ($league->is_public) {
+            return redirect()->back()->with('error', 'Viešos lygos ištrinti negalima');
+        }
+
+        $publicLeague    = League::where('is_public', true)->first();
+        $activeMemberIds = LeagueMember::where('league_id', $leagueId)
+            ->where('active', true)
+            ->pluck('user_id');
+
+        if ($publicLeague && $activeMemberIds->isNotEmpty()) {
+            LeagueMember::whereIn('user_id', $activeMemberIds)
+                ->where('league_id', $publicLeague->id)
+                ->update(['active' => true]);
+        }
+
+        \DB::table('messages')->where('league_id', $leagueId)->update(['league_id' => null]);
+
+        $league->delete();
+
+        return redirect()->route('admin.leagues')->with('info', 'Lyga ištrinta');
+    }
+
     public function deleteLeague(Request $request): \Illuminate\Http\RedirectResponse
     {
         $userId   = session('userID');

@@ -125,6 +125,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'superadmin']], func
 
     Route::get('updateStandingPoints', [PointStandingController::class,'updateStandingPoints'])->name('admin.updateStandingPoints');
 
+    Route::get('leagues',       [LeagueController::class, 'adminIndex'])->name('admin.leagues');
+    Route::post('leagues/delete', [LeagueController::class, 'adminDelete'])->name('admin.leagues.delete');
+
     // @deprecated — settings removed from admin panel; routes kept to avoid 404 on stale bookmarks
     Route::get('settings', [SettingController::class,'getSettingAll'])->name('admin.settings');
     Route::post('settings', [SettingController::class,'updateSetting']);
