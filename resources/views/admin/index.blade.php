@@ -17,7 +17,7 @@
         ['icon' => 'bi-calendar-event',  'label' => 'Turai',               'route' => 'admin.events',                'super' => true],
         ['icon' => 'bi-chat-left-text',  'label' => 'Žinutės',             'route' => 'admin.messages',              'super' => true],
         ['icon' => 'bi-bar-chart-fill',  'label' => 'Eigos taškai',        'route' => 'admin.updateStandingPoints',  'super' => true],
-        ['icon' => 'bi-trophy-fill',     'label' => 'Lygos',               'route' => 'admin.leagues',               'super' => true],
+        ['icon' => 'bi-trophy-fill',     'label' => 'Lygos',               'route' => 'admin.leagues',               'super' => false],
     ];
     @endphp
 

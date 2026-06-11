@@ -63,7 +63,7 @@
                     </td>
 
                     <td>
-                        @if(!$league->is_public)
+                        @if(!$league->is_public && session('admin') >= 5)
                         <form method="POST" action="{{ route('admin.leagues.delete') }}"
                               onsubmit="return confirm('Ištrinti lygą \"{{ addslashes($league->name) }}\"? Visi nariai bus pašalinti.')">
                             @csrf
