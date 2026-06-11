@@ -20,27 +20,24 @@
     @php
         $activeLeagueId = session('leagueID');
         $myLeagues = \App\Models\LeagueMember::where('user_id', session('userID'))->with('league')->get();
+        $activeLeagueName = $myLeagues->firstWhere('league_id', $activeLeagueId)?->league->name ?? 'Lyga';
     @endphp
     <div class="dropup">
         <button class="sb-tab dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-trophy" style="font-size:1.2rem;"></i>
-            <span class="sb-tab-label">Lygos</span>
+            <span class="sb-tab-label" style="max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $activeLeagueName }}</span>
         </button>
         <ul class="dropdown-menu dropdown-menu-end mb-1">
             @foreach($myLeagues as $membership)
+            @if($membership->league_id !== $activeLeagueId)
             <li>
-                @if($membership->league_id === $activeLeagueId)
-                    <span class="dropdown-item active">
-                        <i class="bi bi-check2 me-1"></i>{{ $membership->league->name }}
-                    </span>
-                @else
-                    <form method="POST" action="{{ route('leagues.switch') }}">
-                        @csrf
-                        <input type="hidden" name="leagueID" value="{{ $membership->league_id }}">
-                        <button type="submit" class="dropdown-item">{{ $membership->league->name }}</button>
-                    </form>
-                @endif
+                <form method="POST" action="{{ route('leagues.switch') }}">
+                    @csrf
+                    <input type="hidden" name="leagueID" value="{{ $membership->league_id }}">
+                    <button type="submit" class="dropdown-item">{{ $membership->league->name }}</button>
+                </form>
             </li>
+            @endif
             @endforeach
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{{ route('leagues.index') }}">
