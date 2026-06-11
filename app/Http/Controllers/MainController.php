@@ -40,8 +40,6 @@ class MainController extends Controller
             unset($point);
             $messages = $messageController->getProfileMessages($groupID);
             $predictionResults = $predictionResults->getPredictionResultsUserGroupEventDay($eventID,$groupID, $userID);
-            // @deprecated previousRoundPoints removed from view
-            $previousRoundPoints = [];
             $predictionResultsWithStats = $teamStatisticsController->prepareTeamStatistics($predictionResults);
 
             // Limit upcoming-games widget to first 3 distinct calendar dates

@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PointResult;
-use App\Models\PointSurvival;
 use Illuminate\Support\Facades\DB;
 
 class PointController extends Controller
@@ -56,57 +54,6 @@ class PointController extends Controller
         }
 
         return $userAllPoints;
-    }
-
-
-    /**
-     * @deprecated No longer used — Praėjusio turo lyderiai section removed from main view.
-     */
-    public function getPointEventTotal($eventID, $leagueID){
-        $users = DB::table('users')
-            ->join('league_members', 'users.id', '=', 'league_members.user_id')
-            ->where('league_members.league_id', '=', $leagueID)
-            ->where('league_members.is_guest', '<=', session('guest'))
-            ->select('users.id', 'users.username')
-            ->get();
-
-        foreach ($users as $user){
-            $pointResultUserEvent = $this->getPointPredictionUserEvent($user->id,$eventID);
-            $pointSurvivalUserEvent = $this->getPointSurvivalUserEvent($user->id,$eventID);
-
-            $predictionGamesRoundPoints[] = [
-                'userID'            => $user->id,
-                'username'          => $user->username,
-                'pointResult'       => $pointResultUserEvent,
-                'pointSurvival'     => $pointSurvivalUserEvent
-            ];
-        }
-        if (isset($predictionGamesRoundPoints)) {
-            usort($predictionGamesRoundPoints, function ($a, $b) {
-                return $b['pointResult']->full_points + $b['pointSurvival'] <=> $a['pointResult']->full_points + $a['pointSurvival'];
-            });
-        }
-
-        return $predictionGamesRoundPoints;
-    }
-
-    public function getPointPredictionUserEvent($userID, $eventID){
-        $points = DB::table('events')
-            ->join('games','events.id','=','games.event_id')
-            ->join('point_results','games.id','=','point_results.game_id')
-            ->where('point_results.user_id','=',$userID)
-            ->where('events.id','=',$eventID)
-            ->selectRaw('
-        IFNULL(ROUND(SUM(full_points + COALESCE(streak_bonus, 0)), 1), 0) AS full_points,
-        IFNULL(ROUND(AVG(full_points + COALESCE(streak_bonus, 0)), 1), 0) AS avg_points,
-        IFNULL(SUM(CASE WHEN winner_points > 0 THEN 1 ELSE 0 END), 0) AS correct_guess
-    ')->first();
-        return $points;
-    }
-
-    public function getPointSurvivalUserEvent($userID, $eventID){
-        $points = PointSurvival::where('user_id',$userID)->where('event_id',$eventID)->first();
-        return $points->survival_points ?? 0;
     }
     public function getAllUsersGameHistory(int $leagueID): array
     {
