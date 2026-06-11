@@ -152,8 +152,8 @@ class PointResultController extends Controller
 
         $profile = [];
         foreach ($rows as $row) {
-            $oddsPointsLeague = (float) $row->odds_points;
-            $fullPointsLeague = (float) $row->full_points;
+            $winnerPointsLeague = (float) $row->winner_points;
+            $fullPointsLeague   = (float) $row->full_points;
 
             if ($useLeagueOdds && isset($leagueOddsMap[$row->game_id])) {
                 $lo = $leagueOddsMap[$row->game_id];
@@ -167,34 +167,32 @@ class PointResultController extends Controller
                         $leagueOddsRate = (float) $lo->away_odds;
                     }
 
-                    $oddsPointsLeague = $row->winner_points > 0
-                        ? round((float) $row->winner_points * $leagueOddsRate, 1)
+                    $winnerPointsLeague = $row->winner_points > 0
+                        ? round((1 + $leagueOddsRate) * 5.0 * (float) $row->rate, 1)
                         : 0.0;
 
                     $fullPointsLeague = round(
-                        (float) $row->winner_points
+                        $winnerPointsLeague
                         + (float) $row->difference_points
-                        + (float) $row->bingo_points
-                        + $oddsPointsLeague,
+                        + (float) $row->bingo_points,
                         1
                     );
                 }
             }
 
             $profile[] = [
-                'game_id'            => $row->game_id,
-                'home_team'          => $row->home_team,
-                'away_team'          => $row->away_team,
-                'game_date'          => $row->game_date,
-                'winner_points'      => $row->winner_points,
-                'difference_points'  => $row->difference_points,
-                'bingo_points'       => $row->bingo_points != 0 ? 1 : 0,
-                'odds_points'        => $row->odds_points,
-                'odds_points_league' => $oddsPointsLeague,
-                'full_points'        => round((float) $row->full_points, 1),
-                'full_points_league' => $fullPointsLeague,
-                'streak_bonus'       => round((float) ($row->streak_bonus ?? 0), 1),
-                'rate'               => $row->rate,
+                'game_id'              => $row->game_id,
+                'home_team'            => $row->home_team,
+                'away_team'            => $row->away_team,
+                'game_date'            => $row->game_date,
+                'winner_points'        => $row->winner_points,
+                'winner_points_league' => $winnerPointsLeague,
+                'difference_points'    => $row->difference_points,
+                'bingo_points'         => $row->bingo_points != 0 ? 1 : 0,
+                'full_points'          => round((float) $row->full_points, 1),
+                'full_points_league'   => $fullPointsLeague,
+                'streak_bonus'         => round((float) ($row->streak_bonus ?? 0), 1),
+                'rate'                 => $row->rate,
             ];
         }
 
@@ -228,11 +226,10 @@ class PointResultController extends Controller
         foreach ($predictionResults as $predictionResult) {
             $tablePoints  = $this->scoring->getTablePoints($homeTeamScore, $awayTeamScore, $predictionResult->home_team_score, $predictionResult->away_team_score, $pointsLookup);
             $winnerDir    = $this->scoring->getWinnerPoints($homeTeamScore, $awayTeamScore, $predictionResult->home_team_score, $predictionResult->away_team_score);
-            $winnerBonus  = $winnerDir > 0 ? 5.0 : 0.0;
-            $bingoPoints  = $this->scoring->getBingoPoints($homeTeamScore, $awayTeamScore, (int) $predictionResult->home_team_score, (int) $predictionResult->away_team_score);
             $odds         = $this->scoring->getGameOdds($predictionResult->home_team_score, $predictionResult->away_team_score, $gameOdds, $predictionResult->generated);
-            $oddsPoints   = $this->scoring->getOddsPoints($odds, $winnerBonus);
-            $points       = $this->scoring->calculateGamePoints($winnerBonus, $tablePoints, $oddsPoints, $bingoPoints, $odds, $event->rate);
+            $winnerBonus  = $winnerDir > 0 ? (1 + $odds) * 5.0 : 0.0;
+            $bingoPoints  = $this->scoring->getBingoPoints($homeTeamScore, $awayTeamScore, (int) $predictionResult->home_team_score, (int) $predictionResult->away_team_score);
+            $points       = $this->scoring->calculateGamePoints($winnerBonus, $tablePoints, 0.0, $bingoPoints, $odds, $event->rate);
 
             $this->insertPointResultUser($predictionResult->user_id, $gameID, $points);
         }

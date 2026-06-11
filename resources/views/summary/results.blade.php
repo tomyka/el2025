@@ -92,7 +92,6 @@ $openInit = $grouped->keys()->mapWithKeys(fn($r) => [$r => true])->toJson();
                              <div class='sr-pop-row'><span>Nugalėtojas</span><strong>{{ number_format($pred->winner_points,1) }}</strong></div>
                              <div class='sr-pop-row'><span>Skirtumas</span><strong>{{ number_format($pred->difference_points,1) }}</strong></div>
                              <div class='sr-pop-row'><span>Tikslus</span><strong>{{ number_format($pred->bingo_points,1) }}</strong></div>
-                             <div class='sr-pop-row'><span>Koef. taškai</span><strong>{{ number_format($pred->odds_points,1) }}</strong></div>
                            </div>">{{ number_format($pred->full_points,1) }}</a>
                         @endif
                         @if($hasPred)

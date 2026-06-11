@@ -145,11 +145,11 @@ class LeagueOddsTest extends TestCase
         $controller = app(\App\Http\Controllers\PointResultController::class);
         $profile    = $controller->getUserProfilePoints($user->id, $league->id);
 
-        // With league odds (1.5): odds_points_league = 5 * 1.5 = 7.5
+        // With league odds (1.5): winner_points_league = (1+1.5)*5*1 = 12.5
         $row = collect($profile)->firstWhere('game_id', $game->id);
         $this->assertNotNull($row);
-        $this->assertEquals(7.5, (float) $row['odds_points_league']);
-        // full_points_league = 5 + 30 + 0 + 7.5 = 42.5
+        $this->assertEquals(12.5, (float) $row['winner_points_league']);
+        // full_points_league = 12.5 + 30 + 0 = 42.5
         $this->assertEquals(42.5, (float) $row['full_points_league']);
     }
 }

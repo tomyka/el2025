@@ -47,12 +47,8 @@
 
         <div class="rules-scoring-grid">
             <div class="rules-scoring-item">
-                <div class="rules-scoring-pts">+5</div>
-                <div class="rules-scoring-label">Atspėjus nugalėtoją</div>
-            </div>
-            <div class="rules-scoring-item">
-                <div class="rules-scoring-pts">+5×Koef.</div>
-                <div class="rules-scoring-label">Odds premija — retesnis spėjimas</div>
+                <div class="rules-scoring-pts">(1+Koef.)×5</div>
+                <div class="rules-scoring-label">Nugalėtojas — su odds premija</div>
             </div>
             <div class="rules-scoring-item">
                 <div class="rules-scoring-pts">5 − Δ</div>
@@ -74,7 +70,7 @@
 
         <div class="rules-section">
             <p class="rules-formula">
-                Taškai = (Nugalėtojas + Odds_premija + Tikslumas + Bingo + Seka) × Etapo_koef
+                Taškai = (Nugalėtojas + Tikslumas + Bingo + Seka) × Etapo_koef
             </p>
         </div>
     </div>
@@ -84,23 +80,24 @@
         <div class="sb-card-title"><i class="bi bi-graph-up sb-card-icon"></i> Koeficientas (Odds)</div>
 
         <div class="rules-section">
-            <p>Koeficientas atlygina už drąsų, retai atspėtą spėjimą — kuo mažiau dalyvių pasirinko tą baigtį, tuo didesnė premija.</p>
+            <p>Koeficientas atlygina už drąsų, retai atspėtą spėjimą — kuo mažiau dalyvių pasirinko tą baigtį, tuo daugiau taškų už nugalėtoją.</p>
             <ul class="rules-list">
-                <li>Formulė: <code>log₂(Dalyvių_skaičius / Spėjusiųjų_šią_baigtį)</code></li>
-                <li>Taikomas tik nugalėtojo taškams ir tik atspėjus nugalėtoją.</li>
-                <li>Automatiškai sugeneruotiems spėjimams koeficientas = 0.</li>
+                <li>Koef. formulė: <code>log₂(Dalyvių_skaičius / Spėjusiųjų_šią_baigtį)</code></li>
+                <li>Nugalėtojo taškai: <code>(1 + Koef.) × 5</code></li>
+                <li>Taikomas tik atspėjus nugalėtoją.</li>
+                <li>Automatiškai sugeneruotiems spėjimams koeficientas = 0, todėl nugalėtojo taškai = 5.</li>
             </ul>
 
-            <table class="rules-table mt-3" style="max-width:380px;">
+            <table class="rules-table mt-3" style="max-width:340px;">
                 <thead>
-                    <tr><th>Spėjo šią baigtį</th><th>Koef.</th><th>Nugalėtojas</th><th>Odds premija</th></tr>
+                    <tr><th>Spėjo šią baigtį</th><th>Koef.</th><th>Nugalėtojas</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td>93 % (28/30)</td><td>0.10</td><td>+5</td><td>5 × 0.10 = <strong>+0.5</strong></td></tr>
-                    <tr><td>50 % (15/30)</td><td>1.00</td><td>+5</td><td>5 × 1.00 = <strong>+5.0</strong></td></tr>
-                    <tr><td>33 % (10/30)</td><td>1.58</td><td>+5</td><td>5 × 1.58 = <strong>+7.9</strong></td></tr>
-                    <tr><td>10 % (3/30)</td><td>3.32</td><td>+5</td><td>5 × 3.32 = <strong>+16.6</strong></td></tr>
-                    <tr><td>3 % (1/30)</td><td>4.91</td><td>+5</td><td>5 × 4.91 = <strong>+24.5</strong></td></tr>
+                    <tr><td>93 % (28/30)</td><td>0.10</td><td>(1+0.10)×5 = <strong>5.5</strong></td></tr>
+                    <tr><td>50 % (15/30)</td><td>1.00</td><td>(1+1.00)×5 = <strong>10.0</strong></td></tr>
+                    <tr><td>33 % (10/30)</td><td>1.58</td><td>(1+1.58)×5 = <strong>12.9</strong></td></tr>
+                    <tr><td>10 % (3/30)</td><td>3.32</td><td>(1+3.32)×5 = <strong>21.6</strong></td></tr>
+                    <tr><td>3 % (1/30)</td><td>4.91</td><td>(1+4.91)×5 = <strong>29.5</strong></td></tr>
                 </tbody>
             </table>
         </div>

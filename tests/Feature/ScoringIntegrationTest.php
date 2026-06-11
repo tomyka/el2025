@@ -79,11 +79,11 @@ class ScoringIntegrationTest extends TestCase
 
         $r = PointResult::where('user_id', $user->id)->where('game_id', $game->id)->firstOrFail();
 
-        $this->assertSame(5.0,  (float) $r->winner_points);       // correct direction → +5
+        $this->assertEqualsWithDelta(15.0, (float) $r->winner_points, 0.01); // (1+2.0)*5*1
         $this->assertSame(2.5,  (float) $r->bingo_points);        // exact score → +2.5
         $this->assertSame(5.0,  (float) $r->difference_points);   // table 10/2 × rate(1)
-        $this->assertEqualsWithDelta(10.0, (float) $r->odds_points, 0.01); // 5*2.0*1
-        $this->assertEqualsWithDelta(22.5, (float) $r->full_points, 0.01); // 5+2.5+5+10
+        $this->assertSame(0.0,  (float) $r->odds_points);         // folded into winner_points
+        $this->assertEqualsWithDelta(22.5, (float) $r->full_points, 0.01); // 15+2.5+5+0
     }
 
     // Wrong direction: no odds bonus; winner_points always 0 in new model
