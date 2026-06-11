@@ -74,7 +74,7 @@
 
         <div class="rules-section">
             <p class="rules-formula">
-                Taškai = (Nugalėtojas + Odds_premija + Tikslumas + Bingo) × Etapo_koef + Seka
+                Taškai = (Nugalėtojas + Odds_premija + Tikslumas + Bingo + Seka) × Etapo_koef
             </p>
         </div>
     </div>
@@ -116,7 +116,7 @@
                 <li>Skaičiuojama pagal rungtynių eilę (ID tvarka).</li>
                 <li>Vienas teisingas spėjimas iš eilės — premijos nėra.</li>
                 <li>Kiekvienas papildomas teisingas spėjimas iš eilės prideda <strong>+1</strong>.</li>
-                <li>Sekos premija <strong>nesidaugina</strong> iš etapo koeficiento.</li>
+                <li>Sekos premija dauginama iš etapo koeficiento kartu su kitais taškais.</li>
             </ul>
 
             <table class="rules-table mt-3" style="max-width:300px;">

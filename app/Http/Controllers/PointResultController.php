@@ -54,22 +54,25 @@ class PointResultController extends Controller
                 $join->on('point_results.user_id', '=', 'prediction_results.user_id')
                      ->on('point_results.game_id', '=', 'prediction_results.game_id');
             })
+            ->join('games', 'point_results.game_id', '=', 'games.id')
+            ->join('events', 'games.event_id', '=', 'events.id')
             ->whereIn('point_results.game_id', $gameIDs)
             ->select(
                 'point_results.id',
                 'point_results.user_id',
                 'point_results.game_id',
                 'point_results.winner_points',
-                'prediction_results.generated'
+                'prediction_results.generated',
+                'events.rate'
             )
             ->get();
 
-        // Build lookup: user_id → game_id → {id, correct}
+        // Build lookup: user_id → game_id → {id, correct, rate}
         $lookup  = [];
         $userIDs = [];
         foreach ($rows as $row) {
             $correct = $row->winner_points > 0 && !$row->generated;
-            $lookup[$row->user_id][$row->game_id] = ['id' => $row->id, 'correct' => $correct];
+            $lookup[$row->user_id][$row->game_id] = ['id' => $row->id, 'correct' => $correct, 'rate' => (float) $row->rate];
             $userIDs[$row->user_id] = true;
         }
 
@@ -84,7 +87,7 @@ class PointResultController extends Controller
                 }
                 $entry  = $lookup[$userID][$gameID];
                 $streak = $entry['correct'] ? $streak + 1 : 0;
-                $updates[$entry['id']] = max(0, $streak - 1);
+                $updates[$entry['id']] = max(0, $streak - 1) * $entry['rate'];
             }
         }
 
