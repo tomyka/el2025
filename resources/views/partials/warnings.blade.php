@@ -5,7 +5,7 @@
 </div>
 @endif
 
-@if (!empty($standingsMissing))
+@if (!empty($standingsMissing) && session('disabled') !== 'disabled')
 <div class="alert alert-warning d-flex align-items-center gap-2 mb-2 py-2">
     <i class="bi bi-exclamation-triangle-fill flex-shrink-0"></i>
     <span>
