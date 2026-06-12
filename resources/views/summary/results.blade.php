@@ -33,7 +33,7 @@ $openInit = $grouped->keys()->mapWithKeys(fn($r) => [$r => true])->toJson();
                     @foreach($users as $username)
                     <th class="sr-hdr-user" title="{{ $username }}">
                         <div class="sr-user-avatar">{{ strtoupper(substr($username, 0, 1)) }}</div>
-                        {{ $username }}
+                        <span class="sr-username">{{ $username }}</span>
                     </th>
                     @endforeach
                 </tr>

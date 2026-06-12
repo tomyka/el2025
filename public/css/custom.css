@@ -2023,14 +2023,25 @@ button.sb-tab::after { display: none; }
 
 .sr-hdr-game { min-width: 185px; text-align: left !important; }
 .sr-hdr-user {
-  min-width: 82px;
-  max-width: 100px;
+  min-width: 42px;
+  max-width: 56px;
   text-align: center;
   font-size: .7rem;
   font-weight: 700;
+  padding-top: 6px !important;
+  padding-bottom: 8px !important;
+}
+
+.sr-hdr-user .sr-username {
+  display: block;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-top: 6px !important;
+  max-height: 90px;
+  margin: 0 auto;
 }
 
 .sr-user-avatar {
