@@ -42,6 +42,14 @@ class MainController extends Controller
             $predictionResults = $predictionResults->getPredictionResultsUserGroupEventDay($eventID,$groupID, $userID);
             $predictionResultsWithStats = $teamStatisticsController->prepareTeamStatistics($predictionResults);
 
+            // Drop finished games from previous days; keep today's finished games
+            $today = now()->toDateString();
+            $predictionResultsWithStats = array_values(array_filter(
+                $predictionResultsWithStats,
+                fn($item) => $item['gameDetails']->home_team_score === null
+                          || substr($item['gameDetails']->game_date, 0, 10) >= $today
+            ));
+
             // Limit upcoming-games widget to first 3 distinct calendar dates
             $upcomingDates = collect($predictionResultsWithStats)
                 ->map(fn($item) => substr($item['gameDetails']->game_date, 0, 10))
