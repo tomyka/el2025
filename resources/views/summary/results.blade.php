@@ -31,7 +31,10 @@ $openInit = $grouped->keys()->mapWithKeys(fn($r) => [$r => true])->toJson();
                 <tr>
                     <th class="sr-sticky-col sr-hdr-game">Rungtynės</th>
                     @foreach($users as $username)
-                    <th class="sr-hdr-user">{{ $username }}</th>
+                    <th class="sr-hdr-user" title="{{ $username }}">
+                        <div class="sr-user-avatar">{{ strtoupper(substr($username, 0, 1)) }}</div>
+                        {{ $username }}
+                    </th>
                     @endforeach
                 </tr>
             </thead>
