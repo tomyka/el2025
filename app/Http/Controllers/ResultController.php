@@ -79,6 +79,6 @@ class ResultController extends Controller
     }
 
     private function generateMissingScore(){
-        return random_int(60, 100);
+        return random_int(0, 5);
     }
 }
