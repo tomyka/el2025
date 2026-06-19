@@ -20,6 +20,7 @@
            data-hscore="{{ $g->p_home_team_score ?? '' }}"
            data-ascore="{{ $g->p_away_team_score ?? '' }}"
            data-winner="{{ $g->game_winner_id ?? '' }}"
+           data-game-date="{{ ucfirst(\Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->locale('lt')->isoFormat('MMMM D')) }} · {{ \Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('H:i') }}"
            x-on:click.prevent="navClick($event.currentTarget)"
            x-on:dblclick.prevent="rowClick($event.currentTarget)">
             <span class="upcoming-date">
@@ -60,7 +61,7 @@
 
     {{-- Single-game prediction modal --}}
     <div class="modal fade" id="gamePredModal" tabindex="-1">
-        <div class="modal-dialog modal-sm">
+        <div class="modal-dialog" style="max-width:450px">
             <div class="modal-content">
                 <div class="modal-header border-0 pt-3 pb-0 pe-3">
                     <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal"></button>
@@ -73,14 +74,15 @@
                                  class="pred-flag" :alt="homeTeam">
                         </div>
                         <div class="pred-scores">
+                            <span class="pred-time" x-text="gameDate"></span>
                             <div class="pred-scores-inputs">
-                                <input type="number" x-model="homeScore"
+                                <input type="text" x-model="homeScore"
                                        class="form-control pred-score"
-                                       min="0" max="99" placeholder="?">
+                                       maxlength="2" autocomplete="off" placeholder="?">
                                 <span class="pred-sep">:</span>
-                                <input type="number" x-model="awayScore"
+                                <input type="text" x-model="awayScore"
                                        class="form-control pred-score"
-                                       min="0" max="99" placeholder="?">
+                                       maxlength="2" autocomplete="off" placeholder="?">
                             </div>
                         </div>
                         <div class="pred-team-away">
@@ -111,6 +113,7 @@ function predModal() {
         homeScore:    null,
         awayScore:    null,
         winnerId:     null,
+        gameDate:     '',
         saving:       false,
 
         navClick(el) {
@@ -129,18 +132,20 @@ function predModal() {
                 d.away,
                 d.hscore !== '' ? parseInt(d.hscore) : null,
                 d.ascore !== '' ? parseInt(d.ascore) : null,
-                d.winner !== '' ? parseInt(d.winner) : null
+                d.winner !== '' ? parseInt(d.winner) : null,
+                d.gameDate || ''
             );
         },
 
-        open(gameID, predictionID, homeTeam, awayTeam, homeScore, awayScore, winnerId) {
+        open(gameID, predictionID, homeTeam, awayTeam, homeScore, awayScore, winnerId, gameDate) {
             this.gameID       = gameID;
             this.predictionID = predictionID;
             this.homeTeam     = homeTeam;
             this.awayTeam     = awayTeam;
-            this.homeScore    = homeScore;
-            this.awayScore    = awayScore;
+            this.homeScore    = homeScore !== null ? String(homeScore) : '';
+            this.awayScore    = awayScore !== null ? String(awayScore) : '';
             this.winnerId     = winnerId;
+            this.gameDate     = gameDate;
             this.saving       = false;
             const modalEl = document.getElementById('gamePredModal');
             (bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl)).show();
