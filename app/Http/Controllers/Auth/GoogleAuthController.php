@@ -20,6 +20,12 @@ class GoogleAuthController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
+    public function rememberAndRedirect(Request $request)
+    {
+        session(['remember_me' => $request->boolean('remember')]);
+        return Socialite::driver('google')->redirect();
+    }
+
     public function callback(Request $request)
     {
         try {

@@ -73,4 +73,28 @@ class GoogleAuthTest extends TestCase
         $this->assertAuthenticatedAs($user);
         $response->assertRedirect(route('main'));
     }
+
+    public function test_remember_and_redirect_stores_true_in_session(): void
+    {
+        Socialite::shouldReceive('driver->redirect')->andReturn(
+            redirect('https://accounts.google.com/o/oauth2/auth')
+        );
+
+        $response = $this->post('/auth/google/remember', ['remember' => '1']);
+
+        $response->assertSessionHas('remember_me', true);
+        $response->assertRedirect();
+    }
+
+    public function test_remember_and_redirect_stores_false_when_unchecked(): void
+    {
+        Socialite::shouldReceive('driver->redirect')->andReturn(
+            redirect('https://accounts.google.com/o/oauth2/auth')
+        );
+
+        $response = $this->post('/auth/google/remember');
+
+        $response->assertSessionHas('remember_me', false);
+        $response->assertRedirect();
+    }
 }
