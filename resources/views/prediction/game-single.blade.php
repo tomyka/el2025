@@ -79,7 +79,7 @@
             const fd = new FormData(this);
             fd.set('_token', token);
             try {
-                const res = await fetch('/prediction/results', {
+                const res = await fetch('{{ url('prediction/results') }}', {
                     method: 'POST',
                     body: fd,
                     headers: { 'X-Requested-With': 'XMLHttpRequest' },
