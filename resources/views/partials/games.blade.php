@@ -12,15 +12,15 @@
         @endphp
         <a href="{{ $canPred ? '#' : route('prediction.results') }}"
            class="upcoming-row {{ $canPred ? 'upcoming-row-pred' : '' }}"
-           @if($canPred) x-on:click.prevent='open(
-               {{ $g->id }},
-               {{ $g->prediction_id }},
-               {{ json_encode($g->home_team) }},
-               {{ json_encode($g->away_team) }},
-               {{ $g->p_home_team_score ?? 'null' }},
-               {{ $g->p_away_team_score ?? 'null' }},
-               {{ $g->game_winner_id ?? 'null' }}
-           )' @endif>
+           data-can-pred="{{ $canPred ? '1' : '0' }}"
+           data-game-id="{{ $g->id }}"
+           data-pred-id="{{ $g->prediction_id ?? '' }}"
+           data-home="{{ $g->home_team }}"
+           data-away="{{ $g->away_team }}"
+           data-hscore="{{ $g->p_home_team_score ?? '' }}"
+           data-ascore="{{ $g->p_away_team_score ?? '' }}"
+           data-winner="{{ $g->game_winner_id ?? '' }}"
+           x-on:click.prevent="rowClick($el)">
             <span class="upcoming-date">
                 <span>{{ \Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('d.m') }}</span>
                 <span class="upcoming-time">{{ \Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('H:i') }}</span>
@@ -77,7 +77,7 @@
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-primary w-100" :disabled="saving" @click="save()">
+                    <button type="button" class="btn btn-primary w-100" :disabled="saving" x-on:click="save()">
                         <span x-show="!saving"><i class="bi bi-check2 me-1"></i>Išsaugoti</span>
                         <span x-show="saving">Saugoma...</span>
                     </button>
@@ -98,6 +98,23 @@ function predModal() {
         awayScore:    null,
         winnerId:     null,
         saving:       false,
+
+        rowClick(el) {
+            if (el.dataset.canPred !== '1') {
+                window.location = '{{ route('prediction.results') }}';
+                return;
+            }
+            const d = el.dataset;
+            this.open(
+                parseInt(d.gameId),
+                parseInt(d.predId),
+                d.home,
+                d.away,
+                d.hscore !== '' ? parseInt(d.hscore) : null,
+                d.ascore !== '' ? parseInt(d.ascore) : null,
+                d.winner !== '' ? parseInt(d.winner) : null
+            );
+        },
 
         open(gameID, predictionID, homeTeam, awayTeam, homeScore, awayScore, winnerId) {
             this.gameID       = gameID;
