@@ -643,6 +643,19 @@ button.sb-tab::after { display: none; }
   color: var(--sb-text);
 }
 
+.sb-auth-remember {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.sb-auth-remember input[type="checkbox"] {
+  cursor: pointer;
+}
+
 .sb-auth-divider {
   display: flex;
   align-items: center;
