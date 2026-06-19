@@ -10,7 +10,7 @@
             $played = $g->home_team_score !== null;
             $canPred = !$played && isset($g->prediction_id);
         @endphp
-        <a href="{{ $canPred ? '#' : route('prediction.results') }}"
+        <a href="{{ route('prediction.results') }}"
            class="upcoming-row {{ $canPred ? 'upcoming-row-pred' : '' }}"
            data-can-pred="{{ $canPred ? '1' : '0' }}"
            data-game-id="{{ $g->id }}"
@@ -20,7 +20,8 @@
            data-hscore="{{ $g->p_home_team_score ?? '' }}"
            data-ascore="{{ $g->p_away_team_score ?? '' }}"
            data-winner="{{ $g->game_winner_id ?? '' }}"
-           x-on:click.prevent="rowClick($el)">
+           x-on:click.prevent="navClick($el)"
+           x-on:dblclick.prevent="rowClick($el)">
             <span class="upcoming-date">
                 <span>{{ \Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('d.m') }}</span>
                 <span class="upcoming-time">{{ \Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('H:i') }}</span>
@@ -99,11 +100,14 @@ function predModal() {
         winnerId:     null,
         saving:       false,
 
-        rowClick(el) {
+        navClick(el) {
             if (el.dataset.canPred !== '1') {
                 window.location = '{{ route('prediction.results') }}';
-                return;
             }
+        },
+
+        rowClick(el) {
+            if (el.dataset.canPred !== '1') return;
             const d = el.dataset;
             this.open(
                 parseInt(d.gameId),
