@@ -1,4 +1,5 @@
 @extends('layouts.master')
+@section('containerClass', 'sb-container--fluid')
 @section('content')
 
 <div class="sb-card p-0">

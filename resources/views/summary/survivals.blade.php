@@ -1,4 +1,5 @@
 @extends('layouts.master')
+@section('containerClass', 'sb-container--fluid')
 @section('content')
                 <table class="table table-sm table-hover table-bordered">
                     <thead>
