@@ -29,6 +29,12 @@ foreach ($users as $username) {
     $grandTotals[$username] = $sum;
 }
 
+// Sort users left-to-right by grand total descending
+$users = $users->sortByDesc(fn($u) => $grandTotals[$u] ?? 0)->values();
+
+// Logged-in user for column highlight
+$myUsername = auth()->user()?->username ?? null;
+
 // Initialise all rounds as open
 $openInit = $grouped->keys()->mapWithKeys(fn($r) => [$r => true])->toJson();
 @endphp
@@ -40,8 +46,8 @@ $openInit = $grouped->keys()->mapWithKeys(fn($r) => [$r => true])->toJson();
                 <tr>
                     <th class="sr-sticky-col sr-hdr-game">Rungtynės</th>
                     @foreach($users as $username)
-                    <th class="sr-hdr-user" title="{{ $username }}">
-                        <div class="sr-user-avatar">{{ strtoupper(substr($username, 0, 1)) }}</div>
+                    <th class="sr-hdr-user {{ $username === $myUsername ? 'sr-my-col' : '' }}" title="{{ $username }}">
+                        <div class="sr-user-avatar {{ $username === $myUsername ? 'sr-my-avatar' : '' }}">{{ strtoupper(substr($username, 0, 1)) }}</div>
                         <span class="sr-username">{{ $username }}</span>
                     </th>
                     @endforeach
@@ -62,7 +68,7 @@ $openInit = $grouped->keys()->mapWithKeys(fn($r) => [$r => true])->toJson();
                         </div>
                     </td>
                     @foreach($users as $username)
-                    <td class="sr-round-total">
+                    <td class="sr-round-total {{ $username === $myUsername ? 'sr-my-col' : '' }}">
                         @if(($totals[$username] ?? 0) > 0)
                         {{ number_format($totals[$username], 1) }}
                         @endif
@@ -86,7 +92,7 @@ $openInit = $grouped->keys()->mapWithKeys(fn($r) => [$r => true])->toJson();
                     </td>
                     @foreach($users as $username)
                     @php $pred = $preds->get($username); @endphp
-                    <td class="sr-pred-td">
+                    <td class="sr-pred-td {{ $username === $myUsername ? 'sr-my-col' : '' }}">
                         @if($pred)
                         @php
                             $hasPred = !is_null($pred->home_team_score) && $pred->home_team_score !== '';
@@ -123,7 +129,7 @@ $openInit = $grouped->keys()->mapWithKeys(fn($r) => [$r => true])->toJson();
                 <tr class="sr-grand-total">
                     <td class="sr-sticky-col">Viso</td>
                     @foreach($users as $username)
-                    <td>{{ ($grandTotals[$username] ?? 0) > 0 ? number_format($grandTotals[$username], 1) : '' }}</td>
+                    <td class="{{ $username === $myUsername ? 'sr-my-col' : '' }}">{{ ($grandTotals[$username] ?? 0) > 0 ? number_format($grandTotals[$username], 1) : '' }}</td>
                     @endforeach
                 </tr>
             </tfoot>

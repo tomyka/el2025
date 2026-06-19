@@ -2175,6 +2175,11 @@ button.sb-tab::after { display: none; }
 .sr-pop-row span { color: var(--sb-muted); }
 .sr-pop-row strong { font-weight: 700; }
 
+/* Logged-in user's column highlight */
+.sr-my-col { background: rgba(99,102,241,.07) !important; }
+.sr-hdr-user.sr-my-col { border-bottom: 2px solid var(--sb-accent); }
+.sr-my-avatar { background: var(--sb-accent) !important; color: #fff !important; }
+
 /* Grand total footer row */
 .sr-grand-total td {
   position: sticky;
