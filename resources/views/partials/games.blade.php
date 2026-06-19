@@ -12,7 +12,7 @@
         @endphp
         <a href="{{ $canPred ? '#' : route('prediction.results') }}"
            class="upcoming-row {{ $canPred ? 'upcoming-row-pred' : '' }}"
-           @if($canPred) x-on:click.prevent="open(
+           @if($canPred) x-on:click.prevent='open(
                {{ $g->id }},
                {{ $g->prediction_id }},
                {{ json_encode($g->home_team) }},
@@ -20,7 +20,7 @@
                {{ $g->p_home_team_score ?? 'null' }},
                {{ $g->p_away_team_score ?? 'null' }},
                {{ $g->game_winner_id ?? 'null' }}
-           )" @endif>
+           )' @endif>
             <span class="upcoming-date">
                 <span>{{ \Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('d.m') }}</span>
                 <span class="upcoming-time">{{ \Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('H:i') }}</span>
