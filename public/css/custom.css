@@ -1455,6 +1455,9 @@ button.sb-tab::after { display: none; }
 .pred-game-locked {
   opacity: .45;
 }
+@media (min-width: 992px) {
+  .pred-game-locked { display: grid !important; }
+}
 .pred-score-locked {
   background: #f1f5f9 !important;
   color: var(--sb-muted) !important;
