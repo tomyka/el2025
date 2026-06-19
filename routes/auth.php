@@ -33,7 +33,9 @@ Route::middleware('guest')->group(function () {
 
     Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google');
     Route::get('auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
-    Route::post('auth/google/remember', [GoogleAuthController::class, 'rememberAndRedirect'])->name('auth.google.remember');
+    Route::post('auth/google/remember', [GoogleAuthController::class, 'rememberAndRedirect'])
+        ->middleware('throttle:6,1')
+        ->name('auth.google.remember');
 });
 
 Route::middleware(['throttle:password-reset', 'guest'])->group(function () {
