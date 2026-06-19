@@ -25,7 +25,7 @@ new Chart(ctx, {
     options: {
         responsive: true,
         maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
+        interaction: { mode: 'nearest', intersect: true },
         plugins: {
             legend: {
                 position: 'bottom',
