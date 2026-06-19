@@ -827,6 +827,8 @@ button.sb-tab::after { display: none; }
 }
 .upcoming-row:last-child { border-bottom: none; }
 .upcoming-row:hover { background: #f8fafc; color: var(--sb-text); }
+.upcoming-row-pred { cursor: pointer; }
+.upcoming-row-pred:hover { background: #eef4ff; }
 
 .upcoming-date {
   display: flex;

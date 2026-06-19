@@ -10,7 +10,17 @@
             $played = $g->home_team_score !== null;
             $canPred = !$played && isset($g->prediction_id);
         @endphp
-        <a href="{{ route('prediction.results') }}" class="upcoming-row">
+        <a href="{{ $canPred ? '#' : route('prediction.results') }}"
+           class="upcoming-row {{ $canPred ? 'upcoming-row-pred' : '' }}"
+           @if($canPred) @click.prevent="open(
+               {{ $g->id }},
+               {{ $g->prediction_id }},
+               {{ json_encode($g->home_team) }},
+               {{ json_encode($g->away_team) }},
+               {{ $g->p_home_team_score ?? 'null' }},
+               {{ $g->p_away_team_score ?? 'null' }},
+               {{ $g->game_winner_id ?? 'null' }}
+           )" @endif>
             <span class="upcoming-date">
                 <span>{{ \Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('d.m') }}</span>
                 <span class="upcoming-time">{{ \Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('H:i') }}</span>
@@ -43,23 +53,6 @@
                     <span class="upt-streak"><i class="bi bi-fire"></i>+{{ number_format($streak, 1) }}</span>
                 @endif
             </span>
-
-            @if($canPred)
-            <button type="button"
-                    class="btn btn-sm btn-outline-primary upcoming-pred-btn"
-                    title="Prognozuoti"
-                    @click.prevent.stop="open(
-                        {{ $g->id }},
-                        {{ $g->prediction_id }},
-                        {{ json_encode($g->home_team) }},
-                        {{ json_encode($g->away_team) }},
-                        {{ $g->p_home_team_score ?? 'null' }},
-                        {{ $g->p_away_team_score ?? 'null' }},
-                        {{ $g->game_winner_id ?? 'null' }}
-                    )">
-                <i class="bi bi-pencil-fill"></i>
-            </button>
-            @endif
         </a>
         @endforeach
     </div>
