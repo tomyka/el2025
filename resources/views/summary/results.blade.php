@@ -35,8 +35,10 @@ $users = $users->sortByDesc(fn($u) => $grandTotals[$u] ?? 0)->values();
 // Logged-in user for column highlight
 $myUsername = auth()->user()?->username ?? null;
 
-// Initialise all rounds as open
-$openInit = $grouped->keys()->mapWithKeys(fn($r) => [$r => true])->toJson();
+// Collapse finished rounds (all games have a score), keep active ones open
+$openInit = $grouped->mapWithKeys(
+    fn($roundGames, $r) => [$r => $roundGames->contains(fn($g) => is_null($g->home_team_score))]
+)->toJson();
 @endphp
 
 <div x-data="{ open: {{ $openInit }} }">
