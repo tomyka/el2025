@@ -2175,9 +2175,10 @@ button.sb-tab::after { display: none; }
 .sr-pop-row span { color: var(--sb-muted); }
 .sr-pop-row strong { font-weight: 700; }
 
-/* Logged-in user's column highlight */
-.sr-my-col { background: rgba(99,102,241,.07) !important; }
-.sr-hdr-user.sr-my-col { border-bottom: 2px solid var(--sb-accent); }
+/* Logged-in user's column highlight — must be opaque so sticky header/footer don't bleed */
+.sr-my-col { background: #f0f0ff !important; }
+.sr-hdr-user.sr-my-col { border-bottom: 2px solid var(--sb-accent); background: #e8e8fd !important; }
+.sr-grand-total td.sr-my-col { background: #e4e4fb !important; }
 .sr-my-avatar { background: var(--sb-accent) !important; color: #fff !important; }
 
 /* Grand total footer row */
