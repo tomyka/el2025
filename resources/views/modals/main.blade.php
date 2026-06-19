@@ -1,8 +1,6 @@
 @php
-    $nextUnscoredGame = \App\Models\Game::whereNull('home_team_score')
-        ->whereNull('away_team_score')
-        ->min('game_date');
-    $registrationOpen = is_null($nextUnscoredGame) || now()->lt($nextUnscoredGame);
+    $firstGame = \App\Models\Game::min('game_date');
+    $registrationOpen = is_null($firstGame) || now()->lt($firstGame);
     $openRegTab = $errors->hasAny(['username', 'name', 'surname']);
 @endphp
 

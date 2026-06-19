@@ -59,9 +59,12 @@
             <button type="submit" class="sb-auth-btn-primary">Prisijungti</button>
         </form>
 
+        @php $firstGame = \App\Models\Game::min('game_date'); @endphp
+        @if (is_null($firstGame) || now()->lt($firstGame))
         <a href="{{ route('register') }}" class="sb-auth-bottom-link">
             Neturite paskyros? Sukurkite
         </a>
+        @endif
 
     </div>
 </div>
