@@ -295,11 +295,19 @@ class LeagueController extends Controller
         $league = League::findOrFail($leagueId);
 
         if ($league->is_public) {
-            abort(403, 'Negalima palikti viešos lygos');
+            return redirect()->back()->with('error', 'Negalima palikti Bendros lygos');
         }
 
         if ($league->owner_id === $userId) {
             return redirect()->back()->with('error', 'Perduokite lygos valdymą kitam nariui prieš išeidami');
+        }
+
+        $otherLeagueCount = LeagueMember::where('user_id', $userId)
+            ->where('league_id', '!=', $leagueId)
+            ->count();
+
+        if ($otherLeagueCount === 0) {
+            return redirect()->back()->with('error', 'Negalima palikti vienintelės lygos');
         }
 
         $membership = LeagueMember::where('user_id', $userId)

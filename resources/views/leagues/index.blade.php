@@ -121,7 +121,7 @@
       </button>
       @endif
 
-      @if(!$league->is_public && !$isOwner)
+      @if(!$league->is_public && !$isOwner && $myLeagues->count() > 1)
       <form method="POST" action="{{ route('leagues.leave') }}" style="display:contents;"
             onsubmit="return confirm('Palikti lygą {{ addslashes($league->name) }}?')">
         @csrf

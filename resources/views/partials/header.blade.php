@@ -49,6 +49,7 @@
 
       <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
       @else
+      <a class="sb-nav-pill sb-nav-pill--ghost" href="{{ route('charity') }}"><i class="bi bi-heart-fill" style="font-size:.75rem;"></i> Jaunimo linija</a>
       <a class="sb-nav-pill" href="{{ route('login') }}">Prisijungti</a>
       @endauth
 

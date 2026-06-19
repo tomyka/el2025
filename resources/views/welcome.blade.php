@@ -8,4 +8,8 @@
         <li>Futbolas ir krepšinis — visi didieji turnyroi vienoje vietoje.</li>
         <li>Sek savo rezultatus, lygink su kitais, džiaukis kiekviena pataikyta prognoze.</li>
     </ul>
+    <p style="font-size:.8rem;opacity:.65;margin:16px 0 0;border-top:1px solid rgba(255,255,255,.15);padding-top:12px;">
+        SportBet yra nemokamas pramoginis žaidimas — realių pinigų lažybų nėra. Žaidžiame dėl taškų ir tradicijos.
+        Nuo 2018 m. žaidėjų savanoriškos aukos padėjo surinkti <strong>7 500 €</strong> <a href="{{ route('charity') }}" style="color:inherit;text-decoration:underline;">Jaunimo linijai</a>.
+    </p>
 </div>
