@@ -62,19 +62,32 @@
     <div class="modal fade" id="gamePredModal" tabindex="-1">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
-                <div class="modal-header border-0 pb-1">
-                    <span class="fw-semibold" x-text="homeTeam + ' vs ' + awayTeam"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header border-0 pt-3 pb-0 pe-3">
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body py-3">
-                    <div class="d-flex align-items-center justify-content-center gap-3">
-                        <input type="number" x-model="homeScore"
-                               class="form-control text-center fw-bold fs-5"
-                               style="width:72px" min="0" max="99" placeholder="?">
-                        <span class="fw-bold fs-4 text-muted">:</span>
-                        <input type="number" x-model="awayScore"
-                               class="form-control text-center fw-bold fs-5"
-                               style="width:72px" min="0" max="99" placeholder="?">
+                <div class="modal-body pt-1 pb-3 px-4">
+                    <div class="pred-game">
+                        <div class="pred-team-home">
+                            <span class="pred-team-name" x-text="homeTeam"></span>
+                            <img :src="'/img/teams/' + homeTeam.toLowerCase().replace(/ /g, '%20') + '.svg'"
+                                 class="pred-flag" :alt="homeTeam">
+                        </div>
+                        <div class="pred-scores">
+                            <div class="pred-scores-inputs">
+                                <input type="number" x-model="homeScore"
+                                       class="form-control pred-score"
+                                       min="0" max="99" placeholder="?">
+                                <span class="pred-sep">:</span>
+                                <input type="number" x-model="awayScore"
+                                       class="form-control pred-score"
+                                       min="0" max="99" placeholder="?">
+                            </div>
+                        </div>
+                        <div class="pred-team-away">
+                            <img :src="'/img/teams/' + awayTeam.toLowerCase().replace(/ /g, '%20') + '.svg'"
+                                 class="pred-flag" :alt="awayTeam">
+                            <span class="pred-team-name" x-text="awayTeam"></span>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
