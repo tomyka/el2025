@@ -62,11 +62,11 @@
     {{-- Single-game prediction modal --}}
     <div class="modal fade" id="gamePredModal" tabindex="-1">
         <div class="modal-dialog" style="max-width:450px">
-            <div class="modal-content">
+            <div class="modal-content" style="border-radius:16px;overflow:hidden">
                 <div class="modal-header border-0 pt-3 pb-0 pe-3">
                     <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body pt-1 pb-3 px-4">
+                <div class="modal-body pt-1 pb-4 px-4">
                     <div class="pred-game">
                         <div class="pred-team-home">
                             <span class="pred-team-name" x-text="homeTeam"></span>
@@ -92,12 +92,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-primary w-100" :disabled="saving" x-on:click="save()">
-                        <span x-show="!saving"><i class="bi bi-check2 me-1"></i>Išsaugoti</span>
-                        <span x-show="saving">Saugoma...</span>
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -110,11 +104,17 @@ function predModal() {
         predictionID: null,
         homeTeam:     '',
         awayTeam:     '',
-        homeScore:    null,
-        awayScore:    null,
+        homeScore:    '',
+        awayScore:    '',
         winnerId:     null,
         gameDate:     '',
         saving:       false,
+
+        init() {
+            document.getElementById('gamePredModal').addEventListener('hidden.bs.modal', () => {
+                this.save();
+            });
+        },
 
         navClick(el) {
             if (el.dataset.canPred !== '1') {
@@ -152,14 +152,22 @@ function predModal() {
         },
 
         async save() {
+            if (this.saving || this.gameID === null) return;
+
+            const homeVal = (this.homeScore ?? '').trim();
+            const awayVal = (this.awayScore ?? '').trim();
+            const bothFilled = homeVal !== '' && awayVal !== '';
+
+            if (!bothFilled) return;
+
             this.saving = true;
             const token = document.querySelector('meta[name="csrf-token"]').content;
             const fd = new FormData();
             fd.append('_token',            token);
             fd.append('gameID',            this.gameID);
             fd.append('prediction_gameID', this.predictionID);
-            fd.append('homeTeamScore',     this.homeScore ?? '');
-            fd.append('awayTeamScore',     this.awayScore ?? '');
+            fd.append('homeTeamScore',     homeVal);
+            fd.append('awayTeamScore',     awayVal);
             fd.append('gameWinnerID',      this.winnerId ?? '');
 
             try {
@@ -172,16 +180,11 @@ function predModal() {
                 if (res.ok) {
                     const el = document.getElementById('usc-pred-' + this.gameID);
                     if (el) {
-                        const h = this.homeScore !== null ? this.homeScore : '?';
-                        const a = this.awayScore !== null ? this.awayScore : '?';
-                        el.textContent = h + ':' + a;
+                        el.textContent = homeVal + ':' + awayVal;
                     }
-                    bootstrap.Modal.getInstance(document.getElementById('gamePredModal'))?.hide();
-                } else {
-                    alert('Spėjimas nepavyko išsaugoti. Bandykite dar kartą.');
                 }
             } catch {
-                alert('Tinklo klaida. Bandykite dar kartą.');
+                // silent fail — background save
             } finally {
                 this.saving = false;
             }
