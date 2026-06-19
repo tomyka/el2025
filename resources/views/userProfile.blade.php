@@ -229,6 +229,28 @@
 
 </div>
 
+{{-- Notification preferences --}}
+<div class="sb-card mb-3">
+    <div class="sb-card-title"><i class="bi bi-bell me-1"></i>Pranešimai</div>
+    <form method="POST" action="{{ route('profile.notifications') }}">
+        @csrf
+        <p class="text-muted mb-3" style="font-size:.82rem">
+            Gauti priminimus el. paštu apie artėjančias rungtynes prieš pat žaidimo pradžią.
+        </p>
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" role="switch"
+                   id="receive_reminders" name="receive_reminders" value="1"
+                   {{ $user->userSetting?->receive_reminders ? 'checked' : '' }}>
+            <label class="form-check-label" for="receive_reminders">Įjungti priminimus</label>
+        </div>
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary btn-sm px-4">
+                <i class="bi bi-check2 me-1"></i>Išsaugoti
+            </button>
+        </div>
+    </form>
+</div>
+
 {{-- Danger zone --}}
 <div class="sb-card" x-data="{ open: false }">
     <div class="d-flex align-items-center justify-content-between gap-2">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserSetting;
 use App\Services\ProfileService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -46,5 +47,20 @@ class UserProfileController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    public function updateNotifications(Request $request)
+    {
+        $user = Auth::user();
+        UserSetting::where('user_id', $user->id)->update([
+            'receive_reminders' => $request->boolean('receive_reminders'),
+        ]);
+        return redirect()->route('userProfile')->with('info', 'Pranešimų nustatymai atnaujinti.');
+    }
+
+    public function unsubscribe(Request $request, int $user): \Illuminate\Http\RedirectResponse
+    {
+        UserSetting::where('user_id', $user)->update(['receive_reminders' => false]);
+        return redirect('/')->with('info', 'Pranešimai išjungti sėkmingai.');
     }
 }

@@ -56,6 +56,8 @@ Route::get('sponsors', function () {return view('sponsors');})->name('sponsors')
 Route::middleware('auth')->group(function () {
     Route::get('userProfile', [UserProfileController::class, 'getUserProfile'])->name('userProfile');
     Route::post('userProfile', [UserProfileController::class, 'updateUserProfile']);
+    Route::post('profile/notifications', [UserProfileController::class, 'updateNotifications'])
+        ->name('profile.notifications');
 
     Route::get('users', [UserController::class, 'getAllUsers'])->name('users');
 
@@ -144,5 +146,13 @@ Route::group(['prefix' => 'summary'],function(){
     Route::get('predictionSurvivals', [PredictionSurvivalController::class,'getPredictionSurvivalSummary'])->name('summary.prediction.survivals');
     Route::get('chart', [ChartController::class,'getChartData'])->name('summary.chart');
 });
+
+Route::get('profile/notifications/unsubscribe/{user}', [UserProfileController::class, 'unsubscribe'])
+    ->name('profile.notifications.unsubscribe')
+    ->middleware('signed');
+
+Route::get('prediction/game/{gameID}', [PredictionResultController::class, 'showSingleGame'])
+    ->name('prediction.game.single')
+    ->middleware('auth');
 
 require __DIR__.'/auth.php';
