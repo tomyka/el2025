@@ -51,8 +51,8 @@
                     @click.prevent.stop="open(
                         {{ $g->id }},
                         {{ $g->prediction_id }},
-                        '{{ addslashes($g->home_team) }}',
-                        '{{ addslashes($g->away_team) }}',
+                        {{ json_encode($g->home_team) }},
+                        {{ json_encode($g->away_team) }},
                         {{ $g->p_home_team_score ?? 'null' }},
                         {{ $g->p_away_team_score ?? 'null' }},
                         {{ $g->game_winner_id ?? 'null' }}
@@ -148,7 +148,11 @@ function predModal() {
                     bootstrap.Modal.getInstance(
                         document.getElementById('gamePredModal')
                     ).hide();
+                } else {
+                    alert('Spėjimas nepavyko išsaugoti. Bandykite dar kartą.');
                 }
+            } catch {
+                alert('Tinklo klaida. Bandykite dar kartą.');
             } finally {
                 this.saving = false;
             }
