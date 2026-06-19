@@ -15,6 +15,7 @@ class Game extends Model
         'away_team_id',
         'home_team_score',
         'away_team_score',
+        'reminder_sent',
     ];
 
     public function home_team()
