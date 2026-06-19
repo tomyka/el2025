@@ -8,6 +8,7 @@ use App\Models\Game;
 use App\Models\PredictionResult;
 use App\Models\Team;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PredictionResultController extends Controller
@@ -234,6 +235,28 @@ class PredictionResultController extends Controller
     }
 
 
+
+    public function showSingleGame(int $gameID): \Illuminate\Http\Response
+    {
+        $game = Game::with('home_team', 'away_team')->findOrFail($gameID);
+
+        try {
+            $sessionController = new SessionController();
+            $sessionController->setSession(Auth::user());
+        } catch (\Throwable) {
+            session(['userID' => Auth::id()]);
+        }
+
+        $userID = session('userID');
+        $now    = Carbon::now('UTC')->format('Y-m-d H:i:s');
+        $locked = $game->game_date <= $now;
+
+        $prediction = PredictionResult::where('game_id', $gameID)
+            ->where('user_id', $userID)
+            ->first();
+
+        return response(view('prediction.game-single', compact('game', 'locked', 'prediction')));
+    }
 
     public function getPredictionResultSummary() {
 
