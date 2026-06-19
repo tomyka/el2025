@@ -59,8 +59,8 @@ $openInit = $grouped->keys()->mapWithKeys(fn($r) => [$r => true])->toJson();
 
                 {{-- Round group header --}}
                 <tr class="sr-round-header" @click="open[{{ json_encode($roundName) }}] = !open[{{ json_encode($roundName) }}]">
-                    <td class="sr-sticky-col sr-round-name-td">
-                        <div class="d-flex align-items-center gap-2">
+                    <td class="sr-sticky-col sr-round-name-td" title="{{ $roundName }}">
+                        <div class="d-flex align-items-center gap-2" style="min-width:0">
                             <i class="bi flex-shrink-0"
                                :class="open[{{ json_encode($roundName) }}] ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
                             <span class="sr-round-label">{{ $roundName }}</span>

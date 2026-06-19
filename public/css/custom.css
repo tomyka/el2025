@@ -2041,7 +2041,7 @@ button.sb-tab::after { display: none; }
 
 .sr-table thead .sr-sticky-col { z-index: 3; }
 
-.sr-hdr-game { min-width: 185px; text-align: left !important; }
+.sr-hdr-game { min-width: 130px; text-align: left !important; }
 .sr-hdr-user {
   min-width: 42px;
   max-width: 56px;
@@ -2096,6 +2096,7 @@ button.sb-tab::after { display: none; }
 }
 
 .sr-game-names {
+  display: none;
   font-size: .69rem;
   color: var(--sb-muted);
   overflow: hidden;
@@ -2159,7 +2160,7 @@ button.sb-tab::after { display: none; }
 }
 .sr-round-header:hover .sr-sticky-col { background: #dbeafe; }
 
-.sr-round-label { font-weight: 700; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--sb-accent); }
+.sr-round-label { font-weight: 700; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--sb-accent); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .sr-round-count { font-size: .72rem; color: var(--sb-muted); font-weight: 400; }
 .sr-round-total {
   font-weight: 800;
