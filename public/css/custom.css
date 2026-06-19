@@ -2217,7 +2217,7 @@ button.sb-tab::after { display: none; }
 }
 .ch-title { font-weight: 700; font-size: 1rem; color: var(--sb-text); }
 .ch-meta  { font-size: .8rem; color: var(--sb-muted); }
-.ch-wrap  { padding: 16px 8px 16px; height: 460px; }
+.ch-wrap  { padding: 8px 8px 8px; height: calc(100vh - 190px); }
 
 /* ============================================================
    Standings Summary Table  (.sst-*)
