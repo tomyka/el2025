@@ -2096,7 +2096,6 @@ button.sb-tab::after { display: none; }
 }
 
 .sr-game-names {
-  display: none;
   font-size: .69rem;
   color: var(--sb-muted);
   overflow: hidden;
@@ -2160,6 +2159,7 @@ button.sb-tab::after { display: none; }
 }
 .sr-round-header:hover .sr-sticky-col { background: #dbeafe; }
 
+.sr-round-name-td > div { max-width: 108px; overflow: hidden; }
 .sr-round-label { font-weight: 700; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--sb-accent); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .sr-round-count { font-size: .72rem; color: var(--sb-muted); font-weight: 400; }
 .sr-round-total {
