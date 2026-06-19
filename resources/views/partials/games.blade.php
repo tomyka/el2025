@@ -129,9 +129,8 @@ function predModal() {
             this.awayScore    = awayScore;
             this.winnerId     = winnerId;
             this.saving       = false;
-            bootstrap.Modal.getOrCreateInstance(
-                document.getElementById('gamePredModal')
-            ).show();
+            const modalEl = document.getElementById('gamePredModal');
+            (bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl)).show();
         },
 
         async save() {
@@ -159,9 +158,7 @@ function predModal() {
                         const a = this.awayScore !== null ? this.awayScore : '?';
                         el.textContent = h + ':' + a;
                     }
-                    bootstrap.Modal.getInstance(
-                        document.getElementById('gamePredModal')
-                    ).hide();
+                    bootstrap.Modal.getInstance(document.getElementById('gamePredModal'))?.hide();
                 } else {
                     alert('Spėjimas nepavyko išsaugoti. Bandykite dar kartą.');
                 }
