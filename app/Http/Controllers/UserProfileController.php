@@ -58,7 +58,7 @@ class UserProfileController extends Controller
         return redirect()->route('userProfile')->with('info', 'Pranešimų nustatymai atnaujinti.');
     }
 
-    public function unsubscribe(Request $request, int $user): \Illuminate\Http\RedirectResponse
+    public function unsubscribe(int $user): \Illuminate\Http\RedirectResponse
     {
         UserSetting::where('user_id', $user)->update(['receive_reminders' => false]);
         return redirect('/')->with('info', 'Pranešimai išjungti sėkmingai.');
