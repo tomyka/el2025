@@ -71,7 +71,7 @@
                     <div class="pred-game">
                         <div class="pred-team-home">
                             <span class="pred-team-name" x-text="homeTeam"></span>
-                            <img :src="'/img/teams/' + homeTeam.toLowerCase().replace(/ /g, '%20') + '.svg'"
+                            <img :src="homeTeam ? '/img/teams/' + homeTeam.toLowerCase().replace(/ /g, '%20') + '.svg' : 'data:,'"
                                  class="pred-flag" :alt="homeTeam">
                         </div>
                         <div class="pred-scores">
@@ -87,7 +87,7 @@
                             </div>
                         </div>
                         <div class="pred-team-away">
-                            <img :src="'/img/teams/' + awayTeam.toLowerCase().replace(/ /g, '%20') + '.svg'"
+                            <img :src="awayTeam ? '/img/teams/' + awayTeam.toLowerCase().replace(/ /g, '%20') + '.svg' : 'data:,'"
                                  class="pred-flag" :alt="awayTeam">
                             <span class="pred-team-name" x-text="awayTeam"></span>
                         </div>
