@@ -12,7 +12,7 @@
         @endphp
         <a href="{{ $canPred ? '#' : route('prediction.results') }}"
            class="upcoming-row {{ $canPred ? 'upcoming-row-pred' : '' }}"
-           @if($canPred) @click.prevent="open(
+           @if($canPred) x-on:click.prevent="open(
                {{ $g->id }},
                {{ $g->prediction_id }},
                {{ json_encode($g->home_team) }},
