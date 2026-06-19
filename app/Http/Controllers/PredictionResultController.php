@@ -130,6 +130,8 @@ class PredictionResultController extends Controller
         $now = Carbon::now('UTC')->format('Y-m-d H:i:s');
         $predictionGamesUserProfileEventDay = DB::select('SELECT
                             g.id,
+                              prr.id AS prediction_id,
+                              prr.game_winner_id,
                               g.game_date,
                               ht.team AS home_team,
                               at.team AS away_team,
