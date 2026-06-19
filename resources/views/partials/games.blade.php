@@ -24,7 +24,7 @@
            x-on:click.prevent="navClick($event.currentTarget)"
            x-on:dblclick.prevent="rowClick($event.currentTarget)">
             <span class="upcoming-date">
-                <span>{{ \Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('d.m') }}</span>
+                <span>{{ ucfirst(\Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->locale('lt')->isoFormat('MMM D')) }}</span>
                 <span class="upcoming-time">{{ \Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('H:i') }}</span>
             </span>
 
