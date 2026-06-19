@@ -31,7 +31,8 @@ class GoogleAuthController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
         } catch (\Exception $e) {
-            return redirect()->route('/')->with('error', 'Google prisijungimas nepavyko. Bandykite dar kartą.');
+            session()->forget('remember_me');
+            return redirect('/')->with('error', 'Google prisijungimas nepavyko. Bandykite dar kartą.');
         }
 
         $user = User::where('google_id', $googleUser->getId())->first();
