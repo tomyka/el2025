@@ -54,6 +54,7 @@ class GoogleAuthController extends Controller
         }
 
         if (!$this->registrationIsOpen()) {
+            session()->forget('remember_me');
             return redirect()->route('main');
         }
 

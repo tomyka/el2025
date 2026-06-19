@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 use Laravel\Socialite\Facades\Socialite;
 use Mockery;
@@ -128,5 +129,31 @@ class GoogleAuthTest extends TestCase
         $this->get('/auth/google/callback');
 
         $this->assertNull($user->fresh()->remember_token);
+    }
+
+    public function test_callback_clears_remember_me_when_registration_is_closed(): void
+    {
+        // Make registrationIsOpen() return false by inserting a game with a past date and no score.
+        // registrationIsOpen() queries: Game::whereNull scores -> min('game_date'), returns true only if null or future.
+        DB::table('games')->insert([
+            'game_date'       => now()->subDay()->toDateTimeString(),
+            'event_id'        => 1,
+            'home_team_id'    => 1,
+            'away_team_id'    => 2,
+            'home_team_score' => null,
+            'away_team_score' => null,
+            'created_at'      => now(),
+            'updated_at'      => now(),
+        ]);
+
+        // This email does not exist in the DB, so we skip the existing-user paths
+        // and reach the registrationIsOpen() check.
+        $this->fakeSocialiteUser('gid-noreg', 'new-noreg@example.com', 'New User');
+
+        $response = $this->withSession(['remember_me' => true])
+                         ->get('/auth/google/callback');
+
+        $response->assertSessionMissing('remember_me');
+        $response->assertRedirect(route('main'));
     }
 }
