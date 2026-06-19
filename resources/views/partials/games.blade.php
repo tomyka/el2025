@@ -6,9 +6,10 @@
     <div class="upcoming-list">
         @foreach($predictionGames as $predictionGame)
         @php
-            $g      = $predictionGame['gameDetails'];
-            $played = $g->home_team_score !== null;
-            $canPred = !$played && isset($g->prediction_id);
+            $g       = $predictionGame['gameDetails'];
+            $played  = $g->home_team_score !== null;
+            $started = \Carbon\Carbon::parse($g->game_date, 'UTC')->isPast();
+            $canPred = !$played && !$started && isset($g->prediction_id);
         @endphp
         <a href="{{ route('prediction.results') }}"
            class="upcoming-row {{ $canPred ? 'upcoming-row-pred' : '' }}"
