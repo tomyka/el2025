@@ -33,7 +33,7 @@
 @include('partials.header')
 
 <main class="sb-main">
-    <div class="sb-container">
+    <div class="sb-container @yield('containerClass')">
         @yield('content')
     </div>
 </main>

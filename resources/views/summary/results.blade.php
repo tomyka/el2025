@@ -1,4 +1,5 @@
 @extends('layouts.master')
+@section('containerClass', 'sb-container--fluid')
 @section('content')
 
 @php
@@ -19,6 +20,14 @@ $roundTotals = $grouped->map(function ($roundGames) use ($byGame, $users) {
     }
     return $totals;
 });
+
+// Precompute grand totals per user across all rounds
+$grandTotals = [];
+foreach ($users as $username) {
+    $sum = 0;
+    foreach ($roundTotals as $totals) { $sum += $totals[$username] ?? 0; }
+    $grandTotals[$username] = $sum;
+}
 
 // Initialise all rounds as open
 $openInit = $grouped->keys()->mapWithKeys(fn($r) => [$r => true])->toJson();
@@ -110,6 +119,14 @@ $openInit = $grouped->keys()->mapWithKeys(fn($r) => [$r => true])->toJson();
 
                 @endforeach
             </tbody>
+            <tfoot>
+                <tr class="sr-grand-total">
+                    <td class="sr-sticky-col">Viso</td>
+                    @foreach($users as $username)
+                    <td>{{ ($grandTotals[$username] ?? 0) > 0 ? number_format($grandTotals[$username], 1) : '' }}</td>
+                    @endforeach
+                </tr>
+            </tfoot>
         </table>
     </div>
 </div>

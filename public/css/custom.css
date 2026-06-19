@@ -58,6 +58,7 @@ a:hover { color: var(--sb-accent-h); }
   padding-left: 20px;
   padding-right: 20px;
 }
+.sb-container--fluid { max-width: none; }
 
 .sb-main {
   flex: 1;
@@ -2173,6 +2174,29 @@ button.sb-tab::after { display: none; }
 .sr-pop-row { display: flex; justify-content: space-between; gap: 16px; padding: 2px 0; }
 .sr-pop-row span { color: var(--sb-muted); }
 .sr-pop-row strong { font-weight: 700; }
+
+/* Grand total footer row */
+.sr-grand-total td {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  background: #eef2ff;
+  border-top: 2px solid var(--sb-accent);
+  font-weight: 800;
+  font-size: .82rem;
+  color: var(--sb-accent);
+  text-align: center;
+  padding: 9px 6px !important;
+}
+.sr-grand-total .sr-sticky-col {
+  z-index: 3;
+  text-align: left;
+  padding: 9px 12px !important;
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  border-right: 2px solid var(--sb-border) !important;
+}
 
 /* ============================================================
    Trend chart (.ch-*)
