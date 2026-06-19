@@ -97,4 +97,36 @@ class GoogleAuthTest extends TestCase
         $response->assertSessionHas('remember_me', false);
         $response->assertRedirect();
     }
+
+    public function test_callback_with_remember_flag_sets_remember_token(): void
+    {
+        $user = User::factory()->create(['google_id' => 'gid-rem', 'remember_token' => null]);
+        $this->fakeSocialiteUser('gid-rem', $user->email, 'Test User');
+
+        $this->withSession(['remember_me' => true])
+             ->get('/auth/google/callback');
+
+        $this->assertNotNull($user->fresh()->remember_token);
+    }
+
+    public function test_callback_clears_remember_me_from_session(): void
+    {
+        $user = User::factory()->create(['google_id' => 'gid-clr']);
+        $this->fakeSocialiteUser('gid-clr', $user->email, 'Test User');
+
+        $response = $this->withSession(['remember_me' => true])
+                         ->get('/auth/google/callback');
+
+        $response->assertSessionMissing('remember_me');
+    }
+
+    public function test_callback_without_remember_flag_does_not_set_remember_token(): void
+    {
+        $user = User::factory()->create(['google_id' => 'gid-norem', 'remember_token' => null]);
+        $this->fakeSocialiteUser('gid-norem', $user->email, 'Test User');
+
+        $this->get('/auth/google/callback');
+
+        $this->assertNull($user->fresh()->remember_token);
+    }
 }

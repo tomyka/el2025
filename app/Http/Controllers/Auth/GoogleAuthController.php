@@ -37,7 +37,8 @@ class GoogleAuthController extends Controller
         $user = User::where('google_id', $googleUser->getId())->first();
 
         if ($user) {
-            Auth::login($user);
+            Auth::login($user, session('remember_me', false));
+            session()->forget('remember_me');
             (new AuditLoginsController())->insertAuditLogin($user->id, $request->ip(), 'google');
             return redirect()->route('main');
         }
@@ -46,7 +47,8 @@ class GoogleAuthController extends Controller
 
         if ($user) {
             $user->update(['google_id' => $googleUser->getId()]);
-            Auth::login($user);
+            Auth::login($user, session('remember_me', false));
+            session()->forget('remember_me');
             (new AuditLoginsController())->insertAuditLogin($user->id, $request->ip(), 'google');
             return redirect()->route('main');
         }
@@ -69,7 +71,8 @@ class GoogleAuthController extends Controller
         event(new Registered($user));
         (new PostRegisterController())->postRegisterActions($user->id);
 
-        Auth::login($user);
+        Auth::login($user, session('remember_me', false));
+        session()->forget('remember_me');
         (new AuditLoginsController())->insertAuditLogin($user->id, $request->ip(), 'google');
         return redirect()->route('main');
     }
