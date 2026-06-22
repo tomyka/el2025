@@ -58,7 +58,7 @@
                         . "<div class='sr-pop-row'><span>Nugalėtojas</span><strong>" . number_format($g->winner_points, 1) . "</strong></div>"
                         . "<div class='sr-pop-row'><span>Skirtumas</span><strong>" . number_format($g->difference_points, 1) . "</strong></div>"
                         . "<div class='sr-pop-row'><span>Tikslus</span><strong>" . number_format($g->bingo_points, 1) . "</strong></div>"
-                        . ($streak > 0 ? "<div class='sr-pop-row'><span>Serija</span><strong>+" . number_format($streak, 1) . "</strong></div>" : "")
+                        . "<div class='sr-pop-row'><span>Serija</span><strong>" . ($streak > 0 ? '+' : '') . number_format($streak, 1) . "</strong></div>"
                         . "</div>";
                 }
             @endphp
