@@ -31,8 +31,12 @@ class ResultController extends Controller
         $awayTeamScore = $request->input('awayTeamScore');
 
         $game = Game::find($gameID);
-        $game->home_team_score    = $homeTeamScore;
-        $game->away_team_score    = $awayTeamScore;
+        $game->home_team_score = $homeTeamScore;
+        $game->away_team_score = $awayTeamScore;
+        // For knockout draws: store actual penalty winner; clear for non-draws or cleared results
+        $gameWinnerID = $request->input('gameWinnerID');
+        $isDraw = $homeTeamScore !== '' && $awayTeamScore !== '' && $homeTeamScore == $awayTeamScore;
+        $game->game_winner_id = ($isDraw && $gameWinnerID) ? (int) $gameWinnerID : null;
         $game->save();
 
         if ((($homeTeamScore=="")?-1:$homeTeamScore) != -1 || (($awayTeamScore=="")?-1:$awayTeamScore) != -1) {

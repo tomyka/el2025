@@ -30,8 +30,14 @@
                         <span>{{ $groupName ? 'Grupė ' . $groupName : 'Rungtynės' }}</span>
                     </div>
                     @foreach($games as $game)
+                    @php
+                        $isPenaltyDraw = $game->is_knockout && !$game->locked
+                            && $game->home_team_score !== null && $game->away_team_score !== null
+                            && (string)$game->home_team_score === (string)$game->away_team_score;
+                    @endphp
                     <div class="pred-game {{ $game->locked ? 'pred-game-locked d-none d-lg-flex' : '' }}">
                         <input type="hidden" id="prediction_gameID{{$game->game_id}}" value="{{ $game->id }}">
+                        <input type="hidden" id="penalty-winner-{{$game->game_id}}" value="{{ $game->game_winner_id ?? '' }}">
                         <div class="pred-team-home">
                             <span class="pred-team-name">{{ $game->home_team }}</span>
                             <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->home_team)).'.svg') }}" class="pred-flag" alt="{{ $game->home_team }}">
@@ -49,6 +55,28 @@
                                     {{ $game->locked ? 'disabled' : 'onkeyup=checkPrediction('.$game->game_id.')' }}
                                     value="{{ $game->away_team_score }}" maxlength="2" autocomplete="off">
                             </div>
+                            @if($game->is_knockout && !$game->locked)
+                            <div class="pred-penalty" id="pred-penalty-{{$game->game_id}}"
+                                 style="{{ $isPenaltyDraw ? '' : 'display:none' }}">
+                                <div class="pred-penalty-label">Baudų serija</div>
+                                <div class="pred-penalty-picker">
+                                    <button type="button"
+                                            class="pred-penalty-btn {{ ($isPenaltyDraw && $game->game_winner_id == $game->home_team_id) ? 'active' : '' }}"
+                                            data-team-id="{{ $game->home_team_id }}"
+                                            onclick="setPenaltyWinner({{$game->game_id}}, {{$game->home_team_id}}, this)">
+                                        <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->home_team)).'.svg') }}">
+                                        {{ $game->home_team }}
+                                    </button>
+                                    <button type="button"
+                                            class="pred-penalty-btn {{ ($isPenaltyDraw && $game->game_winner_id == $game->away_team_id) ? 'active' : '' }}"
+                                            data-team-id="{{ $game->away_team_id }}"
+                                            onclick="setPenaltyWinner({{$game->game_id}}, {{$game->away_team_id}}, this)">
+                                        <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->away_team)).'.svg') }}">
+                                        {{ $game->away_team }}
+                                    </button>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                         <div class="pred-team-away">
                             <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->away_team)).'.svg') }}" class="pred-flag" alt="{{ $game->away_team }}">
@@ -71,16 +99,25 @@
 
 <script>
 function checkPrediction(gameID) {
-    var homeScore = document.getElementById('homeTeamScore' + gameID);
-    var awayScore = document.getElementById('awayTeamScore' + gameID);
+    var homeScore    = document.getElementById('homeTeamScore' + gameID);
+    var awayScore    = document.getElementById('awayTeamScore' + gameID);
     var predictionID = document.getElementById('prediction_gameID' + gameID);
+    var penDiv       = document.getElementById('pred-penalty-' + gameID);
+    var penWinner    = document.getElementById('penalty-winner-' + gameID);
 
-    var homeVal = homeScore.value.trim();
-    var awayVal = awayScore.value.trim();
+    var homeVal    = homeScore.value.trim();
+    var awayVal    = awayScore.value.trim();
     var bothFilled = homeVal !== '' && awayVal !== '';
     var bothEmpty  = homeVal === '' && awayVal === '';
+    var isDraw     = bothFilled && homeVal === awayVal;
+
+    if (penDiv) {
+        penDiv.style.display = isDraw ? '' : 'none';
+        if (!isDraw && penWinner) { penWinner.value = ''; penDiv.querySelectorAll('.pred-penalty-btn').forEach(function(b) { b.classList.remove('active'); }); }
+    }
 
     if (!bothFilled && !bothEmpty) return;
+    if (isDraw && penDiv && penWinner && !penWinner.value) return;
 
     $.ajax({
         type: 'POST',
@@ -89,7 +126,8 @@ function checkPrediction(gameID) {
             prediction_gameID: predictionID.value,
             gameID: gameID,
             homeTeamScore: homeVal,
-            awayTeamScore: awayVal
+            awayTeamScore: awayVal,
+            gameWinnerID: penWinner ? penWinner.value : ''
         },
         dataType: 'json',
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
@@ -98,5 +136,13 @@ function checkPrediction(gameID) {
         homeScore.style.borderColor = color;
         awayScore.style.borderColor = color;
     });
+}
+
+function setPenaltyWinner(gameID, teamID, btn) {
+    var penWinner = document.getElementById('penalty-winner-' + gameID);
+    penWinner.value = teamID;
+    document.querySelectorAll('#pred-penalty-' + gameID + ' .pred-penalty-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    checkPrediction(gameID);
 }
 </script>

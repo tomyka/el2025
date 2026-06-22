@@ -19,6 +19,7 @@
                     <th class="ae-col-name">Turas</th>
                     <th class="ae-col-short text-center" title="Turo diena">Diena</th>
                     <th class="ae-col-switch text-center" title="Išlikimo turas">Išlik.</th>
+                    <th class="ae-col-switch text-center" title="Play-off turas (baudų serija)">P/O</th>
                     <th class="ae-col-switch text-center">Aktyvus</th>
                     <th class="ae-col-short text-center" title="Koeficientas">Rate</th>
                     @if(session('admin') >= 9)
@@ -47,6 +48,13 @@
                         <div class="form-check form-switch d-flex justify-content-center mb-0">
                             <input type="checkbox" class="form-check-input" role="switch"
                                    name="eventSurvival" {{ $event->event_survival ? 'checked' : '' }}
+                                   onchange="this.form.submit()">
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <div class="form-check form-switch d-flex justify-content-center mb-0">
+                            <input type="checkbox" class="form-check-input" role="switch"
+                                   name="isKnockout" {{ $event->is_knockout ? 'checked' : '' }}
                                    onchange="this.form.submit()">
                         </div>
                     </td>
@@ -92,6 +100,11 @@
                     <td class="text-center">
                         <div class="form-check form-switch d-flex justify-content-center mb-0">
                             <input type="checkbox" class="form-check-input" role="switch" name="eventSurvival">
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <div class="form-check form-switch d-flex justify-content-center mb-0">
+                            <input type="checkbox" class="form-check-input" role="switch" name="isKnockout">
                         </div>
                     </td>
                     <td class="text-center">

@@ -48,6 +48,7 @@ class PredictionResultController extends Controller
                 g.event_id,
                 e.event as event_name,
                 e.event_day,
+                e.is_knockout,
                 ht.team AS home_team,
                 ht.id AS home_team_id,
                 ht.group_name,
@@ -55,6 +56,7 @@ class PredictionResultController extends Controller
                 at.id AS away_team_id,
                 prr.home_team_score,
                 prr.away_team_score,
+                prr.game_winner_id,
                 IF(g.game_date <= ?, 1, 0) AS locked
             FROM prediction_results AS prr
                 JOIN users u ON prr.user_id = u.id
@@ -147,7 +149,8 @@ class PredictionResultController extends Controller
                               IFNULL(ROUND((CASE WHEN game_date > ? THEN NULL ELSE por.odds END),4),0) AS odds,
                               IFNULL(por.odds_points,0) AS odds_points,
                               ROUND(IFNULL(por.full_points,0),2) AS full_points,
-                              ROUND(IFNULL(por.streak_bonus,0),2) AS streak_bonus
+                              ROUND(IFNULL(por.streak_bonus,0),2) AS streak_bonus,
+                              e.is_knockout
                           FROM games AS g
                               JOIN events AS e ON e.id=g.event_id
                               JOIN prediction_results AS prr ON g.id=prr.game_id

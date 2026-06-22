@@ -35,8 +35,10 @@ $grouped = collect($games)
                 </div>
                 @foreach($groupGames as $game)
                 @php
-                    $hasResult = $game->home_team_score !== null;
-                    $isFuture  = \Carbon\Carbon::parse($game->game_date, 'UTC')->gt($now);
+                    $hasResult  = $game->home_team_score !== null;
+                    $isFuture   = \Carbon\Carbon::parse($game->game_date, 'UTC')->gt($now);
+                    $isKnockout = $game->event->is_knockout ?? false;
+                    $isDraw     = $hasResult && $game->home_team_score == $game->away_team_score;
                 @endphp
                 <div class="pred-game">
                     <div class="pred-team-home">
@@ -67,6 +69,27 @@ $grouped = collect($games)
                                    {{ $isFuture ? 'disabled' : '' }}
                                    autocomplete="off">
                         </div>
+                        @if($isKnockout)
+                        <input type="hidden" id="penaltyWinner{{ $game->id }}" value="{{ $game->game_winner_id ?? '' }}">
+                        <div class="pred-penalty" id="pred-penalty-{{ $game->id }}"
+                             style="{{ $isDraw ? '' : 'display:none' }}">
+                            <div class="pred-penalty-label">Baudų serija</div>
+                            <div class="pred-penalty-picker">
+                                <button type="button" class="pred-penalty-btn {{ ($isDraw && $game->game_winner_id == $game->home_team_id) ? 'active' : '' }}"
+                                        data-team-id="{{ $game->home_team_id }}"
+                                        onclick="setAdminPenaltyWinner({{ $game->id }}, {{ $game->home_team_id }}, this)">
+                                    <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($game->home_team->team)) . '.svg') }}">
+                                    {{ $game->home_team->team }}
+                                </button>
+                                <button type="button" class="pred-penalty-btn {{ ($isDraw && $game->game_winner_id == $game->away_team_id) ? 'active' : '' }}"
+                                        data-team-id="{{ $game->away_team_id }}"
+                                        onclick="setAdminPenaltyWinner({{ $game->id }}, {{ $game->away_team_id }}, this)">
+                                    <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($game->away_team->team)) . '.svg') }}">
+                                    {{ $game->away_team->team }}
+                                </button>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                     <div class="pred-team-away">
                         <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($game->away_team->team)) . '.svg') }}"
@@ -86,12 +109,15 @@ $grouped = collect($games)
 
 <script>
 function saveResult(gameID) {
-    var homeScore = document.getElementById('homeTeamScore' + gameID);
-    var awayScore = document.getElementById('awayTeamScore' + gameID);
-    var homeVal   = homeScore.value.trim();
-    var awayVal   = awayScore.value.trim();
+    var homeScore  = document.getElementById('homeTeamScore' + gameID);
+    var awayScore  = document.getElementById('awayTeamScore' + gameID);
+    var penDiv     = document.getElementById('pred-penalty-' + gameID);
+    var penWinner  = document.getElementById('penaltyWinner' + gameID);
+    var homeVal    = homeScore.value.trim();
+    var awayVal    = awayScore.value.trim();
     var bothFilled = homeVal !== '' && awayVal !== '';
     var bothEmpty  = homeVal === '' && awayVal === '';
+    var isDraw     = bothFilled && homeVal === awayVal;
 
     if (!bothFilled && !bothEmpty) {
         homeScore.style.borderColor = '#fbbf24';
@@ -99,10 +125,17 @@ function saveResult(gameID) {
         return;
     }
 
+    if (penDiv) {
+        penDiv.style.display = isDraw ? '' : 'none';
+        if (!isDraw && penWinner) penWinner.value = '';
+    }
+
+    if (isDraw && penDiv && penWinner && !penWinner.value) return; // wait for penalty winner
+
     $.ajax({
         type: 'POST',
         url: '{{ route("admin.updateResult") }}',
-        data: { gameID: gameID, homeTeamScore: homeVal, awayTeamScore: awayVal },
+        data: { gameID: gameID, homeTeamScore: homeVal, awayTeamScore: awayVal, gameWinnerID: penWinner ? penWinner.value : '' },
         dataType: 'json',
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
     }).done(function() {
@@ -113,5 +146,13 @@ function saveResult(gameID) {
         homeScore.style.borderColor = '#ef4444';
         awayScore.style.borderColor = '#ef4444';
     });
+}
+
+function setAdminPenaltyWinner(gameID, teamID, btn) {
+    var penWinner = document.getElementById('penaltyWinner' + gameID);
+    penWinner.value = teamID;
+    document.querySelectorAll('#pred-penalty-' + gameID + ' .pred-penalty-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    saveResult(gameID);
 }
 </script>

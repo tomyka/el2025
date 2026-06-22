@@ -12,6 +12,7 @@ class Event extends Model
         'event',
         'event_day',
         'event_survival',
+        'is_knockout',
         'active',
         'rate',
     ];

@@ -22,6 +22,10 @@
            data-ascore="{{ $g->p_away_team_score ?? '' }}"
            data-winner="{{ $g->game_winner_id ?? '' }}"
            data-game-date="{{ ucfirst(\Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->locale('lt')->isoFormat('MMMM D')) }} · {{ \Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('H:i') }}"
+           data-is-knockout="{{ $g->is_knockout ? '1' : '0' }}"
+           data-home-id="{{ $g->home_team_id }}"
+           data-away-id="{{ $g->away_team_id }}"
+           data-penalty-winner="{{ $g->game_winner_id ?? '' }}"
            x-on:click.prevent="navClick($event.currentTarget)"
            x-on:dblclick.prevent="rowClick($event.currentTarget)">
             <span class="upcoming-date">
@@ -105,6 +109,24 @@
                                        class="form-control pred-score"
                                        maxlength="2" autocomplete="off" placeholder="?">
                             </div>
+                            <div class="pred-penalty"
+                                 x-show="isKnockout && homeScore !== '' && awayScore !== '' && homeScore === awayScore">
+                                <div class="pred-penalty-label">Baudų serija</div>
+                                <div class="pred-penalty-picker">
+                                    <button type="button" class="pred-penalty-btn"
+                                            :class="{ active: penaltyWinner === homeId }"
+                                            @click="penaltyWinner = homeId">
+                                        <img :src="homeTeam ? '/img/teams/' + homeTeam.toLowerCase().replace(/ /g, '%20') + '.svg' : 'data:,'">
+                                        <span x-text="homeTeam"></span>
+                                    </button>
+                                    <button type="button" class="pred-penalty-btn"
+                                            :class="{ active: penaltyWinner === awayId }"
+                                            @click="penaltyWinner = awayId">
+                                        <img :src="awayTeam ? '/img/teams/' + awayTeam.toLowerCase().replace(/ /g, '%20') + '.svg' : 'data:,'">
+                                        <span x-text="awayTeam"></span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <div class="pred-team-away">
                             <img :src="awayTeam ? '/img/teams/' + awayTeam.toLowerCase().replace(/ /g, '%20') + '.svg' : 'data:,'"
@@ -127,15 +149,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function predModal() {
     return {
-        gameID:       null,
-        predictionID: null,
-        homeTeam:     '',
-        awayTeam:     '',
-        homeScore:    '',
-        awayScore:    '',
-        winnerId:     null,
-        gameDate:     '',
-        saving:       false,
+        gameID:        null,
+        predictionID:  null,
+        homeTeam:      '',
+        awayTeam:      '',
+        homeScore:     '',
+        awayScore:     '',
+        isKnockout:    false,
+        homeId:        null,
+        awayId:        null,
+        penaltyWinner: null,
+        gameDate:      '',
+        saving:        false,
 
         init() {
             document.getElementById('gamePredModal').addEventListener('hidden.bs.modal', () => {
@@ -159,21 +184,27 @@ function predModal() {
                 d.away,
                 d.hscore !== '' ? parseInt(d.hscore) : null,
                 d.ascore !== '' ? parseInt(d.ascore) : null,
-                d.winner !== '' ? parseInt(d.winner) : null,
-                d.gameDate || ''
+                d.gameDate || '',
+                d.isKnockout === '1',
+                d.homeId ? parseInt(d.homeId) : null,
+                d.awayId ? parseInt(d.awayId) : null,
+                d.penaltyWinner ? parseInt(d.penaltyWinner) : null
             );
         },
 
-        open(gameID, predictionID, homeTeam, awayTeam, homeScore, awayScore, winnerId, gameDate) {
-            this.gameID       = gameID;
-            this.predictionID = predictionID;
-            this.homeTeam     = homeTeam;
-            this.awayTeam     = awayTeam;
-            this.homeScore    = homeScore !== null ? String(homeScore) : '';
-            this.awayScore    = awayScore !== null ? String(awayScore) : '';
-            this.winnerId     = winnerId;
-            this.gameDate     = gameDate;
-            this.saving       = false;
+        open(gameID, predictionID, homeTeam, awayTeam, homeScore, awayScore, gameDate, isKnockout, homeId, awayId, penaltyWinner) {
+            this.gameID        = gameID;
+            this.predictionID  = predictionID;
+            this.homeTeam      = homeTeam;
+            this.awayTeam      = awayTeam;
+            this.homeScore     = homeScore !== null ? String(homeScore) : '';
+            this.awayScore     = awayScore !== null ? String(awayScore) : '';
+            this.gameDate      = gameDate;
+            this.isKnockout    = isKnockout;
+            this.homeId        = homeId;
+            this.awayId        = awayId;
+            this.penaltyWinner = penaltyWinner;
+            this.saving        = false;
             const modalEl = document.getElementById('gamePredModal');
             (bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl)).show();
         },
@@ -181,11 +212,13 @@ function predModal() {
         async save() {
             if (this.saving || this.gameID === null) return;
 
-            const homeVal = (this.homeScore ?? '').trim();
-            const awayVal = (this.awayScore ?? '').trim();
+            const homeVal    = (this.homeScore ?? '').trim();
+            const awayVal    = (this.awayScore ?? '').trim();
             const bothFilled = homeVal !== '' && awayVal !== '';
+            const isDraw     = bothFilled && homeVal === awayVal;
 
             if (!bothFilled) return;
+            if (this.isKnockout && isDraw && !this.penaltyWinner) return;
 
             this.saving = true;
             const token = document.querySelector('meta[name="csrf-token"]').content;
@@ -195,7 +228,7 @@ function predModal() {
             fd.append('prediction_gameID', this.predictionID);
             fd.append('homeTeamScore',     homeVal);
             fd.append('awayTeamScore',     awayVal);
-            fd.append('gameWinnerID',      this.winnerId ?? '');
+            fd.append('gameWinnerID',      (!isDraw || !this.penaltyWinner) ? '' : this.penaltyWinner);
 
             try {
                 const res = await fetch('{{ url('prediction/results') }}', {
