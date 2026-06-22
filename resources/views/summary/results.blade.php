@@ -14,7 +14,7 @@ $roundTotals = $grouped->map(function ($roundGames) use ($byGame, $users) {
         $sum = 0;
         foreach ($roundGames as $game) {
             $pred = $byGame->get($game->id, collect([]))->get($username);
-            if ($pred) $sum += (float) $pred->full_points;
+            if ($pred) $sum += (float) $pred->full_points + (float) ($pred->streak_bonus ?? 0);
         }
         $totals[$username] = $sum;
     }
@@ -112,7 +112,8 @@ $openInit = $grouped->mapWithKeys(
                              <div class='sr-pop-row'><span>Nugalėtojas</span><strong>{{ number_format($pred->winner_points,1) }}</strong></div>
                              <div class='sr-pop-row'><span>Skirtumas</span><strong>{{ number_format($pred->difference_points,1) }}</strong></div>
                              <div class='sr-pop-row'><span>Tikslus</span><strong>{{ number_format($pred->bingo_points,1) }}</strong></div>
-                           </div>">{{ number_format($pred->full_points,1) }}</a>
+                             @if(($pred->streak_bonus ?? 0) > 0)<div class='sr-pop-row'><span>Serija</span><strong>+{{ number_format($pred->streak_bonus,1) }}</strong></div>@endif
+                           </div>">{{ number_format($pred->full_points + ($pred->streak_bonus ?? 0), 1) }}</a>
                         @endif
                         @if($hasPred)
                         <div class="sr-pred-badge {{ $scored ? ($correct ? 'sr-pred-ok' : 'sr-pred-fail') : 'sr-pred-pending' }}">

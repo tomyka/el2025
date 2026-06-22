@@ -186,7 +186,8 @@ class PredictionResultController extends Controller
                           ROUND(IFNULL(por.bingo_points,0),1) AS bingo_points,
                           IFNULL(ROUND((CASE WHEN game_date > ? THEN NULL ELSE por.Odds END),4),0) AS odds,
                           ROUND(IFNULL(por.odds_points,0),1) AS odds_points,
-                          ROUND(IFNULL(por.full_points,0),1) AS full_points
+                          ROUND(IFNULL(por.full_points,0),1) AS full_points,
+                          ROUND(IFNULL(por.streak_bonus,0),1) AS streak_bonus
                     from prediction_results as pr
                           join users as u ON u.id = pr.user_id
                           join games as g ON g.id = pr.game_id
