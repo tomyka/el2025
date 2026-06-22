@@ -49,9 +49,29 @@
                      class="upcoming-flag" alt="{{ $g->away_team }}">
             </span>
 
-            @php $streak = $played ? ($g->streak_bonus ?? 0) : 0; @endphp
-            <span class="upcoming-pts {{ $played && ($g->full_points + $streak) > 0 ? 'upt-scored' : 'upt-empty' }}">
-                {{ $played ? number_format($g->full_points + $streak, 1) : '' }}
+            @php
+                $streak   = $played ? (float)($g->streak_bonus ?? 0) : 0;
+                $totalPts = $played ? (float)$g->full_points + $streak : 0;
+                $popContent = '';
+                if ($played && $totalPts > 0) {
+                    $popContent = "<div class='sr-pop'>"
+                        . "<div class='sr-pop-row'><span>Nugalėtojas</span><strong>" . number_format($g->winner_points, 1) . "</strong></div>"
+                        . "<div class='sr-pop-row'><span>Skirtumas</span><strong>" . number_format($g->difference_points, 1) . "</strong></div>"
+                        . "<div class='sr-pop-row'><span>Tikslus</span><strong>" . number_format($g->bingo_points, 1) . "</strong></div>"
+                        . ($streak > 0 ? "<div class='sr-pop-row'><span>Serija</span><strong>+" . number_format($streak, 1) . "</strong></div>" : "")
+                        . "</div>";
+                }
+            @endphp
+            <span class="upcoming-pts {{ $played && $totalPts > 0 ? 'upt-scored' : 'upt-empty' }}"
+                @if($played && $totalPts > 0)
+                    data-bs-toggle="popover"
+                    data-bs-trigger="hover"
+                    data-bs-html="true"
+                    data-bs-placement="left"
+                    data-bs-content="{{ $popContent }}"
+                @endif
+            >
+                {{ $played ? number_format($totalPts, 1) : '' }}
                 @if($streak > 0)
                     <span class="upt-streak"><i class="bi bi-fire"></i>+{{ number_format($streak, 1) }}</span>
                 @endif
@@ -99,6 +119,12 @@
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.upcoming-pts[data-bs-toggle="popover"]').forEach(function (el) {
+        new bootstrap.Popover(el, { container: 'body', html: true });
+    });
+});
+
 function predModal() {
     return {
         gameID:       null,
