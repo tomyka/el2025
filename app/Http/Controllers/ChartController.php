@@ -32,10 +32,11 @@ class ChartController extends Controller
             ->select('users.id', 'users.username', 'colors.color_code')
             ->get();
 
-        // Full points per user per game
+        // Full points (including streak bonus) per user per game
         $rows = DB::select('
             SELECT pr.game_id, pr.user_id,
-                   ROUND(IFNULL(por.full_points, 0), 2) AS points
+                   ROUND(IFNULL(por.full_points, 0), 2)    AS points,
+                   ROUND(IFNULL(por.streak_bonus, 0), 2)   AS streak_bonus
             FROM prediction_results pr
                 JOIN games g ON pr.game_id = g.id
                 JOIN league_members lm ON pr.user_id = lm.user_id
@@ -49,7 +50,7 @@ class ChartController extends Controller
         // Index: pointsMap[user_id][game_id] = points
         $pointsMap = [];
         foreach ($rows as $row) {
-            $pointsMap[$row->user_id][$row->game_id] = (float) $row->points;
+            $pointsMap[$row->user_id][$row->game_id] = (float) $row->points + (float) $row->streak_bonus;
         }
 
         $palette = [
