@@ -283,8 +283,7 @@ class PredictionResultController extends Controller
                                join teams  AS at ON g.away_team_id = at.id
                                join events AS e  ON e.id = g.event_id
                              where g.game_date < ?
-                             order by g.id DESC
-                             LIMIT 32
+                             order by g.id ASC
                              ', [$nowUtc]);
 
         $predictionResultController = new PredictionResultController();
