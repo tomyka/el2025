@@ -7,6 +7,11 @@ $users   = collect($predictionResults)->pluck('username')->unique()->values();
 $byGame  = collect($predictionResults)->groupBy('game_id')->map(fn($g) => $g->keyBy('username'));
 $grouped = collect($games)->groupBy('event_name');
 
+// Active rounds (have unscored games) first, finished rounds in descending order (most recent first)
+$activeKeys   = $grouped->keys()->filter(fn($k) => $grouped[$k]->contains(fn($g) => is_null($g->home_team_score)));
+$finishedKeys = $grouped->keys()->filter(fn($k) => !$grouped[$k]->contains(fn($g) => is_null($g->home_team_score)))->reverse()->values();
+$grouped = $activeKeys->values()->concat($finishedKeys)->mapWithKeys(fn($k) => [$k => $grouped[$k]]);
+
 // Precompute per-round totals per user
 $roundTotals = $grouped->map(function ($roundGames) use ($byGame, $users) {
     $totals = [];
