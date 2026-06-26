@@ -12,7 +12,7 @@
     @endif
 
     @php
-        $grouped = $teams->sortBy([['group_name', 'asc'], ['group_position', 'asc'], ['id', 'asc']])->groupBy('group_name');
+        $grouped = $teams->sortBy([['group_name', 'asc'], ['id', 'asc']])->groupBy('group_name');
     @endphp
 
     <form method="post" action="{{ route('admin.teams') }}" id="at-form">
