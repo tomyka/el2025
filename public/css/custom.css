@@ -3024,3 +3024,23 @@ a.lb-name-link:hover {
   color: var(--sb-accent);
   text-decoration: underline;
 }
+
+/* ============================================================
+   Tournament progress bar
+   ============================================================ */
+.sb-progress-strip {
+  background: var(--sb-card);
+  border-bottom: 1px solid var(--sb-border);
+  padding: 7px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: .75rem;
+  flex-wrap: wrap;
+}
+.sb-progress-label  { font-weight: 700; color: var(--sb-accent); white-space: nowrap; }
+.sb-progress-bar-wrap { flex: 1; min-width: 60px; height: 6px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+.sb-progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--sb-accent), #3b82f6); border-radius: 99px; transition: width .4s ease; }
+.sb-progress-count  { color: var(--sb-muted); white-space: nowrap; }
+.sb-progress-today  { background: #f59e0b; color: #fff; font-size: .68rem; font-weight: 700; border-radius: 4px; padding: 2px 7px; white-space: nowrap; }
+[data-theme="dark"] .sb-progress-bar-wrap { background: #334155; }

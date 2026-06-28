@@ -65,7 +65,9 @@ class MainController extends Controller
 
             $standingsMissing = $this->standingsMissing($userID);
 
-            return view('main')->with('messages', $messages)->with('points', $points)->with('predictionGames', $predictionResultsWithStats)->with('eventDaySurvivalStatus',$eventDaySurvivalStatus)->with('groupDetails',$feeController->getGroupDetails())->with('userDetails',$feeController->getUserDetails())->with('fund',$feeController->getFund())->with('fundCollected',$feeController->getFundCollected())->with('standings',$standings)->with('predictionStandingsPoints',$predictionStandingsPoints)->with('rankHistory', $rankHistory)->with('firstGameStarted', $firstGameStarted)->with('standingsMissing', $standingsMissing);
+            $tournamentProgress = $this->getTournamentProgress();
+
+            return view('main')->with('messages', $messages)->with('points', $points)->with('predictionGames', $predictionResultsWithStats)->with('eventDaySurvivalStatus',$eventDaySurvivalStatus)->with('groupDetails',$feeController->getGroupDetails())->with('userDetails',$feeController->getUserDetails())->with('fund',$feeController->getFund())->with('fundCollected',$feeController->getFundCollected())->with('standings',$standings)->with('predictionStandingsPoints',$predictionStandingsPoints)->with('rankHistory', $rankHistory)->with('firstGameStarted', $firstGameStarted)->with('standingsMissing', $standingsMissing)->with('tournamentProgress', $tournamentProgress);
         }
         else {
             $games = Game::with('away_team')->with('home_team')->take(9)->get();
@@ -115,6 +117,33 @@ class MainController extends Controller
         if ((int) $counts->final_count  !== 4)  return true;
 
         return false;
+    }
+
+    private function getTournamentProgress(): ?array
+    {
+        $eventID = session('eventID');
+        if (!$eventID) return null;
+
+        $eventId = DB::table('games')->where('id', $eventID)->value('event_id');
+        if (!$eventId) return null;
+
+        $event = DB::table('events')->where('id', $eventId)->first();
+        if (!$event) return null;
+
+        $total  = DB::table('games')->where('event_id', $event->id)->count();
+        $scored = DB::table('games')->where('event_id', $event->id)
+                    ->whereNotNull('home_team_score')->count();
+        $today  = DB::table('games')->where('event_id', $event->id)
+                    ->whereNull('home_team_score')
+                    ->whereDate('game_date', now()->toDateString())->count();
+
+        return [
+            'event_name'   => $event->event,
+            'total_games'  => $total,
+            'scored_games' => $scored,
+            'today_games'  => $today,
+            'pct'          => $total > 0 ? (int) round($scored / $total * 100) : 0,
+        ];
     }
 
 }

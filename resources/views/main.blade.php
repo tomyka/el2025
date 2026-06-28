@@ -2,6 +2,7 @@
 @section('content')
 
 @auth
+    @include('partials.progress-bar')
     <div class="sb-card">
         @include('partials.fee')
         @include('partials.messages')
