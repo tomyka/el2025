@@ -40,8 +40,17 @@ class GameController extends Controller
         $maxEventID = Game::max('event_id');
         $gameMaxDateTime = GameController::getMaxGameDateTime();
         $now = Carbon::now('UTC');
-        return view('admin.games')->with('games',$games)->with('teams',$teams)->with('events',$events)->with('lastEnteredEventID',$maxEventID)->with('gameMaxDateTime',$gameMaxDateTime)->with('now',$now);
 
+        $teamsData = Team::select('id','team','last32','last16','quarterfinal','semifinal','final')->orderBy('team')->get();
+        $eventsKnockout = Event::pluck('is_knockout','id');
+        $usedByEvent = Game::select('id','event_id','home_team_id','away_team_id')->get()
+            ->groupBy('event_id')
+            ->map(fn($g) => $g->mapWithKeys(fn($r) => [$r->id => array_values(array_filter([$r->home_team_id, $r->away_team_id]))]));
+
+        return view('admin.games')
+            ->with('games',$games)->with('teams',$teams)->with('events',$events)
+            ->with('lastEnteredEventID',$maxEventID)->with('gameMaxDateTime',$gameMaxDateTime)->with('now',$now)
+            ->with('teamsData',$teamsData)->with('eventsKnockout',$eventsKnockout)->with('usedByEvent',$usedByEvent);
     }
 
 

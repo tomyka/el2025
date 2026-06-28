@@ -138,6 +138,9 @@ var agmInsertAction = '{{ route('admin.insertGame') }}';
 var agmUpdateAction = '{{ route('admin.updateGame') }}';
 var agmDefaultDateTime = '{{ \Carbon\Carbon::parse($gameMaxDateTime, 'UTC')->setTimezone('Europe/Vilnius')->format('Y-m-d\TH:i') }}';
 var agmDefaultEventID  = '{{ $lastEnteredEventID ?? '' }}';
+var agmTeamsData    = {!! $teamsData->keyBy('id')->map(fn($t) => ['id'=>$t->id,'team'=>$t->team,'last32'=>(int)$t->last32,'last16'=>(int)$t->last16,'quarterfinal'=>(int)$t->quarterfinal,'semifinal'=>(int)$t->semifinal,'final'=>(int)$t->final])->values()->toJson() !!};
+var agmEventsKO     = {!! $eventsKnockout->toJson() !!};
+var agmUsedByEvent  = {!! $usedByEvent->toJson() !!};
 
 function agmSnapTime(t) {
     var p = t.split(':'), h = parseInt(p[0], 10), m = parseInt(p[1], 10);
@@ -151,6 +154,50 @@ function agmSetDateTime(dateTimeStr) {
     document.getElementById('agmTime').value = agmSnapTime(parts[1] ? parts[1].substring(0, 5) : '00:00');
 }
 
+function agmRebuildTeams() {
+    var gameID  = parseInt(document.getElementById('agmGameID').value) || 0;
+    var eventID = String(document.getElementById('agmEventID').value);
+    var homeVal = String(document.getElementById('agmHomeTeamID').value);
+    var awayVal = String(document.getElementById('agmAwayTeamID').value);
+
+    var isKO = agmEventsKO[eventID] == 1;
+
+    // collect used team IDs in this event, excluding current game
+    var usedIDs = [];
+    var gamesInEvent = agmUsedByEvent[eventID] || {};
+    Object.keys(gamesInEvent).forEach(function(gid) {
+        if (parseInt(gid) !== gameID) {
+            (gamesInEvent[gid] || []).forEach(function(tid) { usedIDs.push(String(tid)); });
+        }
+    });
+
+    var eligible = agmTeamsData.filter(function(t) {
+        if (isKO && !t.last32 && !t.last16 && !t.quarterfinal && !t.semifinal && !t.final) return false;
+        return true;
+    });
+
+    agmFillSelect(document.getElementById('agmHomeTeamID'), eligible, usedIDs, awayVal, homeVal);
+    agmFillSelect(document.getElementById('agmAwayTeamID'), eligible, usedIDs, homeVal, awayVal);
+}
+
+function agmFillSelect(sel, eligible, usedIDs, excludeID, keepVal) {
+    sel.innerHTML = '<option value="">—</option>';
+    eligible.forEach(function(t) {
+        var tid = String(t.id);
+        if (usedIDs.indexOf(tid) >= 0) return;
+        if (tid === excludeID) return;
+        var opt = document.createElement('option');
+        opt.value = tid;
+        opt.textContent = t.team;
+        if (tid === keepVal) opt.selected = true;
+        sel.appendChild(opt);
+    });
+}
+
+document.getElementById('agmEventID').addEventListener('change', agmRebuildTeams);
+document.getElementById('agmHomeTeamID').addEventListener('change', agmRebuildTeams);
+document.getElementById('agmAwayTeamID').addEventListener('change', agmRebuildTeams);
+
 document.getElementById('agmForm').addEventListener('submit', function() {
     document.getElementById('agmDateTime').value =
         document.getElementById('agmDate').value + 'T' + document.getElementById('agmTime').value;
@@ -162,9 +209,8 @@ function agmOpenInsert() {
     document.getElementById('agmGameID').value = '';
     document.getElementById('agmDeleteGameID').value = '';
     agmSetDateTime(agmDefaultDateTime);
-    document.getElementById('agmHomeTeamID').value = '';
-    document.getElementById('agmAwayTeamID').value = '';
     document.getElementById('agmEventID').value = agmDefaultEventID;
+    agmRebuildTeams();
     var deleteBtn = document.getElementById('agmDeleteBtn');
     if (deleteBtn) deleteBtn.style.display = 'none';
     new bootstrap.Modal(document.getElementById('agmEditModal')).show();
@@ -176,9 +222,11 @@ function agmOpenModal(id, dateTime, homeTeamID, awayTeamID, eventID) {
     document.getElementById('agmGameID').value = id;
     document.getElementById('agmDeleteGameID').value = id;
     agmSetDateTime(dateTime);
+    document.getElementById('agmEventID').value = eventID;
+    // set team values before rebuild so agmRebuildTeams can preserve them
     document.getElementById('agmHomeTeamID').value = homeTeamID;
     document.getElementById('agmAwayTeamID').value = awayTeamID;
-    document.getElementById('agmEventID').value = eventID;
+    agmRebuildTeams();
     var deleteBtn = document.getElementById('agmDeleteBtn');
     if (deleteBtn) deleteBtn.style.display = '';
     new bootstrap.Modal(document.getElementById('agmEditModal')).show();
