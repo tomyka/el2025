@@ -16,6 +16,9 @@
     {{-- Desktop: nav links ── d-none d-lg-flex --}}
     <div class="sb-topnav-links d-none d-lg-flex">
 
+      <a class="sb-nav-link {{ request()->routeIs('main') ? 'active' : '' }}"
+         href="{{ route('main') }}">Pradžia</a>
+
       <a class="sb-nav-link {{ request()->routeIs('prediction.results') ? 'active' : '' }}"
          href="{{ route('prediction.results') }}">
         <span class="material-icons" style="font-size:1rem;vertical-align:middle;">sports_soccer</span> Spėjimai
