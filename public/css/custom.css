@@ -1982,6 +1982,54 @@ button.sb-tab::after { display: none; }
 .ae-insert-row td { border-top: 2px solid var(--sb-border); background: #f9fafb; }
 
 /* ============================================================
+   Admin audit (.adt-*)
+   ============================================================ */
+.adt-tabs { border-bottom: 1px solid var(--sb-border); }
+.adt-tabs .nav-link {
+  font-size: .82rem;
+  color: var(--sb-muted);
+  border: none;
+  padding: .4rem .85rem;
+  border-radius: 6px 6px 0 0;
+  margin-bottom: -1px;
+}
+.adt-tabs .nav-link.active {
+  color: var(--sb-accent);
+  background: #eff6ff;
+  font-weight: 600;
+  border-bottom: 2px solid var(--sb-accent);
+}
+.adt-tabs .nav-link:hover:not(.active) {
+  color: var(--sb-text);
+  background: var(--sb-surface);
+}
+
+.adt-table { font-size: .835rem; }
+.adt-table thead th {
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--sb-muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+
+.adt-col-user   { width: 130px; }
+.adt-col-method { width: 120px; }
+.adt-col-ip     { width: 150px; }
+.adt-col-date   { width: 130px; white-space: nowrap; }
+.adt-col-match  { min-width: 160px; }
+.adt-col-score  { width: 68px; }
+.adt-col-arrow  { width: 28px; text-align: center; }
+
+.adt-mono       { font-family: monospace; font-size: .82rem; color: var(--sb-muted); }
+.adt-date       { color: var(--sb-muted); font-size: .82rem; }
+.adt-match      { font-size: .82rem; }
+.adt-score-old  { color: var(--sb-muted); font-size: .82rem; }
+.adt-score-new  { font-weight: 600; font-size: .82rem; }
+.adt-badge-google { background: #4285f4; }
+
+/* ============================================================
    Admin messages table (.am-*)
    ============================================================ */
 .am-table       { font-size: .875rem; }

@@ -14,12 +14,14 @@
                 @endforeach
             </select>
             @if($userFilter)
-                <a href="{{ route('admin.audit') }}" class="btn btn-sm btn-outline-secondary">✕</a>
+                <a href="{{ route('admin.audit') }}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-x-lg"></i>
+                </a>
             @endif
         </form>
     </div>
 
-    <ul class="nav nav-tabs mb-3" id="auditTabs" role="tablist">
+    <ul class="nav nav-tabs adt-tabs mb-3" id="auditTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="tab-logins-btn" data-bs-toggle="tab"
                     data-bs-target="#tab-logins" type="button" role="tab">
@@ -44,13 +46,13 @@
                 <p class="text-muted py-3">Prisijungimų įrašų nėra.</p>
             @else
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-2">
+                <table class="table table-hover align-middle mb-2 adt-table">
                     <thead class="table-light">
                         <tr>
-                            <th>Vartotojas</th>
-                            <th>Metodas</th>
-                            <th class="d-none d-md-table-cell">IP adresas</th>
-                            <th>Data</th>
+                            <th class="adt-col-user">Vartotojas</th>
+                            <th class="adt-col-method">Metodas</th>
+                            <th class="adt-col-ip d-none d-md-table-cell">IP adresas</th>
+                            <th class="adt-col-date">Data</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,22 +61,17 @@
                             <td>{{ $login->username ?? '—' }}</td>
                             <td>
                                 @if($login->login_method === 'google')
-                                    <span class="badge bg-danger">
+                                    <span class="badge adt-badge-google fw-normal">
                                         <i class="bi bi-google"></i> Google
                                     </span>
                                 @else
-                                    <span class="badge bg-primary">
+                                    <span class="badge bg-primary fw-normal">
                                         <i class="bi bi-envelope-fill"></i> El. paštas
                                     </span>
                                 @endif
                             </td>
-                            <td class="d-none d-md-table-cell text-muted"
-                                style="font-family:monospace;font-size:.85rem;">
-                                {{ $login->ip_address ?? '—' }}
-                            </td>
-                            <td style="white-space:nowrap;font-size:.85rem;">
-                                {{ \Carbon\Carbon::parse($login->created_at)->format('Y-m-d H:i') }}
-                            </td>
+                            <td class="adt-mono d-none d-md-table-cell">{{ $login->ip_address ?? '—' }}</td>
+                            <td class="adt-date">{{ \Carbon\Carbon::parse($login->created_at)->format('Y-m-d H:i') }}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -90,38 +87,32 @@
                 <p class="text-muted py-3">Prognozių pakeitimų nėra.</p>
             @else
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-2">
+                <table class="table table-hover align-middle mb-2 adt-table">
                     <thead class="table-light">
                         <tr>
-                            <th>Vartotojas</th>
-                            <th>Rungtynės</th>
-                            <th class="text-end">Sena</th>
-                            <th></th>
-                            <th>Nauja</th>
-                            <th>Data</th>
+                            <th class="adt-col-user">Vartotojas</th>
+                            <th class="adt-col-match">Rungtynės</th>
+                            <th class="adt-col-score text-end">Sena</th>
+                            <th class="adt-col-arrow"></th>
+                            <th class="adt-col-score">Nauja</th>
+                            <th class="adt-col-date">Data</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($predictions as $p)
                         <tr>
                             <td>{{ $p->username ?? '—' }}</td>
-                            <td style="font-size:.85rem;">
-                                {{ $p->home_team ?? '?' }} — {{ $p->away_team ?? '?' }}
-                            </td>
-                            <td class="text-end text-muted" style="font-size:.85rem;">
+                            <td class="adt-match">{{ $p->home_team ?? '?' }} — {{ $p->away_team ?? '?' }}</td>
+                            <td class="adt-score-old text-end">
                                 @if($p->old_home_team_score !== null)
-                                    {{ $p->old_home_team_score }} : {{ $p->old_away_team_score }}
+                                    {{ $p->old_home_team_score }}:{{ $p->old_away_team_score }}
                                 @else
                                     —
                                 @endif
                             </td>
-                            <td class="text-muted px-1">→</td>
-                            <td style="font-size:.85rem;font-weight:500;">
-                                {{ $p->home_team_score }} : {{ $p->away_team_score }}
-                            </td>
-                            <td style="white-space:nowrap;font-size:.85rem;">
-                                {{ \Carbon\Carbon::parse($p->created_at)->format('Y-m-d H:i') }}
-                            </td>
+                            <td class="adt-col-arrow text-muted">→</td>
+                            <td class="adt-score-new">{{ $p->home_team_score }}:{{ $p->away_team_score }}</td>
+                            <td class="adt-date">{{ \Carbon\Carbon::parse($p->created_at)->format('Y-m-d H:i') }}</td>
                         </tr>
                         @endforeach
                     </tbody>
