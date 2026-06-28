@@ -68,7 +68,7 @@
                     <div class="pst-stage-row">
                         <span class="pst-stage-team">{{ $r->team }}</span>
                         <span class="{{ (float)$r->$ptCol > 0 ? 'pst-pts' : 'pst-zero' }} {{ $pop ? 'pst-hoverable' : '' }}"
-                            @if($pop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" data-bs-content="{{ $pop }}" @endif
+                            @if($pop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" data-bs-custom-class="pop-narrow" data-bs-content="{{ $pop }}" @endif
                         >{{ number_format((float)$r->$ptCol, 1) }}</span>
                     </div>
                     @endforeach
@@ -79,7 +79,7 @@
                 <div class="pst-stage-row">
                     <span class="pst-stage-team">{{ $r->team }}</span>
                     <span class="pst-pts {{ $pop ? 'pst-hoverable' : '' }}"
-                        @if($pop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" data-bs-content="{{ $pop }}" @endif
+                        @if($pop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" data-bs-custom-class="pop-narrow" data-bs-content="{{ $pop }}" @endif
                     >{{ number_format((float)$r->$ptCol, 1) }}</span>
                 </div>
                 @endforeach
