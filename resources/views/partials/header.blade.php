@@ -2,91 +2,30 @@
 <nav class="sb-navbar">
 
   {{-- ============================================================
-       White top bar — brand + user (all screen sizes)
+       Single dark topnav bar (all screen sizes)
        ============================================================ --}}
-  <div class="sb-top-bar">
-    <div class="sb-top-bar-inner">
+  <div class="sb-topnav">
 
-      {{-- Brand --}}
-      <a class="sb-brand" @auth href="{{ route('main') }}" @else href="{{ route('/') }}" @endauth>
-        <img src="{{ asset('img/logo.png') }}" alt="SportBet" style="height:32px;">
-        <span>Sport<span class="sb-brand-dot">Bet</span></span>
-      </a>
+    {{-- Brand --}}
+    <a class="sb-brand" @auth href="{{ route('main') }}" @else href="{{ route('/') }}" @endauth>
+      <img src="{{ asset('img/logo.png') }}" alt="SportBet" style="height:32px;">
+      <span>Sport<span class="sb-brand-dot">Bet</span></span>
+    </a>
 
-      @auth
-      {{-- Desktop: username + avatar dropdown --}}
-      <div class="sb-top-user d-none d-lg-flex">
-        <button class="sb-theme-btn" onclick="sbToggleTheme()" title="Keisti temą" aria-label="Keisti temą">
-          <i class="bi bi-sun-fill sb-theme-sun"></i>
-          <i class="bi bi-moon-fill sb-theme-moon"></i>
-        </button>
-        <span class="sb-top-username">{{ Auth::user()->username ?? '' }}</span>
-        <div class="dropdown">
-          <button class="sb-top-avatar dropdown-toggle" type="button"
-                  data-bs-toggle="dropdown" aria-expanded="false">
-            {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 1)) }}{{ strtoupper(substr(Auth::user()->surname ?? '', 0, 1)) }}
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item {{ request()->routeIs('userProfile') ? 'active' : '' }}"
-                   href="{{ route('userProfile') }}">
-                <i class="bi bi-person-fill"></i>Profilis</a></li>
-            @if(session('admin') >= 1)
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item {{ request()->routeIs('admin*') ? 'active' : '' }}"
-                   href="{{ route('admin') }}">
-                <i class="bi bi-database-gear"></i>Admin</a></li>
-            @endif
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{{ route('logout') }}"
-                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <i class="bi bi-box-arrow-right"></i>Atsijungti</a></li>
-          </ul>
-        </div>
-      </div>
-
-      {{-- Mobile: theme toggle + hamburger --}}
-      <div class="d-flex d-lg-none align-items-center ms-auto gap-1">
-        <button class="sb-theme-btn" onclick="sbToggleTheme()" title="Keisti temą" aria-label="Keisti temą">
-          <i class="bi bi-sun-fill sb-theme-sun"></i>
-          <i class="bi bi-moon-fill sb-theme-moon"></i>
-        </button>
-        <button class="sb-toggler" type="button"
-                data-bs-toggle="collapse" data-bs-target="#sbNavMobile"
-                aria-controls="sbNavMobile" aria-expanded="false" aria-label="Atidaryti meniu">
-          <i class="bi bi-list"></i>
-        </button>
-      </div>
-
-      <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
-      @else
-      <div class="ms-auto d-flex align-items-center gap-1">
-        <button class="sb-theme-btn" onclick="sbToggleTheme()" title="Keisti temą" aria-label="Keisti temą">
-          <i class="bi bi-sun-fill sb-theme-sun"></i>
-          <i class="bi bi-moon-fill sb-theme-moon"></i>
-        </button>
-        <a class="sb-nav-pill sb-nav-pill--ghost" style="margin-left:0" href="{{ route('charity') }}"><i class="bi bi-heart-fill" style="font-size:.75rem;"></i> Jaunimo linija</a>
-        <a class="sb-nav-pill ms-0" href="{{ route('login') }}">Prisijungti</a>
-      </div>
-      @endauth
-
-    </div>
-  </div>
-
-  {{-- ============================================================
-       Blue nav bar — all nav links (desktop, auth only)
-       ============================================================ --}}
-  @auth
-  <div class="sb-blue-bar d-none d-lg-block">
-    <div class="sb-blue-bar-inner">
+    @auth
+    {{-- Desktop: nav links ── d-none d-lg-flex --}}
+    <div class="sb-topnav-links d-none d-lg-flex">
 
       <a class="sb-nav-link {{ request()->routeIs('prediction.results') ? 'active' : '' }}"
          href="{{ route('prediction.results') }}">
         <span class="material-icons" style="font-size:1rem;vertical-align:middle;">sports_soccer</span> Spėjimai
       </a>
+
       <a class="sb-nav-link {{ request()->routeIs('prediction.standings') ? 'active' : '' }}"
          href="{{ route('prediction.standings') }}">
         <i class="bi bi-table"></i> Eiga
       </a>
+
       @if(session('eventSurvival') == 1 && session('survivalGame') == 1)
       <a class="sb-nav-link {{ request()->routeIs('prediction.survival') ? 'active' : '' }}"
          href="{{ route('prediction.survival') }}">
@@ -150,20 +89,83 @@
         <i class="bi bi-trophy"></i> Lygos
       </a>
 
-      {{-- League switcher (right) --}}
+    </div>{{-- /.sb-topnav-links --}}
+
+    {{-- Desktop: right side ── d-none d-lg-flex --}}
+    <div class="sb-topnav-right d-none d-lg-flex">
+
+      {{-- League switcher --}}
       @if(session('userID'))
-      <div class="ms-auto d-flex align-items-center gap-1">
-        <span style="font-size:.8rem;color:#b0b8c9;white-space:nowrap;">Lyga</span>
+      <div class="d-flex align-items-center gap-1">
+        <span style="font-size:.8rem;color:#64748b;white-space:nowrap;">Lyga</span>
         @include('partials.league-switcher')
       </div>
       @endif
 
+      {{-- Theme toggle --}}
+      <button class="sb-theme-btn" onclick="sbToggleTheme()" title="Keisti temą" aria-label="Keisti temą">
+        <i class="bi bi-sun-fill sb-theme-sun"></i>
+        <i class="bi bi-moon-fill sb-theme-moon"></i>
+      </button>
+
+      {{-- Avatar dropdown --}}
+      <div class="dropdown">
+        <button class="sb-top-avatar dropdown-toggle" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+          {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 1)) }}{{ strtoupper(substr(Auth::user()->surname ?? '', 0, 1)) }}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item {{ request()->routeIs('userProfile') ? 'active' : '' }}"
+                 href="{{ route('userProfile') }}">
+              <i class="bi bi-person-fill"></i>Profilis</a></li>
+          @if(session('admin') >= 1)
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item {{ request()->routeIs('admin*') ? 'active' : '' }}"
+                 href="{{ route('admin') }}">
+              <i class="bi bi-database-gear"></i>Admin</a></li>
+          @endif
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="{{ route('logout') }}"
+                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+              <i class="bi bi-box-arrow-right"></i>Atsijungti</a></li>
+        </ul>
+      </div>
+
+      <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
+
+    </div>{{-- /.sb-topnav-right --}}
+
+    {{-- Mobile: theme toggle + hamburger ── d-flex d-lg-none --}}
+    <div class="d-flex d-lg-none align-items-center ms-auto gap-1">
+      <button class="sb-theme-btn" onclick="sbToggleTheme()" title="Keisti temą" aria-label="Keisti temą">
+        <i class="bi bi-sun-fill sb-theme-sun"></i>
+        <i class="bi bi-moon-fill sb-theme-moon"></i>
+      </button>
+      <button class="sb-toggler" type="button"
+              data-bs-toggle="collapse" data-bs-target="#sbNavMobile"
+              aria-controls="sbNavMobile" aria-expanded="false" aria-label="Atidaryti meniu">
+        <i class="bi bi-list"></i>
+      </button>
     </div>
-  </div>
+
+    @else
+    {{-- Guest --}}
+    <div class="ms-auto d-flex align-items-center gap-1">
+      <button class="sb-theme-btn" onclick="sbToggleTheme()" title="Keisti temą" aria-label="Keisti temą">
+        <i class="bi bi-sun-fill sb-theme-sun"></i>
+        <i class="bi bi-moon-fill sb-theme-moon"></i>
+      </button>
+      <a class="sb-nav-pill sb-nav-pill--ghost" style="margin-left:0" href="{{ route('charity') }}"><i class="bi bi-heart-fill" style="font-size:.75rem;"></i> Jaunimo linija</a>
+      <a class="sb-nav-pill ms-0" href="{{ route('login') }}">Prisijungti</a>
+    </div>
+    @endauth
+
+  </div>{{-- /.sb-topnav --}}
 
   {{-- ============================================================
-       Mobile collapse — blue background
+       Mobile collapse panel
        ============================================================ --}}
+  @auth
   <div class="collapse sb-mobile-collapse d-lg-none w-100" id="sbNavMobile">
 
     <div class="sb-mobile-group">
