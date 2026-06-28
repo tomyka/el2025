@@ -18,7 +18,11 @@
 @php
 $grouped = collect($games)
     ->groupBy(fn($g) => $g->event->event_day)
-    ->map(fn($day) => $day->groupBy(fn($g) => $g->home_team->group_name));
+    ->map(fn($dayGames) =>
+        $dayGames->first()->event->is_knockout
+            ? collect(['' => $dayGames->sortBy('game_date')])
+            : $dayGames->groupBy(fn($g) => $g->home_team->group_name)
+    );
 @endphp
 
 <div class="pred-page">
