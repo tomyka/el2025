@@ -224,8 +224,7 @@ class PointController extends Controller
                                         SUM(IFNULL(pos.last16_points,0))         AS last16_points,
                                         SUM(IFNULL(pos.quarterfinal_points,0))   AS quarterfinal_points,
                                         SUM(IFNULL(pos.semifinal_points,0))      AS semifinal_points,
-                                        SUM(IFNULL(pos.final_points,0))          AS final_points,
-                                        SUM(IFNULL(pos.odds_points,0))           AS odds_points
+                                        SUM(IFNULL(pos.final_points,0))          AS final_points
                                         FROM point_standings AS pos
                                         JOIN teams AS t on t.id=pos.team_id
                                         WHERE pos.user_id = ?
