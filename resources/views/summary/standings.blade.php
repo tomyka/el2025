@@ -39,7 +39,6 @@
             return $rows ? "<div class='sr-pop sr-pop-sm'>{$rows}</div>" : '';
         }
     }
-@endphp
 
     // Returns a CSS class based on predicted vs actual value (nullable = pending)
     $cmpClass = function($predicted, $actual) {
