@@ -242,9 +242,32 @@ function predModal() {
                 });
 
                 if (res.ok) {
+                    // Update score display
                     const el = document.getElementById('usc-pred-' + this.gameID);
-                    if (el) {
-                        el.textContent = homeVal + ':' + awayVal;
+                    if (el) el.textContent = homeVal + ':' + awayVal;
+
+                    // Sync row data attributes so re-opening the modal shows correct values
+                    const row = document.querySelector(`.upcoming-row[data-game-id="${this.gameID}"]`);
+                    if (row) {
+                        row.dataset.hscore = homeVal;
+                        row.dataset.ascore = awayVal;
+                        row.dataset.penaltyWinner = (isDraw && this.penaltyWinner) ? this.penaltyWinner : '';
+
+                        // Refresh penalty winner badge
+                        const homeSpan = row.querySelector('.upcoming-home');
+                        const awaySpan = row.querySelector('.upcoming-away');
+                        if (homeSpan) homeSpan.querySelectorAll('.upcoming-pw-badge').forEach(b => b.remove());
+                        if (awaySpan) awaySpan.querySelectorAll('.upcoming-pw-badge').forEach(b => b.remove());
+
+                        if (isDraw && this.penaltyWinner) {
+                            const badge = document.createElement('i');
+                            badge.className = 'bi bi-check-circle-fill upcoming-pw-badge';
+                            if (this.penaltyWinner === this.homeId && homeSpan) {
+                                homeSpan.appendChild(badge);
+                            } else if (this.penaltyWinner === this.awayId && awaySpan) {
+                                awaySpan.insertBefore(badge, awaySpan.firstChild);
+                            }
+                        }
                     }
                 }
             } catch {
