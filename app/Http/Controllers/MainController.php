@@ -133,12 +133,13 @@ class MainController extends Controller
                 break;
             }
         }
-        if (!$mine) return null;
+        if ($mine === null) return null;
 
         $last5 = DB::table('point_results as pr')
             ->join('games as g', 'g.id', '=', 'pr.game_id')
             ->where('pr.user_id', $userID)
             ->whereNotNull('g.home_team_score')
+            ->whereNotNull('g.away_team_score')
             ->orderByDesc('g.game_date')
             ->orderByDesc('g.id')
             ->limit(5)
