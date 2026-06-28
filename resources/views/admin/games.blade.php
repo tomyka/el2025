@@ -66,7 +66,7 @@
                         <div class="mb-3">
                             <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Data ir laikas</label>
                             <input type="datetime-local" class="form-control form-control-sm"
-                                   name="gameDateTime" id="agmDateTime">
+                                   name="gameDateTime" id="agmDateTime" step="1800">
                         </div>
                         <div class="mb-3">
                             <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Šeimininkai</label>
@@ -128,6 +128,7 @@
 var agmInsertAction = '{{ route('admin.insertGame') }}';
 var agmUpdateAction = '{{ route('admin.updateGame') }}';
 var agmDefaultDateTime = '{{ substr(str_replace(' ', 'T', $gameMaxDateTime), 0, 16) }}';
+var agmDefaultEventID  = '{{ $lastEnteredEventID ?? '' }}';
 
 function agmOpenInsert() {
     document.getElementById('agmModalHeading').textContent = 'Naujas žaidimas';
@@ -137,7 +138,7 @@ function agmOpenInsert() {
     document.getElementById('agmDateTime').value = agmDefaultDateTime;
     document.getElementById('agmHomeTeamID').value = '';
     document.getElementById('agmAwayTeamID').value = '';
-    document.getElementById('agmEventID').value = '';
+    document.getElementById('agmEventID').value = agmDefaultEventID;
     var deleteBtn = document.getElementById('agmDeleteBtn');
     if (deleteBtn) deleteBtn.style.display = 'none';
     new bootstrap.Modal(document.getElementById('agmEditModal')).show();
