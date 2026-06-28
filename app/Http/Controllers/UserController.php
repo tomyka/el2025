@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLogin;
+use App\Models\AuditPredictionGame;
 use App\Models\PointResult;
 use App\Models\PointStanding;
 use App\Models\PointSurvival;
@@ -52,6 +54,8 @@ class UserController extends Controller
             return redirect()->route('admin.users')->with('error', 'Cannot delete your own account.');
         }
 
+        AuditLogin::where('user_id', $userID)->delete();
+        AuditPredictionGame::where('user_id', $userID)->delete();
         LeagueMember::where('user_id', $userID)->delete();
         PointResult::where('user_id', $userID)->delete();
         PointStanding::where('user_id', $userID)->delete();
