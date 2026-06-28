@@ -2795,38 +2795,67 @@ p { margin: 0; }
 /* ============================================================
    Standings points detail table (partials/pointsStandings)
    ============================================================ */
-.pst-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: .72rem;
+.pst-pts      { font-weight: 600; color: var(--sb-nav); font-size: .72rem; min-width: 40px; text-align: right; }
+.pst-zero     { color: var(--sb-muted); font-size: .72rem; min-width: 40px; text-align: right; }
+.pst-hoverable { cursor: help; }
+
+.pst-stage { margin-bottom: 2px; }
+.pst-stage-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 0 5px;
+  border-bottom: 2px solid var(--sb-border);
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
 }
-.pst-table th {
+.pst-stage-label {
+  flex: 1;
   font-size: .65rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .4px;
   color: var(--sb-muted);
-  padding: 0 8px 6px;
-  text-align: center;
-  border-bottom: 2px solid var(--sb-border);
-  white-space: nowrap;
 }
-.pst-table th:first-child { text-align: left; }
-.pst-table td {
-  padding: 4px 8px;
-  color: var(--sb-text);
-  text-align: center;
+.pst-stage-total {
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--sb-nav);
+}
+.pst-stage-chevron {
+  font-size: .65rem;
+  color: var(--sb-muted);
+  transition: transform .2s;
+}
+.pst-stage-header.collapsed .pst-stage-chevron { transform: rotate(-90deg); }
+.pst-stage-row {
+  display: flex;
+  align-items: center;
+  padding: 3px 0;
   border-bottom: 1px solid #f1f5f9;
 }
-.pst-table td:first-child { text-align: left; }
-.pst-table tbody tr:nth-child(even) td { background: #f9fafb; }
-.pst-table tbody tr:last-child td { border-bottom: none; }
-.pst-table tbody tr:hover td { background: rgba(37,99,235,.04); }
-.pst-team     { font-weight: 500; font-size: .8rem; }
-.pst-pts      { font-weight: 600; color: var(--sb-nav); }
-.pst-zero     { color: var(--sb-muted); }
-.pst-total    { font-weight: 700; color: var(--sb-nav); }
-.pst-hoverable { cursor: help; }
-
-[data-theme="dark"] .pst-table tbody tr:nth-child(even) td { background: rgba(255,255,255,.02); }
-[data-theme="dark"] .pst-table tbody tr:hover td { background: rgba(255,255,255,.04); }
+.pst-stage-row:last-child { border-bottom: none; }
+.pst-stage-team {
+  flex: 1;
+  font-size: .8rem;
+  font-weight: 500;
+  color: var(--sb-text);
+}
+.pst-stage-row-zero { opacity: .5; }
+.pst-zero-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  font-size: .68rem;
+  color: var(--sb-muted);
+  background: none;
+  border: none;
+  padding: 5px 0 2px;
+  cursor: pointer;
+  user-select: none;
+  text-align: left;
+}
+.pst-zero-toggle .bi-chevron-down { font-size: .6rem; transition: transform .2s; }
+.pst-zero-toggle.collapsed .bi-chevron-down { transform: rotate(-90deg); }

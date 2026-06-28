@@ -5,97 +5,91 @@
 
     @php
         $pts = collect($predictionStandingsPoints);
-        $hasLast32 = $pts->sum('last32_points') > 0;
-        $hasLast16 = $pts->sum('last16_points') > 0;
-        $hasQF     = $pts->sum('quarterfinal_points') > 0;
-        $hasSF     = $pts->sum('semifinal_points') > 0;
-        $hasFinal  = $pts->sum('final_points') > 0;
-        $rows = $pts;
 
-        function pstPopover(float $pts, ?float $odds): string {
-            if ($pts <= 0 || $odds === null || $odds <= 0) return '';
-            $base = round($pts / (1 + $odds), 1);
-            $mult = round(1 + $odds, 2);
-            return "<div class='sr-pop sr-pop-sm'>"
-                . "<div class='sr-pop-row'><span>Spėjimo taškai</span><strong>" . number_format($base, 1) . "</strong></div>"
-                . "<div class='sr-pop-row'><span>Koeficientas</span><strong>×" . number_format($mult, 2) . "</strong></div>"
-                . "</div>";
+        if (!function_exists('pstPopover')) {
+            function pstPopover(float $pts, ?float $odds): string {
+                if ($pts <= 0 || $odds === null || $odds <= 0) return '';
+                $base = round($pts / (1 + $odds), 1);
+                $mult = round(1 + $odds, 2);
+                return "<div class='sr-pop sr-pop-sm'>"
+                    . "<div class='sr-pop-row'><span>Spėjimo taškai</span><strong>" . number_format($base, 1) . "</strong></div>"
+                    . "<div class='sr-pop-row'><span>Koeficientas</span><strong>×" . number_format($mult, 2) . "</strong></div>"
+                    . "</div>";
+            }
         }
+
+        $stageDefs = [
+            ['key' => 'group_position', 'label' => 'Grupių etapas', 'pts' => 'group_position_points', 'odds' => 'group_position_odds', 'always' => true],
+            ['key' => 'last32',         'label' => '1/16',           'pts' => 'last32_points',         'odds' => 'last32_odds'],
+            ['key' => 'last16',         'label' => '1/8',            'pts' => 'last16_points',         'odds' => 'last16_odds'],
+            ['key' => 'quarterfinal',   'label' => '1/4',            'pts' => 'quarterfinal_points',   'odds' => 'quarterfinal_odds'],
+            ['key' => 'semifinal',      'label' => 'Pusfinalis',     'pts' => 'semifinal_points',      'odds' => 'semifinal_odds'],
+            ['key' => 'final',          'label' => 'Finalas',        'pts' => 'final_points',          'odds' => 'final_odds'],
+        ];
+
+        $activeStages = array_values(array_filter($stageDefs, function ($s) use ($pts) {
+            return !empty($s['always']) ? $pts->isNotEmpty() : $pts->sum($s['pts']) > 0;
+        }));
     @endphp
 
-    @if($rows->isEmpty())
+    @if($pts->isEmpty())
         <p class="text-muted" style="font-size:.83rem;margin:0">Taškai dar neskaičiuoti.</p>
     @else
-    <div class="table-responsive">
-        <table class="pst-table">
-            <thead>
-                <tr>
-                    <th>Komanda</th>
-                    <th title="Grupės vieta">G</th>
-                    @if($hasLast32)<th title="1/16 etapas">1/16</th>@endif
-                    @if($hasLast16)<th title="1/8 etapas">1/8</th>@endif
-                    @if($hasQF)<th title="1/4 etapas">1/4</th>@endif
-                    @if($hasSF)<th title="Pusfinalis">PF</th>@endif
-                    @if($hasFinal)<th title="Finalas">F</th>@endif
-                    <th>Viso</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($rows as $r)
+        @foreach($activeStages as $si => $stage)
+        @php
+            $ptCol   = $stage['pts'];
+            $odCol   = $stage['odds'];
+            $stTotal = $pts->sum($ptCol);
+            $withPts = $pts->filter(fn($r) => (float)$r->$ptCol > 0)->sortByDesc($ptCol)->values();
+            $zeroPts = $pts->filter(fn($r) => (float)$r->$ptCol <= 0)->sortBy('team')->values();
+            $colId   = 'pst-stage-' . $si;
+            $zeroId  = 'pst-zero-' . $si;
+        @endphp
+        <div class="pst-stage">
+            <div class="pst-stage-header" data-bs-toggle="collapse" data-bs-target="#{{ $colId }}" aria-expanded="true">
+                <span class="pst-stage-label">{{ $stage['label'] }}</span>
+                @if($stTotal > 0)
+                <span class="pst-stage-total">{{ number_format((float)$stTotal, 1) }} pt</span>
+                @endif
+                <i class="bi bi-chevron-down pst-stage-chevron"></i>
+            </div>
+            <div id="{{ $colId }}" class="collapse show">
+                @foreach($withPts as $r)
                 @php
-                    $total = $r->group_position_points + $r->last32_points + $r->last16_points
-                           + $r->quarterfinal_points + $r->semifinal_points + $r->final_points;
-
-                    $gpPop  = pstPopover((float)$r->group_position_points, isset($r->group_position_odds) ? (float)$r->group_position_odds : null);
-                    $l32Pop = pstPopover((float)$r->last32_points,         isset($r->last32_odds)         ? (float)$r->last32_odds         : null);
-                    $l16Pop = pstPopover((float)$r->last16_points,         isset($r->last16_odds)         ? (float)$r->last16_odds         : null);
-                    $qfPop  = pstPopover((float)$r->quarterfinal_points,   isset($r->quarterfinal_odds)   ? (float)$r->quarterfinal_odds   : null);
-                    $sfPop  = pstPopover((float)$r->semifinal_points,      isset($r->semifinal_odds)      ? (float)$r->semifinal_odds      : null);
-                    $finPop = pstPopover((float)$r->final_points,          isset($r->final_odds)          ? (float)$r->final_odds          : null);
+                    $pop = pstPopover((float)$r->$ptCol, isset($r->$odCol) ? (float)$r->$odCol : null);
                 @endphp
-                <tr>
-                    <td class="pst-team">{{ $r->team }}</td>
-                    <td class="{{ $r->group_position_points > 0 ? 'pst-pts' : 'pst-zero' }} {{ $gpPop ? 'pst-hoverable' : '' }}"
-                        @if($gpPop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" data-bs-content="{{ $gpPop }}" @endif
-                    >{{ number_format($r->group_position_points, 1) }}</td>
-                    @if($hasLast32)
-                    <td class="{{ $r->last32_points > 0 ? 'pst-pts' : 'pst-zero' }} {{ $l32Pop ? 'pst-hoverable' : '' }}"
-                        @if($l32Pop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" data-bs-content="{{ $l32Pop }}" @endif
-                    >{{ $r->last32_points ? number_format($r->last32_points, 1) : '—' }}</td>
-                    @endif
-                    @if($hasLast16)
-                    <td class="{{ $r->last16_points > 0 ? 'pst-pts' : 'pst-zero' }} {{ $l16Pop ? 'pst-hoverable' : '' }}"
-                        @if($l16Pop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" data-bs-content="{{ $l16Pop }}" @endif
-                    >{{ $r->last16_points ? number_format($r->last16_points, 1) : '—' }}</td>
-                    @endif
-                    @if($hasQF)
-                    <td class="{{ $r->quarterfinal_points > 0 ? 'pst-pts' : 'pst-zero' }} {{ $qfPop ? 'pst-hoverable' : '' }}"
-                        @if($qfPop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" data-bs-content="{{ $qfPop }}" @endif
-                    >{{ $r->quarterfinal_points ? number_format($r->quarterfinal_points, 1) : '—' }}</td>
-                    @endif
-                    @if($hasSF)
-                    <td class="{{ $r->semifinal_points > 0 ? 'pst-pts' : 'pst-zero' }} {{ $sfPop ? 'pst-hoverable' : '' }}"
-                        @if($sfPop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" data-bs-content="{{ $sfPop }}" @endif
-                    >{{ $r->semifinal_points ? number_format($r->semifinal_points, 1) : '—' }}</td>
-                    @endif
-                    @if($hasFinal)
-                    <td class="{{ $r->final_points > 0 ? 'pst-pts' : 'pst-zero' }} {{ $finPop ? 'pst-hoverable' : '' }}"
-                        @if($finPop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" data-bs-content="{{ $finPop }}" @endif
-                    >{{ $r->final_points ? number_format($r->final_points, 1) : '—' }}</td>
-                    @endif
-                    <td class="pst-total">{{ number_format($total, 1) }}</td>
-                </tr>
+                <div class="pst-stage-row">
+                    <span class="pst-stage-team">{{ $r->team }}</span>
+                    <span class="pst-pts {{ $pop ? 'pst-hoverable' : '' }}"
+                        @if($pop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" data-bs-content="{{ $pop }}" @endif
+                    >{{ number_format((float)$r->$ptCol, 1) }}</span>
+                </div>
                 @endforeach
-            </tbody>
-        </table>
-    </div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.pst-hoverable[data-bs-toggle="popover"]').forEach(function (el) {
-            new bootstrap.Popover(el, { container: 'body', html: true });
+                @if($zeroPts->isNotEmpty())
+                <button class="pst-zero-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#{{ $zeroId }}" aria-expanded="false">
+                    + {{ $zeroPts->count() }} {{ $zeroPts->count() === 1 ? 'komanda' : 'komandos' }} su 0 pt
+                    <i class="bi bi-chevron-down"></i>
+                </button>
+                <div id="{{ $zeroId }}" class="collapse">
+                    @foreach($zeroPts as $r)
+                    <div class="pst-stage-row pst-stage-row-zero">
+                        <span class="pst-stage-team">{{ $r->team }}</span>
+                        <span class="pst-zero">0.0</span>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+            </div>
+        </div>
+        @endforeach
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.pst-hoverable[data-bs-toggle="popover"]').forEach(function (el) {
+                new bootstrap.Popover(el, { container: 'body', html: true });
+            });
         });
-    });
-    </script>
+        </script>
     @endif
 </div>
