@@ -45,6 +45,15 @@ $grouped = collect($games)
                         <span class="pred-team-name">{{ $game->home_team->team }}</span>
                         <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($game->home_team->team)) . '.svg') }}"
                              class="pred-flag" alt="{{ $game->home_team->team }}">
+                        @if($isKnockout && !$isFuture)
+                        <button type="button"
+                                class="pred-pw-check {{ ($isDraw && $game->game_winner_id == $game->home_team_id) ? 'active' : '' }}"
+                                id="pred-pw-home-{{ $game->id }}"
+                                style="{{ $isDraw ? '' : 'display:none' }}"
+                                onclick="setAdminPenaltyWinner({{ $game->id }}, {{ $game->home_team_id }}, this)">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </button>
+                        @endif
                     </div>
                     <div class="pred-scores">
                         <span class="pred-time">{{ ucfirst(\Carbon\Carbon::parse($game->game_date, 'UTC')->setTimezone('Europe/Vilnius')->locale('lt')->isoFormat('MMMM D')) }} · {{ \Carbon\Carbon::parse($game->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('H:i') }}</span>
@@ -71,27 +80,18 @@ $grouped = collect($games)
                         </div>
                         @if($isKnockout)
                         <input type="hidden" id="penaltyWinner{{ $game->id }}" value="{{ $game->game_winner_id ?? '' }}">
-                        <div class="pred-penalty" id="pred-penalty-{{ $game->id }}"
-                             style="{{ $isDraw ? '' : 'display:none' }}">
-                            <div class="pred-penalty-label">Baudų serija</div>
-                            <div class="pred-penalty-picker">
-                                <button type="button" class="pred-penalty-btn {{ ($isDraw && $game->game_winner_id == $game->home_team_id) ? 'active' : '' }}"
-                                        data-team-id="{{ $game->home_team_id }}"
-                                        onclick="setAdminPenaltyWinner({{ $game->id }}, {{ $game->home_team_id }}, this)">
-                                    <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($game->home_team->team)) . '.svg') }}">
-                                    {{ $game->home_team->team }}
-                                </button>
-                                <button type="button" class="pred-penalty-btn {{ ($isDraw && $game->game_winner_id == $game->away_team_id) ? 'active' : '' }}"
-                                        data-team-id="{{ $game->away_team_id }}"
-                                        onclick="setAdminPenaltyWinner({{ $game->id }}, {{ $game->away_team_id }}, this)">
-                                    <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($game->away_team->team)) . '.svg') }}">
-                                    {{ $game->away_team->team }}
-                                </button>
-                            </div>
-                        </div>
                         @endif
                     </div>
                     <div class="pred-team-away">
+                        @if($isKnockout && !$isFuture)
+                        <button type="button"
+                                class="pred-pw-check {{ ($isDraw && $game->game_winner_id == $game->away_team_id) ? 'active' : '' }}"
+                                id="pred-pw-away-{{ $game->id }}"
+                                style="{{ $isDraw ? '' : 'display:none' }}"
+                                onclick="setAdminPenaltyWinner({{ $game->id }}, {{ $game->away_team_id }}, this)">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </button>
+                        @endif
                         <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($game->away_team->team)) . '.svg') }}"
                              class="pred-flag" alt="{{ $game->away_team->team }}">
                         <span class="pred-team-name">{{ $game->away_team->team }}</span>
@@ -111,8 +111,9 @@ $grouped = collect($games)
 function saveResult(gameID) {
     var homeScore  = document.getElementById('homeTeamScore' + gameID);
     var awayScore  = document.getElementById('awayTeamScore' + gameID);
-    var penDiv     = document.getElementById('pred-penalty-' + gameID);
     var penWinner  = document.getElementById('penaltyWinner' + gameID);
+    var pwHome     = document.getElementById('pred-pw-home-' + gameID);
+    var pwAway     = document.getElementById('pred-pw-away-' + gameID);
     var homeVal    = homeScore.value.trim();
     var awayVal    = awayScore.value.trim();
     var bothFilled = homeVal !== '' && awayVal !== '';
@@ -125,12 +126,15 @@ function saveResult(gameID) {
         return;
     }
 
-    if (penDiv) {
-        penDiv.style.display = isDraw ? '' : 'none';
-        if (!isDraw && penWinner) penWinner.value = '';
+    if (pwHome) pwHome.style.display = isDraw ? '' : 'none';
+    if (pwAway) pwAway.style.display = isDraw ? '' : 'none';
+    if (!isDraw && penWinner) {
+        penWinner.value = '';
+        if (pwHome) pwHome.classList.remove('active');
+        if (pwAway) pwAway.classList.remove('active');
     }
 
-    if (isDraw && penDiv && penWinner && !penWinner.value) return; // wait for penalty winner
+    if (pwHome && isDraw && penWinner && !penWinner.value) return;
 
     $.ajax({
         type: 'POST',
@@ -151,7 +155,10 @@ function saveResult(gameID) {
 function setAdminPenaltyWinner(gameID, teamID, btn) {
     var penWinner = document.getElementById('penaltyWinner' + gameID);
     penWinner.value = teamID;
-    document.querySelectorAll('#pred-penalty-' + gameID + ' .pred-penalty-btn').forEach(function(b) { b.classList.remove('active'); });
+    var pwHome = document.getElementById('pred-pw-home-' + gameID);
+    var pwAway = document.getElementById('pred-pw-away-' + gameID);
+    if (pwHome) pwHome.classList.remove('active');
+    if (pwAway) pwAway.classList.remove('active');
     btn.classList.add('active');
     saveResult(gameID);
 }

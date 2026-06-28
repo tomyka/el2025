@@ -1465,59 +1465,27 @@ button.sb-tab::after { display: none; }
   cursor: not-allowed;
 }
 
-.pred-penalty {
-  margin-top: 6px;
-  text-align: center;
-}
-
-.pred-penalty-label {
-  font-size: .65rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .04em;
-  color: var(--sb-muted);
-  margin-bottom: 4px;
-}
-
-.pred-penalty-picker {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-}
-
-.pred-penalty-btn {
-  display: flex;
-  flex-direction: column;
+.pred-pw-check {
+  display: inline-flex;
   align-items: center;
-  gap: 3px;
-  padding: 5px 10px;
-  border: 1.5px solid var(--sb-border);
-  border-radius: 8px;
-  background: #fff;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 2px 3px;
+  color: #cbd5e1;
   cursor: pointer;
-  font-size: .72rem;
-  font-weight: 500;
-  color: var(--sb-text);
-  transition: border-color .15s, background .15s;
-  min-width: 64px;
+  font-size: 1rem;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: color .15s;
 }
 
-.pred-penalty-btn img {
-  width: 22px;
-  height: 22px;
-  object-fit: contain;
-}
-
-.pred-penalty-btn:hover {
-  border-color: var(--sb-accent);
-  background: #eff6ff;
-}
-
-.pred-penalty-btn.active {
-  border-color: var(--sb-accent);
-  background: #eff6ff;
+.pred-pw-check:hover {
   color: var(--sb-accent);
-  font-weight: 700;
+}
+
+.pred-pw-check.active {
+  color: var(--sb-accent);
 }
 
 

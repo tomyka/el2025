@@ -97,6 +97,12 @@
                             <span class="pred-team-name" x-text="homeTeam"></span>
                             <img :src="homeTeam ? '/img/teams/' + homeTeam.toLowerCase().replace(/ /g, '%20') + '.svg' : 'data:,'"
                                  class="pred-flag" :alt="homeTeam">
+                            <button type="button" class="pred-pw-check"
+                                    x-show="isKnockout && homeScore !== '' && awayScore !== '' && homeScore === awayScore"
+                                    :class="{ active: penaltyWinner === homeId }"
+                                    @click="penaltyWinner = homeId">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </button>
                         </div>
                         <div class="pred-scores">
                             <span class="pred-time" x-text="gameDate"></span>
@@ -109,26 +115,14 @@
                                        class="form-control pred-score"
                                        maxlength="2" autocomplete="off" placeholder="?">
                             </div>
-                            <div class="pred-penalty"
-                                 x-show="isKnockout && homeScore !== '' && awayScore !== '' && homeScore === awayScore">
-                                <div class="pred-penalty-label">Baudų serija</div>
-                                <div class="pred-penalty-picker">
-                                    <button type="button" class="pred-penalty-btn"
-                                            :class="{ active: penaltyWinner === homeId }"
-                                            @click="penaltyWinner = homeId">
-                                        <img :src="homeTeam ? '/img/teams/' + homeTeam.toLowerCase().replace(/ /g, '%20') + '.svg' : 'data:,'">
-                                        <span x-text="homeTeam"></span>
-                                    </button>
-                                    <button type="button" class="pred-penalty-btn"
-                                            :class="{ active: penaltyWinner === awayId }"
-                                            @click="penaltyWinner = awayId">
-                                        <img :src="awayTeam ? '/img/teams/' + awayTeam.toLowerCase().replace(/ /g, '%20') + '.svg' : 'data:,'">
-                                        <span x-text="awayTeam"></span>
-                                    </button>
-                                </div>
-                            </div>
                         </div>
                         <div class="pred-team-away">
+                            <button type="button" class="pred-pw-check"
+                                    x-show="isKnockout && homeScore !== '' && awayScore !== '' && homeScore === awayScore"
+                                    :class="{ active: penaltyWinner === awayId }"
+                                    @click="penaltyWinner = awayId">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </button>
                             <img :src="awayTeam ? '/img/teams/' + awayTeam.toLowerCase().replace(/ /g, '%20') + '.svg' : 'data:,'"
                                  class="pred-flag" :alt="awayTeam">
                             <span class="pred-team-name" x-text="awayTeam"></span>

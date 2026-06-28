@@ -19,7 +19,7 @@
                     <th class="ae-col-name">Turas</th>
                     <th class="ae-col-short text-center" title="Turo diena">Diena</th>
                     <th class="ae-col-switch text-center" title="Išlikimo turas">Išlik.</th>
-                    <th class="ae-col-switch text-center" title="Play-off turas (baudų serija)">P/O</th>
+                    <th class="ae-col-switch text-center" title="Play-off turas (baudinių serija)">P/O</th>
                     <th class="ae-col-switch text-center">Aktyvus</th>
                     <th class="ae-col-short text-center" title="Koeficientas">Rate</th>
                     @if(session('admin') >= 9)
