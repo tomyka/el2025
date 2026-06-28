@@ -40,6 +40,10 @@ class CompareController extends Controller
 
         $rounds = $this->getPerRoundComparison($myID, $userID);
 
+        if (request()->ajax()) {
+            return view('compare._card', compact('myData', 'myRank', 'theirData', 'theirRank', 'rounds'));
+        }
+
         return view('compare.show', compact('myData', 'myRank', 'theirData', 'theirRank', 'rounds'));
     }
 

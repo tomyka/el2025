@@ -46,7 +46,6 @@
                 <a class="lb-name-btn lb-name-link"
                    href="{{ route('compare.show', $point['userID']) }}"
                    @if($tooltipTitle) data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $tooltipTitle }}" @endif
-                   @if($hasHistory) x-on:click.stop @endif
                 >{{ $point['username'] }}</a>
                 @else
                 <span class="lb-name-btn"

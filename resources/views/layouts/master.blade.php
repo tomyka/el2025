@@ -51,5 +51,39 @@
 @include('partials.bottom-nav')
 @include('partials.cookie-consent')
 
+{{-- Head-to-head comparison modal --}}
+<div class="modal fade" id="cmpModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-1" id="cmpModalBody">
+                <div class="text-center py-4 text-muted">
+                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('click', function (e) {
+    var link = e.target.closest('.lb-name-link');
+    if (!link) return;
+    e.preventDefault();
+    e.stopPropagation();
+    var url = link.getAttribute('href');
+    var modal = new bootstrap.Modal(document.getElementById('cmpModal'));
+    var body  = document.getElementById('cmpModalBody');
+    body.innerHTML = '<div class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm" role="status"></div></div>';
+    modal.show();
+    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function (r) { return r.text(); })
+        .then(function (html) { body.innerHTML = html; })
+        .catch(function () { body.innerHTML = '<p class="text-danger text-center py-3">Klaida. Bandykite dar kartą.</p>'; });
+}, true);
+</script>
+
 </body>
 </html>
