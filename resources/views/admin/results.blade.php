@@ -23,9 +23,20 @@ $grouped = collect($games)
 
 <div class="pred-page">
     @foreach($grouped as $eventDay => $groupGroups)
-    @php $eventName = $groupGroups->first()->first()->event->event; @endphp
+    @php
+        $eventName  = $groupGroups->first()->first()->event->event;
+        $isFinished = $groupGroups->flatten()->every(fn($g) => $g->home_team_score !== null && $g->away_team_score !== null);
+        $collapseId = 'evtcol-' . $loop->index;
+    @endphp
     <div class="pred-event">
-        <div class="pred-event-header">{{ $eventName }}</div>
+        <div class="pred-event-header {{ $isFinished ? 'collapsed' : '' }}"
+             data-bs-toggle="collapse"
+             data-bs-target="#{{ $collapseId }}"
+             aria-expanded="{{ $isFinished ? 'false' : 'true' }}">
+            <span>{{ $eventName }}</span>
+            <i class="bi bi-chevron-down pred-event-chevron"></i>
+        </div>
+        <div class="collapse {{ $isFinished ? '' : 'show' }}" id="{{ $collapseId }}">
         <div class="pred-event-groups">
             @foreach($groupGroups as $groupName => $groupGames)
             @php $firstGame = $groupGames->first(); @endphp
@@ -101,6 +112,7 @@ $grouped = collect($games)
             </div>
             @endforeach
         </div>
+        </div>{{-- /collapse --}}
     </div>
     @endforeach
 </div>

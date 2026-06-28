@@ -1312,6 +1312,23 @@ button.sb-tab::after { display: none; }
   border-bottom: 2px solid var(--sb-accent);
   padding-bottom: 4px;
   margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+.pred-event-chevron {
+  font-size: .75rem;
+  transition: transform .2s;
+  opacity: .6;
+}
+.pred-event-header.collapsed .pred-event-chevron {
+  transform: rotate(-90deg);
+}
+.pred-event-header.collapsed {
+  margin-bottom: 0;
+  border-bottom-color: var(--sb-border);
 }
 
 .pred-event-groups {
