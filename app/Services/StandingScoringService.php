@@ -4,20 +4,15 @@ namespace App\Services;
 
 class StandingScoringService
 {
-    /**
-     * Points based on how close the predicted group position is to the actual one.
-     * Formula: (numberOfTeams − 1 − |actual − predicted|) × 10, minimum 0.
-     */
     public function calculateGroupPositionPoints(
         int  $teamPosition,
-        ?int $predictedPosition,
-        int  $numberOfTeams
+        ?int $predictedPosition
     ): int {
         if ($teamPosition === 0 || $predictedPosition === null) {
             return 0;
         }
 
-        return max(0, ($numberOfTeams - 1 - abs($teamPosition - $predictedPosition)) * 10);
+        return max(0, 3 - abs($teamPosition - $predictedPosition));
     }
 
     /**

@@ -100,15 +100,14 @@ class PointStandingController extends Controller
     {
         PointStanding::truncate();
 
-        $teams         = Team::all();
-        $numberOfTeams = $teams->count();
+        $teams = Team::all();
 
         foreach ($teams as $team) {
             foreach (PredictionStanding::where('team_id', $team->id)->get() as $prediction) {
                 $pointStanding                          = new PointStanding();
                 $pointStanding->team_id                 = $team->id;
                 $pointStanding->user_id                 = $prediction->user_id;
-                $pointStanding->group_position_points   = $this->scoring->calculateGroupPositionPoints($team->group_position, $prediction->group_position, $numberOfTeams);
+                $pointStanding->group_position_points   = $this->scoring->calculateGroupPositionPoints($team->group_position, $prediction->group_position);
                 $pointStanding->last32_points           = $this->scoring->calculateKnockoutPoints($team->last32, $prediction->last32, 40);
                 $pointStanding->last16_points           = $this->scoring->calculateKnockoutPoints($team->last16, $prediction->last16, 60);
                 $pointStanding->quarterfinal_points     = $this->scoring->calculateKnockoutPoints($team->quarterfinal, $prediction->quarterfinal, 90);
