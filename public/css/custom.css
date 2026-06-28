@@ -110,8 +110,14 @@ a:hover { color: var(--sb-accent-h); }
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-left: auto;
 }
+
+.sb-topnav .sb-nav-label {
+  font-size: .72rem;
+  color: #64748b;
+  white-space: nowrap;
+}
+[data-theme="dark"] .sb-topnav .sb-nav-label { color: #94a3b8; }
 
 /* Brand override for dark background */
 .sb-topnav .sb-brand {
@@ -2624,7 +2630,6 @@ p { margin: 0; }
 [data-theme="dark"] body { background: var(--sb-bg); color: var(--sb-text); }
 
 [data-theme="dark"] .sb-brand        { color: var(--sb-text) !important; }
-[data-theme="dark"] .sb-top-username { color: var(--sb-muted); }
 [data-theme="dark"] .sb-toggler      { color: var(--sb-muted); }
 [data-theme="dark"] .sb-toggler:hover { color: var(--sb-text); }
 

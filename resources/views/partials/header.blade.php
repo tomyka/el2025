@@ -100,7 +100,7 @@
       {{-- League switcher --}}
       @if(session('userID'))
       <div class="d-flex align-items-center gap-1">
-        <span style="font-size:.8rem;color:#64748b;white-space:nowrap;">Lyga</span>
+        <span class="sb-nav-label">Lyga</span>
         @include('partials.league-switcher')
       </div>
       @endif
@@ -138,7 +138,7 @@
 
     </div>{{-- /.sb-topnav-right --}}
 
-    {{-- Mobile: theme toggle + hamburger ── d-flex d-lg-none --}}
+    {{-- Mobile: hamburger + theme; collapse panel is @auth-only below --}}
     <div class="d-flex d-lg-none align-items-center ms-auto gap-1">
       <button class="sb-theme-btn" onclick="sbToggleTheme()" title="Keisti temą" aria-label="Keisti temą">
         <i class="bi bi-sun-fill sb-theme-sun"></i>
