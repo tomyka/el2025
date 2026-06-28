@@ -235,7 +235,7 @@ class PointController extends Controller
                                         FROM point_standings AS pos
                                         JOIN teams AS t on t.id=pos.team_id
                                         WHERE pos.user_id = ?
-                                        GROUP BY t.team, t.id
+                                        GROUP BY t.id, t.team, t.group_name
                                         ORDER BY t.id',
             [$userID]);
 
