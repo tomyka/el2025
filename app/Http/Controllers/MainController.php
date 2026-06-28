@@ -22,6 +22,7 @@ class MainController extends Controller
         $predictionSurvivalController = new PredictionSurvivalController();
         $predictionStandingController = new PredictionStandingController();
         $messageController = new MessageController();
+        $activityFeedController = new ActivityFeedController();
         $user = Auth::user();
         $rankHistory = [];
 
@@ -70,7 +71,9 @@ class MainController extends Controller
 
             $snapshot = $this->getSnapshotData($points, (int) session('userID'));
 
-            return view('main')->with('messages', $messages)->with('points', $points)->with('predictionGames', $predictionResultsWithStats)->with('eventDaySurvivalStatus',$eventDaySurvivalStatus)->with('groupDetails',$feeController->getGroupDetails())->with('userDetails',$feeController->getUserDetails())->with('fund',$feeController->getFund())->with('fundCollected',$feeController->getFundCollected())->with('standings',$standings)->with('predictionStandingsPoints',$predictionStandingsPoints)->with('rankHistory', $rankHistory)->with('firstGameStarted', $firstGameStarted)->with('standingsMissing', $standingsMissing)->with('tournamentProgress', $tournamentProgress)->with('snapshot', $snapshot);
+            $activityFeed = $activityFeedController->getFeed((int) session('leagueID'));
+
+            return view('main')->with('messages', $messages)->with('points', $points)->with('predictionGames', $predictionResultsWithStats)->with('eventDaySurvivalStatus',$eventDaySurvivalStatus)->with('groupDetails',$feeController->getGroupDetails())->with('userDetails',$feeController->getUserDetails())->with('fund',$feeController->getFund())->with('fundCollected',$feeController->getFundCollected())->with('standings',$standings)->with('predictionStandingsPoints',$predictionStandingsPoints)->with('rankHistory', $rankHistory)->with('firstGameStarted', $firstGameStarted)->with('standingsMissing', $standingsMissing)->with('tournamentProgress', $tournamentProgress)->with('snapshot', $snapshot)->with('activityFeed', $activityFeed);
         }
         else {
             $games = Game::with('away_team')->with('home_team')->take(9)->get();

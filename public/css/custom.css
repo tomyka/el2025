@@ -3069,3 +3069,21 @@ a.lb-name-link:hover {
 .sn-dot--bingo { background: #22c55e; }
 .sn-dot--win   { background: rgba(255,255,255,.45); }
 .sn-dot--miss  { background: rgba(255,255,255,.15); }
+
+/* ============================================================
+   Activity feed
+   ============================================================ */
+.af-list { display: flex; flex-direction: column; }
+.af-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--sb-border);
+}
+.af-item:last-child { border-bottom: none; }
+.af-icon { font-size: 1rem; flex-shrink: 0; line-height: 1.5; }
+.af-body { font-size: .78rem; color: var(--sb-text); line-height: 1.4; }
+.af-user { font-weight: 700; }
+.af-text { color: var(--sb-muted); }
+.af-ago  { font-size: .65rem; color: var(--sb-muted); margin-top: 1px; }
