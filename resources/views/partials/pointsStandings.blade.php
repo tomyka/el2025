@@ -44,14 +44,10 @@
             $withPts = $isGroupStage
                 ? $pts->sortBy('team')->values()
                 : $pts->filter(fn($r) => (float)$r->$ptCol > 0)->sortByDesc($ptCol)->values();
-            $zeroPts = $isGroupStage
-                ? collect()
-                : $pts->filter(fn($r) => (float)$r->$ptCol <= 0)->sortBy('team')->values();
             $groupedByName = $isGroupStage
                 ? $withPts->groupBy('group_name')->sortKeys()
                 : null;
             $colId   = 'pst-stage-' . $si;
-            $zeroId  = 'pst-zero-' . $si;
         @endphp
         <div class="pst-stage">
             <div class="pst-stage-header" data-bs-toggle="collapse" data-bs-target="#{{ $colId }}" aria-expanded="true">
@@ -87,20 +83,6 @@
                 @endforeach
                 @endif
 
-                @if($zeroPts->isNotEmpty())
-                <button class="pst-zero-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#{{ $zeroId }}" aria-expanded="false">
-                    + {{ $zeroPts->count() }} {{ $zeroPts->count() === 1 ? 'komanda' : 'komandos' }} su 0 pt
-                    <i class="bi bi-chevron-down"></i>
-                </button>
-                <div id="{{ $zeroId }}" class="collapse">
-                    @foreach($zeroPts as $r)
-                    <div class="pst-stage-row pst-stage-row-zero">
-                        <span class="pst-stage-team">{{ $r->team }}</span>
-                        <span class="pst-zero">0.0</span>
-                    </div>
-                    @endforeach
-                </div>
-                @endif
             </div>
         </div>
         @endforeach
