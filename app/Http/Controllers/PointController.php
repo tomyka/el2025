@@ -218,17 +218,19 @@ class PointController extends Controller
     public function getPredictionStandingsUserPoints($userID){
         $PredictionStandingsUserPoints = DB::select('SELECT
                                         t.id,
-                                         t.team
-                                          ,SUM(IFNULL(pos.group_position_points,0)) AS group_position_points
-                                            ,SUM(IFNULL(pos.last16_points,0)) AS last16_points
-                                            ,SUM(IFNULL(pos.quarterfinal_points,0)) AS quarterfinal_points
-                                            ,SUM(IFNULL(pos.final_points,0)) AS final_points
-                                          FROM point_standings AS pos
-                                                JOIN teams AS t on t.id=pos.team_id
-                                          WHERE
-                                                pos.user_id = ?
-                                          GROUP BY t.team, t.id
-                                          ORDER BY t.id',
+                                        t.team,
+                                        SUM(IFNULL(pos.group_position_points,0)) AS group_position_points,
+                                        SUM(IFNULL(pos.last32_points,0))         AS last32_points,
+                                        SUM(IFNULL(pos.last16_points,0))         AS last16_points,
+                                        SUM(IFNULL(pos.quarterfinal_points,0))   AS quarterfinal_points,
+                                        SUM(IFNULL(pos.semifinal_points,0))      AS semifinal_points,
+                                        SUM(IFNULL(pos.final_points,0))          AS final_points,
+                                        SUM(IFNULL(pos.odds_points,0))           AS odds_points
+                                        FROM point_standings AS pos
+                                        JOIN teams AS t on t.id=pos.team_id
+                                        WHERE pos.user_id = ?
+                                        GROUP BY t.team, t.id
+                                        ORDER BY t.id',
             [$userID]);
 
         return $PredictionStandingsUserPoints;

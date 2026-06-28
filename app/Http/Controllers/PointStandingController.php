@@ -100,7 +100,8 @@ class PointStandingController extends Controller
     {
         PointStanding::truncate();
 
-        $teams = Team::all();
+        $teams    = Team::all();
+        $allPreds = PredictionStanding::all()->groupBy('team_id');
 
         $active = [
             'last32'       => $teams->contains(fn($t) => $t->last32),
@@ -110,18 +111,63 @@ class PointStandingController extends Controller
             'final'        => $teams->contains(fn($t) => $t->final > 0),
         ];
 
+        $stageBase = ['last32' => 3, 'last16' => 6, 'quarterfinal' => 12, 'semifinal' => 120];
+
         foreach ($teams as $team) {
-            foreach (PredictionStanding::where('team_id', $team->id)->get() as $prediction) {
-                $pointStanding                          = new PointStanding();
-                $pointStanding->team_id                 = $team->id;
-                $pointStanding->user_id                 = $prediction->user_id;
-                $pointStanding->group_position_points   = $this->scoring->calculateGroupPositionPoints($team->group_position, $prediction->group_position);
-                $pointStanding->last32_points           = $active['last32']       ? $this->scoring->calculateKnockoutPoints($team->last32, $prediction->last32, 3)              : null;
-                $pointStanding->last16_points           = $active['last16']       ? $this->scoring->calculateKnockoutPoints($team->last16, $prediction->last16, 6)              : null;
-                $pointStanding->quarterfinal_points     = $active['quarterfinal'] ? $this->scoring->calculateKnockoutPoints($team->quarterfinal, $prediction->quarterfinal, 12) : null;
-                $pointStanding->semifinal_points        = $active['semifinal']    ? $this->scoring->calculateKnockoutPoints($team->semifinal, $prediction->semifinal, 120)      : null;
-                $pointStanding->final_points            = $active['final']        ? $this->scoring->calculateFinalPoints($team->final, $prediction->final)                      : null;
-                $pointStanding->save();
+            $teamPreds = $allPreds->get($team->id, collect());
+            $total     = $teamPreds->count();
+
+            foreach ($teamPreds as $prediction) {
+                $ps = new PointStanding();
+                $ps->team_id = $team->id;
+                $ps->user_id = $prediction->user_id;
+
+                // Group position — odds apply only on exact match (base == 3)
+                $gpBase = $this->scoring->calculateGroupPositionPoints($team->group_position, $prediction->group_position);
+                $gpOdds = null;
+                if ($gpBase === 3 && $total > 0 && $prediction->group_position !== null) {
+                    $same   = $teamPreds->where('group_position', $prediction->group_position)->count();
+                    $gpOdds = $same > 0 ? round(log($total / $same, 2), 4) : 0.0;
+                }
+                $ps->group_position_points = $gpOdds > 0 ? round($gpBase * (1 + $gpOdds), 4) : $gpBase;
+                $ps->group_position_odds   = $gpOdds;
+
+                // Knockout stages — odds apply on correct advancement
+                foreach ($stageBase as $stage => $base) {
+                    $ptCol  = "{$stage}_points";
+                    $odCol  = "{$stage}_odds";
+                    $stOdds = null;
+
+                    if (!$active[$stage]) {
+                        $ps->$ptCol = null;
+                        $ps->$odCol = null;
+                        continue;
+                    }
+
+                    $stBase = $this->scoring->calculateKnockoutPoints($team->$stage, $prediction->$stage, $base);
+
+                    if ($stBase > 0 && $total > 0) {
+                        $same   = $teamPreds->where($stage, 1)->count();
+                        $stOdds = $same > 0 ? round(log($total / $same, 2), 4) : 0.0;
+                    }
+
+                    $ps->$ptCol = $stOdds > 0 ? round($stBase * (1 + $stOdds), 4) : $stBase;
+                    $ps->$odCol = $stOdds;
+                }
+
+                // Final — odds apply on exact position match
+                $finBase = $active['final'] ? $this->scoring->calculateFinalPoints($team->final, $prediction->final) : null;
+                $finOdds = null;
+                if ($finBase > 0 && $total > 0 && $team->final > 0 && $prediction->final == $team->final) {
+                    $same    = $teamPreds->where('final', $prediction->final)->count();
+                    $finOdds = $same > 0 ? round(log($total / $same, 2), 4) : 0.0;
+                }
+                $ps->final_points = $finBase !== null
+                    ? ($finOdds > 0 ? round($finBase * (1 + $finOdds), 4) : $finBase)
+                    : null;
+                $ps->final_odds   = $finOdds;
+
+                $ps->save();
             }
         }
 

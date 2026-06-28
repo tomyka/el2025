@@ -4,11 +4,15 @@
     </div>
 
     @php
-        $hasLast16 = collect($predictionStandingsPoints)->sum('last16_points') > 0;
-        $hasQF     = collect($predictionStandingsPoints)->sum('quarterfinal_points') > 0;
-        $hasFinal  = collect($predictionStandingsPoints)->sum('final_points') > 0;
-        $rows      = collect($predictionStandingsPoints)->filter(
-            fn($r) => $r->group_position_points + $r->last16_points + $r->quarterfinal_points + $r->final_points > 0
+        $pts = collect($predictionStandingsPoints);
+        $hasLast32 = $pts->sum('last32_points') > 0;
+        $hasLast16 = $pts->sum('last16_points') > 0;
+        $hasQF     = $pts->sum('quarterfinal_points') > 0;
+        $hasSF     = $pts->sum('semifinal_points') > 0;
+        $hasFinal  = $pts->sum('final_points') > 0;
+        $rows      = $pts->filter(fn($r) =>
+            $r->group_position_points + $r->last32_points + $r->last16_points
+            + $r->quarterfinal_points + $r->semifinal_points + $r->final_points > 0
         );
     @endphp
 
@@ -21,8 +25,10 @@
                 <tr>
                     <th>Komanda</th>
                     <th title="Grupės vieta">G</th>
+                    @if($hasLast32)<th title="1/16 etapas">1/16</th>@endif
                     @if($hasLast16)<th title="1/8 etapas">1/8</th>@endif
                     @if($hasQF)<th title="1/4 etapas">1/4</th>@endif
+                    @if($hasSF)<th title="Pusfinalis">PF</th>@endif
                     @if($hasFinal)<th title="Finalas">F</th>@endif
                     <th>Viso</th>
                 </tr>
@@ -30,15 +36,18 @@
             <tbody>
                 @foreach($rows as $r)
                 @php
-                    $total = $r->group_position_points + $r->last16_points + $r->quarterfinal_points + $r->final_points;
+                    $total = $r->group_position_points + $r->last32_points + $r->last16_points
+                           + $r->quarterfinal_points + $r->semifinal_points + $r->final_points;
                 @endphp
                 <tr>
                     <td class="pst-team">{{ $r->team }}</td>
                     <td class="{{ $r->group_position_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->group_position_points ?: '—' }}</td>
+                    @if($hasLast32)<td class="{{ $r->last32_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->last32_points ?: '—' }}</td>@endif
                     @if($hasLast16)<td class="{{ $r->last16_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->last16_points ?: '—' }}</td>@endif
                     @if($hasQF)<td class="{{ $r->quarterfinal_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->quarterfinal_points ?: '—' }}</td>@endif
+                    @if($hasSF)<td class="{{ $r->semifinal_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->semifinal_points ?: '—' }}</td>@endif
                     @if($hasFinal)<td class="{{ $r->final_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->final_points ?: '—' }}</td>@endif
-                    <td class="pst-total">{{ $total }}</td>
+                    <td class="pst-total">{{ number_format($total, 1) }}</td>
                 </tr>
                 @endforeach
             </tbody>
