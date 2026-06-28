@@ -1,5 +1,5 @@
 @if(!empty($snapshot))
-<div class="sb-card sn-card mb-0">
+<div class="sb-card sn-card">
     <div class="sn-grid">
         <div class="sn-stat">
             <div class="sn-val">#{{ $snapshot['rank'] }}</div>
