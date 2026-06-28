@@ -26,6 +26,23 @@
         $tooltipTitle = $fullName ?: null;
 
         $hasHistory = !empty($point['roundHistory']);
+
+        $sp = $point['standingPoints'];
+        $stPopRows = [
+            ['Grupės vieta', $sp->group_position_points],
+            ['1/16',         $sp->last32_points],
+            ['1/8',          $sp->last16_points],
+            ['1/4',          $sp->quarterfinal_points],
+            ['Pusfinalis',   $sp->semifinal_points],
+            ['Finalas',      $sp->final_points],
+        ];
+        $stPopHtml = '';
+        foreach ($stPopRows as [$label, $val]) {
+            if ($val > 0) {
+                $stPopHtml .= "<div class='sr-pop-row'><span>{$label}</span><strong>" . number_format((float)$val, 1) . "</strong></div>";
+            }
+        }
+        $stPopHtml = $stPopHtml ? "<div class='sr-pop'>{$stPopHtml}</div>" : '';
     @endphp
     <div class="lb-entry" x-data="{ open: false }">
         <div class="lb-row {{ $isMe ? 'lb-me-row' : '' }} {{ $hasHistory ? 'lb-row-expandable' : '' }}"
@@ -37,7 +54,15 @@
                 >{{ $point['username'] }}</span>
             </div>
             <div class="lb-sub-col d-none d-md-block">{{ number_format($point['userGamePoints'], 1) }}</div>
-            <div class="lb-sub-col d-none d-md-block">{{ number_format($point['standingPoints']->total_points, 1) }}</div>
+            <div class="lb-sub-col d-none d-md-block {{ $stPopHtml ? 'lb-sub-hoverable' : '' }}"
+                @if($stPopHtml)
+                    data-bs-toggle="popover"
+                    data-bs-trigger="hover"
+                    data-bs-html="true"
+                    data-bs-placement="left"
+                    data-bs-content="{{ $stPopHtml }}"
+                @endif
+            >{{ number_format($point['standingPoints']->total_points, 1) }}</div>
             @if(session('survivalGame') == 1)
             <div class="lb-sub-col d-none d-md-block">{{ $point['survivalPoints'] }}</div>
             @endif
@@ -126,3 +151,11 @@
     </div>
     @endforeach
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.lb-sub-hoverable[data-bs-toggle="popover"]').forEach(function (el) {
+        new bootstrap.Popover(el, { container: 'body', html: true });
+    });
+});
+</script>

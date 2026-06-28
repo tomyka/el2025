@@ -1096,6 +1096,7 @@ button.sb-tab::after { display: none; }
 }
 .lb-sub-bingo  { color: var(--sb-text); font-weight: 700; }
 .lb-sub-streak { color: #f97316; font-weight: 700; }
+.lb-sub-hoverable { cursor: help; }
 
 .lb-row {
   display: flex;
