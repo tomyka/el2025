@@ -65,8 +65,17 @@
                     <div class="modal-body px-4 pt-3 pb-2">
                         <div class="mb-3">
                             <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Data ir laikas</label>
-                            <input type="datetime-local" class="form-control form-control-sm"
-                                   name="gameDateTime" id="agmDateTime" step="1800">
+                            <div class="d-flex gap-2">
+                                <input type="date" class="form-control form-control-sm" id="agmDate" style="flex:1">
+                                <select class="form-select form-select-sm" id="agmTime" style="width:90px;flex-shrink:0">
+                                    @for ($h = 0; $h < 24; $h++)
+                                        @foreach (['00','30'] as $m)
+                                        <option value="{{ sprintf('%02d',$h) }}:{{ $m }}">{{ sprintf('%02d',$h) }}:{{ $m }}</option>
+                                        @endforeach
+                                    @endfor
+                                </select>
+                            </div>
+                            <input type="hidden" name="gameDateTime" id="agmDateTime">
                         </div>
                         <div class="mb-3">
                             <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Šeimininkai</label>
@@ -130,12 +139,29 @@ var agmUpdateAction = '{{ route('admin.updateGame') }}';
 var agmDefaultDateTime = '{{ substr(str_replace(' ', 'T', $gameMaxDateTime), 0, 16) }}';
 var agmDefaultEventID  = '{{ $lastEnteredEventID ?? '' }}';
 
+function agmSnapTime(t) {
+    var p = t.split(':'), h = parseInt(p[0], 10), m = parseInt(p[1], 10);
+    if (m < 15) m = 0; else if (m < 45) m = 30; else { m = 0; h = (h + 1) % 24; }
+    return (h < 10 ? '0' + h : h) + ':' + (m === 0 ? '00' : '30');
+}
+
+function agmSetDateTime(dateTimeStr) {
+    var parts = (dateTimeStr || '').split('T');
+    document.getElementById('agmDate').value = parts[0] || '';
+    document.getElementById('agmTime').value = agmSnapTime(parts[1] ? parts[1].substring(0, 5) : '00:00');
+}
+
+document.getElementById('agmForm').addEventListener('submit', function() {
+    document.getElementById('agmDateTime').value =
+        document.getElementById('agmDate').value + 'T' + document.getElementById('agmTime').value;
+});
+
 function agmOpenInsert() {
     document.getElementById('agmModalHeading').textContent = 'Naujas žaidimas';
     document.getElementById('agmForm').action = agmInsertAction;
     document.getElementById('agmGameID').value = '';
     document.getElementById('agmDeleteGameID').value = '';
-    document.getElementById('agmDateTime').value = agmDefaultDateTime;
+    agmSetDateTime(agmDefaultDateTime);
     document.getElementById('agmHomeTeamID').value = '';
     document.getElementById('agmAwayTeamID').value = '';
     document.getElementById('agmEventID').value = agmDefaultEventID;
@@ -149,7 +175,7 @@ function agmOpenModal(id, dateTime, homeTeamID, awayTeamID, eventID) {
     document.getElementById('agmForm').action = agmUpdateAction;
     document.getElementById('agmGameID').value = id;
     document.getElementById('agmDeleteGameID').value = id;
-    document.getElementById('agmDateTime').value = dateTime;
+    agmSetDateTime(dateTime);
     document.getElementById('agmHomeTeamID').value = homeTeamID;
     document.getElementById('agmAwayTeamID').value = awayTeamID;
     document.getElementById('agmEventID').value = eventID;
