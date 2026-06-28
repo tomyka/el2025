@@ -97,31 +97,31 @@
 
 {{-- Edit modal --}}
 <div class="modal fade" id="atEditModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="atModalHeading">Redaguoti komandą</h5>
+    <div class="modal-dialog modal-dialog-centered" style="max-width:420px">
+        <div class="modal-content" style="border-radius:16px;overflow:hidden;border:1px solid var(--sb-border);box-shadow:0 8px 32px rgba(0,0,0,.12)">
+            <div class="modal-header border-0 px-4 pt-4 pb-0">
+                <h6 class="modal-title fw-bold" id="atModalHeading" style="font-size:.9rem"></h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="post" action="{{ route('admin.updateTeamDetails') }}">
                 @csrf
                 <input type="hidden" name="teamID" id="atTeamID">
-                <div class="modal-body">
+                <div class="modal-body px-4 pt-3 pb-2">
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Pavadinimas</label>
-                        <input type="text" class="form-control" name="teamName" id="atTeamName">
+                        <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Pavadinimas</label>
+                        <input type="text" class="form-control form-control-sm" name="teamName" id="atTeamName">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Vėliavos URL</label>
-                        <input type="text" class="form-control" name="teamLink" id="atTeamLink" placeholder="https://…">
+                        <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Vėliavos URL</label>
+                        <input type="text" class="form-control form-control-sm" name="teamLink" id="atTeamLink" placeholder="https://…">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Grupė</label>
-                        <input type="text" class="form-control" name="groupName" id="atGroupName" maxlength="2" placeholder="A">
+                        <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Grupė</label>
+                        <input type="text" class="form-control form-control-sm" name="groupName" id="atGroupName" maxlength="2" placeholder="A">
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Atšaukti</button>
+                <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-end">
+                    <button type="button" class="btn btn-outline-secondary btn-sm me-2" data-bs-dismiss="modal">Atšaukti</button>
                     <button type="submit" class="btn btn-primary btn-sm">Išsaugoti</button>
                 </div>
             </form>

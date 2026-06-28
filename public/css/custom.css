@@ -1906,11 +1906,8 @@ button.sb-tab::after { display: none; }
   outline: none; border-color: var(--sb-accent);
   box-shadow: 0 0 0 2px rgba(37,99,235,.15);
 }
-.at-tiny-input::-webkit-outer-spin-button,
-.at-tiny-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .at-chk { width: 1rem; height: 1rem; cursor: pointer; }
 .at-pos-warn { border-color: #f59e0b !important; background: #fffbeb; }
-.at-pos-input { -moz-appearance: textfield; }
 
 /* ============================================================
    Admin groups table (.ag-*)
