@@ -56,12 +56,12 @@
                             <div class="pred-scores-inputs">
                                 <input type="text" class="form-control pred-score {{ $game->locked ? 'pred-score-locked' : '' }}"
                                     id="homeTeamScore{{$game->game_id}}"
-                                    {{ $game->locked ? 'disabled' : 'onkeyup=checkPrediction('.$game->game_id.')' }}
+                                    {{ $game->locked ? 'disabled' : 'oninput=checkPrediction('.$game->game_id.')' }}
                                     value="{{ $game->home_team_score }}" maxlength="2" autocomplete="off">
                                 <span class="pred-sep">:</span>
                                 <input type="text" class="form-control pred-score {{ $game->locked ? 'pred-score-locked' : '' }}"
                                     id="awayTeamScore{{$game->game_id}}"
-                                    {{ $game->locked ? 'disabled' : 'onkeyup=checkPrediction('.$game->game_id.')' }}
+                                    {{ $game->locked ? 'disabled' : 'oninput=checkPrediction('.$game->game_id.')' }}
                                     value="{{ $game->away_team_score }}" maxlength="2" autocomplete="off">
                             </div>
                         </div>
