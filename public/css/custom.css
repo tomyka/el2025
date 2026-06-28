@@ -1564,6 +1564,13 @@ button.sb-tab::after { display: none; }
   color: var(--sb-accent);
 }
 
+.upcoming-pw-badge {
+  font-size: .65rem;
+  color: var(--sb-accent);
+  opacity: .75;
+  flex-shrink: 0;
+}
+
 
 /* ============================================================
    Prediction results cards (old — kept for main page widget)

@@ -6,10 +6,14 @@
     <div class="upcoming-list">
         @foreach($predictionGames as $predictionGame)
         @php
-            $g       = $predictionGame['gameDetails'];
-            $played  = $g->home_team_score !== null;
-            $started = \Carbon\Carbon::parse($g->game_date, 'UTC')->isPast();
-            $canPred = !$played && !$started && isset($g->prediction_id);
+            $g          = $predictionGame['gameDetails'];
+            $played     = $g->home_team_score !== null;
+            $started    = \Carbon\Carbon::parse($g->game_date, 'UTC')->isPast();
+            $canPred    = !$played && !$started && isset($g->prediction_id);
+            $isPredDraw = $g->p_home_team_score !== null && $g->p_away_team_score !== null
+                          && (string)$g->p_home_team_score === (string)$g->p_away_team_score;
+            $penWinner  = ($g->is_knockout && $isPredDraw && !empty($g->game_winner_id))
+                          ? (int)$g->game_winner_id : null;
         @endphp
         <a href="{{ route('prediction.results') }}"
            class="upcoming-row {{ $canPred ? 'upcoming-row-pred' : '' }}"
@@ -37,6 +41,9 @@
                 <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($g->home_team)) . '.svg') }}"
                      class="upcoming-flag" alt="{{ $g->home_team }}">
                 <span class="upcoming-name d-none d-md-inline">{{ $g->home_team }}</span>
+                @if($penWinner === (int)$g->home_team_id)
+                <i class="bi bi-check-circle-fill upcoming-pw-badge"></i>
+                @endif
             </span>
 
             <span class="upcoming-scores">
@@ -48,6 +55,9 @@
             </span>
 
             <span class="upcoming-team upcoming-away">
+                @if($penWinner === (int)$g->away_team_id)
+                <i class="bi bi-check-circle-fill upcoming-pw-badge"></i>
+                @endif
                 <span class="upcoming-name d-none d-md-inline">{{ $g->away_team }}</span>
                 <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($g->away_team)) . '.svg') }}"
                      class="upcoming-flag" alt="{{ $g->away_team }}">
