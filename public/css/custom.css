@@ -510,6 +510,32 @@ a:hover { color: var(--sb-accent-h); }
   margin-bottom: 12px;
 }
 
+.sb-tabs-nav {
+  display: flex;
+  border-bottom: 2px solid var(--sb-border);
+  margin-bottom: 10px;
+}
+.sb-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--sb-muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 4px 14px 9px;
+  cursor: pointer;
+  margin-bottom: -2px;
+  transition: color .15s, border-color .15s;
+  white-space: nowrap;
+}
+.sb-tab-btn.active { color: var(--sb-nav); border-bottom-color: var(--sb-nav); }
+.sb-tab-btn:hover:not(.active) { color: var(--sb-text); }
+
 /* ============================================================
    Cookie consent banner
    ============================================================ */
