@@ -2764,3 +2764,39 @@ p { margin: 0; }
 [data-theme="dark"] .pt-game-count { background: #253047; border-color: var(--sb-border); color: var(--sb-muted); }
 [data-theme="dark"] .pt-stats     { border-color: var(--sb-border); }
 [data-theme="dark"] .pt-stat      { border-right-color: var(--sb-border); }
+
+/* ============================================================
+   Standings points detail table (partials/pointsStandings)
+   ============================================================ */
+.pst-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .82rem;
+}
+.pst-table th {
+  font-size: .68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--sb-muted);
+  padding: 6px 8px;
+  text-align: center;
+  border-bottom: 2px solid var(--sb-border);
+  white-space: nowrap;
+}
+.pst-table th:first-child { text-align: left; }
+.pst-table td {
+  padding: 5px 8px;
+  color: var(--sb-text);
+  text-align: center;
+  border-bottom: 1px solid var(--sb-border);
+}
+.pst-table td:first-child { text-align: left; }
+.pst-table tbody tr:last-child td { border-bottom: none; }
+.pst-table tbody tr:hover td { background: rgba(37,99,235,.04); }
+.pst-team  { font-weight: 500; }
+.pst-pts   { font-weight: 600; color: var(--sb-nav); }
+.pst-zero  { color: var(--sb-muted); }
+.pst-total { font-weight: 700; color: var(--sb-nav); }
+
+[data-theme="dark"] .pst-table tbody tr:hover td { background: rgba(255,255,255,.04); }
