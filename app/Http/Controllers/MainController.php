@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
@@ -124,18 +125,15 @@ class MainController extends Controller
         $eventID = session('eventID');
         if (!$eventID) return null;
 
-        $eventId = DB::table('games')->where('id', $eventID)->value('event_id');
-        if (!$eventId) return null;
-
-        $event = DB::table('events')->where('id', $eventId)->first();
+        $event = DB::table('events')->where('id', $eventID)->first();
         if (!$event) return null;
 
-        $total  = DB::table('games')->where('event_id', $event->id)->count();
-        $scored = DB::table('games')->where('event_id', $event->id)
+        $total  = DB::table('games')->where('event_id', $eventID)->count();
+        $scored = DB::table('games')->where('event_id', $eventID)
                     ->whereNotNull('home_team_score')->count();
-        $today  = DB::table('games')->where('event_id', $event->id)
+        $today  = DB::table('games')->where('event_id', $eventID)
                     ->whereNull('home_team_score')
-                    ->whereDate('game_date', now()->toDateString())->count();
+                    ->whereDate('game_date', Carbon::now('UTC')->toDateString())->count();
 
         return [
             'event_name'   => $event->event,
