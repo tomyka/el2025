@@ -53,24 +53,24 @@
 
     {{-- Shared insert/edit modal --}}
     <div class="modal fade" id="agmEditModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="agmModalHeading"></h5>
+        <div class="modal-dialog modal-dialog-centered" style="max-width:420px">
+            <div class="modal-content" style="border-radius:16px;overflow:hidden;border:1px solid var(--sb-border);box-shadow:0 8px 32px rgba(0,0,0,.12)">
+                <div class="modal-header border-0 px-4 pt-4 pb-0">
+                    <h6 class="modal-title fw-bold" id="agmModalHeading" style="font-size:.9rem"></h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form method="post" id="agmForm">
                     @csrf
                     <input type="hidden" name="gameID" id="agmGameID">
-                    <div class="modal-body">
+                    <div class="modal-body px-4 pt-3 pb-2">
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Data ir laikas</label>
-                            <input type="datetime-local" class="form-control"
+                            <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Data ir laikas</label>
+                            <input type="datetime-local" class="form-control form-control-sm"
                                    name="gameDateTime" id="agmDateTime">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Šeimininkai</label>
-                            <select name="homeTeamID" class="form-select" id="agmHomeTeamID">
+                            <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Šeimininkai</label>
+                            <select name="homeTeamID" class="form-select form-select-sm" id="agmHomeTeamID">
                                 <option value="">—</option>
                                 @foreach($teams as $teamID => $teamName)
                                 <option value="{{ $teamID }}">{{ $teamName }}</option>
@@ -78,8 +78,8 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Svečiai</label>
-                            <select name="awayTeamID" class="form-select" id="agmAwayTeamID">
+                            <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Svečiai</label>
+                            <select name="awayTeamID" class="form-select form-select-sm" id="agmAwayTeamID">
                                 <option value="">—</option>
                                 @foreach($teams as $teamID => $teamName)
                                 <option value="{{ $teamID }}">{{ $teamName }}</option>
@@ -87,8 +87,8 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Etapas</label>
-                            <select name="eventID" class="form-select" id="agmEventID">
+                            <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Etapas</label>
+                            <select name="eventID" class="form-select form-select-sm" id="agmEventID">
                                 <option value="">—</option>
                                 @foreach($events as $eventID => $eventName)
                                 <option value="{{ $eventID }}">{{ $eventName }}</option>
@@ -96,18 +96,18 @@
                             </select>
                         </div>
                     </div>
-                    <div class="modal-footer justify-content-between">
+                    <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-between">
                         @if(session('admin') >= 9)
                         <button type="button" id="agmDeleteBtn"
                                 class="btn btn-outline-danger btn-sm"
                                 onclick="agmConfirmDelete()">
-                            Ištrinti žaidimą
+                            <i class="bi bi-trash3"></i> Ištrinti
                         </button>
                         @else
                         <span></span>
                         @endif
                         <div>
-                            <button type="button" class="btn btn-secondary btn-sm me-2"
+                            <button type="button" class="btn btn-outline-secondary btn-sm me-2"
                                     data-bs-dismiss="modal">Atšaukti</button>
                             <button type="submit" class="btn btn-primary btn-sm">Išsaugoti</button>
                         </div>
