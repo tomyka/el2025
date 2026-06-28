@@ -20,7 +20,8 @@ $grouped = collect($games)
     ->groupBy(fn($g) => $g->event->event_day)
     ->map(fn($dayGames) =>
         $dayGames->first()->event->is_knockout
-            ? collect(['' => $dayGames->sortBy('game_date')])
+            ? $dayGames->sortBy('game_date')
+                       ->groupBy(fn($g) => \Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('Y-m-d'))
             : $dayGames->groupBy(fn($g) => $g->home_team->group_name)
     );
 @endphp
@@ -29,6 +30,7 @@ $grouped = collect($games)
     @foreach($grouped as $eventDay => $groupGroups)
     @php
         $eventName  = $groupGroups->first()->first()->event->event;
+        $isKnockout = $groupGroups->first()->first()->event->is_knockout ?? false;
         $isFinished = $groupGroups->flatten()->every(fn($g) => $g->home_team_score !== null && $g->away_team_score !== null);
         $collapseId = 'evtcol-' . $loop->index;
     @endphp
@@ -46,7 +48,9 @@ $grouped = collect($games)
             @php $firstGame = $groupGames->first(); @endphp
             <div class="pred-day-card">
                 <div class="pred-day-header">
-                    <span>{{ $groupName ? 'Grupė ' . $groupName : 'Rungtynės' }}</span>
+                    <span>{{ $isKnockout
+                        ? ucfirst(\Carbon\Carbon::parse($groupName)->locale('lt')->isoFormat('MMMM D'))
+                        : ($groupName ? 'Grupė ' . $groupName : 'Rungtynės') }}</span>
                 </div>
                 @foreach($groupGames as $game)
                 @php
