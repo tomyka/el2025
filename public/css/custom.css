@@ -1096,7 +1096,6 @@ button.sb-tab::after { display: none; }
 }
 .lb-sub-bingo  { color: var(--sb-text); font-weight: 700; }
 .lb-sub-streak { color: #f97316; font-weight: 700; }
-.lb-sub-hoverable { cursor: help; }
 
 .lb-row {
   display: flex;
@@ -2795,9 +2794,10 @@ p { margin: 0; }
 .pst-table td:first-child { text-align: left; }
 .pst-table tbody tr:last-child td { border-bottom: none; }
 .pst-table tbody tr:hover td { background: rgba(37,99,235,.04); }
-.pst-team  { font-weight: 500; }
-.pst-pts   { font-weight: 600; color: var(--sb-nav); }
-.pst-zero  { color: var(--sb-muted); }
-.pst-total { font-weight: 700; color: var(--sb-nav); }
+.pst-team     { font-weight: 500; }
+.pst-pts      { font-weight: 600; color: var(--sb-nav); }
+.pst-zero     { color: var(--sb-muted); }
+.pst-total    { font-weight: 700; color: var(--sb-nav); }
+.pst-hoverable { cursor: help; }
 
 [data-theme="dark"] .pst-table tbody tr:hover td { background: rgba(255,255,255,.04); }

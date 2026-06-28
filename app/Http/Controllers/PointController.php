@@ -220,11 +220,17 @@ class PointController extends Controller
                                         t.id,
                                         t.team,
                                         SUM(IFNULL(pos.group_position_points,0)) AS group_position_points,
+                                        MAX(pos.group_position_odds)             AS group_position_odds,
                                         SUM(IFNULL(pos.last32_points,0))         AS last32_points,
+                                        MAX(pos.last32_odds)                     AS last32_odds,
                                         SUM(IFNULL(pos.last16_points,0))         AS last16_points,
+                                        MAX(pos.last16_odds)                     AS last16_odds,
                                         SUM(IFNULL(pos.quarterfinal_points,0))   AS quarterfinal_points,
+                                        MAX(pos.quarterfinal_odds)               AS quarterfinal_odds,
                                         SUM(IFNULL(pos.semifinal_points,0))      AS semifinal_points,
-                                        SUM(IFNULL(pos.final_points,0))          AS final_points
+                                        MAX(pos.semifinal_odds)                  AS semifinal_odds,
+                                        SUM(IFNULL(pos.final_points,0))          AS final_points,
+                                        MAX(pos.final_odds)                      AS final_odds
                                         FROM point_standings AS pos
                                         JOIN teams AS t on t.id=pos.team_id
                                         WHERE pos.user_id = ?
