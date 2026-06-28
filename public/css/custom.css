@@ -2261,6 +2261,7 @@ button.sb-tab::after { display: none; }
 }
 
 .sr-pop { font-size: .78rem; min-width: 160px; }
+.sr-pop-sm { font-size: .72rem; min-width: 0; }
 .sr-pop-row { display: flex; justify-content: space-between; gap: 16px; padding: 2px 0; }
 .sr-pop-row span { color: var(--sb-muted); }
 .sr-pop-row strong { font-weight: 700; }

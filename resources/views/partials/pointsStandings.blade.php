@@ -16,9 +16,9 @@
             if ($pts <= 0 || $odds === null || $odds <= 0) return '';
             $base = round($pts / (1 + $odds), 1);
             $mult = round(1 + $odds, 2);
-            return "<div class='sr-pop'>"
-                . "<div class='sr-pop-row'><span>Bazė</span><strong>" . number_format($base, 1) . "</strong></div>"
-                . "<div class='sr-pop-row'><span>Koef.</span><strong>×" . number_format($mult, 2) . "</strong></div>"
+            return "<div class='sr-pop sr-pop-sm'>"
+                . "<div class='sr-pop-row'><span>Spėjimo taškai</span><strong>" . number_format($base, 1) . "</strong></div>"
+                . "<div class='sr-pop-row'><span>Koeficientas</span><strong>×" . number_format($mult, 2) . "</strong></div>"
                 . "</div>";
         }
     @endphp
