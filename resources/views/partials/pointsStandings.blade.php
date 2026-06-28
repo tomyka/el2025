@@ -92,7 +92,7 @@
         <script>
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.pst-hoverable[data-bs-toggle="popover"]').forEach(function (el) {
-                new bootstrap.Popover(el, { container: 'body', html: true });
+                new bootstrap.Popover(el, { container: 'body', html: true, customClass: el.dataset.bsCustomClass || '' });
             });
         });
         </script>
