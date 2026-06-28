@@ -21,7 +21,9 @@ class PredictionResultController extends Controller
             $raw = $this->getPredictionGamesGrouped($userID, $eventFilter ?: null);
             $groupedResults = collect($raw)
                 ->groupBy('event_day')
-                ->map(fn($day) => $day->groupBy('group_name'));
+                ->map(fn($day) => $day->groupBy(
+                    fn($g) => Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('Y-m-d')
+                ));
 
             $events = Event::orderBy('id')->pluck('event', 'id');
 

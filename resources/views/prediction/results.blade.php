@@ -27,7 +27,7 @@
                 @php $hasUnlocked = collect($games)->contains(fn($g) => !$g->locked); @endphp
                 <div class="pred-day-card {{ !$hasUnlocked ? 'd-none d-lg-block' : '' }}">
                     <div class="pred-day-header">
-                        <span>{{ $groupName ? 'Grupė ' . $groupName : 'Rungtynės' }}</span>
+                        <span>{{ ucfirst(\Carbon\Carbon::parse($groupName)->locale('lt')->isoFormat('MMMM D')) }}</span>
                     </div>
                     @foreach($games as $game)
                     @php
