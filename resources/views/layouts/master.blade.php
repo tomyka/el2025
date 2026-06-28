@@ -53,12 +53,13 @@
 
 {{-- Head-to-head comparison modal --}}
 <div class="modal fade" id="cmpModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header border-0 pb-0">
+            <div class="modal-header">
+                <h6 class="modal-title fw-semibold" style="font-size:.9rem;">Žaidėjų palyginimas</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body pt-1" id="cmpModalBody">
+            <div class="modal-body" id="cmpModalBody">
                 <div class="text-center py-4 text-muted">
                     <div class="spinner-border spinner-border-sm" role="status"></div>
                 </div>

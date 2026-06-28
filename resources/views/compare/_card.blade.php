@@ -43,7 +43,7 @@
     </div>
 </div>
 
-<div class="cmp-section-title mt-3">Bendri statistikos</div>
+<div class="cmp-section-title">Bendri statistikos</div>
 <div class="cmp-stats-table">
     <div class="cmp-stats-row cmp-stats-header">
         <span class="cmp-stats-me">{{ $myData['username'] }}</span>
