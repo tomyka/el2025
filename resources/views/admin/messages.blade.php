@@ -49,9 +49,9 @@
                                    name="active" {{ $message->active ? 'checked' : '' }}>
                         </div>
                     </td>
-                    <td class="text-end" style="white-space:nowrap;">
+                    <td class="text-end am-col-actions">
                         <button type="submit" name="update" value="1"
-                                class="btn btn-sm btn-outline-secondary am-action-btn"
+                                class="btn btn-sm btn-outline-primary am-action-btn"
                                 title="Išsaugoti">
                             <i class="bi bi-check-lg"></i>
                         </button>

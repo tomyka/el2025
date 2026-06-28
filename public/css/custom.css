@@ -2034,7 +2034,7 @@ button.sb-tab::after { display: none; }
 .am-col-msg     { min-width: 200px; }
 .am-col-group   { width: 160px; }
 .am-col-active  { width: 72px; }
-.am-col-actions { width: 80px; }
+.am-col-actions { width: 80px; white-space: nowrap; }
 
 .am-id     { font-size: .75rem; color: var(--sb-muted); }
 .am-select { font-size: .82rem; }
