@@ -42,9 +42,17 @@
              @if($hasHistory) x-on:click="open = !open" @endif>
             <div class="lb-rank {{ $rank <= 3 ? 'lb-rank-' . $rank : 'lb-rank-n' }}">{{ $rank }}</div>
             <div class="lb-name {{ $isMe ? 'lb-me-name' : '' }}">
+                @if(!$isMe)
+                <a class="lb-name-btn lb-name-link"
+                   href="{{ route('compare.show', $point['userID']) }}"
+                   @if($tooltipTitle) data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $tooltipTitle }}" @endif
+                   @if($hasHistory) x-on:click.stop @endif
+                >{{ $point['username'] }}</a>
+                @else
                 <span class="lb-name-btn"
                       @if($tooltipTitle) data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $tooltipTitle }}" @endif
                 >{{ $point['username'] }}</span>
+                @endif
             </div>
             <div class="lb-sub-col d-none d-md-block">{{ number_format($point['userGamePoints'], 1) }}</div>
             @php

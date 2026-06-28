@@ -18,6 +18,7 @@ use App\Http\Controllers\ChartController;
 use App\Http\Controllers\PointStandingController;
 use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\AuditController;
+use App\Http\Controllers\CompareController;
 use Illuminate\Support\Facades\Route;
 
 /*Original routes start*/
@@ -83,6 +84,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/leagues/decline', [LeagueController::class, 'declineInvite'])->name('leagues.decline');
     Route::post('/leagues/switch', [LeagueController::class, 'switchLeague'])->name('leagues.switch');
     Route::post('/leagues/leave',  [LeagueController::class, 'leaveLeague'])->name('leagues.leave');
+    Route::get('/compare/{userID}', [CompareController::class, 'show'])->name('compare.show')->where('userID', '[0-9]+');
+
     Route::get('/leagues/searchUsers', [LeagueController::class, 'searchUsers'])->name('leagues.searchUsers');
     Route::post('/leagues/update',     [LeagueController::class, 'update'])->name('leagues.update');
     Route::post('/leagues/delete',     [LeagueController::class, 'deleteLeague'])->name('leagues.delete');

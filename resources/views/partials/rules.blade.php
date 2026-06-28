@@ -22,7 +22,7 @@
             <div class="rules-stage">
                 <div class="rules-stage-badge">II</div>
                 <div>
-                    <strong>Nokautų etapas</strong>
+                    <strong>Atkrintamųjų etapas</strong>
                     <p>Nuoseklus šešioliktfinalių, aštuntfinalių, ketvirtfinalių, pusfinalių ir finalo rezultatų spėjimas.</p>
                 </div>
             </div>
@@ -48,7 +48,7 @@
         <div class="rules-scoring-grid">
             <div class="rules-scoring-item">
                 <div class="rules-scoring-pts">(1+Koef.)×5</div>
-                <div class="rules-scoring-label">Nugalėtojas — su odds premija</div>
+                <div class="rules-scoring-label">Nugalėtojas — su koeficiento premija</div>
             </div>
             <div class="rules-scoring-item">
                 <div class="rules-scoring-pts">5 − Δ</div>
@@ -108,15 +108,14 @@
 
     {{-- ── Odds ────────────────────────────────────────────────────── --}}
     <div class="sb-card">
-        <div class="sb-card-title"><i class="bi bi-graph-up sb-card-icon"></i> Koeficientas (Odds)</div>
+        <div class="sb-card-title"><i class="bi bi-graph-up sb-card-icon"></i> Koeficientas</div>
 
         <div class="rules-section">
             <p>Koeficientas atlygina už drąsų, retai atspėtą spėjimą — kuo mažiau dalyvių pasirinko tą baigtį, tuo daugiau taškų už nugalėtoją.</p>
             <ul class="rules-list">
                 <li>Koef. formulė: <code>log₂(Dalyvių_skaičius / Spėjusiųjų_šią_baigtį)</code></li>
-                <li>Nugalėtojo taškai: <code>(1 + Koef.) × 5</code></li>
                 <li>Taikomas tik atspėjus nugalėtoją.</li>
-                <li>Automatiškai sugeneruotiems spėjimams koeficientas = 0, todėl nugalėtojo taškai = 5.</li>
+                <li>Automatiškai sugeneruotiems spėjimams koeficientas = 0</li>
             </ul>
 
             <table class="rules-table mt-3" style="max-width:340px;">
