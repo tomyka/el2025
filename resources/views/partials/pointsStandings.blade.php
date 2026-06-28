@@ -41,12 +41,12 @@
                 @endphp
                 <tr>
                     <td class="pst-team">{{ $r->team }}</td>
-                    <td class="{{ $r->group_position_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->group_position_points ?: '—' }}</td>
-                    @if($hasLast32)<td class="{{ $r->last32_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->last32_points ?: '—' }}</td>@endif
-                    @if($hasLast16)<td class="{{ $r->last16_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->last16_points ?: '—' }}</td>@endif
-                    @if($hasQF)<td class="{{ $r->quarterfinal_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->quarterfinal_points ?: '—' }}</td>@endif
-                    @if($hasSF)<td class="{{ $r->semifinal_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->semifinal_points ?: '—' }}</td>@endif
-                    @if($hasFinal)<td class="{{ $r->final_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->final_points ?: '—' }}</td>@endif
+                    <td class="{{ $r->group_position_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->group_position_points ? number_format($r->group_position_points, 1) : '—' }}</td>
+                    @if($hasLast32)<td class="{{ $r->last32_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->last32_points ? number_format($r->last32_points, 1) : '—' }}</td>@endif
+                    @if($hasLast16)<td class="{{ $r->last16_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->last16_points ? number_format($r->last16_points, 1) : '—' }}</td>@endif
+                    @if($hasQF)<td class="{{ $r->quarterfinal_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->quarterfinal_points ? number_format($r->quarterfinal_points, 1) : '—' }}</td>@endif
+                    @if($hasSF)<td class="{{ $r->semifinal_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->semifinal_points ? number_format($r->semifinal_points, 1) : '—' }}</td>@endif
+                    @if($hasFinal)<td class="{{ $r->final_points > 0 ? 'pst-pts' : 'pst-zero' }}">{{ $r->final_points ? number_format($r->final_points, 1) : '—' }}</td>@endif
                     <td class="pst-total">{{ number_format($total, 1) }}</td>
                 </tr>
                 @endforeach
