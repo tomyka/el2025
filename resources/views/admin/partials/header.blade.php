@@ -75,7 +75,7 @@
       </a>
       <a class="sb-nav-link {{ request()->routeIs('admin.events') ? 'active' : '' }}"
          href="{{ route('admin.events') }}">
-        <i class="bi bi-trophy"></i> Įvykiai
+        <i class="bi bi-trophy"></i> Turai
       </a>
       @if(session('admin') >= 9)
       <a class="sb-nav-link" href="{{ route('admin.updateStandingPoints') }}">
@@ -120,7 +120,7 @@
       </a>
       <a class="sb-nav-link {{ request()->routeIs('admin.events') ? 'active' : '' }}"
          href="{{ route('admin.events') }}">
-        <i class="bi bi-trophy"></i> Įvykiai
+        <i class="bi bi-trophy"></i> Turai
       </a>
       @if(session('admin') >= 9)
       <a class="sb-nav-link" href="{{ route('admin.updateStandingPoints') }}">
