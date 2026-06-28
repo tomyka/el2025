@@ -23,7 +23,7 @@ class PredictionResultController extends Controller
                 ->groupBy('event_day')
                 ->map(fn($day) => $day->groupBy(
                     fn($g) => Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('Y-m-d')
-                )->sortKeys());
+                )->sortKeys()->map(fn($dayGames) => $dayGames->sortBy('game_date')));
 
             $events = Event::orderBy('id')->pluck('event', 'id');
 
