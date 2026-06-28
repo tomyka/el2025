@@ -296,6 +296,7 @@ class PointResultController extends Controller
 
         $homeTeamScore = $game->home_team_score;
         $awayTeamScore = $game->away_team_score;
+        $isKnockout    = (bool) $event->is_knockout;
 
         $this->deletePointResultGamePoints($gameID);
 
@@ -313,14 +314,79 @@ class PointResultController extends Controller
             ->where('game_id', $gameID)
             ->get();
 
-        foreach ($predictionResults as $predictionResult) {
-            $tablePoints  = $this->scoring->getTablePoints($homeTeamScore, $awayTeamScore, $predictionResult->home_team_score, $predictionResult->away_team_score, $pointsLookup);
-            $winnerDir    = $this->scoring->getWinnerPoints($homeTeamScore, $awayTeamScore, $predictionResult->home_team_score, $predictionResult->away_team_score);
-            $odds         = $this->scoring->getGameOdds($predictionResult->home_team_score, $predictionResult->away_team_score, $gameOdds, $predictionResult->generated);
-            $winnerBonus  = $winnerDir > 0 ? (1 + $odds) * 5.0 : 0.0;
-            $bingoPoints  = $this->scoring->getBingoPoints($homeTeamScore, $awayTeamScore, (int) $predictionResult->home_team_score, (int) $predictionResult->away_team_score);
-            $points       = $this->scoring->calculateGamePoints($winnerBonus, $tablePoints, 0.0, $bingoPoints, $odds, $event->rate);
+        // For knockout rounds, resolve the actual ultimate winner once
+        $actualIsDraw   = false;
+        $actualWinnerId = null;
+        if ($isKnockout) {
+            $actualIsDraw = ((int) $homeTeamScore === (int) $awayTeamScore);
+            if ((int) $homeTeamScore > (int) $awayTeamScore) {
+                $actualWinnerId = $game->home_team_id;
+            } elseif ((int) $homeTeamScore < (int) $awayTeamScore) {
+                $actualWinnerId = $game->away_team_id;
+            } else {
+                $actualWinnerId = $game->game_winner_id; // set by admin
+            }
+        }
 
+        foreach ($predictionResults as $predictionResult) {
+            $tablePoints = $this->scoring->getTablePoints(
+                $homeTeamScore, $awayTeamScore,
+                $predictionResult->home_team_score, $predictionResult->away_team_score,
+                $pointsLookup
+            );
+
+            if ($isKnockout && $predictionResult->home_team_score !== null && $predictionResult->away_team_score !== null) {
+                $predHome   = (int) $predictionResult->home_team_score;
+                $predAway   = (int) $predictionResult->away_team_score;
+                $predIsDraw = ($predHome === $predAway);
+
+                // Resolve predicted ultimate winner
+                if ($predHome > $predAway) {
+                    $predWinnerId = $game->home_team_id;
+                } elseif ($predHome < $predAway) {
+                    $predWinnerId = $game->away_team_id;
+                } else {
+                    $predWinnerId = $predictionResult->game_winner_id;
+                }
+
+                $odds = $this->scoring->getGameOdds($predHome, $predAway, $gameOdds, $predictionResult->generated);
+
+                if ($predWinnerId !== null && $actualWinnerId !== null && (int) $predWinnerId === (int) $actualWinnerId) {
+                    if ($predIsDraw === $actualIsDraw) {
+                        // Same winner, same path (both normal-time or both penalties) — full points + odds
+                        $winnerBonus = (1 + $odds) * 5.0;
+                    } else {
+                        // Same ultimate winner but different path — half winner, no odds
+                        $winnerBonus = 2.5;
+                        $odds        = 0.0;
+                    }
+                } else {
+                    $winnerBonus = 0.0;
+                    $odds        = 0.0;
+                }
+
+                // Bingo requires exact score AND correct penalty winner (if draw)
+                $scoreMatch   = ((int) $homeTeamScore === $predHome && (int) $awayTeamScore === $predAway);
+                $penaltyMatch = !$actualIsDraw || ($actualWinnerId !== null && (int) $actualWinnerId === (int) $predWinnerId);
+                $bingoPoints  = ($scoreMatch && $penaltyMatch) ? 2.5 : 0.0;
+            } else {
+                // Group stage — original logic
+                $winnerDir   = $this->scoring->getWinnerPoints(
+                    $homeTeamScore, $awayTeamScore,
+                    $predictionResult->home_team_score, $predictionResult->away_team_score
+                );
+                $odds        = $this->scoring->getGameOdds(
+                    $predictionResult->home_team_score, $predictionResult->away_team_score,
+                    $gameOdds, $predictionResult->generated
+                );
+                $winnerBonus = $winnerDir > 0 ? (1 + $odds) * 5.0 : 0.0;
+                $bingoPoints = $this->scoring->getBingoPoints(
+                    $homeTeamScore, $awayTeamScore,
+                    (int) $predictionResult->home_team_score, (int) $predictionResult->away_team_score
+                );
+            }
+
+            $points = $this->scoring->calculateGamePoints($winnerBonus, $tablePoints, 0.0, $bingoPoints, $odds, $event->rate);
             $this->insertPointResultUser($predictionResult->user_id, $gameID, $points);
         }
     }
