@@ -57,7 +57,7 @@
                     <td class="pst-team">{{ $r->team }}</td>
                     <td class="{{ $r->group_position_points > 0 ? 'pst-pts' : 'pst-zero' }} {{ $gpPop ? 'pst-hoverable' : '' }}"
                         @if($gpPop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" data-bs-content="{{ $gpPop }}" @endif
-                    >{{ $r->group_position_points ? number_format($r->group_position_points, 1) : '—' }}</td>
+                    >{{ number_format($r->group_position_points, 1) }}</td>
                     @if($hasLast32)
                     <td class="{{ $r->last32_points > 0 ? 'pst-pts' : 'pst-zero' }} {{ $l32Pop ? 'pst-hoverable' : '' }}"
                         @if($l32Pop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" data-bs-content="{{ $l32Pop }}" @endif
