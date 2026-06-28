@@ -1123,6 +1123,35 @@ button.sb-tab::after { display: none; }
 .lb-sub-bingo  { color: var(--sb-text); font-weight: 700; }
 .lb-sub-streak { color: #f97316; font-weight: 700; }
 
+.lb-separator {
+  text-align: center;
+  letter-spacing: 4px;
+  color: var(--sb-muted);
+  font-size: .65rem;
+  padding: 3px 0;
+  border-bottom: 1px solid #f1f5f9;
+  opacity: .5;
+}
+.lb-show-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--sb-border);
+  padding: 8px 0 0;
+  margin-top: 4px;
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  color: var(--sb-muted);
+  cursor: pointer;
+}
+.lb-show-more:hover { color: var(--sb-nav); }
+
 .lb-row {
   display: flex;
   align-items: center;

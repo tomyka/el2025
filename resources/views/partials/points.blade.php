@@ -1,8 +1,12 @@
-<div class="sb-card">
+@php
+    $lbLimit   = 5;
+    $lbTotal   = count($points);
+    $myRankIdx = collect($points)->search(fn($p) => session('userID') == $p['userID']);
+    $myRank    = $myRankIdx !== false ? $myRankIdx + 1 : null;
+    $userInTop = $myRank !== null && $myRank <= $lbLimit;
+@endphp
+<div class="sb-card" x-data="{ expanded: false }">
     <div class="sb-card-title"><i class="bi bi-trophy-fill sb-card-icon"></i> Taškų lentelė</div>
-    @php
-        $feeRequired = isset($groupDetails) && $groupDetails->fee > 0;
-    @endphp
     <div class="lb-header">
         <span class="lb-header-rank">#</span>
         <span class="lb-header-name">Žaidėjas</span>
@@ -12,22 +16,28 @@
         <span class="lb-header-sub d-none d-md-block" title="Išlikimo taškai"><i class="bi bi-shield-check"></i></span>
         @endif
         <span class="lb-header-sub d-none d-md-block" title="Serija (iš eilės pataikytų spėjimų premija)"><i class="bi bi-fire"></i></span>
-
         <span class="lb-header-sub lb-header-sub-bingo d-none d-md-block" title="Bingo"><i class="bi bi-bullseye"></i></span>
         <span class="lb-header-total">Taškai</span>
         <span class="lb-header-chevron"></span>
     </div>
+
     @foreach($points as $point)
     @php
-        $total     = $point['userGamePoints'] + ($point['userStreakPoints'] ?? 0) + $point['standingPoints']->total_points + $point['survivalPoints'];
-        $rank      = $loop->iteration;
-        $isMe      = session('userID') == $point['userID'];
-        $fullName  = trim($point['name'] . ' ' . $point['surname']);
+        $total        = $point['userGamePoints'] + ($point['userStreakPoints'] ?? 0) + $point['standingPoints']->total_points + $point['survivalPoints'];
+        $rank         = $loop->iteration;
+        $isMe         = session('userID') == $point['userID'];
+        $hidden       = $rank > $lbLimit && !$isMe;
+        $pinned       = !$userInTop && $isMe && $rank > $lbLimit;
+        $fullName     = trim($point['name'] . ' ' . $point['surname']);
         $tooltipTitle = $fullName ?: null;
-
-        $hasHistory = !empty($point['roundHistory']);
+        $hasHistory   = !empty($point['roundHistory']);
     @endphp
-    <div class="lb-entry" x-data="{ open: false }">
+
+    @if($pinned)
+    <div class="lb-separator" x-show="!expanded">···</div>
+    @endif
+
+    <div class="lb-entry" @if($hidden) x-show="expanded" @endif x-data="{ open: false }">
         <div class="lb-row {{ $isMe ? 'lb-me-row' : '' }} {{ $hasHistory ? 'lb-row-expandable' : '' }}"
              @if($hasHistory) x-on:click="open = !open" @endif>
             <div class="lb-rank {{ $rank <= 3 ? 'lb-rank-' . $rank : 'lb-rank-n' }}">{{ $rank }}</div>
@@ -125,4 +135,11 @@
         @endif
     </div>
     @endforeach
+
+    @if($lbTotal > $lbLimit)
+    <button class="lb-show-more" @click="expanded = !expanded">
+        <i class="bi" :class="expanded ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+        <span x-text="expanded ? 'Rodyti mažiau' : 'Rodyti visus ({{ $lbTotal }})'"></span>
+    </button>
+    @endif
 </div>
