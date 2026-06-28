@@ -102,17 +102,25 @@ class PointStandingController extends Controller
 
         $teams = Team::all();
 
+        $active = [
+            'last32'       => $teams->contains(fn($t) => $t->last32),
+            'last16'       => $teams->contains(fn($t) => $t->last16),
+            'quarterfinal' => $teams->contains(fn($t) => $t->quarterfinal),
+            'semifinal'    => $teams->contains(fn($t) => $t->semifinal),
+            'final'        => $teams->contains(fn($t) => $t->final > 0),
+        ];
+
         foreach ($teams as $team) {
             foreach (PredictionStanding::where('team_id', $team->id)->get() as $prediction) {
                 $pointStanding                          = new PointStanding();
                 $pointStanding->team_id                 = $team->id;
                 $pointStanding->user_id                 = $prediction->user_id;
                 $pointStanding->group_position_points   = $this->scoring->calculateGroupPositionPoints($team->group_position, $prediction->group_position);
-                $pointStanding->last32_points           = $this->scoring->calculateKnockoutPoints($team->last32, $prediction->last32, 3);
-                $pointStanding->last16_points           = $this->scoring->calculateKnockoutPoints($team->last16, $prediction->last16, 60);
-                $pointStanding->quarterfinal_points     = $this->scoring->calculateKnockoutPoints($team->quarterfinal, $prediction->quarterfinal, 90);
-                $pointStanding->semifinal_points        = $this->scoring->calculateKnockoutPoints($team->semifinal, $prediction->semifinal, 120);
-                $pointStanding->final_points            = $this->scoring->calculateFinalPoints($team->final, $prediction->final);
+                $pointStanding->last32_points           = $active['last32']       ? $this->scoring->calculateKnockoutPoints($team->last32, $prediction->last32, 3)              : null;
+                $pointStanding->last16_points           = $active['last16']       ? $this->scoring->calculateKnockoutPoints($team->last16, $prediction->last16, 6)              : null;
+                $pointStanding->quarterfinal_points     = $active['quarterfinal'] ? $this->scoring->calculateKnockoutPoints($team->quarterfinal, $prediction->quarterfinal, 12) : null;
+                $pointStanding->semifinal_points        = $active['semifinal']    ? $this->scoring->calculateKnockoutPoints($team->semifinal, $prediction->semifinal, 120)      : null;
+                $pointStanding->final_points            = $active['final']        ? $this->scoring->calculateFinalPoints($team->final, $prediction->final)                      : null;
                 $pointStanding->save();
             }
         }
