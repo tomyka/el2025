@@ -84,3 +84,47 @@ services:
             interval: 10s
             timeout: 3s
             retries: 5
+
+    scheduler:
+        build:
+            context: ./docker/php
+            dockerfile: Dockerfile
+            args:
+                PHP_VERSION: '${PHP_VERSION:-8.2}'
+        container_name: scheduler
+        restart: unless-stopped
+        command: ['php', 'artisan', 'schedule:work']
+        volumes:
+            - ./:/var/www/html:delegated
+        environment:
+            APP_ENV: '${APP_ENV:-local}'
+            APP_DEBUG: '${APP_DEBUG:-true}'
+        depends_on:
+            php:
+                condition: service_healthy
+            mysql:
+                condition: service_healthy
+        networks:
+            - laravel
+
+    worker:
+        build:
+            context: ./docker/php
+            dockerfile: Dockerfile
+            args:
+                PHP_VERSION: '${PHP_VERSION:-8.2}'
+        container_name: worker
+        restart: unless-stopped
+        command: ['php', 'artisan', 'queue:work', '--sleep=3', '--tries=3', '--max-time=3600']
+        volumes:
+            - ./:/var/www/html:delegated
+        environment:
+            APP_ENV: '${APP_ENV:-local}'
+            APP_DEBUG: '${APP_DEBUG:-true}'
+        depends_on:
+            php:
+                condition: service_healthy
+            mysql:
+                condition: service_healthy
+        networks:
+            - laravel
