@@ -1,5 +1,6 @@
 <html>
 <head>
+    <script>(function(){try{if(localStorage.getItem('sb-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})()</script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow"/>
@@ -19,6 +20,14 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
 </head>
 <body class="sb-layout">
+<script>
+    function sbToggleTheme() {
+        var d = document.documentElement;
+        var dark = d.getAttribute('data-theme') === 'dark';
+        d.setAttribute('data-theme', dark ? 'light' : 'dark');
+        try { localStorage.setItem('sb-theme', dark ? 'light' : 'dark'); } catch(e) {}
+    }
+</script>
 
 @if (session('admin') > 0)
     @include('admin.partials.header')

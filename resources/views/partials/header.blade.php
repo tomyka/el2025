@@ -16,6 +16,10 @@
       @auth
       {{-- Desktop: username + avatar dropdown --}}
       <div class="sb-top-user d-none d-lg-flex">
+        <button class="sb-theme-btn" onclick="sbToggleTheme()" title="Keisti temą" aria-label="Keisti temą">
+          <i class="bi bi-sun-fill sb-theme-sun"></i>
+          <i class="bi bi-moon-fill sb-theme-moon"></i>
+        </button>
         <span class="sb-top-username">{{ Auth::user()->username ?? '' }}</span>
         <div class="dropdown">
           <button class="sb-top-avatar dropdown-toggle" type="button"
@@ -40,17 +44,29 @@
         </div>
       </div>
 
-      {{-- Mobile: hamburger --}}
-      <button class="sb-toggler d-lg-none" type="button"
-              data-bs-toggle="collapse" data-bs-target="#sbNavMobile"
-              aria-controls="sbNavMobile" aria-expanded="false" aria-label="Atidaryti meniu">
-        <i class="bi bi-list"></i>
-      </button>
+      {{-- Mobile: theme toggle + hamburger --}}
+      <div class="d-flex d-lg-none align-items-center ms-auto gap-1">
+        <button class="sb-theme-btn" onclick="sbToggleTheme()" title="Keisti temą" aria-label="Keisti temą">
+          <i class="bi bi-sun-fill sb-theme-sun"></i>
+          <i class="bi bi-moon-fill sb-theme-moon"></i>
+        </button>
+        <button class="sb-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#sbNavMobile"
+                aria-controls="sbNavMobile" aria-expanded="false" aria-label="Atidaryti meniu">
+          <i class="bi bi-list"></i>
+        </button>
+      </div>
 
       <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
       @else
-      <a class="sb-nav-pill sb-nav-pill--ghost" href="{{ route('charity') }}"><i class="bi bi-heart-fill" style="font-size:.75rem;"></i> Jaunimo linija</a>
-      <a class="sb-nav-pill" href="{{ route('login') }}">Prisijungti</a>
+      <div class="ms-auto d-flex align-items-center gap-1">
+        <button class="sb-theme-btn" onclick="sbToggleTheme()" title="Keisti temą" aria-label="Keisti temą">
+          <i class="bi bi-sun-fill sb-theme-sun"></i>
+          <i class="bi bi-moon-fill sb-theme-moon"></i>
+        </button>
+        <a class="sb-nav-pill sb-nav-pill--ghost" style="margin-left:0" href="{{ route('charity') }}"><i class="bi bi-heart-fill" style="font-size:.75rem;"></i> Jaunimo linija</a>
+        <a class="sb-nav-pill ms-0" href="{{ route('login') }}">Prisijungti</a>
+      </div>
       @endauth
 
     </div>

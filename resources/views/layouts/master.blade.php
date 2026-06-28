@@ -1,5 +1,6 @@
 <html>
 <head>
+    <script>(function(){try{if(localStorage.getItem('sb-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})()</script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow"/>
@@ -20,6 +21,12 @@
 </head>
 <body class="sb-layout">
 <script>
+    function sbToggleTheme() {
+        var d = document.documentElement;
+        var dark = d.getAttribute('data-theme') === 'dark';
+        d.setAttribute('data-theme', dark ? 'light' : 'dark');
+        try { localStorage.setItem('sb-theme', dark ? 'light' : 'dark'); } catch(e) {}
+    }
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (el) {
             new bootstrap.Popover(el);
