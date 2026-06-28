@@ -16,6 +16,7 @@ class ActivityFeedController extends Controller
             ->join('teams as ht', 'ht.id', '=', 'g.home_team_id')
             ->join('teams as at', 'at.id', '=', 'g.away_team_id')
             ->where('lm.league_id', $leagueID)
+            ->where('lm.active', true)
             ->where('lm.is_guest', '<=', session('guest', 0))
             ->whereNotNull('g.home_team_score')
             ->whereNotNull('g.away_team_score')
