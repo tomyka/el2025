@@ -1,5 +1,5 @@
 @php
-    $lbLimit   = 5;
+    $lbLimit   = 10;
     $lbTotal   = count($points);
     $myRankIdx = collect($points)->search(fn($p) => session('userID') == $p['userID']);
     $myRank    = $myRankIdx !== false ? $myRankIdx + 1 : null;

@@ -40,13 +40,16 @@
             $ptCol   = $stage['pts'];
             $odCol   = $stage['odds'];
             $stTotal = $pts->sum($ptCol);
-            $showAll = !empty($stage['always']);
-            $withPts = $showAll
-                ? $pts->sortByDesc($ptCol)->values()
+            $isGroupStage = !empty($stage['always']);
+            $withPts = $isGroupStage
+                ? $pts->sortBy('team')->values()
                 : $pts->filter(fn($r) => (float)$r->$ptCol > 0)->sortByDesc($ptCol)->values();
-            $zeroPts = $showAll
+            $zeroPts = $isGroupStage
                 ? collect()
                 : $pts->filter(fn($r) => (float)$r->$ptCol <= 0)->sortBy('team')->values();
+            $groupedByName = $isGroupStage
+                ? $withPts->groupBy('group_name')->sortKeys()
+                : null;
             $colId   = 'pst-stage-' . $si;
             $zeroId  = 'pst-zero-' . $si;
         @endphp
@@ -59,10 +62,22 @@
                 <i class="bi bi-chevron-down pst-stage-chevron"></i>
             </div>
             <div id="{{ $colId }}" class="collapse show">
+                @if($groupedByName)
+                    @foreach($groupedByName as $groupName => $groupTeams)
+                    <div class="pst-group-label">{{ $groupName ? 'Grupė ' . $groupName : '' }}</div>
+                    @foreach($groupTeams as $r)
+                    @php $pop = pstPopover((float)$r->$ptCol, isset($r->$odCol) ? (float)$r->$odCol : null); @endphp
+                    <div class="pst-stage-row">
+                        <span class="pst-stage-team">{{ $r->team }}</span>
+                        <span class="{{ (float)$r->$ptCol > 0 ? 'pst-pts' : 'pst-zero' }} {{ $pop ? 'pst-hoverable' : '' }}"
+                            @if($pop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="left" data-bs-content="{{ $pop }}" @endif
+                        >{{ number_format((float)$r->$ptCol, 1) }}</span>
+                    </div>
+                    @endforeach
+                    @endforeach
+                @else
                 @foreach($withPts as $r)
-                @php
-                    $pop = pstPopover((float)$r->$ptCol, isset($r->$odCol) ? (float)$r->$odCol : null);
-                @endphp
+                @php $pop = pstPopover((float)$r->$ptCol, isset($r->$odCol) ? (float)$r->$odCol : null); @endphp
                 <div class="pst-stage-row">
                     <span class="pst-stage-team">{{ $r->team }}</span>
                     <span class="pst-pts {{ $pop ? 'pst-hoverable' : '' }}"
@@ -70,6 +85,7 @@
                     >{{ number_format((float)$r->$ptCol, 1) }}</span>
                 </div>
                 @endforeach
+                @endif
 
                 @if($zeroPts->isNotEmpty())
                 <button class="pst-zero-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#{{ $zeroId }}" aria-expanded="false">

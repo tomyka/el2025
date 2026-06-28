@@ -219,6 +219,7 @@ class PointController extends Controller
         $PredictionStandingsUserPoints = DB::select('SELECT
                                         t.id,
                                         t.team,
+                                        t.group_name,
                                         SUM(IFNULL(pos.group_position_points,0)) AS group_position_points,
                                         MAX(pos.group_position_odds)             AS group_position_odds,
                                         SUM(IFNULL(pos.last32_points,0))         AS last32_points,

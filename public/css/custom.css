@@ -2872,6 +2872,15 @@ p { margin: 0; }
   color: var(--sb-text);
 }
 .pst-stage-row-zero { opacity: .5; }
+.pst-group-label {
+  font-size: .6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--sb-muted);
+  padding: 6px 0 2px;
+  opacity: .7;
+}
 .pst-zero-toggle {
   display: flex;
   align-items: center;
