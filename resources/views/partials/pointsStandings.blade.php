@@ -20,11 +20,11 @@
 
         $stageDefs = [
             ['key' => 'group_position', 'label' => 'Grupių etapas', 'pts' => 'group_position_points', 'odds' => 'group_position_odds', 'always' => true],
-            ['key' => 'last32',         'label' => '1/16',           'pts' => 'last32_points',         'odds' => 'last32_odds'],
-            ['key' => 'last16',         'label' => '1/8',            'pts' => 'last16_points',         'odds' => 'last16_odds'],
-            ['key' => 'quarterfinal',   'label' => '1/4',            'pts' => 'quarterfinal_points',   'odds' => 'quarterfinal_odds'],
-            ['key' => 'semifinal',      'label' => 'Pusfinalis',     'pts' => 'semifinal_points',      'odds' => 'semifinal_odds'],
-            ['key' => 'final',          'label' => 'Finalas',        'pts' => 'final_points',          'odds' => 'final_odds'],
+            ['key' => 'last32',         'label' => 'Šešioliktfinalis', 'pts' => 'last32_points',         'odds' => 'last32_odds'],
+            ['key' => 'last16',         'label' => 'Aštuntfinalis',   'pts' => 'last16_points',         'odds' => 'last16_odds'],
+            ['key' => 'quarterfinal',   'label' => 'Ketvirtfinalis',  'pts' => 'quarterfinal_points',   'odds' => 'quarterfinal_odds'],
+            ['key' => 'semifinal',      'label' => 'Pusfinalis',      'pts' => 'semifinal_points',      'odds' => 'semifinal_odds'],
+            ['key' => 'final',          'label' => 'Finalas',         'pts' => 'final_points',          'odds' => 'final_odds'],
         ];
 
         $activeStages = array_values(array_filter($stageDefs, function ($s) use ($pts) {
