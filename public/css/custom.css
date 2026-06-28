@@ -2320,6 +2320,7 @@ button.sb-tab::after { display: none; }
 .sr-pop-row { display: flex; justify-content: space-between; gap: 16px; padding: 2px 0; }
 .sr-pop-row span { color: var(--sb-muted); }
 .sr-pop-row strong { font-weight: 700; }
+.sr-pop-sub { padding-left: 10px; opacity: .8; }
 
 /* Logged-in user's column highlight — must be opaque so sticky header/footer don't bleed */
 .sr-my-col { background: #f0f0ff !important; }

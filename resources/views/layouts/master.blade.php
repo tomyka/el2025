@@ -29,7 +29,10 @@
     }
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (el) {
-            new bootstrap.Popover(el);
+            new bootstrap.Popover(el, {
+                html: el.dataset.bsHtml === 'true',
+                container: 'body'
+            });
         });
         document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
             new bootstrap.Tooltip(el);

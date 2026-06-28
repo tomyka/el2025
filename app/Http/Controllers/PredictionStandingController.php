@@ -68,16 +68,22 @@ class PredictionStandingController extends Controller
                                 ,t.team
                                 ,ps.group_position
                                 ,IFNULL(pos.group_position_points,0) AS group_position_points
+                                ,pos.group_position_odds               AS group_position_odds
                                 ,ps.last32
-                                ,IFNULL(pos.last32_points,0) AS last32_points
+                                ,IFNULL(pos.last32_points,0)         AS last32_points
+                                ,pos.last32_odds                       AS last32_odds
                                 ,ps.last16
-                                ,IFNULL(pos.last16_points,0) AS last16_points
+                                ,IFNULL(pos.last16_points,0)         AS last16_points
+                                ,pos.last16_odds                       AS last16_odds
                                 ,ps.quarterfinal
-                                ,pos.quarterfinal_points AS quarterfinal_points
+                                ,IFNULL(pos.quarterfinal_points,0)   AS quarterfinal_points
+                                ,pos.quarterfinal_odds                 AS quarterfinal_odds
                                 ,ps.semifinal
-                                ,IFNULL(pos.semifinal_points,0) AS semifinal_points
+                                ,IFNULL(pos.semifinal_points,0)      AS semifinal_points
+                                ,pos.semifinal_odds                    AS semifinal_odds
                                 ,ps.final
-                                ,pos.final_points AS final_points
+                                ,IFNULL(pos.final_points,0)          AS final_points
+                                ,pos.final_odds                        AS final_odds
                               FROM users AS u
                                 JOIN prediction_standings AS ps ON u.id=ps.user_id
                                 LEFT JOIN point_standings AS pos ON u.id = pos.user_id and ps.team_id=pos.team_id

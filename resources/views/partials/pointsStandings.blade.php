@@ -8,7 +8,7 @@
 
         if (!function_exists('pstPopover')) {
             function pstPopover(float $pts, ?float $odds): string {
-                if ($pts <= 0 || $odds === null || $odds <= 0) return '';
+                if ($pts <= 0 || $odds === null) return '';
                 $base = round($pts / (1 + $odds), 1);
                 $mult = round(1 + $odds, 2);
                 return "<div class='sr-pop sr-pop-sm'>"

@@ -13,6 +13,34 @@
 
     $teamGroups = $teams->groupBy('group_name')->sortKeys();
 
+    if (!function_exists('sstPopover')) {
+        function sstPopover(object $ps): string {
+            $stageDefs = [
+                ['label' => 'Grupių etapas',    'pts' => 'group_position_points', 'odds' => 'group_position_odds'],
+                ['label' => 'Šešioliktfinalis', 'pts' => 'last32_points',         'odds' => 'last32_odds'],
+                ['label' => 'Aštuntfinalis',    'pts' => 'last16_points',         'odds' => 'last16_odds'],
+                ['label' => 'Ketvirtfinalis',   'pts' => 'quarterfinal_points',   'odds' => 'quarterfinal_odds'],
+                ['label' => 'Pusfinalis',       'pts' => 'semifinal_points',      'odds' => 'semifinal_odds'],
+                ['label' => 'Finalas',          'pts' => 'final_points',          'odds' => 'final_odds'],
+            ];
+            $rows = '';
+            foreach ($stageDefs as $s) {
+                $ptVal  = (float)($ps->{$s['pts']} ?? 0);
+                $odVal  = isset($ps->{$s['odds']}) ? (float)$ps->{$s['odds']} : null;
+                if ($ptVal <= 0) continue;
+                $rows .= "<div class='sr-pop-row'><span>{$s['label']}</span><strong>" . number_format($ptVal, 1) . "</strong></div>";
+                if ($odVal !== null) {
+                    $base = round($ptVal / (1 + $odVal), 1);
+                    $mult = round(1 + $odVal, 2);
+                    $rows .= "<div class='sr-pop-row sr-pop-sub'><span>Spėjimo taškai</span><strong>" . number_format($base, 1) . "</strong></div>"
+                           . "<div class='sr-pop-row sr-pop-sub'><span>Koeficientas</span><strong>×" . number_format($mult, 2) . "</strong></div>";
+                }
+            }
+            return $rows ? "<div class='sr-pop sr-pop-sm'>{$rows}</div>" : '';
+        }
+    }
+@endphp
+
     // Returns a CSS class based on predicted vs actual value (nullable = pending)
     $cmpClass = function($predicted, $actual) {
         if ($predicted === null || $predicted == 0) return 'sst-none';
@@ -78,6 +106,7 @@
                             ? (($ps->group_position_points ?? 0) + ($ps->last32_points ?? 0) + ($ps->last16_points ?? 0)
                                + ($ps->quarterfinal_points ?? 0) + ($ps->semifinal_points ?? 0) + ($ps->final_points ?? 0))
                             : 0;
+                        $pop = $ps && $totalPts > 0 ? sstPopover($ps) : '';
                     @endphp
                     <td class="sst-pred-cell">
                         @if($ps)
@@ -99,7 +128,9 @@
                                   title="Finalas: spėta {{ $ps->final ?? '—' }}">{{ $ps->final ?? '—' }}</span>
                         </div>
                         @if($totalPts > 0)
-                        <div class="sst-pts">{{ number_format($totalPts, 0) }}</div>
+                        <div class="sst-pts {{ $pop ? 'pst-hoverable' : '' }}"
+                             @if($pop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $pop }}" @endif
+                        >{{ number_format($totalPts, 1) }}</div>
                         @endif
                         @endif
                     </td>
@@ -111,5 +142,13 @@
         </table>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.pst-hoverable[data-bs-toggle="popover"]').forEach(function (el) {
+        new bootstrap.Popover(el, { container: 'body', html: true });
+    });
+});
+</script>
 
 @endsection

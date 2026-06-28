@@ -47,7 +47,25 @@
                 >{{ $point['username'] }}</span>
             </div>
             <div class="lb-sub-col d-none d-md-block">{{ number_format($point['userGamePoints'], 1) }}</div>
-            <div class="lb-sub-col d-none d-md-block">{{ number_format($point['standingPoints']->total_points, 1) }}</div>
+            @php
+                $sp = $point['standingPoints'];
+                $spStages = [
+                    'Grupių etapas'    => (float)($sp->group_position_points ?? 0),
+                    'Šešioliktfinalis' => (float)($sp->last32_points ?? 0),
+                    'Aštuntfinalis'    => (float)($sp->last16_points ?? 0),
+                    'Ketvirtfinalis'   => (float)($sp->quarterfinal_points ?? 0),
+                    'Pusfinalis'       => (float)($sp->semifinal_points ?? 0),
+                    'Finalas'          => (float)($sp->final_points ?? 0),
+                ];
+                $spPopRows = '';
+                foreach ($spStages as $lbl => $val) {
+                    if ($val > 0) $spPopRows .= "<div class='sr-pop-row'><span>{$lbl}</span><strong>" . number_format($val, 1) . "</strong></div>";
+                }
+                $spPop = $spPopRows ? "<div class='sr-pop sr-pop-sm'>{$spPopRows}</div>" : '';
+            @endphp
+            <div class="lb-sub-col d-none d-md-block {{ $spPop ? 'pst-hoverable' : '' }}"
+                 @if($spPop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $spPop }}" @endif
+            >{{ number_format($point['standingPoints']->total_points, 1) }}</div>
             @if(session('survivalGame') == 1)
             <div class="lb-sub-col d-none d-md-block">{{ $point['survivalPoints'] }}</div>
             @endif
