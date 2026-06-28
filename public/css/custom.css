@@ -3043,3 +3043,29 @@ a.lb-name-link:hover {
 .sb-progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--sb-accent), #3b82f6); border-radius: 99px; transition: width .4s ease; }
 .sb-progress-count  { color: var(--sb-muted); white-space: nowrap; }
 .sb-progress-today  { background: #f59e0b; color: #fff; font-size: .68rem; font-weight: 700; border-radius: 4px; padding: 2px 7px; white-space: nowrap; }
+
+/* ============================================================
+   Personal snapshot card
+   ============================================================ */
+.sn-card {
+  background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+  color: #fff;
+  border: none;
+}
+.sn-card .sb-card-title { color: rgba(255,255,255,.7); }
+.sn-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 20px;
+  margin-bottom: 14px;
+}
+.sn-stat { display: flex; flex-direction: column; gap: 2px; }
+.sn-val  { font-size: 1.4rem; font-weight: 800; line-height: 1.1; }
+.sn-lbl  { font-size: .6rem; opacity: .6; text-transform: uppercase; letter-spacing: .06em; }
+.sn-dots { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.sn-dots-lbl { font-size: .62rem; opacity: .55; white-space: nowrap; }
+.sn-dots-row { display: flex; gap: 5px; }
+.sn-dot { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; }
+.sn-dot--bingo { background: #22c55e; }
+.sn-dot--win   { background: rgba(255,255,255,.45); }
+.sn-dot--miss  { background: rgba(255,255,255,.15); }

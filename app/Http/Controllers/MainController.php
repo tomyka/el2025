@@ -68,7 +68,9 @@ class MainController extends Controller
 
             $tournamentProgress = $this->getTournamentProgress();
 
-            return view('main')->with('messages', $messages)->with('points', $points)->with('predictionGames', $predictionResultsWithStats)->with('eventDaySurvivalStatus',$eventDaySurvivalStatus)->with('groupDetails',$feeController->getGroupDetails())->with('userDetails',$feeController->getUserDetails())->with('fund',$feeController->getFund())->with('fundCollected',$feeController->getFundCollected())->with('standings',$standings)->with('predictionStandingsPoints',$predictionStandingsPoints)->with('rankHistory', $rankHistory)->with('firstGameStarted', $firstGameStarted)->with('standingsMissing', $standingsMissing)->with('tournamentProgress', $tournamentProgress);
+            $snapshot = $this->getSnapshotData($points, (int) session('userID'));
+
+            return view('main')->with('messages', $messages)->with('points', $points)->with('predictionGames', $predictionResultsWithStats)->with('eventDaySurvivalStatus',$eventDaySurvivalStatus)->with('groupDetails',$feeController->getGroupDetails())->with('userDetails',$feeController->getUserDetails())->with('fund',$feeController->getFund())->with('fundCollected',$feeController->getFundCollected())->with('standings',$standings)->with('predictionStandingsPoints',$predictionStandingsPoints)->with('rankHistory', $rankHistory)->with('firstGameStarted', $firstGameStarted)->with('standingsMissing', $standingsMissing)->with('tournamentProgress', $tournamentProgress)->with('snapshot', $snapshot);
         }
         else {
             $games = Game::with('away_team')->with('home_team')->take(9)->get();
@@ -118,6 +120,51 @@ class MainController extends Controller
         if ((int) $counts->final_count  !== 4)  return true;
 
         return false;
+    }
+
+    private function getSnapshotData(array $points, int $userID): ?array
+    {
+        $rank = null;
+        $mine = null;
+        foreach ($points as $i => $p) {
+            if ((int) $p['userID'] === $userID) {
+                $rank = $i + 1;
+                $mine = $p;
+                break;
+            }
+        }
+        if (!$mine) return null;
+
+        $last5 = DB::table('point_results as pr')
+            ->join('games as g', 'g.id', '=', 'pr.game_id')
+            ->where('pr.user_id', $userID)
+            ->whereNotNull('g.home_team_score')
+            ->orderByDesc('g.game_date')
+            ->orderByDesc('g.id')
+            ->limit(5)
+            ->select('pr.bingo_points', 'pr.winner_points')
+            ->get()
+            ->map(fn($r) => [
+                'type' => $r->bingo_points > 0 ? 'bingo'
+                        : ($r->winner_points > 0 ? 'win' : 'miss'),
+            ])
+            ->toArray();
+
+        if (empty($last5)) return null;
+
+        return [
+            'rank'        => $rank,
+            'total'       => round(
+                ($mine['userGamePoints'] ?? 0)
+                + ($mine['userStreakPoints'] ?? 0)
+                + ($mine['standingPoints']->total_points ?? 0)
+                + ($mine['survivalPoints'] ?? 0),
+                1
+            ),
+            'bingo_count' => $mine['userGameBingo'] ?? 0,
+            'average'     => $mine['averagePoints'] ?? 0,
+            'last5'       => $last5,
+        ];
     }
 
     private function getTournamentProgress(): ?array
