@@ -3,53 +3,38 @@
 
 @auth
     @include('partials.progress-bar')
-    <div class="sb-card">
+
+    {{-- Fee / messages / warnings notice card --}}
+    @php $showNotices = !empty(session('fee')) || session()->has('info') || session()->has('error') || ($standingsMissing ?? false); @endphp
+    @if($showNotices)
+    <div class="sb-card mb-3">
         @include('partials.fee')
         @include('partials.messages')
         @include('partials.warnings')
     </div>
+    @endif
 
-    <div class="row g-3">
-        @if(session('eventID') != 0)
-        <div class="col-xl-6 col-lg-6 col-12">
-            @include('partials.games')
-        </div>
-        @endif
+    <div class="row g-3 align-items-start">
 
-        <div class="{{ session('eventID') != 0 ? 'col-xl-6 col-lg-6 col-12' : 'col-12' }}">
-            <div class="sb-tabs-nav">
-                <button class="sb-tab-btn active" data-tab="main-tab-pts">
-                    <i class="bi bi-trophy-fill"></i> Taškai
-                </button>
-                <button class="sb-tab-btn" data-tab="main-tab-eiga">
-                    <i class="bi bi-bar-chart-steps"></i> Eigos taškai
-                </button>
-            </div>
-            <div id="main-tab-pts" class="sb-tab-pane">
-                @include('partials.points')
-            </div>
-            <div id="main-tab-eiga" class="sb-tab-pane" style="display:none">
-                @if(($firstGameStarted ?? false) && !empty($standings))
-                    @include('partials.standings')
-                @endif
-                @include('partials.pointsStandings')
-            </div>
+        {{-- PRIMARY COLUMN (60%): upcoming games + leaderboard --}}
+        <div class="col-lg-7 col-12">
+            @if(session('eventID') != 0)
+                @include('partials.games')
+            @endif
+            @include('partials.points')
         </div>
+
+        {{-- SIDEBAR COLUMN (40%): snapshot + standings + activity --}}
+        <div class="col-lg-5 col-12">
+            @include('partials.snapshot-card')
+            @if(($firstGameStarted ?? false) && !empty($standings))
+                @include('partials.standings')
+            @endif
+            @include('partials.pointsStandings')
+            @include('partials.activity-feed')
+        </div>
+
     </div>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.sb-tab-btn').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                var target = this.dataset.tab;
-                document.querySelectorAll('.sb-tab-btn').forEach(function (b) { b.classList.remove('active'); });
-                document.querySelectorAll('.sb-tab-pane').forEach(function (p) { p.style.display = 'none'; });
-                this.classList.add('active');
-                document.getElementById(target).style.display = '';
-            });
-        });
-    });
-    </script>
 
 @else
     @include('welcome')
