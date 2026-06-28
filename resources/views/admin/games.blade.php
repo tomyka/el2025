@@ -136,7 +136,7 @@
 <script>
 var agmInsertAction = '{{ route('admin.insertGame') }}';
 var agmUpdateAction = '{{ route('admin.updateGame') }}';
-var agmDefaultDateTime = '{{ substr(str_replace(' ', 'T', $gameMaxDateTime), 0, 16) }}';
+var agmDefaultDateTime = '{{ \Carbon\Carbon::parse($gameMaxDateTime, 'UTC')->setTimezone('Europe/Vilnius')->format('Y-m-d\TH:i') }}';
 var agmDefaultEventID  = '{{ $lastEnteredEventID ?? '' }}';
 
 function agmSnapTime(t) {
