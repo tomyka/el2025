@@ -2321,7 +2321,7 @@ button.sb-tab::after { display: none; }
 .sr-pop-row span { color: var(--sb-muted); }
 .sr-pop-row strong { font-weight: 700; }
 .sr-pop-sub { padding-left: 10px; opacity: .8; }
-.pop-narrow { max-width: 138px !important; }
+.pop-narrow { max-width: 172px !important; }
 
 /* Logged-in user's column highlight — must be opaque so sticky header/footer don't bleed */
 .sr-my-col { background: #f0f0ff !important; }
