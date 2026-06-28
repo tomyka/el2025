@@ -75,7 +75,7 @@ class GoogleAuthController extends Controller
 
         Auth::login($user, session('remember_me', false));
         session()->forget('remember_me');
-        (new AuditLoginsController())->insertAuditLogin($user->id, $request->ip(), 'google');
+        (new AuditLoginsController())->insertAuditLogin($user->id, $request->ip(), 'register_google');
         return redirect()->route('main');
     }
 }

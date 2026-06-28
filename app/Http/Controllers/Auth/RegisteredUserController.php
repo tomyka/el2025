@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\AuditLoginsController;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Http\Controllers\PostRegisterController;
@@ -59,6 +60,8 @@ class RegisteredUserController extends Controller
 
         $postRegisterController = new PostRegisterController();
         $postRegisterController->postRegisterActions($user->id);
+
+        (new AuditLoginsController())->insertAuditLogin($user->id, $request->ip(), 'register');
 
         return redirect(route('main', absolute: false));
     }

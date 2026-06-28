@@ -60,7 +60,15 @@
                         <tr>
                             <td>{{ $login->username ?? '—' }}</td>
                             <td>
-                                @if($login->login_method === 'google')
+                                @if($login->login_method === 'register')
+                                    <span class="badge bg-success fw-normal">
+                                        <i class="bi bi-person-plus-fill"></i> Registracija
+                                    </span>
+                                @elseif($login->login_method === 'register_google')
+                                    <span class="badge bg-success fw-normal">
+                                        <i class="bi bi-google"></i> Registracija (Google)
+                                    </span>
+                                @elseif($login->login_method === 'google')
                                     <span class="badge adt-badge-google fw-normal">
                                         <i class="bi bi-google"></i> Google
                                     </span>
