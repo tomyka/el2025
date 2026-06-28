@@ -40,8 +40,13 @@
             $ptCol   = $stage['pts'];
             $odCol   = $stage['odds'];
             $stTotal = $pts->sum($ptCol);
-            $withPts = $pts->filter(fn($r) => (float)$r->$ptCol > 0)->sortByDesc($ptCol)->values();
-            $zeroPts = $pts->filter(fn($r) => (float)$r->$ptCol <= 0)->sortBy('team')->values();
+            $showAll = !empty($stage['always']);
+            $withPts = $showAll
+                ? $pts->sortByDesc($ptCol)->values()
+                : $pts->filter(fn($r) => (float)$r->$ptCol > 0)->sortByDesc($ptCol)->values();
+            $zeroPts = $showAll
+                ? collect()
+                : $pts->filter(fn($r) => (float)$r->$ptCol <= 0)->sortBy('team')->values();
             $colId   = 'pst-stage-' . $si;
             $zeroId  = 'pst-zero-' . $si;
         @endphp
