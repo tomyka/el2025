@@ -1,61 +1,15 @@
 <nav class="sb-navbar">
 
-  {{-- White top bar --}}
-  <div class="sb-top-bar">
-    <div class="sb-top-bar-inner">
+  <div class="sb-topnav">
 
-      <a class="sb-brand" href="{{ route('admin.index') }}">
-        <span class="material-icons sb-brand-dot" style="font-size:1.2rem;">admin_panel_settings</span>
-        Admin
-      </a>
+    {{-- Brand --}}
+    <a class="sb-brand" href="{{ route('admin.index') }}">
+      <i class="bi bi-database-gear" style="font-size:1.25rem;flex-shrink:0;"></i>
+      <span>Admin</span>
+    </a>
 
-      {{-- Desktop: avatar dropdown --}}
-      <div class="sb-top-user d-none d-lg-flex">
-        <button class="sb-theme-btn" onclick="sbToggleTheme()" title="Keisti temą" aria-label="Keisti temą">
-          <i class="bi bi-sun-fill sb-theme-sun"></i>
-          <i class="bi bi-moon-fill sb-theme-moon"></i>
-        </button>
-        <span class="sb-top-username">{{ Auth::user()->username ?? '' }}</span>
-        <div class="dropdown">
-          <button class="sb-top-avatar dropdown-toggle" type="button"
-                  data-bs-toggle="dropdown" aria-expanded="false">
-            {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 1)) }}{{ strtoupper(substr(Auth::user()->surname ?? '', 0, 1)) }}
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="{{ route('userProfile') }}">
-                <i class="bi bi-person-fill"></i>Profilis</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{{ route('main') }}">
-                <i class="bi bi-arrow-left-circle"></i>Grįžti į svetainę</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{{ route('logout') }}"
-                   onclick="event.preventDefault(); document.getElementById('admin-logout-form').submit();">
-                <i class="bi bi-box-arrow-right"></i>Atsijungti</a></li>
-          </ul>
-        </div>
-      </div>
-
-      {{-- Mobile: theme toggle + hamburger --}}
-      <div class="d-flex d-lg-none align-items-center ms-auto gap-1">
-        <button class="sb-theme-btn" onclick="sbToggleTheme()" title="Keisti temą" aria-label="Keisti temą">
-          <i class="bi bi-sun-fill sb-theme-sun"></i>
-          <i class="bi bi-moon-fill sb-theme-moon"></i>
-        </button>
-        <button class="sb-toggler" type="button"
-                data-bs-toggle="collapse" data-bs-target="#adminNav"
-                aria-controls="adminNav" aria-expanded="false">
-          <i class="bi bi-list"></i>
-        </button>
-      </div>
-
-      <form id="admin-logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
-    </div>
-  </div>
-
-  {{-- Blue nav bar (desktop) --}}
-  <div class="sb-blue-bar d-none d-lg-block">
-    <div class="sb-blue-bar-inner">
-
+    {{-- Desktop: admin nav links --}}
+    <div class="sb-topnav-links d-none d-lg-flex">
       @if(session('admin') >= 5)
       <a class="sb-nav-link {{ request()->routeIs('admin.teams') ? 'active' : '' }}"
          href="{{ route('admin.teams') }}">
@@ -93,11 +47,50 @@
       </a>
       @endif
       @endif
-
     </div>
+
+    {{-- Desktop: right side --}}
+    <div class="sb-topnav-right d-none d-lg-flex">
+      <button class="sb-theme-btn" onclick="sbToggleTheme()" title="Keisti temą" aria-label="Keisti temą">
+        <i class="bi bi-sun-fill sb-theme-sun"></i>
+        <i class="bi bi-moon-fill sb-theme-moon"></i>
+      </button>
+      <div class="dropdown">
+        <button class="sb-top-avatar dropdown-toggle" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+          {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 1)) }}{{ strtoupper(substr(Auth::user()->surname ?? '', 0, 1)) }}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="{{ route('userProfile') }}">
+              <i class="bi bi-person-fill"></i> Profilis</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="{{ route('main') }}">
+              <i class="bi bi-arrow-left-circle"></i> Grįžti į svetainę</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="{{ route('logout') }}"
+                 onclick="event.preventDefault(); document.getElementById('admin-logout-form').submit();">
+              <i class="bi bi-box-arrow-right"></i> Atsijungti</a></li>
+        </ul>
+      </div>
+      <form id="admin-logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
+    </div>
+
+    {{-- Mobile: theme + hamburger --}}
+    <div class="d-flex d-lg-none align-items-center ms-auto gap-1">
+      <button class="sb-theme-btn" onclick="sbToggleTheme()" title="Keisti temą" aria-label="Keisti temą">
+        <i class="bi bi-sun-fill sb-theme-sun"></i>
+        <i class="bi bi-moon-fill sb-theme-moon"></i>
+      </button>
+      <button class="sb-toggler" type="button"
+              data-bs-toggle="collapse" data-bs-target="#adminNav"
+              aria-controls="adminNav" aria-expanded="false" aria-label="Atidaryti meniu">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
+
   </div>
 
-  {{-- Mobile collapse --}}
+  {{-- Mobile collapse panel --}}
   <div class="collapse sb-mobile-collapse d-lg-none w-100" id="adminNav">
     <div class="sb-mobile-group">
       <div class="sb-mobile-label">Admin</div>
