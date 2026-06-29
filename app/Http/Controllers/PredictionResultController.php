@@ -281,7 +281,8 @@ class PredictionResultController extends Controller
                                ,g.home_team_score
                                ,g.away_team_score
                                ,g.game_winner_id
-                               ,e.event  AS event_name
+                               ,e.id    AS event_id
+                               ,e.event AS event_name
                                ,g.game_date
                              from games AS g
                                join teams  AS ht ON g.home_team_id = ht.id
@@ -296,7 +297,10 @@ class PredictionResultController extends Controller
 
 
 
-        return view('summary.results')->with('games',$games)->with('predictionResults',$predictionResults);
+        return view('summary.results')
+            ->with('games', $games)
+            ->with('predictionResults', $predictionResults)
+            ->with('activeEventID', (int) $eventID);
     }
 }
 

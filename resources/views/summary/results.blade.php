@@ -40,9 +40,15 @@ $users = $users->sortByDesc(fn($u) => $grandTotals[$u] ?? 0)->values();
 // Logged-in user for column highlight
 $myUsername = auth()->user()?->username ?? null;
 
-// Collapse finished rounds (all games have a score), keep active ones open
+// Active event name (always keep expanded even when all games are scored)
+$activeEventName = collect($games)->firstWhere('event_id', $activeEventID)?->event_name ?? null;
+
+// Collapse finished rounds, but always keep the active event open
 $openInit = $grouped->mapWithKeys(
-    fn($roundGames, $r) => [$r => $roundGames->contains(fn($g) => is_null($g->home_team_score))]
+    fn($roundGames, $r) => [
+        $r => ($activeEventName && $r === $activeEventName)
+              || $roundGames->contains(fn($g) => is_null($g->home_team_score))
+    ]
 )->toJson();
 @endphp
 
