@@ -353,13 +353,15 @@ class PointResultController extends Controller
 
                 if ($predWinnerId !== null && $actualWinnerId !== null && (int) $predWinnerId === (int) $actualWinnerId) {
                     if ($predIsDraw === $actualIsDraw) {
-                        // Same winner, same path (both normal-time or both penalties) — full points + odds
+                        // Exact: same winner, same path (both 90-min or both via penalties)
                         $winnerBonus = (1 + $odds) * 5.0;
                     } else {
-                        // Same ultimate winner but different path — half winner, no odds
-                        $winnerBonus = 2.5;
-                        $odds        = 0.0;
+                        // Right advancing team, wrong method (90-min vs penalties)
+                        $winnerBonus = (1 + $odds) * 2.5;
                     }
+                } elseif ($predIsDraw && $actualIsDraw) {
+                    // Correct draw/penalties prediction but wrong penalty winner
+                    $winnerBonus = (1 + $odds) * 2.5;
                 } else {
                     $winnerBonus = 0.0;
                     $odds        = 0.0;
