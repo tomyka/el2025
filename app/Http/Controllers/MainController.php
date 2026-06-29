@@ -69,7 +69,7 @@ class MainController extends Controller
 
             $tournamentProgress = $this->getTournamentProgress();
 
-            $snapshot = $this->getSnapshotData($points, (int) session('userID'));
+            $snapshot = $this->getSnapshotData($points, (int) session('userID'), $rankHistory);
 
             $activityFeed = $activityFeedController->getFeed((int) session('leagueID'));
 
@@ -125,7 +125,7 @@ class MainController extends Controller
         return false;
     }
 
-    private function getSnapshotData(array $points, int $userID): ?array
+    private function getSnapshotData(array $points, int $userID, array $rankHistory = []): ?array
     {
         $rank = null;
         $mine = null;
@@ -156,6 +156,35 @@ class MainController extends Controller
 
         if (empty($last5)) return null;
 
+        // Streak: consecutive non-miss games from most recent
+        $allResults = DB::table('point_results as pr')
+            ->join('games as g', 'g.id', '=', 'pr.game_id')
+            ->where('pr.user_id', $userID)
+            ->whereNotNull('g.home_team_score')
+            ->whereNotNull('g.away_team_score')
+            ->orderByDesc('g.game_date')
+            ->orderByDesc('g.id')
+            ->select('pr.bingo_points', 'pr.winner_points')
+            ->get();
+
+        $streak = 0;
+        foreach ($allResults as $r) {
+            if ($r->bingo_points > 0 || $r->winner_points > 0) {
+                $streak++;
+            } else {
+                break;
+            }
+        }
+
+        // Rank change over last 5 games
+        $n = count($rankHistory);
+        $rank_change = null;
+        if ($n >= 2) {
+            $prevIndex   = max(0, $n - 6);
+            $prevRank    = $rankHistory[$prevIndex];
+            $rank_change = $prevRank - $rank; // positive = improved
+        }
+
         return [
             'rank'        => $rank,
             'total'       => round(
@@ -166,7 +195,8 @@ class MainController extends Controller
                 1
             ),
             'bingo_count' => $mine['userGameBingo'] ?? 0,
-            'average'     => $mine['averagePoints'] ?? 0,
+            'streak'      => $streak,
+            'rank_change' => $rank_change,
             'last5'       => $last5,
         ];
     }
