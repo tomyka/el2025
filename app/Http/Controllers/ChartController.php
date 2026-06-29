@@ -30,7 +30,7 @@ class ChartController extends Controller
             ->join('users', 'league_members.user_id', '=', 'users.id')
             ->join('user_settings', 'league_members.user_id', '=', 'user_settings.user_id')
             ->leftJoin('colors', 'league_members.user_id', '=', 'colors.id')
-            ->where('user_settings.hidden', false)
+            ->where('user_settings.active', true)
             ->select('users.id', 'users.username', 'colors.color_code')
             ->get();
 

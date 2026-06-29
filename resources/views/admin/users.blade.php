@@ -35,19 +35,19 @@
                 @foreach($users as $user)
                 @php
                     $adminLevel = $user->user_setting?->admin ?? 0;
-                    $isHidden   = $user->user_setting?->hidden ?? false;
+                    $isActive   = $user->user_setting?->active ?? true;
                 @endphp
-                <tr class="{{ $isHidden ? 'au-row-hidden' : '' }}">
+                <tr class="{{ !$isActive ? 'au-row-hidden' : '' }}">
                     <td class="au-id">{{ $user->id }}</td>
 
                     <td>
                         <div class="d-flex align-items-center gap-2">
-                            <div class="au-avatar {{ $isHidden ? 'au-avatar-hidden' : '' }}">{{ strtoupper(substr($user->username ?? '?', 0, 1)) }}</div>
+                            <div class="au-avatar {{ !$isActive ? 'au-avatar-hidden' : '' }}">{{ strtoupper(substr($user->username ?? '?', 0, 1)) }}</div>
                             <div>
                                 <div class="au-username">
                                     {{ $user->username }}
-                                    @if($isHidden)
-                                    <span class="au-hidden-badge" title="Paslėptas nuo lentelių">paslėptas</span>
+                                    @if(!$isActive)
+                                    <span class="au-hidden-badge" title="Neaktyvus — paslėptas nuo lentelių">neaktyvus</span>
                                     @endif
                                 </div>
                                 @if($user->name || $user->surname)
@@ -93,12 +93,12 @@
                         @endif
                         @if(session('admin') >= 9)
                         <button type="button"
-                                class="au-action-btn au-action-hide {{ $isHidden ? 'au-action-hidden-active' : '' }}"
-                                title="{{ $isHidden ? 'Rodyti vartotoją' : 'Slėpti vartotoją' }}"
+                                class="au-action-btn au-action-hide {{ !$isActive ? 'au-action-hidden-active' : '' }}"
+                                title="{{ !$isActive ? 'Aktyvuoti vartotoją' : 'Deaktyvuoti vartotoją' }}"
                                 data-user-id="{{ $user->id }}"
                                 data-toggle-url="{{ route('admin.toggleHidden') }}"
                                 onclick="toggleHiddenUser(this)">
-                            <i class="bi {{ $isHidden ? 'bi-eye' : 'bi-eye-slash' }}"></i>
+                            <i class="bi {{ !$isActive ? 'bi-eye' : 'bi-eye-slash' }}"></i>
                         </button>
                         <form method="post" action="{{ route('admin.deleteUser') }}"
                               onsubmit="return confirm('Ištrinti vartotoją {{ addslashes($user->username) }}?')"
@@ -136,21 +136,21 @@ function toggleHiddenUser(btn) {
         const badge  = row.querySelector('.au-hidden-badge');
         const avatar = row.querySelector('.au-avatar');
         const icon   = btn.querySelector('i');
-        if (data.hidden) {
+        if (!data.active) {
             row.classList.add('au-row-hidden');
             avatar.classList.add('au-avatar-hidden');
             btn.classList.add('au-action-hidden-active');
-            btn.title = 'Rodyti vartotoją';
+            btn.title = 'Aktyvuoti vartotoją';
             icon.className = 'bi bi-eye';
             if (!badge) {
                 const nameDiv = row.querySelector('.au-username');
-                nameDiv.insertAdjacentHTML('beforeend', ' <span class="au-hidden-badge" title="Paslėptas nuo lentelių">paslėptas</span>');
+                nameDiv.insertAdjacentHTML('beforeend', ' <span class="au-hidden-badge" title="Neaktyvus — paslėptas nuo lentelių">neaktyvus</span>');
             }
         } else {
             row.classList.remove('au-row-hidden');
             avatar.classList.remove('au-avatar-hidden');
             btn.classList.remove('au-action-hidden-active');
-            btn.title = 'Slėpti vartotoją';
+            btn.title = 'Deaktyvuoti vartotoją';
             icon.className = 'bi bi-eye-slash';
             row.querySelector('.au-hidden-badge')?.remove();
         }

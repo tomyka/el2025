@@ -68,7 +68,7 @@ class ResultController extends Controller
         $homeTeamScore = $this->generateMissingScore();
         $awayTeamScore = $this->generateMissingScore();
 
-        $hiddenUserIds = \App\Models\UserSetting::where('hidden', true)->pluck('user_id');
+        $hiddenUserIds = \App\Models\UserSetting::where('active', false)->pluck('user_id');
 
         $predictionResults = PredictionResult::where('game_id', $gameID)
             ->whereNull('home_team_score')

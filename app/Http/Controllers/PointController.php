@@ -14,7 +14,7 @@ class PointController extends Controller
             ->join('user_settings', 'users.id', '=', 'user_settings.user_id')
             ->where('league_members.league_id', '=', $leagueID)
             ->where('league_members.is_guest', '<=', session('guest'))
-            ->where('user_settings.hidden', false)
+            ->where('user_settings.active', true)
             ->select('users.id', 'users.username', 'users.name', 'users.surname')
             ->get();
 
@@ -70,7 +70,7 @@ class PointController extends Controller
             ->join('user_settings', 'users.id', '=', 'user_settings.user_id')
             ->where('league_members.league_id', '=', $leagueID)
             ->where('league_members.is_guest', '<=', session('guest'))
-            ->where('user_settings.hidden', false)
+            ->where('user_settings.active', true)
             ->pluck('users.id')
             ->toArray();
 
@@ -174,7 +174,7 @@ class PointController extends Controller
             ->join('user_settings', 'league_members.user_id', '=', 'user_settings.user_id')
             ->where('league_id', $leagueID)
             ->where('is_guest', '<=', $guest)
-            ->where('user_settings.hidden', false)
+            ->where('user_settings.active', true)
             ->pluck('league_members.user_id')
             ->toArray();
 

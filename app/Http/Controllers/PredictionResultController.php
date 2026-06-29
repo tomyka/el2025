@@ -87,8 +87,8 @@ class PredictionResultController extends Controller
 
         // Auto-unhide if a previously hidden user is actively predicting
         \App\Models\UserSetting::where('user_id', $userID)
-            ->where('hidden', true)
-            ->update(['hidden' => false]);
+            ->where('active', false)
+            ->update(['active' => true]);
 
         if ($game->game_date > $now) {
             $predictionResult = PredictionResult::where('id', $request->input('prediction_gameID'))
@@ -205,7 +205,7 @@ class PredictionResultController extends Controller
                           join events AS e ON e.id = g.event_id
                           join league_members as lm on pr.user_id=lm.user_id AND lm.league_id = ? AND lm.is_guest <= ?
                           left join point_results as por on por.user_id=pr.user_id AND por.game_id=pr.game_id
-                        where g.game_date < ? AND e.id <= ? AND us.hidden = 0
+                        where g.game_date < ? AND e.id <= ? AND us.active = 1
                         ORDER BY pr.user_id ASC, g.id DESC',
             [$now, $groupID, $guest, $now, $eventIDValue]);
 

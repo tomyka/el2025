@@ -37,10 +37,10 @@ class UserController extends Controller
     public function toggleHidden(Request $request): \Illuminate\Http\JsonResponse
     {
         $userSetting         = UserSetting::where('user_id', $request->input('userID'))->firstOrFail();
-        $userSetting->hidden = ! $userSetting->hidden;
+        $userSetting->active = ! $userSetting->active;
         $userSetting->save();
 
-        return response()->json(['hidden' => $userSetting->hidden]);
+        return response()->json(['active' => $userSetting->active]);
     }
 
     public function updateUser(Request $request): \Illuminate\Http\RedirectResponse
