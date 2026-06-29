@@ -88,6 +88,7 @@
                     <div class="pred-game {{ $game->locked ? 'pred-game-locked' : '' }}">
                         <input type="hidden" id="prediction_gameID{{$game->game_id}}" value="{{ $game->id }}">
                         <input type="hidden" id="penalty-winner-{{$game->game_id}}" value="{{ $game->game_winner_id ?? '' }}">
+                        <span class="upcoming-date"><span class="upcoming-time">{{ $gameTime }}</span></span>
                         <div class="pred-team-home">
                             <span class="pred-team-name">{{ $game->home_team }}</span>
                             <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->home_team)).'.svg') }}" class="pred-flag" alt="{{ $game->home_team }}">
@@ -102,7 +103,6 @@
                             @endif
                         </div>
                         <div class="pred-scores">
-                            <span class="pred-time">{{ ucfirst(\Carbon\Carbon::parse($game->game_date, 'UTC')->setTimezone('Europe/Vilnius')->locale('lt')->isoFormat('MMMM D')) }} · {{ $gameTime }}</span>
                             <div class="pred-scores-inputs">
                                 <input type="text" class="form-control pred-score {{ $game->locked ? 'pred-score-locked' : '' }}"
                                     id="homeTeamScore{{$game->game_id}}"
