@@ -68,18 +68,38 @@ class ResultController extends Controller
         $homeTeamScore = $this->generateMissingScore();
         $awayTeamScore = $this->generateMissingScore();
 
-        $hiddenUserIds = \App\Models\UserSetting::where('active', false)->pluck('user_id');
+        $inactiveUserIds = \App\Models\UserSetting::where('active', false)->pluck('user_id');
 
         $predictionResults = PredictionResult::where('game_id', $gameID)
             ->whereNull('home_team_score')
-            ->whereNotIn('user_id', $hiddenUserIds)
+            ->whereNotIn('user_id', $inactiveUserIds)
             ->get();
 
+        if ($predictionResults->isEmpty()) {
+            return;
+        }
+
+        $affectedUserIds = [];
         foreach ($predictionResults as $predictionResult){
             $predictionResult->home_team_score = $homeTeamScore;
             $predictionResult->away_team_score = $awayTeamScore;
             $predictionResult->generated = 1;
             $predictionResult->save();
+            $affectedUserIds[] = $predictionResult->user_id;
+        }
+
+        // Auto-deactivate users who have accumulated 5+ randomly generated predictions
+        $generatedCounts = PredictionResult::whereIn('user_id', $affectedUserIds)
+            ->where('generated', 1)
+            ->groupBy('user_id')
+            ->selectRaw('user_id, COUNT(*) as total')
+            ->pluck('total', 'user_id');
+
+        $toDeactivate = $generatedCounts->filter(fn($count) => $count >= 5)->keys();
+
+        if ($toDeactivate->isNotEmpty()) {
+            \App\Models\UserSetting::whereIn('user_id', $toDeactivate)
+                ->update(['active' => false]);
         }
     }
 
