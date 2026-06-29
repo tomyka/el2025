@@ -26,7 +26,7 @@
             @if($snapshot['rank_change'] > 0)
                 <div class="sn-val" style="color:var(--sb-green,#22c55e)">↑{{ $snapshot['rank_change'] }}</div>
             @elseif($snapshot['rank_change'] < 0)
-                <div class="sn-val" style="color:var(--sb-red,#ef4444)">↓{{ abs($snapshot['rank_change']) }}</div>
+                <div class="sn-val" style="color:var(--sb-red)">↓{{ abs($snapshot['rank_change']) }}</div>
             @else
                 <div class="sn-val" style="color:var(--sb-muted)">—</div>
             @endif

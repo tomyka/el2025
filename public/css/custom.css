@@ -14,6 +14,7 @@ input[type=number] { -moz-appearance: textfield; }
   --sb-accent-h: #1e40af;
   --sb-gold:     #f59e0b;
   --sb-green:    #22c55e;
+  --sb-red:      #ef4444;
   --sb-purple:   #a78bfa;
   --sb-surface:  #f3f4f6;
   --sb-card:     #ffffff;
@@ -2585,6 +2586,7 @@ p { margin: 0; }
 
 .popover { max-width: 600px; width: 320px; }
 .modal-footer { justify-content: space-around; }
+.modal-title  { font-size: .9rem; }
 
 @media (max-width: 540px)  { .hide-text-sm { display: none; } }
 @media (max-width: 768px)  { .hide-text-md { display: none; } }
@@ -2696,6 +2698,7 @@ p { margin: 0; }
   --sb-border:  #334155;
   --sb-text:    #f1f5f9;
   --sb-muted:   #94a3b8;
+  --sb-red:     #f87171;
 }
 
 [data-theme="dark"] body { background: var(--sb-bg); color: var(--sb-text); }
@@ -3027,7 +3030,7 @@ p { margin: 0; }
 }
 .cmp-record-w { color: var(--sb-green); }
 .cmp-record-d { color: var(--sb-muted); }
-.cmp-record-l { color: #ef4444; }
+.cmp-record-l { color: var(--sb-red); }
 
 .cmp-section-title {
   font-size: .72rem;

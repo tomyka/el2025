@@ -56,7 +56,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h6 class="modal-title fw-semibold" style="font-size:.9rem;">Žaidėjų palyginimas</h6>
+                <h6 class="modal-title fw-semibold">Žaidėjų palyginimas</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="cmpModalBody">
