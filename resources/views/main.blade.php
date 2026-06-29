@@ -30,7 +30,7 @@
             @if(($firstGameStarted ?? false) && !empty($standings))
                 @include('partials.standings')
             @endif
-            @include('partials.pointsStandings')
+            {{-- @include('partials.pointsStandings') --}}
             @include('partials.activity-feed')
         </div>
 
