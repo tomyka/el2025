@@ -36,7 +36,6 @@
                         $isPenaltyDraw = $game->is_knockout && !$game->locked
                             && $game->home_team_score !== null && $game->away_team_score !== null
                             && (string)$game->home_team_score === (string)$game->away_team_score;
-                        $gameDate = ucfirst(\Carbon\Carbon::parse($game->game_date, 'UTC')->setTimezone('Europe/Vilnius')->locale('lt')->isoFormat('MMM D'));
                         $gameTime = \Carbon\Carbon::parse($game->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('H:i');
                         $popContent = '';
                         if ($hasResult && $totalPts > 0) {
@@ -53,7 +52,6 @@
                     {{-- Finished game: same row style as Artimiausios rungtynės --}}
                     <div class="upcoming-row" style="padding-left:0;padding-right:0;">
                         <span class="upcoming-date">
-                            <span>{{ $gameDate }}</span>
                             <span class="upcoming-time">{{ $gameTime }}</span>
                         </span>
                         <span class="upcoming-team upcoming-home">
