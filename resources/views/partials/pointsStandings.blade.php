@@ -52,14 +52,14 @@
             $colId   = 'pst-stage-' . $si;
         @endphp
         <div class="pst-stage">
-            <div class="pst-stage-header" data-bs-toggle="collapse" data-bs-target="#{{ $colId }}" aria-expanded="true">
+            <div class="pst-stage-header" data-bs-toggle="collapse" data-bs-target="#{{ $colId }}" aria-expanded="{{ $loop->last ? 'true' : 'false' }}">
                 <span class="pst-stage-label">{{ $stage['label'] }}</span>
                 @if($stTotal > 0)
                 <span class="pst-stage-total">{{ number_format((float)$stTotal, 1) }} pt</span>
                 @endif
                 <i class="bi bi-chevron-down pst-stage-chevron"></i>
             </div>
-            <div id="{{ $colId }}" class="collapse show">
+            <div id="{{ $colId }}" class="collapse {{ $loop->last ? 'show' : '' }}">
                 @if($groupedByName)
                     @foreach($groupedByName as $groupName => $groupTeams)
                     <div class="pst-group-label">{{ $groupName ? 'Grupė ' . $groupName : '' }}</div>
