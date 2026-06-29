@@ -101,7 +101,8 @@
                             <i class="bi {{ !$isActive ? 'bi-eye' : 'bi-eye-slash' }}"></i>
                         </button>
                         <form method="post" action="{{ route('admin.deleteUser') }}"
-                              onsubmit="return confirm('Ištrinti vartotoją {{ addslashes($user->username) }}?')"
+                              data-confirm-name="{{ $user->username }}"
+                              onsubmit="return confirm('Ištrinti vartotoją ' + this.dataset.confirmName + '?')"
                               style="display:inline;">
                             @csrf
                             <input type="hidden" name="userID"   value="{{ $user->id }}">

@@ -60,11 +60,8 @@ class ResultController extends Controller
         return response()->json(['success' => true]);
     }
 
-   private function generateMissingResults ($gameID){
-
-        $homeTeamScore = $this->generateMissingScore();
-        $awayTeamScore = $this->generateMissingScore();
-
+    private function generateMissingResults(int $gameID): void
+    {
         $inactiveUserIds = \App\Models\UserSetting::where('active', false)->pluck('user_id');
 
         $predictionResults = PredictionResult::where('game_id', $gameID)
@@ -78,13 +75,19 @@ class ResultController extends Controller
         }
 
         $affectedUserIds = [];
-        foreach ($predictionResults as $predictionResult){
-            $predictionResult->home_team_score = $homeTeamScore;
-            $predictionResult->away_team_score = $awayTeamScore;
-            $predictionResult->generated = 1;
-            $predictionResult->save();
+        $upsertRows = [];
+        foreach ($predictionResults as $predictionResult) {
+            $upsertRows[] = [
+                'id'              => $predictionResult->id,
+                'user_id'         => $predictionResult->user_id,
+                'game_id'         => $predictionResult->game_id,
+                'home_team_score' => $this->generateMissingScore(),
+                'away_team_score' => $this->generateMissingScore(),
+                'generated'       => 1,
+            ];
             $affectedUserIds[] = $predictionResult->user_id;
         }
+        PredictionResult::upsert($upsertRows, ['id'], ['home_team_score', 'away_team_score', 'generated']);
 
         // Auto-deactivate users who have accumulated 5+ randomly generated predictions
         $generatedCounts = PredictionResult::whereIn('user_id', $affectedUserIds)

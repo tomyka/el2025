@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+﻿@extends('admin.layouts.master')
 @section('content')
 
 <div class="sb-card">
@@ -65,7 +65,8 @@
                     <td>
                         @if(!$league->is_public && session('admin') >= 9)
                         <form method="POST" action="{{ route('admin.leagues.delete') }}"
-                              onsubmit="return confirm('Ištrinti lygą \"{{ addslashes($league->name) }}\"? Visi nariai bus pašalinti.')">
+                              data-confirm-name="{{ $league->name }}"
+                              onsubmit="return confirm('Ištrinti lygą \"' + this.dataset.confirmName + '\"? Visi nariai bus pašalinti.')">
                             @csrf
                             <input type="hidden" name="leagueID" value="{{ $league->id }}">
                             <button type="submit" class="btn btn-sm"

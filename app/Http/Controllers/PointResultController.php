@@ -291,6 +291,13 @@ class PointResultController extends Controller
 
     public function updateGamePoints(int $gameID): void
     {
+        DB::transaction(function () use ($gameID) {
+            $this->doUpdateGamePoints($gameID);
+        });
+    }
+
+    private function doUpdateGamePoints(int $gameID): void
+    {
         $game  = Game::where('id', $gameID)->firstOrFail();
         $event = Event::where('id', $game->event_id)->firstOrFail();
 
