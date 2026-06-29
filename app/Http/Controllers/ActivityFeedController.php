@@ -56,7 +56,7 @@ class ActivityFeedController extends Controller
 
     private function getStreaks(int $leagueID, int $guest): array
     {
-        $rows = DB::table('point_results as pr')
+        $inner = DB::table('point_results as pr')
             ->join('games as g', 'g.id', '=', 'pr.game_id')
             ->join('events as e', 'e.id', '=', 'g.event_id')
             ->join('league_members as lm', 'lm.user_id', '=', 'pr.user_id')
@@ -67,13 +67,20 @@ class ActivityFeedController extends Controller
             ->whereNotNull('g.home_team_score')
             ->whereNotNull('g.away_team_score')
             ->whereRaw('pr.streak_bonus >= 2 * e.rate')
-            ->groupByRaw('ROUND(pr.streak_bonus / NULLIF(e.rate, 0)) + 1')
-            ->orderByRaw('ROUND(pr.streak_bonus / NULLIF(e.rate, 0)) + 1 DESC')
-            ->limit(5)
             ->selectRaw(
                 "ROUND(pr.streak_bonus / NULLIF(e.rate, 0)) + 1 as streak_length,
-                 GROUP_CONCAT(DISTINCT u.username ORDER BY u.username SEPARATOR ', ') as players,
-                 MAX(g.game_date) as game_date"
+                 u.username, g.game_date"
+            );
+
+        $rows = DB::table(DB::raw("({$inner->toSql()}) as sub"))
+            ->mergeBindings($inner)
+            ->groupBy('streak_length')
+            ->orderByDesc('streak_length')
+            ->limit(5)
+            ->selectRaw(
+                "streak_length,
+                 GROUP_CONCAT(DISTINCT username ORDER BY username SEPARATOR ', ') as players,
+                 MAX(game_date) as game_date"
             )
             ->get();
 
