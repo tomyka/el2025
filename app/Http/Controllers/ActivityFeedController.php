@@ -36,7 +36,7 @@ class ActivityFeedController extends Controller
             ->whereNotNull('g.away_team_score')
             ->groupByRaw('g.id, g.game_date, g.home_team_score, g.away_team_score, ht.team, at.team')
             ->orderByDesc('g.game_date')
-            ->limit(5)
+            ->limit(3)
             ->selectRaw(
                 "g.game_date, g.home_team_score, g.away_team_score,
                  ht.team as home_team, at.team as away_team,
