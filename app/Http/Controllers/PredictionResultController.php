@@ -18,6 +18,11 @@ class PredictionResultController extends Controller
             $userID      = session('userID');
             $eventFilter = request()->integer('event', 0);
 
+            // Default to the current active event
+            if ($eventFilter === 0) {
+                $eventFilter = (int) session('eventID', 0);
+            }
+
             $raw = $this->getPredictionGamesGrouped($userID, $eventFilter ?: null);
             $groupedResults = collect($raw)
                 ->groupBy('event_day')
@@ -40,8 +45,8 @@ class PredictionResultController extends Controller
         $nowUtc = Carbon::now('UTC')->format('Y-m-d H:i:s');
         $eventClause = $eventId ? 'AND g.event_id = ?' : '';
         $bindings = $eventId
-            ? [$nowUtc, $userID, $nowUtc, $eventId]
-            : [$nowUtc, $userID, $nowUtc];
+            ? [$nowUtc, $userID, $eventId]
+            : [$nowUtc, $userID];
 
         return DB::select("SELECT DISTINCT
                 prr.id,
@@ -59,16 +64,24 @@ class PredictionResultController extends Controller
                 prr.home_team_score,
                 prr.away_team_score,
                 prr.game_winner_id,
-                IF(g.game_date <= ?, 1, 0) AS locked
+                g.home_team_score  AS actual_home_score,
+                g.away_team_score  AS actual_away_score,
+                g.game_winner_id   AS actual_winner_id,
+                IF(g.game_date <= ?, 1, 0) AS locked,
+                ROUND(IFNULL(por.full_points,       0), 1) AS full_points,
+                ROUND(IFNULL(por.winner_points,     0), 1) AS winner_points,
+                ROUND(IFNULL(por.difference_points, 0), 1) AS difference_points,
+                ROUND(IFNULL(por.bingo_points,      0), 1) AS bingo_points,
+                ROUND(IFNULL(por.streak_bonus,      0), 1) AS streak_bonus
             FROM prediction_results AS prr
                 JOIN users u ON prr.user_id = u.id
                 JOIN games g ON g.id = prr.game_id
                 JOIN teams ht ON g.home_team_id = ht.id
                 JOIN teams at ON g.away_team_id = at.id
                 JOIN events e ON e.id = g.event_id
+                LEFT JOIN point_results AS por ON por.user_id = prr.user_id AND por.game_id = prr.game_id
             WHERE
-                prr.user_id = ? AND
-                (g.game_date > ? OR g.home_team_score IS NULL)
+                prr.user_id = ?
                 {$eventClause}
             ORDER BY g.event_id ASC, ht.group_name ASC, g.game_date ASC",
             $bindings);
