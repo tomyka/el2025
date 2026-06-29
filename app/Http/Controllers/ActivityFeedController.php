@@ -55,24 +55,35 @@ class ActivityFeedController extends Controller
 
     private function getStreaks(int $leagueID, int $guest): array
     {
+        // Find each user's last scored game — only streaks alive on that game count as active
+        $latestGame = DB::table('point_results as pr2')
+            ->join('games as g2', 'g2.id', '=', 'pr2.game_id')
+            ->whereNotNull('g2.home_team_score')
+            ->whereNotNull('g2.away_team_score')
+            ->groupBy('pr2.user_id')
+            ->selectRaw('pr2.user_id, MAX(g2.id) as last_game_id');
+
         $rows = DB::table('point_results as pr')
             ->join('games as g', 'g.id', '=', 'pr.game_id')
             ->join('events as e', 'e.id', '=', 'g.event_id')
             ->join('league_members as lm', 'lm.user_id', '=', 'pr.user_id')
             ->join('users as u', 'u.id', '=', 'pr.user_id')
+            ->joinSub($latestGame, 'latest', function ($join) {
+                $join->on('latest.user_id', '=', 'pr.user_id')
+                     ->on('latest.last_game_id', '=', 'pr.game_id');
+            })
             ->where('lm.league_id', $leagueID)
             ->where('lm.active', true)
             ->where('lm.is_guest', '<=', $guest)
             ->whereNotNull('g.home_team_score')
             ->whereNotNull('g.away_team_score')
             ->whereRaw('pr.streak_bonus >= 2 * e.rate')
-            ->groupByRaw('pr.user_id, u.username')
-            ->orderByRaw('MAX(ROUND(pr.streak_bonus / NULLIF(e.rate, 0)) + 1) DESC')
+            ->orderByRaw('ROUND(pr.streak_bonus / NULLIF(e.rate, 0)) + 1 DESC')
             ->limit(5)
             ->selectRaw(
                 "u.username,
-                 MAX(ROUND(pr.streak_bonus / NULLIF(e.rate, 0)) + 1) as streak_length,
-                 MAX(g.game_date) as game_date"
+                 ROUND(pr.streak_bonus / NULLIF(e.rate, 0)) + 1 as streak_length,
+                 g.game_date"
             )
             ->get();
 
