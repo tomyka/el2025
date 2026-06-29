@@ -8,6 +8,7 @@ use App\Models\GameOdds;
 use App\Models\PointResult;
 use App\Models\PointsCalculation;
 use App\Services\ScoringService;
+use App\Services\StreakService;
 use Illuminate\Support\Facades\DB;
 
 class PointResultController extends Controller
@@ -87,7 +88,7 @@ class PointResultController extends Controller
                 }
                 $entry  = $lookup[$userID][$gameID];
                 $streak = $entry['correct'] ? $streak + 1 : 0;
-                $updates[$entry['id']] = max(0, $streak - 1) * $entry['rate'];
+                $updates[$entry['id']] = StreakService::bonus($streak, $entry['rate']);
             }
         }
 
