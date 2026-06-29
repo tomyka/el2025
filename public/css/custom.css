@@ -3141,6 +3141,30 @@ a.lb-name-link:hover {
 .sn-dot--win   { background: rgba(255,255,255,.45); }
 .sn-dot--miss  { background: rgba(255,255,255,.15); }
 
+/* Horizontal snapshot strip */
+.sn-card--h { padding: 10px 16px; }
+.sn-hrow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+.sn-card--h .sn-stat { padding: 0 20px; }
+.sn-card--h .sn-stat:first-child { padding-left: 4px; }
+.sn-card--h .sn-val { font-size: 1.2rem; }
+.sn-divider {
+  width: 1px;
+  height: 32px;
+  background: rgba(255,255,255,.2);
+  flex-shrink: 0;
+}
+.sn-dots--end { margin-top: 0; margin-left: auto; padding-left: 16px; }
+@media (max-width: 575px) {
+  .sn-card--h .sn-stat { padding: 0 12px; }
+  .sn-dots--end { margin-left: 0; padding-left: 4px; }
+}
+
 /* ============================================================
    Activity feed
    ============================================================ */

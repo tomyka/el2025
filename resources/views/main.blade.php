@@ -14,6 +14,8 @@
     </div>
     @endif
 
+    @include('partials.snapshot-card')
+
     <div class="row g-3 align-items-start">
 
         {{-- PRIMARY COLUMN (60%): upcoming games + leaderboard --}}
@@ -24,9 +26,8 @@
             @include('partials.points')
         </div>
 
-        {{-- SIDEBAR COLUMN (40%): snapshot + standings + activity --}}
+        {{-- SIDEBAR COLUMN (40%): standings + activity --}}
         <div class="col-lg-5 col-12">
-            @include('partials.snapshot-card')
             @if(($firstGameStarted ?? false) && !empty($standings))
                 @include('partials.standings')
             @endif
