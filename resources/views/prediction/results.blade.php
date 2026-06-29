@@ -86,10 +86,10 @@
                     <div class="pred-game {{ $game->locked ? 'pred-game-locked' : '' }}">
                         <input type="hidden" id="prediction_gameID{{$game->game_id}}" value="{{ $game->id }}">
                         <input type="hidden" id="penalty-winner-{{$game->game_id}}" value="{{ $game->game_winner_id ?? '' }}">
-                        <span class="pred-time" style="padding-right:6px;">{{ $gameTime }}</span>
+                        <span class="pred-time">{{ $gameTime }}</span>
                         <div class="pred-team-home">
-                            <span class="pred-team-name">{{ $game->home_team }}</span>
                             <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->home_team)).'.svg') }}" class="pred-flag" alt="{{ $game->home_team }}">
+                            <span class="pred-team-name">{{ $game->home_team }}</span>
                             @if($game->is_knockout && !$game->locked)
                             <button type="button"
                                     class="pred-pw-check {{ ($isPenaltyDraw && $game->game_winner_id == $game->home_team_id) ? 'active' : '' }}"
@@ -123,9 +123,10 @@
                                 <i class="bi bi-check-circle-fill"></i>
                             </button>
                             @endif
-                            <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->away_team)).'.svg') }}" class="pred-flag" alt="{{ $game->away_team }}">
                             <span class="pred-team-name">{{ $game->away_team }}</span>
+                            <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->away_team)).'.svg') }}" class="pred-flag" alt="{{ $game->away_team }}">
                         </div>
+                        <span></span>
                     </div>
                     @endif
 
