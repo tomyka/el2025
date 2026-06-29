@@ -44,11 +44,9 @@ class PredictionResultController extends Controller
     private function getPredictionGamesGrouped($userID, ?int $eventId = null) {
         $nowUtc = Carbon::now('UTC')->format('Y-m-d H:i:s');
         $eventClause = $eventId ? 'AND g.event_id = ?' : '';
-        $bindings = $eventId
-            ? [$nowUtc, $userID, $eventId]
-            : [$nowUtc, $userID];
+        $bindings = $eventId ? [$userID, $eventId] : [$userID];
 
-        return DB::select("SELECT DISTINCT
+        $rows = DB::select("SELECT DISTINCT
                 prr.id,
                 g.id as game_id,
                 g.game_date,
@@ -67,7 +65,6 @@ class PredictionResultController extends Controller
                 g.home_team_score  AS actual_home_score,
                 g.away_team_score  AS actual_away_score,
                 g.game_winner_id   AS actual_winner_id,
-                IF(g.game_date <= ?, 1, 0) AS locked,
                 ROUND(IFNULL(por.full_points,       0), 1) AS full_points,
                 ROUND(IFNULL(por.winner_points,     0), 1) AS winner_points,
                 ROUND(IFNULL(por.difference_points, 0), 1) AS difference_points,
@@ -85,6 +82,12 @@ class PredictionResultController extends Controller
                 {$eventClause}
             ORDER BY g.event_id ASC, ht.group_name ASC, g.game_date ASC",
             $bindings);
+
+        foreach ($rows as $row) {
+            $row->locked = $row->game_date <= $nowUtc ? 1 : 0;
+        }
+
+        return $rows;
     }
 
     public function updatePredictionResultUser(UpdatePredictionResultRequest $request)
@@ -149,7 +152,7 @@ class PredictionResultController extends Controller
 
     public function getPredictionResultsUserGroupEventDay($eventID, $groupID, $userID){
         $now = Carbon::now('UTC')->format('Y-m-d H:i:s');
-        $predictionGamesUserProfileEventDay = DB::select('SELECT
+        $rows = DB::select('SELECT
                             g.id,
                               prr.id AS prediction_id,
                               prr.game_winner_id,
@@ -165,7 +168,7 @@ class PredictionResultController extends Controller
                               IFNULL(por.difference_points,0) AS difference_points,
                               IFNULL(por.winner_points,0) AS winner_points,
                               IFNULL(por.bingo_points,0) AS bingo_points,
-                              IFNULL(ROUND((CASE WHEN game_date > ? THEN NULL ELSE por.odds END),4),0) AS odds,
+                              ROUND(IFNULL(por.odds, 0), 4) AS odds,
                               IFNULL(por.odds_points,0) AS odds_points,
                               ROUND(IFNULL(por.full_points,0),2) AS full_points,
                               ROUND(IFNULL(por.streak_bonus,0),2) AS streak_bonus,
@@ -184,9 +187,15 @@ class PredictionResultController extends Controller
                               AND e.id = ?
                               AND lm.league_id = ?
                           ORDER BY g.id ASC',
-            [$now, $userID, $eventID, $groupID]);
+            [$userID, $eventID, $groupID]);
 
-        return $predictionGamesUserProfileEventDay;
+        foreach ($rows as $row) {
+            if ($row->game_date > $now) {
+                $row->odds = 0.0;
+            }
+        }
+
+        return $rows;
     }
 
     public function getPredictionGamesProfile($groupID, $eventID){
@@ -206,7 +215,7 @@ class PredictionResultController extends Controller
                           ROUND(IFNULL(por.difference_points,0),1) AS difference_points,
                           ROUND(IFNULL(por.winner_points,0),1) AS winner_points,
                           ROUND(IFNULL(por.bingo_points,0),1) AS bingo_points,
-                          IFNULL(ROUND((CASE WHEN game_date > ? THEN NULL ELSE por.Odds END),4),0) AS odds,
+                          ROUND(IFNULL(por.Odds,0),4) AS odds,
                           ROUND(IFNULL(por.odds_points,0),1) AS odds_points,
                           ROUND(IFNULL(por.full_points,0),1) AS full_points,
                           ROUND(IFNULL(por.streak_bonus,0),1) AS streak_bonus
@@ -219,7 +228,7 @@ class PredictionResultController extends Controller
                           left join point_results as por on por.user_id=pr.user_id AND por.game_id=pr.game_id
                         where g.game_date < ? AND e.id <= ? AND us.active = 1
                         ORDER BY pr.user_id ASC, g.id DESC',
-            [$now, $groupID, $guest, $now, $eventIDValue]);
+            [$groupID, $guest, $now, $eventIDValue]);
 
         return $predictionGames;
     }

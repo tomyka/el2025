@@ -6,21 +6,33 @@ use Illuminate\Support\Facades\DB;
 
 class TeamStatisticsController extends Controller
 {
-    public function getTeamStatistics($teamID){
-        $teamHomeStatistics = DB::select('select
-                                              SUM(CASE WHEN home_team_score IS NOT NULL then 1 else 0 end) AS gameCount,
-                                              SUM(CASE WHEN g.home_team_id=t.id AND home_team_score > away_team_score OR g.away_team_id=t.id AND home_team_score < away_team_score then 1 else 0 end) AS won,
-                                              SUM(CASE WHEN g.home_team_id=t.id AND home_team_score < away_team_score OR g.away_team_id=t.id AND home_team_score > away_team_score then 1 else 0 end) AS lost,
-                                              ROUND(SUM(CASE t.id WHEN g.home_team_id THEN home_team_score WHEN g.away_team_id THEN away_team_score END),2) AS pointsScored,
-                                              ROUND(SUM(CASE t.id WHEN g.home_team_id THEN away_team_score WHEN g.away_team_id THEN home_team_score END),2) AS pointsAllowed
-                                          from teams AS t
-                                            LEFT JOIN games AS g ON t.id=g.home_team_id OR t.id=g.away_team_id
-                                          where
-                                            t.id = ?
-                                          group by t.id',
-            [$teamID]);
+    public function getTeamStatistics($teamID): ?object
+    {
+        $games = DB::table('games')
+            ->where(function ($q) use ($teamID) {
+                $q->where('home_team_id', $teamID)->orWhere('away_team_id', $teamID);
+            })
+            ->whereNotNull('home_team_score')
+            ->select('home_team_id', 'home_team_score', 'away_team_score')
+            ->get();
 
-        return $teamHomeStatistics[0] ?? null;
+        if ($games->isEmpty()) {
+            return null;
+        }
+
+        $stats = ['gameCount' => 0, 'won' => 0, 'lost' => 0, 'pointsScored' => 0.0, 'pointsAllowed' => 0.0];
+        foreach ($games as $game) {
+            $isHome   = (int) $game->home_team_id === (int) $teamID;
+            $scored   = $isHome ? (int) $game->home_team_score : (int) $game->away_team_score;
+            $conceded = $isHome ? (int) $game->away_team_score : (int) $game->home_team_score;
+            $stats['gameCount']++;
+            $stats['pointsScored']  += $scored;
+            $stats['pointsAllowed'] += $conceded;
+            if ($scored > $conceded) $stats['won']++;
+            if ($scored < $conceded) $stats['lost']++;
+        }
+
+        return (object) $stats;
     }
 
     public function prepareTeamStatistics($predictionResults){

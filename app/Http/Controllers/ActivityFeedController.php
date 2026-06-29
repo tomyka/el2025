@@ -81,22 +81,27 @@ class ActivityFeedController extends Controller
             ->where('us.active', true)
             ->whereNotNull('g.home_team_score')
             ->whereNotNull('g.away_team_score')
-            ->whereRaw('pr.streak_bonus >= 2 * e.rate')
-            ->orderByRaw('ROUND(pr.streak_bonus / NULLIF(e.rate, 0)) + 1 DESC')
-            ->limit(5)
-            ->selectRaw(
-                "u.username,
-                 ROUND(pr.streak_bonus / NULLIF(e.rate, 0)) + 1 as streak_length,
-                 g.game_date"
-            )
+            ->where('pr.streak_bonus', '>', 0)
+            ->select('u.username', 'pr.streak_bonus', 'e.rate', 'g.game_date')
             ->get();
 
-        return $rows->map(fn($r) => [
-            'type'     => 'streak',
-            'username' => $r->username,
-            'length'   => (int) $r->streak_length,
-            'ago'      => Carbon::parse($r->game_date)->diffForHumans(now(), true),
-        ])->toArray();
+        return $rows
+            ->map(function ($r) {
+                $rate   = (float) $r->rate ?: 1.0;
+                $length = (int) round((float) $r->streak_bonus / $rate) + 1;
+                return ['username' => $r->username, 'length' => $length, 'game_date' => $r->game_date];
+            })
+            ->filter(fn($r) => $r['length'] >= 3)
+            ->sortByDesc('length')
+            ->take(5)
+            ->map(fn($r) => [
+                'type'     => 'streak',
+                'username' => $r['username'],
+                'length'   => $r['length'],
+                'ago'      => Carbon::parse($r['game_date'])->diffForHumans(now(), true),
+            ])
+            ->values()
+            ->toArray();
     }
 
 }
