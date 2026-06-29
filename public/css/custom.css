@@ -828,11 +828,11 @@ button.sb-tab::after { display: none; }
 
 .upcoming-date {
   display: flex;
-  flex-direction: column;
-  font-size: .72rem;
+  align-items: center;
+  font-size: .8rem;
   color: var(--sb-muted);
   white-space: nowrap;
-  line-height: 1.3;
+  line-height: 1;
 }
 .upcoming-time {
   font-size: .78rem;
@@ -1466,7 +1466,7 @@ button.sb-tab::after { display: none; }
 }
 
 .pred-time {
-  font-size: .68rem;
+  font-size: .8rem;
   font-weight: 600;
   color: var(--sb-muted);
   letter-spacing: .3px;
