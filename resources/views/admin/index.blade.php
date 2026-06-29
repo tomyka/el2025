@@ -16,14 +16,14 @@
         ['icon' => 'bi-flag-fill',       'label' => 'Komandos',            'route' => 'admin.teams',                 'super' => true],
         ['icon' => 'bi-calendar-event',  'label' => 'Turai',               'route' => 'admin.events',                'super' => true],
         ['icon' => 'bi-chat-left-text',  'label' => 'Žinutės',             'route' => 'admin.messages',              'super' => true],
-        ['icon' => 'bi-bar-chart-fill',  'label' => 'Eigos taškai',        'route' => 'admin.updateStandingPoints',  'super' => true],
+        ['icon' => 'bi-bar-chart-fill',  'label' => 'Eigos taškai',        'route' => 'admin.updateStandingPoints',  'super' => true, 'minLevel' => 9],
         ['icon' => 'bi-trophy-fill',     'label' => 'Lygos',               'route' => 'admin.leagues',               'super' => false],
         ['icon' => 'bi-clock-history',   'label' => 'Auditas',             'route' => 'admin.audit',                 'super' => true],
     ];
     @endphp
 
     @foreach($sections as $s)
-    @if(!$s['super'] || session('admin') >= 5)
+    @if(session('admin') >= ($s['minLevel'] ?? ($s['super'] ? 5 : 1)))
     <div class="col-xl-2 col-lg-3 col-md-4 col-6">
         <a href="{{ route($s['route']) }}" class="admin-tile">
             <i class="bi {{ $s['icon'] }} admin-tile-icon"></i>

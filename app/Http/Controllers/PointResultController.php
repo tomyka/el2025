@@ -317,6 +317,7 @@ class PointResultController extends Controller
         // For knockout rounds, resolve the actual ultimate winner once
         $actualIsDraw   = false;
         $actualWinnerId = null;
+        $actualOdds     = 0.0;
         if ($isKnockout) {
             $actualIsDraw = ((int) $homeTeamScore === (int) $awayTeamScore);
             if ((int) $homeTeamScore > (int) $awayTeamScore) {
@@ -326,6 +327,13 @@ class PointResultController extends Controller
             } else {
                 $actualWinnerId = $game->game_winner_id; // set by admin
             }
+            // Actual result's odds — used for partial credit so it can never exceed full credit
+            // (all partial cases use 2.5×actualOdds; full correct uses 5×predictedOdds with same base)
+            $actualOdds = $actualIsDraw
+                ? (float) $gameOdds->draw_odds
+                : ($actualWinnerId == $game->home_team_id
+                    ? (float) $gameOdds->home_odds
+                    : (float) $gameOdds->away_odds);
         }
 
         foreach ($predictionResults as $predictionResult) {
@@ -356,12 +364,15 @@ class PointResultController extends Controller
                         // Exact: same winner, same path (both 90-min or both via penalties)
                         $winnerBonus = (1 + $odds) * 5.0;
                     } else {
-                        // Right advancing team, wrong method (90-min vs penalties)
-                        $winnerBonus = (1 + $odds) * 2.5;
+                        // Right advancing team, wrong method — all treated equally
+                        // Use actual result's odds so partial (2.5×) never exceeds full (5×)
+                        $winnerBonus = (1 + $actualOdds) * 2.5;
+                        $odds        = $actualOdds;
                     }
                 } elseif ($predIsDraw && $actualIsDraw) {
-                    // Correct draw/penalties prediction but wrong penalty winner
-                    $winnerBonus = (1 + $odds) * 2.5;
+                    // Correct draw path, wrong penalty winner — same partial tier
+                    $winnerBonus = (1 + $actualOdds) * 2.5;
+                    $odds        = $actualOdds;
                 } else {
                     $winnerBonus = 0.0;
                     $odds        = 0.0;
