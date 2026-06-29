@@ -114,7 +114,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'superadmin']], function () {
 
     Route::get('users', [UserController::class,'getAllUsersFull'])->name('admin.users');
-    Route::post('updateUser', [UserController::class,'updateUser'])->name('admin.updateUser');
+    Route::post('updateUser', [UserController::class,'updateUser'])->middleware('level9admin')->name('admin.updateUser');
     Route::post('deleteUser', [UserController::class,'deleteUser'])->middleware('level9admin')->name('admin.deleteUser');
     Route::post('toggleHidden', [UserController::class,'toggleHidden'])->middleware('level9admin')->name('admin.toggleHidden');
 
@@ -143,7 +143,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'superadmin']], func
     Route::post('settings', [SettingController::class,'updateSetting']);
 });
 
-Route::group(['prefix' => 'summary'],function(){
+Route::group(['prefix' => 'summary', 'middleware' => 'auth'], function () {
 
     Route::get('prediction/results', [PredictionResultController::class,'getPredictionResultSummary'])->name('summary.prediction.results');
     Route::get('prediction/standings', [PredictionStandingController::class,'getPredictionStandingSummary'])->name('summary.prediction.standings');

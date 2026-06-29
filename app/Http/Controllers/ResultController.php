@@ -7,6 +7,7 @@ use App\Models\Game;
 use App\Models\PredictionResult;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ResultController extends Controller
 {
@@ -29,38 +30,34 @@ class ResultController extends Controller
         $gameID        = $request->input('gameID');
         $homeTeamScore = $request->input('homeTeamScore');
         $awayTeamScore = $request->input('awayTeamScore');
+        $gameWinnerID  = $request->input('gameWinnerID');
 
-        $game = Game::find($gameID);
-        $game->home_team_score = $homeTeamScore;
-        $game->away_team_score = $awayTeamScore;
-        // For knockout draws: store actual penalty winner; clear for non-draws or cleared results
-        $gameWinnerID = $request->input('gameWinnerID');
-        $isDraw = $homeTeamScore !== '' && $awayTeamScore !== '' && $homeTeamScore == $awayTeamScore;
-        $game->game_winner_id = ($isDraw && $gameWinnerID) ? (int) $gameWinnerID : null;
-        $game->save();
+        DB::transaction(function () use ($gameID, $homeTeamScore, $awayTeamScore, $gameWinnerID) {
+            $game = Game::find($gameID);
+            $game->home_team_score = $homeTeamScore;
+            $game->away_team_score = $awayTeamScore;
+            $isDraw = $homeTeamScore !== '' && $awayTeamScore !== '' && $homeTeamScore == $awayTeamScore;
+            $game->game_winner_id = ($isDraw && $gameWinnerID) ? (int) $gameWinnerID : null;
+            $game->save();
 
-        if ((($homeTeamScore=="")?-1:$homeTeamScore) != -1 || (($awayTeamScore=="")?-1:$awayTeamScore) != -1) {
-            //random generation of missing prediction results
-            $this->generateMissingResults($gameID);
+            if ((($homeTeamScore == "") ? -1 : $homeTeamScore) != -1 || (($awayTeamScore == "") ? -1 : $awayTeamScore) != -1) {
+                $this->generateMissingResults($gameID);
 
-            if (session('survivalGame') != 0) {
-                //Update Survival sequences for each user
-                $predictionSurvivalController = new PredictionSurvivalController();
-                $predictionSurvivalController->updatePredictionSurvivalGame($gameID);
+                if (session('survivalGame') != 0) {
+                    $predictionSurvivalController = new PredictionSurvivalController();
+                    $predictionSurvivalController->updatePredictionSurvivalGame($gameID);
+                }
 
-               }
+                $gameOddsController = new GameOddsController();
+                $gameOddsController->updateGameOdds($gameID);
 
-            $gameOddsController = new GameOddsController();
-            $gameOddsController->updateGameOdds($gameID);
+                $pointsResultController = app(PointResultController::class);
+                $pointsResultController->updateGamePoints($gameID);
+                $pointsResultController->recalculateStreaks();
+            }
+        });
 
-            $pointsResultController = app(PointResultController::class);
-            $pointsResultController->updateGamePoints($gameID);
-            $pointsResultController->recalculateStreaks();
-
-        }
-        return response()->json([
-            'success' => true
-        ]);
+        return response()->json(['success' => true]);
     }
 
    private function generateMissingResults ($gameID){
@@ -73,6 +70,7 @@ class ResultController extends Controller
         $predictionResults = PredictionResult::where('game_id', $gameID)
             ->whereNull('home_team_score')
             ->whereNotIn('user_id', $inactiveUserIds)
+            ->lockForUpdate()
             ->get();
 
         if ($predictionResults->isEmpty()) {

@@ -98,12 +98,11 @@ class PredictionResultController extends Controller
         $game = Game::where('id', $gameID)->first();
         $now = Carbon::now('UTC')->format('Y-m-d H:i:s');
 
-        // Auto-unhide if a previously hidden user is actively predicting
-        \App\Models\UserSetting::where('user_id', $userID)
-            ->where('active', false)
-            ->update(['active' => true]);
-
         if ($game->game_date > $now) {
+            // Auto-reactivate a deactivated user only when they genuinely submit a prediction
+            \App\Models\UserSetting::where('user_id', $userID)
+                ->where('active', false)
+                ->update(['active' => true]);
             $predictionResult = PredictionResult::where('id', $request->input('prediction_gameID'))
                 ->where('user_id', $userID)
                 ->firstOrFail();
