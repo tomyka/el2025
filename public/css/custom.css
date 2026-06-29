@@ -828,16 +828,16 @@ button.sb-tab::after { display: none; }
 
 .upcoming-date {
   display: flex;
-  align-items: center;
-  font-size: .8rem;
+  flex-direction: column;
+  font-size: .72rem;
   color: var(--sb-muted);
   white-space: nowrap;
-  line-height: 1;
+  line-height: 1.3;
 }
 .upcoming-time {
-  font-size: .78rem;
+  font-size: .72rem;
   font-weight: 600;
-  color: var(--sb-text);
+  color: var(--sb-muted);
 }
 
 .upcoming-team {
