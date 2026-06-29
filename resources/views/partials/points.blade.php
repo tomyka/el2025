@@ -11,7 +11,7 @@
         <span class="lb-header-rank">#</span>
         <span class="lb-header-name">Žaidėjas</span>
         <span class="lb-header-sub d-none d-md-block" title="Rungtynių taškai"><i class="bi bi-check2-all"></i></span>
-        {{-- <span class="lb-header-sub d-none d-md-block" title="Eigos taškai"><i class="bi bi-bar-chart-steps"></i></span> --}}
+        <span class="lb-header-sub d-none d-md-block" title="Eigos taškai"><i class="bi bi-bar-chart-steps"></i></span>
         @if(session('survivalGame') == 1)
         <span class="lb-header-sub d-none d-md-block" title="Išlikimo taškai"><i class="bi bi-shield-check"></i></span>
         @endif
@@ -70,9 +70,9 @@
                 }
                 $spPop = $spPopRows ? "<div class='sr-pop sr-pop-sm'>{$spPopRows}</div>" : '';
             @endphp
-            {{-- <div class="lb-sub-col d-none d-md-block {{ $spPop ? 'pst-hoverable' : '' }}"
+            <div class="lb-sub-col d-none d-md-block {{ $spPop ? 'pst-hoverable' : '' }}"
                  @if($spPop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $spPop }}" @endif
-            >{{ number_format($point['standingPoints']->total_points, 1) }}</div> --}}
+            >{{ number_format($point['standingPoints']->total_points, 1) }}</div>
             @if(session('survivalGame') == 1)
             <div class="lb-sub-col d-none d-md-block">{{ $point['survivalPoints'] }}</div>
             @endif
