@@ -56,13 +56,10 @@
                             <img src="{{ asset('img/teams/'.str_replace(' ','%20',strtolower($game->home_team)).'.svg') }}" class="upcoming-flag" alt="{{ $game->home_team }}">
                             <span class="upcoming-name d-none d-md-inline">{{ $game->home_team }}</span>
                         </span>
-                        <span class="upcoming-scores" style="flex-direction:column;gap:2px;">
-                            <span class="pred-time">{{ $gameTime }}</span>
-                            <span style="display:flex;align-items:center;gap:3px;">
-                                <span class="usc-actual">{{ $game->actual_home_score }}:{{ $game->actual_away_score }}</span>
-                                <span class="usc-sep">/</span>
-                                <span class="usc-pred">{{ $game->home_team_score ?? '?' }}:{{ $game->away_team_score ?? '?' }}</span>
-                            </span>
+                        <span class="upcoming-scores">
+                            <span class="usc-actual">{{ $game->actual_home_score }}:{{ $game->actual_away_score }}</span>
+                            <span class="usc-sep">/</span>
+                            <span class="usc-pred">{{ $game->home_team_score ?? '?' }}:{{ $game->away_team_score ?? '?' }}</span>
                         </span>
                         <span class="upcoming-team upcoming-away">
                             <span class="upcoming-name d-none d-md-inline">{{ $game->away_team }}</span>
@@ -77,6 +74,7 @@
                                 data-bs-content="{{ $popContent }}"
                             @endif
                         >
+                            <span class="pred-time" style="color:var(--sb-muted)">{{ $gameTime }}</span>
                             {{ number_format($totalPts, 1) }}
                             @if($streak > 0)
                             <span class="upt-streak"><i class="bi bi-fire"></i>+{{ number_format($streak, 1) }}</span>
@@ -103,7 +101,6 @@
                             @endif
                         </div>
                         <div class="pred-scores">
-                            <span class="pred-time">{{ $gameTime }}</span>
                             <div class="pred-scores-inputs">
                                 <input type="text" class="form-control pred-score {{ $game->locked ? 'pred-score-locked' : '' }}"
                                     id="homeTeamScore{{$game->game_id}}"
@@ -129,8 +126,7 @@
                             <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->away_team)).'.svg') }}" class="pred-flag" alt="{{ $game->away_team }}">
                             <span class="pred-team-name">{{ $game->away_team }}</span>
                         </div>
-                        {{-- empty 4th cell keeps grid alignment --}}
-                        <span></span>
+                        <span class="pred-time" style="padding-left:6px;">{{ $gameTime }}</span>
                     </div>
                     @endif
 

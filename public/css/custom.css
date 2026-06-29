@@ -1353,12 +1353,12 @@ button.sb-tab::after { display: none; }
 
 .pred-event-groups {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
 }
 
-/* Mobile (portrait + landscape): one card per row */
-@media (max-width: 899px) {
+/* Mobile: one card per row */
+@media (max-width: 599px) {
   .pred-event-groups {
     grid-template-columns: 1fr;
   }
