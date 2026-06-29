@@ -15,7 +15,6 @@
                     <span class="af-user">{{ $item['username'] }}</span>
                     <span class="af-text"> serija ×{{ $item['length'] }}</span>
                 @endif
-                <div class="af-ago">{{ $item['ago'] }}</div>
             </div>
         </div>
         @endforeach
