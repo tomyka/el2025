@@ -54,7 +54,7 @@
     @php
         $statRows = [
             ['label' => 'Rungtynių taškai',       'my' => $myData['userGamePoints'],              'their' => $theirData['userGamePoints'],              'fmt' => '1'],
-            ['label' => 'Eigos taškai',            'my' => $myData['standingPoints']->total_points,'their' => $theirData['standingPoints']->total_points,'fmt' => '1'],
+            // ['label' => 'Eigos taškai',            'my' => $myData['standingPoints']->total_points,'their' => $theirData['standingPoints']->total_points,'fmt' => '1'],
             ['label' => 'Išlikimo taškai',         'my' => $myData['survivalPoints'],               'their' => $theirData['survivalPoints'],               'fmt' => '0', 'hide_if_zero' => true],
             ['label' => 'Serija',                  'my' => $myData['userStreakPoints'] ?? 0,         'their' => $theirData['userStreakPoints'] ?? 0,         'fmt' => '1'],
             ['label' => 'Bingo',                   'my' => $myData['userGameBingo'],                'their' => $theirData['userGameBingo'],                'fmt' => '0'],
