@@ -30,17 +30,16 @@
                     </div>
                     @foreach($games as $game)
                     @php
-                        $hasResult  = $game->actual_home_score !== null;
-                        $totalPts   = $hasResult ? (float)$game->full_points + (float)$game->streak_bonus : 0.0;
+                        $hasResult     = $game->actual_home_score !== null;
+                        $totalPts      = $hasResult ? (float)$game->full_points + (float)$game->streak_bonus : 0.0;
+                        $streak        = $hasResult ? (float)$game->streak_bonus : 0.0;
                         $isPenaltyDraw = $game->is_knockout && !$game->locked
                             && $game->home_team_score !== null && $game->away_team_score !== null
                             && (string)$game->home_team_score === (string)$game->away_team_score;
-                        $gameClass = $game->locked
-                            ? ($hasResult ? 'pred-game-finished' : 'pred-game-locked')
-                            : '';
+                        $gameDate = ucfirst(\Carbon\Carbon::parse($game->game_date, 'UTC')->setTimezone('Europe/Vilnius')->locale('lt')->isoFormat('MMM D'));
+                        $gameTime = \Carbon\Carbon::parse($game->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('H:i');
                         $popContent = '';
                         if ($hasResult && $totalPts > 0) {
-                            $streak = (float)$game->streak_bonus;
                             $popContent = "<div class='sr-pop'>"
                                 . "<div class='sr-pop-row'><span>Nugalėtojas</span><strong>" . number_format($game->winner_points, 1) . "</strong></div>"
                                 . "<div class='sr-pop-row'><span>Skirtumas</span><strong>" . number_format($game->difference_points, 1) . "</strong></div>"
@@ -49,11 +48,48 @@
                                 . "</div>";
                         }
                     @endphp
-                    <div class="pred-game {{ $gameClass }}">
+
+                    @if($hasResult)
+                    {{-- Finished game: same row style as Artimiausios rungtynės --}}
+                    <div class="upcoming-row" style="padding-left:0;padding-right:0;">
+                        <span class="upcoming-date">
+                            <span>{{ $gameDate }}</span>
+                            <span class="upcoming-time">{{ $gameTime }}</span>
+                        </span>
+                        <span class="upcoming-team upcoming-home">
+                            <img src="{{ asset('img/teams/'.str_replace(' ','%20',strtolower($game->home_team)).'.svg') }}" class="upcoming-flag" alt="{{ $game->home_team }}">
+                            <span class="upcoming-name d-none d-md-inline">{{ $game->home_team }}</span>
+                        </span>
+                        <span class="upcoming-scores">
+                            <span class="usc-actual">{{ $game->actual_home_score }}:{{ $game->actual_away_score }}</span>
+                            <span class="usc-sep">/</span>
+                            <span class="usc-pred">{{ $game->home_team_score ?? '?' }}:{{ $game->away_team_score ?? '?' }}</span>
+                        </span>
+                        <span class="upcoming-team upcoming-away">
+                            <span class="upcoming-name d-none d-md-inline">{{ $game->away_team }}</span>
+                            <img src="{{ asset('img/teams/'.str_replace(' ','%20',strtolower($game->away_team)).'.svg') }}" class="upcoming-flag" alt="{{ $game->away_team }}">
+                        </span>
+                        <span class="upcoming-pts {{ $totalPts > 0 ? 'upt-scored' : 'upt-empty' }}"
+                            @if($totalPts > 0)
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
+                                data-bs-html="true"
+                                data-bs-placement="left"
+                                data-bs-content="{{ $popContent }}"
+                            @endif
+                        >
+                            {{ number_format($totalPts, 1) }}
+                            @if($streak > 0)
+                            <span class="upt-streak"><i class="bi bi-fire"></i>+{{ number_format($streak, 1) }}</span>
+                            @endif
+                        </span>
+                    </div>
+
+                    @else
+                    {{-- Upcoming / started-no-result game: editable pred-game row --}}
+                    <div class="pred-game {{ $game->locked ? 'pred-game-locked' : '' }}">
                         <input type="hidden" id="prediction_gameID{{$game->game_id}}" value="{{ $game->id }}">
                         <input type="hidden" id="penalty-winner-{{$game->game_id}}" value="{{ $game->game_winner_id ?? '' }}">
-
-                        {{-- Home team --}}
                         <div class="pred-team-home">
                             <span class="pred-team-name">{{ $game->home_team }}</span>
                             <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->home_team)).'.svg') }}" class="pred-flag" alt="{{ $game->home_team }}">
@@ -67,13 +103,8 @@
                             </button>
                             @endif
                         </div>
-
-                        {{-- Scores (centre column) --}}
                         <div class="pred-scores">
-                            <span class="pred-time">{{ ucfirst(\Carbon\Carbon::parse($game->game_date, 'UTC')->setTimezone('Europe/Vilnius')->locale('lt')->isoFormat('MMMM D')) }} · {{ \Carbon\Carbon::parse($game->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('H:i') }}</span>
-                            @if($hasResult)
-                            <span class="pred-actual">{{ $game->actual_home_score }}:{{ $game->actual_away_score }}</span>
-                            @endif
+                            <span class="pred-time">{{ ucfirst(\Carbon\Carbon::parse($game->game_date, 'UTC')->setTimezone('Europe/Vilnius')->locale('lt')->isoFormat('MMMM D')) }} · {{ $gameTime }}</span>
                             <div class="pred-scores-inputs">
                                 <input type="text" class="form-control pred-score {{ $game->locked ? 'pred-score-locked' : '' }}"
                                     id="homeTeamScore{{$game->game_id}}"
@@ -86,8 +117,6 @@
                                     value="{{ $game->away_team_score }}" maxlength="2" autocomplete="off">
                             </div>
                         </div>
-
-                        {{-- Away team --}}
                         <div class="pred-team-away">
                             @if($game->is_knockout && !$game->locked)
                             <button type="button"
@@ -101,25 +130,11 @@
                             <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->away_team)).'.svg') }}" class="pred-flag" alt="{{ $game->away_team }}">
                             <span class="pred-team-name">{{ $game->away_team }}</span>
                         </div>
-
-                        {{-- Points badge (finished games only) --}}
-                        <span class="pred-pts {{ $hasResult ? ($totalPts > 0 ? 'pred-pts-scored' : 'pred-pts-zero') : 'pred-pts-hidden' }}"
-                            @if($hasResult && $totalPts > 0)
-                                data-bs-toggle="popover"
-                                data-bs-trigger="hover"
-                                data-bs-html="true"
-                                data-bs-placement="left"
-                                data-bs-content="{{ $popContent }}"
-                            @endif
-                        >
-                            @if($hasResult)
-                                {{ number_format($totalPts, 1) }}
-                                @if((float)$game->streak_bonus > 0)
-                                <span class="upt-streak"><i class="bi bi-fire"></i></span>
-                                @endif
-                            @endif
-                        </span>
+                        {{-- empty 4th cell keeps grid alignment --}}
+                        <span></span>
                     </div>
+                    @endif
+
                     @endforeach
                 </div>
                 @endforeach
@@ -136,7 +151,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.pred-pts[data-bs-toggle="popover"]').forEach(function (el) {
+    document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (el) {
         new bootstrap.Popover(el, { container: 'body', html: true });
     });
 });
