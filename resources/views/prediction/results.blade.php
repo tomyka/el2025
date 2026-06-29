@@ -51,17 +51,18 @@
                     @if($hasResult)
                     {{-- Finished game: same row style as Artimiausios rungtynės --}}
                     <div class="upcoming-row" style="padding-left:0;padding-right:0;">
-                        <span class="upcoming-date">
-                            <span class="upcoming-time">{{ $gameTime }}</span>
-                        </span>
+                        <span class="upcoming-date"></span>
                         <span class="upcoming-team upcoming-home">
                             <img src="{{ asset('img/teams/'.str_replace(' ','%20',strtolower($game->home_team)).'.svg') }}" class="upcoming-flag" alt="{{ $game->home_team }}">
                             <span class="upcoming-name d-none d-md-inline">{{ $game->home_team }}</span>
                         </span>
-                        <span class="upcoming-scores">
-                            <span class="usc-actual">{{ $game->actual_home_score }}:{{ $game->actual_away_score }}</span>
-                            <span class="usc-sep">/</span>
-                            <span class="usc-pred">{{ $game->home_team_score ?? '?' }}:{{ $game->away_team_score ?? '?' }}</span>
+                        <span class="upcoming-scores" style="flex-direction:column;gap:2px;">
+                            <span class="pred-time">{{ $gameTime }}</span>
+                            <span style="display:flex;align-items:center;gap:3px;">
+                                <span class="usc-actual">{{ $game->actual_home_score }}:{{ $game->actual_away_score }}</span>
+                                <span class="usc-sep">/</span>
+                                <span class="usc-pred">{{ $game->home_team_score ?? '?' }}:{{ $game->away_team_score ?? '?' }}</span>
+                            </span>
                         </span>
                         <span class="upcoming-team upcoming-away">
                             <span class="upcoming-name d-none d-md-inline">{{ $game->away_team }}</span>
@@ -88,7 +89,6 @@
                     <div class="pred-game {{ $game->locked ? 'pred-game-locked' : '' }}">
                         <input type="hidden" id="prediction_gameID{{$game->game_id}}" value="{{ $game->id }}">
                         <input type="hidden" id="penalty-winner-{{$game->game_id}}" value="{{ $game->game_winner_id ?? '' }}">
-                        <span class="upcoming-date"><span class="upcoming-time">{{ $gameTime }}</span></span>
                         <div class="pred-team-home">
                             <span class="pred-team-name">{{ $game->home_team }}</span>
                             <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->home_team)).'.svg') }}" class="pred-flag" alt="{{ $game->home_team }}">
@@ -103,6 +103,7 @@
                             @endif
                         </div>
                         <div class="pred-scores">
+                            <span class="pred-time">{{ $gameTime }}</span>
                             <div class="pred-scores-inputs">
                                 <input type="text" class="form-control pred-score {{ $game->locked ? 'pred-score-locked' : '' }}"
                                     id="homeTeamScore{{$game->game_id}}"
