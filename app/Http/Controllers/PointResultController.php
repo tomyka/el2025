@@ -345,6 +345,10 @@ class PointResultController extends Controller
         }
 
         foreach ($predictionResults as $predictionResult) {
+            if ($predictionResult->home_team_score === null || $predictionResult->away_team_score === null) {
+                continue;
+            }
+
             $tablePoints = $this->scoring->getTablePoints(
                 $homeTeamScore, $awayTeamScore,
                 $predictionResult->home_team_score, $predictionResult->away_team_score,
