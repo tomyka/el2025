@@ -212,9 +212,13 @@ class MainController extends Controller
         $total  = DB::table('games')->where('event_id', $eventID)->count();
         $scored = DB::table('games')->where('event_id', $eventID)
                     ->whereNotNull('home_team_score')->count();
+        // Use Vilnius timezone (auto-adjusts for DST: UTC+2 summer, UTC+1 winter)
+        $todayStart = Carbon::today('Europe/Vilnius')->utc();
+        $todayEnd   = Carbon::today('Europe/Vilnius')->endOfDay()->utc();
+
         $today  = DB::table('games')->where('event_id', $eventID)
                     ->whereNull('home_team_score')
-                    ->whereDate('game_date', Carbon::now('UTC')->toDateString())->count();
+                    ->whereBetween('game_date', [$todayStart, $todayEnd])->count();
 
         return [
             'event_name'   => $event->event,
