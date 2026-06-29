@@ -30,8 +30,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (el) {
             new bootstrap.Popover(el, {
-                html: el.dataset.bsHtml === 'true',
-                container: 'body'
+                html: el.dataset.bsHtml === 'true'
             });
         });
         document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {

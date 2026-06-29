@@ -151,7 +151,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (el) {
-        new bootstrap.Popover(el, { container: 'body', html: true });
+        new bootstrap.Popover(el, { html: true });
     });
 });
 

@@ -2714,6 +2714,7 @@ p { margin: 0; }
 
 /* ── Custom: sb-card ── */
 [data-theme="dark"] .sb-card { background: var(--sb-card); border-color: var(--sb-border); }
+[data-theme="dark"] .sb-progress-strip { background: var(--sb-card); border-color: var(--sb-border); }
 
 /* ── Match cards ── */
 [data-theme="dark"] .match-card        { background: var(--sb-card); }
@@ -3046,8 +3047,11 @@ a.lb-name-link:hover {
    ============================================================ */
 .sb-progress-strip {
   background: var(--sb-card);
-  border-bottom: 1px solid var(--sb-border);
-  padding: 7px 20px;
+  border: 1px solid var(--sb-border);
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  padding: 12px 16px;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
   gap: 10px;
