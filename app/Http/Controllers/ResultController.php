@@ -66,8 +66,14 @@ class ResultController extends Controller
    private function generateMissingResults ($gameID){
 
         $homeTeamScore = $this->generateMissingScore();
-        $awayTeamScore = $this->generateMissingScore();;
-        $predictionResults = PredictionResult::where('game_id',$gameID)->where('home_team_score',null)->get();
+        $awayTeamScore = $this->generateMissingScore();
+
+        $hiddenUserIds = \App\Models\UserSetting::where('hidden', true)->pluck('user_id');
+
+        $predictionResults = PredictionResult::where('game_id', $gameID)
+            ->whereNull('home_team_score')
+            ->whereNotIn('user_id', $hiddenUserIds)
+            ->get();
 
         foreach ($predictionResults as $predictionResult){
             $predictionResult->home_team_score = $homeTeamScore;

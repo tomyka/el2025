@@ -11,8 +11,10 @@ class PointController extends Controller
     {
         $users = DB::table('users')
             ->join('league_members', 'users.id', '=', 'league_members.user_id')
+            ->join('user_settings', 'users.id', '=', 'user_settings.user_id')
             ->where('league_members.league_id', '=', $leagueID)
             ->where('league_members.is_guest', '<=', session('guest'))
+            ->where('user_settings.hidden', false)
             ->select('users.id', 'users.username', 'users.name', 'users.surname')
             ->get();
 
@@ -65,8 +67,10 @@ class PointController extends Controller
     {
         $userIDs = DB::table('users')
             ->join('league_members', 'users.id', '=', 'league_members.user_id')
+            ->join('user_settings', 'users.id', '=', 'user_settings.user_id')
             ->where('league_members.league_id', '=', $leagueID)
             ->where('league_members.is_guest', '<=', session('guest'))
+            ->where('user_settings.hidden', false)
             ->pluck('users.id')
             ->toArray();
 
@@ -167,9 +171,11 @@ class PointController extends Controller
         $guest = session('guest', 0);
 
         $userIDs = DB::table('league_members')
+            ->join('user_settings', 'league_members.user_id', '=', 'user_settings.user_id')
             ->where('league_id', $leagueID)
             ->where('is_guest', '<=', $guest)
-            ->pluck('user_id')
+            ->where('user_settings.hidden', false)
+            ->pluck('league_members.user_id')
             ->toArray();
 
         if (empty($userIDs) || !in_array($userID, $userIDs)) {

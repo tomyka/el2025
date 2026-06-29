@@ -23,12 +23,14 @@ class ChartController extends Controller
             ORDER BY g.game_date ASC, g.id ASC
         ');
 
-        // Users in this group (respect guest visibility setting)
+        // Users in this group (respect guest visibility + hidden settings)
         $users = DB::table('league_members')
             ->where('league_members.league_id', $groupID)
             ->where('league_members.is_guest', '<=', $guest)
             ->join('users', 'league_members.user_id', '=', 'users.id')
+            ->join('user_settings', 'league_members.user_id', '=', 'user_settings.user_id')
             ->leftJoin('colors', 'league_members.user_id', '=', 'colors.id')
+            ->where('user_settings.hidden', false)
             ->select('users.id', 'users.username', 'colors.color_code')
             ->get();
 

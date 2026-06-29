@@ -116,6 +116,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'superadmin']], func
     Route::get('users', [UserController::class,'getAllUsersFull'])->name('admin.users');
     Route::post('updateUser', [UserController::class,'updateUser'])->name('admin.updateUser');
     Route::post('deleteUser', [UserController::class,'deleteUser'])->middleware('level9admin')->name('admin.deleteUser');
+    Route::post('toggleHidden', [UserController::class,'toggleHidden'])->middleware('level9admin')->name('admin.toggleHidden');
 
     Route::get('teams',[TeamController::class,'getTeam'])->name('admin.teams');
     Route::get('teaminsert', [TeamController::class,'getTeam'])->name('admin.teaminsert');

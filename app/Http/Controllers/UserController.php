@@ -34,6 +34,15 @@ class UserController extends Controller
         return view('admin.users', ['users' => $users]);
     }
 
+    public function toggleHidden(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $userSetting         = UserSetting::where('user_id', $request->input('userID'))->firstOrFail();
+        $userSetting->hidden = ! $userSetting->hidden;
+        $userSetting->save();
+
+        return response()->json(['hidden' => $userSetting->hidden]);
+    }
+
     public function updateUser(Request $request): \Illuminate\Http\RedirectResponse
     {
         $request->validate(['admin' => 'required|integer|in:0,1,5,9']);

@@ -85,6 +85,11 @@ class PredictionResultController extends Controller
         $game = Game::where('id', $gameID)->first();
         $now = Carbon::now('UTC')->format('Y-m-d H:i:s');
 
+        // Auto-unhide if a previously hidden user is actively predicting
+        \App\Models\UserSetting::where('user_id', $userID)
+            ->where('hidden', true)
+            ->update(['hidden' => false]);
+
         if ($game->game_date > $now) {
             $predictionResult = PredictionResult::where('id', $request->input('prediction_gameID'))
                 ->where('user_id', $userID)
@@ -195,11 +200,12 @@ class PredictionResultController extends Controller
                           ROUND(IFNULL(por.streak_bonus,0),1) AS streak_bonus
                     from prediction_results as pr
                           join users as u ON u.id = pr.user_id
+                          join user_settings as us ON us.user_id = pr.user_id
                           join games as g ON g.id = pr.game_id
                           join events AS e ON e.id = g.event_id
                           join league_members as lm on pr.user_id=lm.user_id AND lm.league_id = ? AND lm.is_guest <= ?
                           left join point_results as por on por.user_id=pr.user_id AND por.game_id=pr.game_id
-                        where g.game_date < ? AND e.id <= ?
+                        where g.game_date < ? AND e.id <= ? AND us.hidden = 0
                         ORDER BY pr.user_id ASC, g.id DESC',
             [$now, $groupID, $guest, $now, $eventIDValue]);
 

@@ -1890,6 +1890,17 @@ button.sb-tab::after { display: none; }
 }
 .au-action-delete { color: #dc2626; }
 .au-action-delete:hover { background: #dc2626; border-color: #dc2626; color: #fff; }
+.au-action-hide { color: var(--sb-muted); }
+.au-action-hide:hover { background: var(--sb-muted); border-color: var(--sb-muted); color: #fff; }
+.au-action-hidden-active { color: var(--sb-accent); border-color: var(--sb-accent); }
+.au-action-hidden-active:hover { background: var(--sb-accent); color: #fff; }
+.au-row-hidden td { opacity: .55; }
+.au-row-hidden .au-avatar { background: var(--sb-muted) !important; }
+.au-hidden-badge {
+  font-size: .65rem; font-weight: 600; letter-spacing: .03em; text-transform: uppercase;
+  background: var(--sb-muted); color: #fff; border-radius: 4px; padding: 1px 5px;
+  vertical-align: middle; margin-left: 4px;
+}
 
 /* ============================================================
    Admin teams grid (.at-*)
