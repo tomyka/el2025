@@ -1422,6 +1422,17 @@ button.sb-tab::after { display: none; }
   border-top: 1px solid #f1f5f9;
 }
 
+.admin-result-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 0;
+}
+.admin-result-row + .admin-result-row {
+  border-top: 1px solid #f1f5f9;
+}
+
 .pred-team-home {
   display: flex;
   align-items: center;
@@ -2731,7 +2742,8 @@ p { margin: 0; }
 
 /* ── Prediction cards ── */
 [data-theme="dark"] .pred-day-card           { background: var(--sb-card); }
-[data-theme="dark"] .pred-game + .pred-game  { border-top-color: var(--sb-border); }
+[data-theme="dark"] .pred-game + .pred-game        { border-top-color: var(--sb-border); }
+[data-theme="dark"] .admin-result-row + .admin-result-row { border-top-color: var(--sb-border); }
 [data-theme="dark"] .pred-score              { background: #253047; border-color: #405068; color: var(--sb-text); }
 [data-theme="dark"] .pred-score-locked       { background: #1a2740 !important; }
 

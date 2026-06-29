@@ -59,11 +59,11 @@ $grouped = collect($games)
                     $isKnockout = $game->event->is_knockout ?? false;
                     $isDraw     = $hasResult && $game->home_team_score == $game->away_team_score;
                 @endphp
-                <div class="pred-game">
+                <div class="admin-result-row">
                     <div class="pred-team-home">
-                        <span class="pred-team-name">{{ $game->home_team->team }}</span>
                         <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($game->home_team->team)) . '.svg') }}"
                              class="pred-flag" alt="{{ $game->home_team->team }}">
+                        <span class="pred-team-name">{{ $game->home_team->team }}</span>
                         @if($isKnockout && !$isFuture)
                         <button type="button"
                                 class="pred-pw-check {{ ($isDraw && $game->game_winner_id == $game->home_team_id) ? 'active' : '' }}"
@@ -111,9 +111,9 @@ $grouped = collect($games)
                             <i class="bi bi-check-circle-fill"></i>
                         </button>
                         @endif
+                        <span class="pred-team-name">{{ $game->away_team->team }}</span>
                         <img src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($game->away_team->team)) . '.svg') }}"
                              class="pred-flag" alt="{{ $game->away_team->team }}">
-                        <span class="pred-team-name">{{ $game->away_team->team }}</span>
                     </div>
                 </div>
                 @endforeach
