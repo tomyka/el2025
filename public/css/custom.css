@@ -1412,7 +1412,7 @@ button.sb-tab::after { display: none; }
 
 .pred-game {
   display: grid;
-  grid-template-columns: 1fr auto 1fr auto;
+  grid-template-columns: auto 1fr auto 1fr;
   align-items: center;
   padding: 7px 0;
 }

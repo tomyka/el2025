@@ -51,7 +51,7 @@
                     @if($hasResult)
                     {{-- Finished game: same row style as Artimiausios rungtynės --}}
                     <div class="upcoming-row" style="padding-left:0;padding-right:0;">
-                        <span class="upcoming-date"></span>
+                        <span class="upcoming-date">{{ $gameTime }}</span>
                         <span class="upcoming-team upcoming-home">
                             <img src="{{ asset('img/teams/'.str_replace(' ','%20',strtolower($game->home_team)).'.svg') }}" class="upcoming-flag" alt="{{ $game->home_team }}">
                             <span class="upcoming-name d-none d-md-inline">{{ $game->home_team }}</span>
@@ -74,7 +74,6 @@
                                 data-bs-content="{{ $popContent }}"
                             @endif
                         >
-                            <span class="pred-time" style="color:var(--sb-muted)">{{ $gameTime }}</span>
                             {{ number_format($totalPts, 1) }}
                             @if($streak > 0)
                             <span class="upt-streak"><i class="bi bi-fire"></i>+{{ number_format($streak, 1) }}</span>
@@ -87,6 +86,7 @@
                     <div class="pred-game {{ $game->locked ? 'pred-game-locked' : '' }}">
                         <input type="hidden" id="prediction_gameID{{$game->game_id}}" value="{{ $game->id }}">
                         <input type="hidden" id="penalty-winner-{{$game->game_id}}" value="{{ $game->game_winner_id ?? '' }}">
+                        <span class="pred-time" style="padding-right:6px;">{{ $gameTime }}</span>
                         <div class="pred-team-home">
                             <span class="pred-team-name">{{ $game->home_team }}</span>
                             <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->home_team)).'.svg') }}" class="pred-flag" alt="{{ $game->home_team }}">
@@ -126,7 +126,6 @@
                             <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->away_team)).'.svg') }}" class="pred-flag" alt="{{ $game->away_team }}">
                             <span class="pred-team-name">{{ $game->away_team }}</span>
                         </div>
-                        <span class="pred-time" style="padding-left:6px;">{{ $gameTime }}</span>
                     </div>
                     @endif
 
