@@ -12,8 +12,8 @@
                     <div class="af-text">{{ $item['game'] }}</div>
                     <div class="af-players">{{ $item['players'] }}</div>
                 @elseif($item['type'] === 'streak')
-                    <div class="af-text">Serija ×{{ $item['length'] }}</div>
-                    <div class="af-players">{{ $item['players'] }}</div>
+                    <span class="af-user">{{ $item['username'] }}</span>
+                    <span class="af-text"> serija ×{{ $item['length'] }}</span>
                 @else
                     <span class="af-user">{{ $item['username'] }}</span>
                     <span class="af-text"> {{ $item['text'] }}</span>
