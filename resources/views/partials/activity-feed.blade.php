@@ -6,17 +6,14 @@
     <div class="af-list">
         @foreach($activityFeed as $item)
         <div class="af-item">
-            <span class="af-icon">{{ $item['type'] === 'bingo' ? '🎯' : ($item['type'] === 'streak' ? '🔥' : '⭐') }}</span>
+            <span class="af-icon">{{ $item['type'] === 'bingo' ? '🎯' : '🔥' }}</span>
             <div class="af-body">
                 @if($item['type'] === 'bingo')
                     <div class="af-text">{{ $item['game'] }}</div>
                     <div class="af-players">{{ $item['players'] }}</div>
-                @elseif($item['type'] === 'streak')
-                    <span class="af-user">{{ $item['username'] }}</span>
-                    <span class="af-text"> serija ×{{ $item['length'] }}</span>
                 @else
                     <span class="af-user">{{ $item['username'] }}</span>
-                    <span class="af-text"> {{ $item['text'] }}</span>
+                    <span class="af-text"> serija ×{{ $item['length'] }}</span>
                 @endif
                 <div class="af-ago">{{ $item['ago'] }}</div>
             </div>

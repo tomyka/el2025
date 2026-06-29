@@ -13,9 +13,8 @@ class ActivityFeedController extends Controller
 
         $bingos  = $this->getBingos($leagueID, $guest);
         $streaks = $this->getStreaks($leagueID, $guest);
-        $wins    = $this->getWins($leagueID, $guest);
 
-        return array_merge($bingos, $streaks, $wins);
+        return array_merge($bingos, $streaks);
     }
 
     // ── Bingos grouped by game ────────────────────────────────────────────────
@@ -85,32 +84,4 @@ class ActivityFeedController extends Controller
         ])->toArray();
     }
 
-    // ── Contrarian wins (individual) ─────────────────────────────────────────
-
-    private function getWins(int $leagueID, int $guest): array
-    {
-        $rows = DB::table('point_results as pr')
-            ->join('games as g', 'g.id', '=', 'pr.game_id')
-            ->join('league_members as lm', 'lm.user_id', '=', 'pr.user_id')
-            ->join('users as u', 'u.id', '=', 'pr.user_id')
-            ->where('lm.league_id', $leagueID)
-            ->where('lm.active', true)
-            ->where('lm.is_guest', '<=', $guest)
-            ->where('pr.winner_points', '>', 0)
-            ->where('pr.odds', '>', 0.3)
-            ->whereNotNull('g.home_team_score')
-            ->whereNotNull('g.away_team_score')
-            ->orderByDesc('g.game_date')
-            ->orderByDesc('pr.odds')
-            ->limit(5)
-            ->select('u.username', 'g.game_date', 'pr.odds')
-            ->get();
-
-        return $rows->map(fn($r) => [
-            'type'     => 'win',
-            'username' => $r->username,
-            'text'     => 'nugalėtojas ×' . number_format(1 + (float) $r->odds, 2),
-            'ago'      => Carbon::parse($r->game_date)->diffForHumans(now(), true),
-        ])->toArray();
-    }
 }
