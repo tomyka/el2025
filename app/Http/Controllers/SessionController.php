@@ -2,7 +2,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\LeagueMember;
-use App\Models\Tournament;
 use App\Models\UserSetting;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Session;
@@ -16,33 +15,24 @@ class SessionController extends Controller
         $userSettings = UserSetting::where('user_id', $user->id)->firstOrFail();
         $leagueMember = LeagueMember::where('user_id', $user->id)
             ->where('active', true)
-            ->with('league')
+            ->with('league.tournament')
             ->firstOrFail();
 
         $leagueID     = $leagueMember->league_id;
         $tournamentID = $leagueMember->league->tournament_id;
-        $tournament   = Tournament::findOrFail($tournamentID);
+        $tournament   = $leagueMember->league->tournament;
 
-        $hasGames = DB::table('games')
+        $event = DB::table('games')
             ->join('events', 'games.event_id', '=', 'events.id')
+            ->select('events.id', 'events.event_survival', 'events.rate')
+            ->whereNull('games.home_team_score')
             ->where('events.tournament_id', $tournamentID)
-            ->exists();
+            ->first();
 
-        if ($hasGames) {
-            $event = DB::table('games')
-                ->join('events', 'games.event_id', '=', 'events.id')
-                ->select('events.id', 'events.event_survival', 'events.rate')
-                ->whereNull('games.home_team_score')
-                ->where('events.tournament_id', $tournamentID)
-                ->first();
-
-            if (empty($event)) {
-                $eventID = 0; $eventSurvival = 0; $eventRate = 0;
-            } else {
-                $eventID       = $event->id;
-                $eventSurvival = $event->event_survival;
-                $eventRate     = $event->rate;
-            }
+        if ($event) {
+            $eventID       = $event->id;
+            $eventSurvival = $event->event_survival;
+            $eventRate     = $event->rate;
 
             $firstGame = DB::table('games')
                 ->join('events', 'games.event_id', '=', 'events.id')
@@ -51,8 +41,9 @@ class SessionController extends Controller
                 ->select('games.game_date')
                 ->first();
 
-            $firstGameDate = new DateTime($firstGame->game_date);
-            $disabled = strtotime('-0 day', $firstGameDate->getTimestamp()) < time() ? 'disabled' : '';
+            $disabled = $firstGame
+                ? (strtotime('-0 day', (new DateTime($firstGame->game_date))->getTimestamp()) < time() ? 'disabled' : '')
+                : '';
         } else {
             $eventID = 0; $eventSurvival = 0; $eventRate = 0; $disabled = '';
         }
