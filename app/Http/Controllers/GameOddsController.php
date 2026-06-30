@@ -53,9 +53,10 @@ class GameOddsController extends Controller
             $draws    = $leaguePredictions->filter(fn($p) => $p->home_team_score == $p->away_team_score)->count();
             $awayWins = $leaguePredictions->filter(fn($p) => $p->home_team_score < $p->away_team_score)->count();
 
-            $homeOdds = $homeWins > 0 ? round(log($total / $homeWins, 2), 4) : 0.0;
-            $drawOdds = $draws    > 0 ? round(log($total / $draws,    2), 4) : 0.0;
-            $awayOdds = $awayWins > 0 ? round(log($total / $awayWins, 2), 4) : 0.0;
+            $leagueContrarian = round(log($total / 0.5, 2), 4);
+            $homeOdds = $homeWins > 0 ? round(log($total / $homeWins, 2), 4) : $leagueContrarian;
+            $drawOdds = $draws    > 0 ? round(log($total / $draws,    2), 4) : $leagueContrarian;
+            $awayOdds = $awayWins > 0 ? round(log($total / $awayWins, 2), 4) : $leagueContrarian;
 
             DB::table('league_game_odds')->upsert(
                 [
@@ -94,10 +95,12 @@ class GameOddsController extends Controller
             $awayCount += $this->calculateAwayOdds($p->home_team_score, $p->away_team_score);
         }
 
+        $contrarian = round(log($total / 0.5, 2), 4);
+
         return (object) [
-            'homeOdds' => $homeCount > 0 ? round(log($total / $homeCount, 2), 4) : 0.0,
-            'drawOdds' => $drawCount > 0 ? round(log($total / $drawCount, 2), 4) : 0.0,
-            'awayOdds' => $awayCount > 0 ? round(log($total / $awayCount, 2), 4) : 0.0,
+            'homeOdds' => $homeCount > 0 ? round(log($total / $homeCount, 2), 4) : $contrarian,
+            'drawOdds' => $drawCount > 0 ? round(log($total / $drawCount, 2), 4) : $contrarian,
+            'awayOdds' => $awayCount > 0 ? round(log($total / $awayCount, 2), 4) : $contrarian,
         ];
     }
 

@@ -91,6 +91,7 @@
                     {{-- Upcoming / started-no-result game: editable pred-game row --}}
                     <div class="pred-game {{ $game->locked ? 'pred-game-locked' : '' }}">
                         <input type="hidden" id="prediction_gameID{{$game->game_id}}" value="{{ $game->id }}">
+                        <input type="hidden" id="pred-rate-{{$game->game_id}}" value="{{ $game->rate ?? 1 }}">
                         <input type="hidden" id="penalty-winner-{{$game->game_id}}" value="{{ $game->game_winner_id ?? '' }}">
                         <span class="pred-time">{{ $gameTime }}</span>
                         <div class="pred-team-home">
@@ -221,6 +222,20 @@ function checkPrediction(gameID) {
         var color = bothFilled ? '#22c55e' : '#cbd5e1';
         homeScore.style.borderColor = color;
         awayScore.style.borderColor = color;
+        if (data && bothFilled) {
+            var rateEl = document.getElementById('pred-rate-' + gameID);
+            var rate = rateEl ? parseFloat(rateEl.value) : 1;
+            var homeWinPts = Math.round((1 + (data.home_odds || 0)) * 5 * rate * 10) / 10;
+            var drawPts    = Math.round((1 + (data.draw_odds || 0)) * 5 * rate * 10) / 10;
+            var awayWinPts = Math.round((1 + (data.away_odds || 0)) * 5 * rate * 10) / 10;
+            var panel = document.getElementById('pred-odds-' + gameID);
+            if (panel) {
+                var spans = panel.querySelectorAll('.pred-odds-pts');
+                if (spans[0]) spans[0].textContent = '+' + homeWinPts.toFixed(1) + ' pt';
+                if (spans[1]) spans[1].textContent = '+' + drawPts.toFixed(1) + ' pt';
+                if (spans[2]) spans[2].textContent = '+' + awayWinPts.toFixed(1) + ' pt';
+            }
+        }
     });
 }
 
