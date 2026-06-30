@@ -47,6 +47,7 @@ Route::get('/', [MainController::class,  'loadApp'])->name('/');
 Route::get('main', [MainController::class,  'loadApp'])->name('main');
 Route::get('admin', function () {return redirect()->route('admin.index');})->name('admin');
 
+Route::get('leaderboard', [MainController::class, 'leaderboard'])->name('leaderboard');
 Route::get('rules', [RulesController::class,'getRulesDetails'])->name('rules');
 Route::get('help', function () {return view('help');})->name('help');
 Route::get('privacy', function () {return view('privacy');})->name('privacy');

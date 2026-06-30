@@ -82,6 +82,27 @@ class MainController extends Controller
         }
     }
 
+    public function leaderboard(): \Illuminate\View\View
+    {
+        $players = DB::select('
+            SELECT
+                u.username,
+                ROUND(SUM(IFNULL(pr.full_points, 0) + IFNULL(pr.streak_bonus, 0)), 1) AS total_points,
+                SUM(CASE WHEN pr.bingo_points >= 50 THEN 1 ELSE 0 END)               AS exact_predictions,
+                SUM(CASE WHEN pr.winner_points  >= 5  THEN 1 ELSE 0 END)              AS correct_winners,
+                COUNT(pr.id)                                                           AS games_predicted
+            FROM users u
+            JOIN user_settings us ON us.user_id = u.id
+            JOIN point_results pr ON pr.user_id = u.id
+            WHERE us.active = 1
+            GROUP BY u.id, u.username
+            HAVING total_points > 0
+            ORDER BY total_points DESC
+        ');
+
+        return view('leaderboard', compact('players'));
+    }
+
     private function standingsMissing(int $userID): bool
     {
         $total = DB::table('prediction_standings')->where('user_id', $userID)->count();
