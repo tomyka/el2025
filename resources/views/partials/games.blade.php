@@ -80,6 +80,7 @@
                         . "</div>";
                 }
             @endphp
+            @php $hasRowOdds = $canPred && (($g->home_odds ?? 0) > 0 || ($g->draw_odds ?? 0) > 0 || ($g->away_odds ?? 0) > 0); @endphp
             <span class="upcoming-pts {{ $played && $totalPts > 0 ? 'upt-scored' : 'upt-empty' }}"
                 @if($played && $totalPts > 0)
                     data-bs-toggle="popover"
@@ -89,9 +90,16 @@
                     data-bs-content="{{ $popContent }}"
                 @endif
             >
-                {{ $played ? number_format($totalPts, 1) : '' }}
-                @if($streak > 0)
-                    <span class="upt-streak"><i class="bi bi-fire"></i>+{{ number_format($streak, 1) }}</span>
+                @if($played)
+                    {{ number_format($totalPts, 1) }}
+                    @if($streak > 0)
+                        <span class="upt-streak"><i class="bi bi-fire"></i>+{{ number_format($streak, 1) }}</span>
+                    @endif
+                @elseif($hasRowOdds)
+                    <button class="pred-odds-toggle p-0" style="font-size:.85rem"
+                            @click.stop="rowClickWithOdds($event.currentTarget.closest('[data-game-id]'))">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </button>
                 @endif
             </span>
         </a>
@@ -129,6 +137,10 @@
                                        class="form-control pred-score"
                                        maxlength="2" autocomplete="off" placeholder="?">
                             </div>
+                            <button x-show="hasOdds" class="pred-odds-toggle mt-1"
+                                    :class="{ active: showOdds }" @click="showOdds = !showOdds">
+                                <i class="bi bi-graph-up-arrow"></i> koef.
+                            </button>
                         </div>
                         <div class="pred-team-away">
                             <button type="button" class="pred-pw-check"
@@ -143,24 +155,19 @@
                         </div>
                     </div>
 
-                    {{-- Odds toggle --}}
-                    <div x-show="hasOdds" class="mt-2">
-                        <button class="pred-odds-toggle" :class="{ active: showOdds }" @click="showOdds = !showOdds">
-                            <i class="bi bi-graph-up-arrow"></i> koef.
-                        </button>
-                        <div x-show="showOdds" x-transition class="pred-odds-panel">
-                            <div class="pred-odds-col">
-                                <span class="pred-odds-label" x-text="homeTeam"></span>
-                                <span class="pred-odds-pts" x-text="'+' + homeWinPts + ' pt'"></span>
-                            </div>
-                            <div class="pred-odds-col">
-                                <span class="pred-odds-label">Lygiosios</span>
-                                <span class="pred-odds-pts" x-text="'+' + drawPts + ' pt'"></span>
-                            </div>
-                            <div class="pred-odds-col">
-                                <span class="pred-odds-label" x-text="awayTeam"></span>
-                                <span class="pred-odds-pts" x-text="'+' + awayWinPts + ' pt'"></span>
-                            </div>
+                    {{-- Odds panel (full width, below the grid) --}}
+                    <div x-show="hasOdds && showOdds" x-transition class="pred-odds-panel">
+                        <div class="pred-odds-col">
+                            <span class="pred-odds-label" x-text="homeTeam"></span>
+                            <span class="pred-odds-pts" x-text="'+' + homeWinPts + ' pt'"></span>
+                        </div>
+                        <div class="pred-odds-col">
+                            <span class="pred-odds-label">Lygiosios</span>
+                            <span class="pred-odds-pts" x-text="'+' + drawPts + ' pt'"></span>
+                        </div>
+                        <div class="pred-odds-col">
+                            <span class="pred-odds-label" x-text="awayTeam"></span>
+                            <span class="pred-odds-pts" x-text="'+' + awayWinPts + ' pt'"></span>
                         </div>
                     </div>
                 </div>
@@ -206,6 +213,24 @@ function predModal() {
             if (el.dataset.canPred !== '1') {
                 window.location = '{{ route('prediction.results') }}';
             }
+        },
+
+        rowClickWithOdds(el) {
+            if (el.dataset.canPred !== '1') return;
+            const d = el.dataset;
+            this.open(
+                parseInt(d.gameId), parseInt(d.predId),
+                d.home, d.away,
+                d.hscore !== '' ? parseInt(d.hscore) : null,
+                d.ascore !== '' ? parseInt(d.ascore) : null,
+                d.gameDate || '',
+                d.isKnockout === '1',
+                d.homeId ? parseInt(d.homeId) : null,
+                d.awayId ? parseInt(d.awayId) : null,
+                d.penaltyWinner ? parseInt(d.penaltyWinner) : null,
+                d.homeOdds || 0, d.drawOdds || 0, d.awayOdds || 0, d.rate || 1
+            );
+            this.showOdds = true;
         },
 
         rowClick(el) {

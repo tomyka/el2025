@@ -1383,12 +1383,6 @@ button.sb-tab::after { display: none; }
 /* ============================================================
    Prediction odds toggle
    ============================================================ */
-.pred-odds-wrap {
-  padding: 0 var(--pred-px, 12px);
-  margin-top: -4px;
-  margin-bottom: 2px;
-}
-
 .pred-odds-toggle {
   background: none;
   border: none;
