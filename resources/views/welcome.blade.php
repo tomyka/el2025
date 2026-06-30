@@ -1,15 +1,24 @@
-<div class="sb-hero-banner">
-    <h2>Sveiki atvykę į SportBet!</h2>
-    <p>Spėk rungtynių rezultatus, prognozuok komandų eigą turnyro lentelėje ir pamatysi, kas iš tikrųjų geriausiai išmano futbolą ar krepšinį.</p>
-    <p style="opacity:.8;font-size:.9rem;">Žaidžiame kartu nuo 2016 metų: Europos čempionatai, Pasaulio čempionatai, Eurobasket, Eurolygos sezonai — kiekvienas didelis turnyras tampa proga išbandyti savo žinias ir pralenkti draugus bei kolegas.</p>
-    <ul style="font-size:.9rem;padding-left:18px;opacity:.9;margin:16px 0 0;display:flex;flex-direction:column;gap:6px;">
-        <li>Tikra konkurencija tarp žmonių, kuriuos pažįsti</li>
-        <li>Retesnis spėjimas atneša daugiau taškų bei didina intrigą.</li>
-        <li>Futbolas ir krepšinis — visi didieji turnyroi vienoje vietoje.</li>
-        <li>Sek savo rezultatus, lygink su kitais, džiaukis kiekviena pataikyta prognoze.</li>
-    </ul>
+<div class="sb-charity-card mt-3">
+    <div class="sb-charity-card-inner">
+        <div class="sb-charity-icon">♥</div>
+        <div class="sb-charity-body">
+            <h3 class="sb-charity-title">Žaidžiame dėl gero tikslo</h3>
+            <p class="sb-charity-text">
+                SportBet — tai ne tik futbolo prognozių žaidimas. Nuo 2018 metų žaidėjai savanoriškai
+                aukoja <a href="{{ route('charity') }}" class="sb-charity-link-inline">Jaunimo linijai</a>,
+                teikiančiai psichologinę pagalbą jaunimui visoje Lietuvoje.
+                Iki 2024 m. kiekvieną auką dvigubino TransUnion Lithuania.
+            </p>
+            <a href="{{ route('charity') }}" class="sb-charity-link">
+                Sužinoti daugiau <i class="bi bi-arrow-right-short"></i>
+            </a>
+        </div>
+        <div class="sb-charity-stat-box">
+            <span class="sb-charity-amount">7 500€</span>
+            <span class="sb-charity-stat-label">paaukota nuo 2018 m.</span>
+        </div>
+    </div>
 </div>
-
 
 @php
     $medalRows = collect(\Illuminate\Support\Facades\DB::select('
