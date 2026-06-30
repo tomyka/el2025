@@ -52,10 +52,6 @@
         @elseif($t->start_date)
           · nuo {{ $t->start_date->format('Y-m-d') }}
         @endif
-        · <strong>{{ $d['participantCount'] }}</strong> dalyviai
-        @if($d['predictionCount'] > 0)
-          · <strong>{{ number_format($d['predictionCount']) }}</strong> prognozės
-        @endif
       </div>
       @if($t->description)
       <p style="font-size:.85rem;color:var(--sb-muted);margin:8px 0 0">{{ $t->description }}</p>
