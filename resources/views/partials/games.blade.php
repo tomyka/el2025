@@ -219,6 +219,13 @@ function predModal() {
             document.getElementById('gamePredModal').addEventListener('hidden.bs.modal', () => {
                 this.save();
             });
+            let oddsDebounce;
+            const debouncedSave = () => {
+                clearTimeout(oddsDebounce);
+                oddsDebounce = setTimeout(() => this.save(), 700);
+            };
+            this.$watch('homeScore', debouncedSave);
+            this.$watch('awayScore', debouncedSave);
         },
 
         navClick(el) {
