@@ -11,6 +11,7 @@ class League extends Model
     protected $fillable = [
         'name', 'description', 'is_public', 'owner_id',
         'base_fee', 'penalty_step', 'use_league_odds', 'reward_description',
+        'tournament_id',
     ];
 
     protected $casts = [
