@@ -152,10 +152,6 @@
                                        class="form-control pred-score"
                                        maxlength="2" autocomplete="off" placeholder="?">
                             </div>
-                            <button x-show="homeScore !== '' && awayScore !== ''" class="pred-odds-toggle mt-1"
-                                    :class="{ active: showOdds }" @click="showOdds = !showOdds">
-                                <i class="bi bi-graph-up-arrow"></i> koef.
-                            </button>
                         </div>
                         <div class="pred-team-away">
                             <button type="button" class="pred-pw-check"
@@ -171,7 +167,7 @@
                     </div>
 
                     {{-- Odds panel (full width, below the grid) --}}
-                    <div x-show="showOdds && homeScore !== '' && awayScore !== ''" x-transition class="pred-odds-panel">
+                    <div x-show="homeScore !== '' && awayScore !== ''" x-transition class="pred-odds-panel">
                         <div class="pred-odds-col">
                             <span class="pred-odds-label" x-text="homeTeam"></span>
                             <span class="pred-odds-pts" x-text="'+' + homeWinPts + ' pt'"></span>
