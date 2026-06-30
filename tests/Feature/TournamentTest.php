@@ -74,4 +74,31 @@ class TournamentTest extends TestCase
         ]);
         $this->assertEquals($t->id, $event->tournament->id);
     }
+
+    public function test_hub_route_returns_200_for_guests(): void
+    {
+        $response = $this->get('/');
+        $response->assertStatus(200);
+    }
+
+    public function test_tournament_enter_redirects_to_login_for_guest(): void
+    {
+        $tournament = \App\Models\Tournament::create([
+            'name' => 'T', 'slug' => 'test-slug', 'sport' => 'football', 'status' => 'active',
+        ]);
+        $response = $this->post('/tournament/test-slug/enter');
+        $response->assertRedirect('/login');
+    }
+
+    public function test_tournament_exit_clears_session(): void
+    {
+        $user = \App\Models\User::factory()->create();
+        $this->actingAs($user);
+        session(['tournamentID' => 1, 'leagueID' => 1]);
+
+        $this->get('/tournaments/exit');
+
+        $this->assertNull(session('tournamentID'));
+        $this->assertNull(session('leagueID'));
+    }
 }

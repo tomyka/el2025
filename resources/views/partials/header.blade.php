@@ -7,7 +7,7 @@
   <div class="sb-topnav">
 
     {{-- Brand --}}
-    <a class="sb-brand" @auth href="{{ route('main') }}" @else href="{{ route('/') }}" @endauth>
+    <a class="sb-brand" @auth href="{{ route('main') }}" @else href="{{ route('tournaments.hub') }}" @endauth>
       <img src="{{ asset('img/logo.png') }}" alt="SportBet" style="height:32px;">
       <span>Sport<span class="sb-brand-dot">Bet</span></span>
     </a>

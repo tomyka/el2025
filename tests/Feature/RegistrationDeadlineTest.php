@@ -26,21 +26,21 @@ class RegistrationDeadlineTest extends TestCase
 
     public function test_registration_tab_visible_when_no_games(): void
     {
-        $this->get(route('main'))->assertOk()->assertSee('Registruotis');
+        $this->get(route('tournaments.hub'))->assertOk()->assertSee('Registruotis');
     }
 
     public function test_registration_tab_visible_when_first_game_is_in_future(): void
     {
         $this->makeGame(now()->addDay());
 
-        $this->get(route('main'))->assertOk()->assertSee('Registruotis');
+        $this->get(route('tournaments.hub'))->assertOk()->assertSee('Registruotis');
     }
 
     public function test_registration_tab_hidden_when_first_game_has_started(): void
     {
         $this->makeGame(now()->subDay());
 
-        $this->get(route('main'))->assertOk()->assertDontSee('Registruotis');
+        $this->get(route('tournaments.hub'))->assertOk()->assertDontSee('Registruotis');
     }
 
     // ── Backend: GET /register ───────────────────────────────────────
