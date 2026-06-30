@@ -20,7 +20,7 @@ class TournamentController extends Controller
 
         $myLeaguesByTournament = collect();
         if (Auth::check()) {
-            $myLeaguesByTournament = LeagueMember::where('user_id', session('userID'))
+            $myLeaguesByTournament = LeagueMember::where('user_id', Auth::id())
                 ->where('active', true)
                 ->with('league')
                 ->get()
@@ -37,7 +37,7 @@ class TournamentController extends Controller
         }
 
         $tournament  = Tournament::where('slug', $slug)->firstOrFail();
-        $membership  = LeagueMember::where('user_id', session('userID'))
+        $membership  = LeagueMember::where('user_id', Auth::id())
             ->where('active', true)
             ->whereHas('league', fn($q) => $q->where('tournament_id', $tournament->id))
             ->with('league')
@@ -65,7 +65,7 @@ class TournamentController extends Controller
 
         $participantCount = LeagueMember::whereHas(
             'league', fn($q) => $q->where('tournament_id', $tournament->id)
-        )->where('is_guest', false)->distinct('user_id')->count('user_id');
+        )->where('is_guest', false)->distinct()->count('user_id');
 
         return view('tournaments.show', compact('tournament', 'participantCount'));
     }
