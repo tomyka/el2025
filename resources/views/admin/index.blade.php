@@ -19,6 +19,7 @@
         ['icon' => 'bi-bar-chart-fill',  'label' => 'Eigos taškai',        'route' => 'admin.updateStandingPoints',  'super' => true, 'minLevel' => 9],
         ['icon' => 'bi-trophy-fill',     'label' => 'Lygos',               'route' => 'admin.leagues',               'super' => false],
         ['icon' => 'bi-clock-history',   'label' => 'Auditas',             'route' => 'admin.audit',                 'super' => true],
+        ['icon' => 'bi-globe2', 'label' => 'Turnyrai', 'route' => 'admin.tournaments', 'super' => true],
     ];
     @endphp
 
