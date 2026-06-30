@@ -34,7 +34,7 @@
            data-draw-odds="{{ $g->draw_odds ?? 0 }}"
            data-away-odds="{{ $g->away_odds ?? 0 }}"
            data-rate="{{ $g->rate ?? 1 }}"
-           x-on:click.prevent="navClick($event.currentTarget)"
+           x-on:click.prevent
            x-on:dblclick.prevent="rowClick($event.currentTarget)">
             <span class="upcoming-date">
                 <span>{{ ucfirst(\Carbon\Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->locale('lt')->isoFormat('MMM D')) }}</span>
@@ -96,10 +96,25 @@
                         <span class="upt-streak"><i class="bi bi-fire"></i>+{{ number_format($streak, 1) }}</span>
                     @endif
                 @elseif($hasRowOdds)
-                    <button class="pred-odds-toggle p-0" style="font-size:.85rem"
-                            @click.stop="rowClickWithOdds($event.currentTarget.closest('[data-game-id]'))">
+                    @php
+                    $oHomeWinPts = round((1 + ($g->home_odds ?? 0)) * 5 * ($g->rate ?? 1), 1);
+                    $oDrawPts    = round((1 + ($g->draw_odds ?? 0)) * 5 * ($g->rate ?? 1), 1);
+                    $oAwayWinPts = round((1 + ($g->away_odds ?? 0)) * 5 * ($g->rate ?? 1), 1);
+                    $oddsPopContent = "<div class='sr-pop'>"
+                        . "<div class='sr-pop-row'><span>" . $g->home_team . "</span><strong>+" . number_format($oHomeWinPts, 1) . " pt</strong></div>"
+                        . "<div class='sr-pop-row'><span>Lygiosios</span><strong>+" . number_format($oDrawPts, 1) . " pt</strong></div>"
+                        . "<div class='sr-pop-row'><span>" . $g->away_team . "</span><strong>+" . number_format($oAwayWinPts, 1) . " pt</strong></div>"
+                        . "</div>";
+                    @endphp
+                    <span class="pred-odds-toggle upcoming-odds-pop"
+                          data-bs-toggle="popover"
+                          data-bs-trigger="hover"
+                          data-bs-html="true"
+                          data-bs-placement="left"
+                          data-bs-content="{{ $oddsPopContent }}"
+                          @click.stop>
                         <i class="bi bi-graph-up-arrow"></i>
-                    </button>
+                    </span>
                 @endif
             </span>
         </a>
@@ -178,7 +193,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.upcoming-pts[data-bs-toggle="popover"]').forEach(function (el) {
+    document.querySelectorAll('.upcoming-list [data-bs-toggle="popover"]').forEach(function (el) {
         new bootstrap.Popover(el, { html: true });
     });
 });
