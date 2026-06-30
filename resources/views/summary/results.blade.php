@@ -112,10 +112,13 @@ $openInit = $grouped->mapWithKeys(
                     <td class="sr-pred-td {{ $username === $myUsername ? 'sr-my-col' : '' }}">
                         @if($pred)
                         @php
-                            $hasPred = !is_null($pred->home_team_score) && $pred->home_team_score !== '';
-                            $scored  = !is_null($game->home_team_score);
-                            $correct = $scored && $pred->winner_points >= 5 && (!$game->is_knockout || $pred->bingo_points >= 50);
-                            $partial = $scored && !$correct && $game->is_knockout && $pred->winner_points >= 5;
+                            $hasPred        = !is_null($pred->home_team_score) && $pred->home_team_score !== '';
+                            $scored         = !is_null($game->home_team_score);
+                            $predIsDraw     = (string)$pred->home_team_score === (string)$pred->away_team_score;
+                            $actualIsDraw   = $scored && (string)$game->home_team_score === (string)$game->away_team_score;
+                            $endingOk       = $predIsDraw === $actualIsDraw;
+                            $correct        = $scored && $pred->winner_points >= 5 && (!$game->is_knockout || $endingOk);
+                            $partial        = $scored && !$correct && $game->is_knockout && $pred->winner_points >= 5;
                         @endphp
                         @if($scored)
                         <a href="#" class="sr-pts-link"
@@ -132,7 +135,7 @@ $openInit = $grouped->mapWithKeys(
                            </div>">{{ number_format($pred->full_points + ($pred->streak_bonus ?? 0), 1) }}</a>
                         @endif
                         @if($hasPred)
-                        @php $predIsDraw = (string)$pred->home_team_score === (string)$pred->away_team_score; $hasPenWinner = $predIsDraw && $game->is_knockout && $pred->game_winner_id; @endphp
+                        @php $hasPenWinner = $predIsDraw && $game->is_knockout && $pred->game_winner_id; @endphp
                         <div class="sr-pred-badge {{ $scored ? ($correct ? 'sr-pred-ok' : ($partial ? 'sr-pred-partial' : 'sr-pred-fail')) : 'sr-pred-pending' }}">
                             @if($hasPenWinner && $pred->game_winner_id == $game->home_team_id)<span class="sr-pw-w">ⓦ</span>@endif{{ $pred->home_team_score }}:{{ $pred->away_team_score }}@if($hasPenWinner && $pred->game_winner_id == $game->away_team_id)<span class="sr-pw-w">ⓦ</span>@endif
                         </div>
