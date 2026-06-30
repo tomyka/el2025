@@ -134,15 +134,17 @@
                             <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->away_team)).'.svg') }}" class="pred-flag" alt="{{ $game->away_team }}">
                         </div>
                         <span>
-                            @if(!$game->locked && $game->home_team_score !== null && $game->away_team_score !== null)
-                            <button class="pred-odds-toggle p-0" style="font-size:.85rem"
+                            @if(!$game->locked)
+                            <button id="pred-odds-toggle-{{ $game->game_id }}"
+                                    class="pred-odds-toggle p-0 {{ ($game->home_team_score === null || $game->away_team_score === null) ? 'd-none' : '' }}"
+                                    style="font-size:.85rem"
                                     onclick="var p=document.getElementById('pred-odds-{{ $game->game_id }}');p.classList.toggle('d-none');this.classList.toggle('active')">
                                 <i class="bi bi-graph-up-arrow"></i>
                             </button>
                             @endif
                         </span>
                     </div>
-                    @if(!$game->locked && $game->home_team_score !== null && $game->away_team_score !== null)
+                    @if(!$game->locked)
                     <div id="pred-odds-{{ $game->game_id }}" class="pred-odds-panel d-none">
                         <div class="pred-odds-col">
                             <span class="pred-odds-label">{{ $game->home_team }}</span>
@@ -222,19 +224,26 @@ function checkPrediction(gameID) {
         var color = bothFilled ? '#22c55e' : '#cbd5e1';
         homeScore.style.borderColor = color;
         awayScore.style.borderColor = color;
-        if (data && bothFilled) {
-            var rateEl = document.getElementById('pred-rate-' + gameID);
-            var rate = rateEl ? parseFloat(rateEl.value) : 1;
-            var homeWinPts = Math.round((1 + (data.home_odds || 0)) * 5 * rate * 10) / 10;
-            var drawPts    = Math.round((1 + (data.draw_odds || 0)) * 5 * rate * 10) / 10;
-            var awayWinPts = Math.round((1 + (data.away_odds || 0)) * 5 * rate * 10) / 10;
-            var panel = document.getElementById('pred-odds-' + gameID);
-            if (panel) {
-                var spans = panel.querySelectorAll('.pred-odds-pts');
-                if (spans[0]) spans[0].textContent = '+' + homeWinPts.toFixed(1) + ' pt';
-                if (spans[1]) spans[1].textContent = '+' + drawPts.toFixed(1) + ' pt';
-                if (spans[2]) spans[2].textContent = '+' + awayWinPts.toFixed(1) + ' pt';
+        var toggle = document.getElementById('pred-odds-toggle-' + gameID);
+        var panel  = document.getElementById('pred-odds-' + gameID);
+        if (bothFilled) {
+            if (toggle) toggle.classList.remove('d-none');
+            if (data) {
+                var rateEl = document.getElementById('pred-rate-' + gameID);
+                var rate = rateEl ? parseFloat(rateEl.value) : 1;
+                var homeWinPts = Math.round((1 + (data.home_odds || 0)) * 5 * rate * 10) / 10;
+                var drawPts    = Math.round((1 + (data.draw_odds || 0)) * 5 * rate * 10) / 10;
+                var awayWinPts = Math.round((1 + (data.away_odds || 0)) * 5 * rate * 10) / 10;
+                if (panel) {
+                    var spans = panel.querySelectorAll('.pred-odds-pts');
+                    if (spans[0]) spans[0].textContent = '+' + homeWinPts.toFixed(1) + ' pt';
+                    if (spans[1]) spans[1].textContent = '+' + drawPts.toFixed(1) + ' pt';
+                    if (spans[2]) spans[2].textContent = '+' + awayWinPts.toFixed(1) + ' pt';
+                }
             }
+        } else {
+            if (toggle) { toggle.classList.add('d-none'); toggle.classList.remove('active'); }
+            if (panel)  panel.classList.add('d-none');
         }
     });
 }
