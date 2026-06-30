@@ -216,7 +216,11 @@ function predModal() {
         rate:          1,
 
         init() {
-            document.getElementById('gamePredModal').addEventListener('hidden.bs.modal', () => {
+            const modalEl = document.getElementById('gamePredModal');
+            modalEl.addEventListener('hide.bs.modal', () => {
+                if (document.activeElement) document.activeElement.blur();
+            });
+            modalEl.addEventListener('hidden.bs.modal', () => {
                 this.save();
             });
             let oddsDebounce;
