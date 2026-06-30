@@ -133,7 +133,7 @@
                             <img src="{{ URL::to('img/teams/'.str_replace(' ','%20',strtolower($game->away_team)).'.svg') }}" class="pred-flag" alt="{{ $game->away_team }}">
                         </div>
                         <span>
-                            @if(!$game->locked && $hasOdds)
+                            @if(!$game->locked && $game->home_team_score !== null && $game->away_team_score !== null)
                             <button class="pred-odds-toggle p-0" style="font-size:.85rem"
                                     onclick="var p=document.getElementById('pred-odds-{{ $game->game_id }}');p.classList.toggle('d-none');this.classList.toggle('active')">
                                 <i class="bi bi-graph-up-arrow"></i>
@@ -141,7 +141,7 @@
                             @endif
                         </span>
                     </div>
-                    @if(!$game->locked && $hasOdds)
+                    @if(!$game->locked && $game->home_team_score !== null && $game->away_team_score !== null)
                     <div id="pred-odds-{{ $game->game_id }}" class="pred-odds-panel d-none">
                         <div class="pred-odds-col">
                             <span class="pred-odds-label">{{ $game->home_team }}</span>

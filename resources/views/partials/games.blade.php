@@ -80,7 +80,7 @@
                         . "</div>";
                 }
             @endphp
-            @php $hasRowOdds = $canPred && (($g->home_odds ?? 0) > 0 || ($g->draw_odds ?? 0) > 0 || ($g->away_odds ?? 0) > 0); @endphp
+            @php $hasRowOdds = $canPred && $g->p_home_team_score !== null && $g->p_away_team_score !== null; @endphp
             <span class="upcoming-pts {{ $played && $totalPts > 0 ? 'upt-scored' : 'upt-empty' }}"
                 @if($played && $totalPts > 0)
                     data-bs-toggle="popover"
@@ -137,7 +137,7 @@
                                        class="form-control pred-score"
                                        maxlength="2" autocomplete="off" placeholder="?">
                             </div>
-                            <button x-show="hasOdds" class="pred-odds-toggle mt-1"
+                            <button x-show="homeScore !== '' && awayScore !== ''" class="pred-odds-toggle mt-1"
                                     :class="{ active: showOdds }" @click="showOdds = !showOdds">
                                 <i class="bi bi-graph-up-arrow"></i> koef.
                             </button>
@@ -156,7 +156,7 @@
                     </div>
 
                     {{-- Odds panel (full width, below the grid) --}}
-                    <div x-show="hasOdds && showOdds" x-transition class="pred-odds-panel">
+                    <div x-show="showOdds && homeScore !== '' && awayScore !== ''" x-transition class="pred-odds-panel">
                         <div class="pred-odds-col">
                             <span class="pred-odds-label" x-text="homeTeam"></span>
                             <span class="pred-odds-pts" x-text="'+' + homeWinPts + ' pt'"></span>
