@@ -2299,7 +2299,7 @@ button.sb-tab::after { display: none; }
 .sr-pred-ok      { background: #dcfce7; color: #16a34a; }
 .sr-pred-fail    { background: #fee2e2; color: #dc2626; }
 .sr-pred-pending { background: #f1f5f9; color: var(--sb-muted); }
-.sr-pw-indicator { font-size: .6rem; color: var(--sb-muted); font-weight: 600; display: block; line-height: 1; margin-top: 1px; letter-spacing: .02em; }
+.sr-pw-w { font-size: .6em; font-weight: 700; vertical-align: middle; opacity: .75; }
 
 .sr-table tbody tr:not(.sr-round-header):hover .sr-pred-td  { background: #eff6ff; }
 .sr-table tbody tr:not(.sr-round-header):hover .sr-sticky-col { background: #eff6ff; }
