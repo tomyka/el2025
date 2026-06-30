@@ -1659,6 +1659,10 @@ button.sb-tab::after { display: none; }
   gap: 6px;
   padding: 7px 0;
 }
+.pred-game > span:last-child {
+  display: flex;
+  justify-content: flex-end;
+}
 
 .pred-game + .pred-game {
   border-top: 1px solid #f1f5f9;
