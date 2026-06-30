@@ -63,6 +63,28 @@
 
 </div>
 
+<div class="sb-charity-card mt-3">
+  <div class="sb-charity-card-inner">
+    <div class="sb-charity-icon">♥</div>
+    <div class="sb-charity-body">
+      <h3 class="sb-charity-title">Žaidžiame dėl gero tikslo</h3>
+      <p class="sb-charity-text">
+        SportBet — tai ne tik futbolo prognozių žaidimas. Nuo 2018 metų žaidėjai savanoriškai
+        aukoja <a href="{{ route('charity') }}" class="sb-charity-link-inline">Jaunimo linijai</a>,
+        teikiančiai psichologinę pagalbą jaunimui visoje Lietuvoje.
+        Iki 2024 m. kiekvieną auką dvigubino TransUnion Lithuania.
+      </p>
+      <a href="{{ route('charity') }}" class="sb-charity-link">
+        Sužinoti daugiau <i class="bi bi-arrow-right-short"></i>
+      </a>
+    </div>
+    <div class="sb-charity-stat-box">
+      <span class="sb-charity-amount">7 500€</span>
+      <span class="sb-charity-stat-label">paaukota nuo 2018 m.</span>
+    </div>
+  </div>
+</div>
+
 <p style="font-size:.78rem;opacity:.65;margin-top:8px;color:var(--sb-muted)">
   SportBet yra nemokamas pramoginis žaidimas — realių pinigų lažybų nėra.
 </p>
