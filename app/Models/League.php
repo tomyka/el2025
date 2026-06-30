@@ -14,6 +14,10 @@ class League extends Model
         'tournament_id',
     ];
 
+    protected $attributes = [
+        'tournament_id' => 1,
+    ];
+
     protected $casts = [
         'is_public'       => 'boolean',
         'use_league_odds' => 'boolean',
