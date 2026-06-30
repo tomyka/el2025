@@ -42,7 +42,7 @@ class TournamentTest extends TestCase
     {
         $t = \Illuminate\Support\Facades\DB::table('tournaments')->where('id', 1)->first();
         $this->assertNotNull($t);
-        $this->assertEquals('World Football Cup 2026', $t->name);
+        $this->assertEquals('Pasaulio futbolo čempionato totalizatorius 2026', $t->name);
         $this->assertEquals('world-cup-2026', $t->slug);
         $this->assertEquals('active', $t->status);
     }

@@ -22,13 +22,13 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        // Seed World Football Cup 2026 as tournament 1
+        // Seed Pasaulio futbolo čempionato totalizatorius 2026 as tournament 1
         $survivalVal = (bool) DB::table('settings')
             ->where('setting', 'survivalGame')
             ->value('value');
 
         DB::table('tournaments')->insert([
-            'name'          => 'World Football Cup 2026',
+            'name'          => 'Pasaulio futbolo čempionato totalizatorius 2026',
             'slug'          => 'world-cup-2026',
             'sport'         => 'football',
             'status'        => 'active',
