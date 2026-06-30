@@ -77,8 +77,8 @@
                                     {{ session('admin') < 5 ? 'disabled' : '' }}
                                     onchange="this.form.submit()">
                                 <option value="0" {{ $adminLevel == 0 ? 'selected' : '' }}>User</option>
-                                <option value="8" {{ $adminLevel == 8 ? 'selected' : '' }}>Admin</option>
                                 <option value="5" {{ $adminLevel == 5 ? 'selected' : '' }}>Editor</option>
+                                <option value="8" {{ $adminLevel == 8 ? 'selected' : '' }}>Admin</option>
                                 <option value="9" {{ $adminLevel == 9 ? 'selected' : '' }}>Super</option>
                             </select>
                         </form>
