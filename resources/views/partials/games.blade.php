@@ -104,9 +104,9 @@
                 <div class="modal-body pt-1 pb-4 px-4">
                     <div class="pred-game">
                         <div class="pred-team-home">
-                            <span class="pred-team-name" x-text="homeTeam"></span>
                             <img :src="homeTeam ? '/img/teams/' + homeTeam.toLowerCase().replace(/ /g, '%20') + '.svg' : 'data:,'"
                                  class="pred-flag" :alt="homeTeam">
+                            <span class="pred-team-name" x-text="homeTeam"></span>
                             <button type="button" class="pred-pw-check"
                                     x-show="isKnockout && homeScore !== '' && awayScore !== '' && homeScore === awayScore"
                                     :class="{ active: penaltyWinner === homeId }"
@@ -133,9 +133,9 @@
                                     @click="penaltyWinner = awayId">
                                 <i class="bi bi-check-circle-fill"></i>
                             </button>
+                            <span class="pred-team-name" x-text="awayTeam"></span>
                             <img :src="awayTeam ? '/img/teams/' + awayTeam.toLowerCase().replace(/ /g, '%20') + '.svg' : 'data:,'"
                                  class="pred-flag" :alt="awayTeam">
-                            <span class="pred-team-name" x-text="awayTeam"></span>
                         </div>
                     </div>
                 </div>

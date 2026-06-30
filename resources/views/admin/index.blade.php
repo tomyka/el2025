@@ -33,6 +33,18 @@
     @endif
     @endforeach
 
+    @if(session('admin') === 8)
+    <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+        <form method="POST" action="{{ route('admin.promoteSelf') }}">
+            @csrf
+            <button type="submit" class="admin-tile w-100 border-0">
+                <i class="bi bi-shield-fill-up admin-tile-icon" style="color:#f59e0b"></i>
+                <span class="admin-tile-label">Tapti superadmin</span>
+            </button>
+        </form>
+    </div>
+    @endif
+
 </div>
 
 @endsection

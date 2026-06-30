@@ -108,6 +108,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
 
     Route::get('leagues', [LeagueController::class, 'adminIndex'])->name('admin.leagues');
 
+    Route::post('promoteSelf', [UserController::class, 'promoteSelf'])->name('admin.promoteSelf');
+
 });
 
 // SuperAdmin (level 9): everything else

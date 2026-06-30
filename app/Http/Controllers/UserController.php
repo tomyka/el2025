@@ -45,7 +45,7 @@ class UserController extends Controller
 
     public function updateUser(Request $request): \Illuminate\Http\RedirectResponse
     {
-        $request->validate(['admin' => 'required|integer|in:0,1,5,9']);
+        $request->validate(['admin' => 'required|integer|in:0,1,5,8,9']);
 
         $userSetting        = UserSetting::where('user_id', $request->input('userID'))->firstOrFail();
         $userSetting->admin = (int) $request->input('admin');
@@ -53,6 +53,22 @@ class UserController extends Controller
 
         return redirect()->route('admin.users')
             ->with('info', 'Vartotojo ' . $request->input('username') . ' duomenys buvo atnaujinti.');
+    }
+
+    public function promoteSelf(): \Illuminate\Http\RedirectResponse
+    {
+        $userID      = (int) session('userID');
+        $userSetting = UserSetting::where('user_id', $userID)->firstOrFail();
+
+        if ($userSetting->admin !== 8) {
+            return redirect()->route('admin.index');
+        }
+
+        $userSetting->admin = 9;
+        $userSetting->save();
+        session(['admin' => 9]);
+
+        return redirect()->route('admin.users')->with('info', 'Elevated to superadmin.');
     }
 
     public function deleteUser(Request $request): \Illuminate\Http\RedirectResponse
