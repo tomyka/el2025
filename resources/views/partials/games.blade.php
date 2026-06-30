@@ -80,7 +80,7 @@
                         . "</div>";
                 }
             @endphp
-            @php $hasRowOdds = $canPred && $g->p_home_team_score !== null && $g->p_away_team_score !== null; @endphp
+            @php $hasRowOdds = !$played && $g->p_home_team_score !== null && $g->p_away_team_score !== null; @endphp
             <span class="upcoming-pts {{ $played && $totalPts > 0 ? 'upt-scored' : 'upt-empty' }}"
                 @if($played && $totalPts > 0)
                     data-bs-toggle="popover"
