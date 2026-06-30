@@ -1381,6 +1381,66 @@ button.sb-tab::after { display: none; }
 }
 
 /* ============================================================
+   Prediction odds toggle
+   ============================================================ */
+.pred-odds-wrap {
+  padding: 0 var(--pred-px, 12px);
+  margin-top: -4px;
+  margin-bottom: 2px;
+}
+
+.pred-odds-toggle {
+  background: none;
+  border: none;
+  font-size: .7rem;
+  color: var(--sb-muted);
+  padding: 2px 6px 2px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: .02em;
+  transition: color .15s;
+}
+
+.pred-odds-toggle:hover,
+.pred-odds-toggle.active { color: var(--sb-accent); }
+
+.pred-odds-panel {
+  display: flex;
+  justify-content: space-around;
+  padding: 6px 0 8px;
+  border-top: 1px solid var(--sb-border);
+  margin-top: 4px;
+  gap: 4px;
+}
+
+.pred-odds-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  text-align: center;
+}
+
+.pred-odds-label {
+  font-size: .68rem;
+  color: var(--sb-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
+}
+
+.pred-odds-pts {
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--sb-accent);
+}
+
+/* ============================================================
    Standings prediction grid
    ============================================================ */
 .stnl-list {

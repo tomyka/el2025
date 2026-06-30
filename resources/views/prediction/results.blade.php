@@ -128,6 +128,34 @@
                         </div>
                         <span></span>
                     </div>
+                    @php
+                        $hasOdds    = ($game->home_odds > 0 || $game->draw_odds > 0 || $game->away_odds > 0);
+                        $homeWinPts = round((1 + (float)$game->home_odds) * 5.0 * (float)$game->rate, 1);
+                        $drawPts    = round((1 + (float)$game->draw_odds) * 5.0 * (float)$game->rate, 1);
+                        $awayWinPts = round((1 + (float)$game->away_odds) * 5.0 * (float)$game->rate, 1);
+                    @endphp
+                    @if(!$game->locked && $hasOdds)
+                    <div class="pred-odds-wrap">
+                        <button class="pred-odds-toggle"
+                                onclick="var p=this.nextElementSibling;p.classList.toggle('d-none');this.classList.toggle('active')">
+                            <i class="bi bi-graph-up-arrow"></i> koef.
+                        </button>
+                        <div class="pred-odds-panel d-none">
+                            <div class="pred-odds-col">
+                                <span class="pred-odds-label">{{ $game->home_team }}</span>
+                                <span class="pred-odds-pts">+{{ number_format($homeWinPts, 1) }} pt</span>
+                            </div>
+                            <div class="pred-odds-col">
+                                <span class="pred-odds-label">Lygiosios</span>
+                                <span class="pred-odds-pts">+{{ number_format($drawPts, 1) }} pt</span>
+                            </div>
+                            <div class="pred-odds-col">
+                                <span class="pred-odds-label">{{ $game->away_team }}</span>
+                                <span class="pred-odds-pts">+{{ number_format($awayWinPts, 1) }} pt</span>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                     @endif
 
                     @endforeach

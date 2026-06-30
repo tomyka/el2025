@@ -54,6 +54,7 @@ class PredictionResultController extends Controller
                 e.event as event_name,
                 e.event_day,
                 e.is_knockout,
+                IFNULL(e.rate, 1) AS rate,
                 ht.team AS home_team,
                 ht.id AS home_team_id,
                 ht.group_name,
@@ -69,7 +70,10 @@ class PredictionResultController extends Controller
                 ROUND(IFNULL(por.winner_points,     0), 1) AS winner_points,
                 ROUND(IFNULL(por.difference_points, 0), 1) AS difference_points,
                 ROUND(IFNULL(por.bingo_points,      0), 1) AS bingo_points,
-                ROUND(IFNULL(por.streak_bonus,      0), 1) AS streak_bonus
+                ROUND(IFNULL(por.streak_bonus,      0), 1) AS streak_bonus,
+                ROUND(IFNULL(go.home_odds, 0), 4) AS home_odds,
+                ROUND(IFNULL(go.draw_odds, 0), 4) AS draw_odds,
+                ROUND(IFNULL(go.away_odds, 0), 4) AS away_odds
             FROM prediction_results AS prr
                 JOIN users u ON prr.user_id = u.id
                 JOIN games g ON g.id = prr.game_id
@@ -77,6 +81,7 @@ class PredictionResultController extends Controller
                 JOIN teams at ON g.away_team_id = at.id
                 JOIN events e ON e.id = g.event_id
                 LEFT JOIN point_results AS por ON por.user_id = prr.user_id AND por.game_id = prr.game_id
+                LEFT JOIN game_odds go ON go.game_id = g.id
             WHERE
                 prr.user_id = ?
                 {$eventClause}
