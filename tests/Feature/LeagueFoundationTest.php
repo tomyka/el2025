@@ -55,10 +55,14 @@ class LeagueFoundationTest extends TestCase
     {
         $user = \App\Models\User::factory()->create();
         \App\Models\UserSetting::factory()->create(['user_id' => $user->id, 'admin' => 0]);
-        \App\Models\Setting::firstOrCreate(['setting' => 'survivalGame'], ['value' => 0]);
         \App\Models\Setting::firstOrCreate(['setting' => 'timeDifference'], ['value' => 0]);
 
-        $league = \App\Models\League::create(['name' => 'My League', 'is_public' => false]);
+        $tournament = \App\Models\Tournament::create([
+            'name' => 'T', 'slug' => 'test-t', 'sport' => 'football', 'status' => 'active',
+        ]);
+        $league = \App\Models\League::create([
+            'name' => 'My League', 'is_public' => false, 'tournament_id' => $tournament->id,
+        ]);
         \App\Models\LeagueMember::create([
             'league_id' => $league->id,
             'user_id'   => $user->id,
@@ -72,6 +76,7 @@ class LeagueFoundationTest extends TestCase
         $this->assertEquals($league->id, session('leagueID'));
         $this->assertNull(session('groupID'));
         $this->assertEquals(0, session('guest'));
+        $this->assertEquals($tournament->id, session('tournamentID'));
     }
 
     public function test_get_all_user_points_filters_by_league(): void
