@@ -7,6 +7,7 @@ use App\Models\Tournament;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 
@@ -27,7 +28,64 @@ class TournamentController extends Controller
                 ->keyBy(fn($m) => $m->league->tournament_id);
         }
 
-        return view('tournaments.hub', compact('tournaments', 'myLeaguesByTournament'));
+        $now = now()->toDateTimeString();
+        $tData = [];
+        foreach ($tournaments as $t) {
+            $tid = $t->id;
+
+            $tData[$tid] = [
+                'participantCount' => LeagueMember::whereHas('league', fn($q) => $q->where('tournament_id', $tid))
+                    ->where('is_guest', false)->where('active', true)->distinct()->count('user_id'),
+
+                'predictionCount' => DB::table('point_results as pr')
+                    ->join('games as g', 'pr.game_id', '=', 'g.id')
+                    ->join('events as e', 'g.event_id', '=', 'e.id')
+                    ->where('e.tournament_id', $tid)
+                    ->count(),
+
+                'leaderboard' => DB::select("
+                    SELECT u.username,
+                           ROUND(SUM(IFNULL(pr.full_points,0) + IFNULL(pr.streak_bonus,0)),1) AS total_points
+                    FROM users u
+                    JOIN user_settings us ON us.user_id = u.id
+                    JOIN point_results pr ON pr.user_id = u.id
+                    JOIN games g ON pr.game_id = g.id
+                    JOIN events e ON g.event_id = e.id
+                    WHERE us.active = 1 AND e.tournament_id = ?
+                    GROUP BY u.id, u.username
+                    HAVING total_points > 0
+                    ORDER BY total_points DESC
+                    LIMIT 5
+                ", [$tid]),
+
+                'medalRows' => DB::select("
+                    SELECT tm.team,
+                        SUM(CASE WHEN ps.final = 1 THEN 1 ELSE 0 END) AS firstPlacePrediction,
+                        SUM(CASE WHEN ps.final = 2 THEN 1 ELSE 0 END) AS secondPlacePrediction,
+                        SUM(CASE WHEN ps.final = 3 THEN 1 ELSE 0 END) AS thirdPlacePrediction,
+                        SUM(CASE WHEN ps.final = 4 THEN 1 ELSE 0 END) AS fourthPlacePrediction
+                    FROM prediction_standings ps
+                    JOIN teams tm ON ps.team_id = tm.id
+                    JOIN user_settings us ON ps.user_id = us.user_id
+                    WHERE ps.final IS NOT NULL AND us.active = 1 AND tm.tournament_id = ?
+                    GROUP BY tm.team
+                    ORDER BY firstPlacePrediction DESC, secondPlacePrediction DESC, thirdPlacePrediction DESC
+                ", [$tid]),
+
+                'upcomingGames' => DB::select("
+                    SELECT g.game_date, ht.team AS home_team, at.team AS away_team
+                    FROM games g
+                    JOIN events e ON g.event_id = e.id
+                    JOIN teams ht ON g.home_team_id = ht.id
+                    JOIN teams at ON g.away_team_id = at.id
+                    WHERE e.tournament_id = ? AND g.home_team_score IS NULL AND g.game_date >= ?
+                    ORDER BY g.game_date
+                    LIMIT 3
+                ", [$tid, $now]),
+            ];
+        }
+
+        return view('tournaments.hub', compact('tournaments', 'myLeaguesByTournament', 'tData'));
     }
 
     public function enter(string $slug): RedirectResponse
