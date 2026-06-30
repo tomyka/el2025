@@ -15,5 +15,15 @@ class Event extends Model
         'is_knockout',
         'active',
         'rate',
+        'tournament_id',
     ];
+
+    protected $attributes = [
+        'tournament_id' => 1,
+    ];
+
+    public function tournament()
+    {
+        return $this->belongsTo(Tournament::class);
+    }
 }

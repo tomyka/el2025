@@ -22,6 +22,7 @@ class LeagueFactory extends Factory
             'penalty_step'       => $this->faker->numberBetween(0, 20),
             'reward_description' => $this->faker->sentence(),
             'use_league_odds'    => false,
+            'tournament_id'      => 1,
         ];
     }
 }

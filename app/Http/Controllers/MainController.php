@@ -76,9 +76,7 @@ class MainController extends Controller
             return view('main')->with('messages', $messages)->with('points', $points)->with('predictionGames', $predictionResultsWithStats)->with('eventDaySurvivalStatus',$eventDaySurvivalStatus)->with('groupDetails',$feeController->getGroupDetails())->with('userDetails',$feeController->getUserDetails())->with('fund',$feeController->getFund())->with('fundCollected',$feeController->getFundCollected())->with('standings',$standings)->with('predictionStandingsPoints',$predictionStandingsPoints)->with('rankHistory', $rankHistory)->with('firstGameStarted', $firstGameStarted)->with('standingsMissing', $standingsMissing)->with('tournamentProgress', $tournamentProgress)->with('snapshot', $snapshot)->with('activityFeed', $activityFeed);
         }
         else {
-            $games = Game::with('away_team')->with('home_team')->take(9)->get();
-
-            return view('main')->with('games',$games);
+            return redirect()->route('tournaments.hub');
         }
     }
 

@@ -7,7 +7,7 @@
   <div class="sb-topnav">
 
     {{-- Brand --}}
-    <a class="sb-brand" @auth href="{{ route('main') }}" @else href="{{ route('/') }}" @endauth>
+    <a class="sb-brand" @auth href="{{ route('main') }}" @else href="{{ route('tournaments.hub') }}" @endauth>
       <img src="{{ asset('img/logo.png') }}" alt="SportBet" style="height:32px;">
       <span>Sport<span class="sb-brand-dot">Bet</span></span>
     </a>
@@ -97,6 +97,14 @@
     {{-- Desktop: right side ── d-none d-lg-flex --}}
     <div class="sb-topnav-right d-none d-lg-flex">
 
+      @if(session('tournamentID'))
+      <a href="{{ route('tournaments.exit') }}"
+         class="sb-nav-pill sb-nav-pill--ghost"
+         style="font-size:.8rem;margin-right:4px">
+        ← Turnyrai
+      </a>
+      @endif
+
       {{-- League switcher --}}
       @if(session('userID'))
       <div class="d-flex align-items-center gap-1">
@@ -171,6 +179,14 @@
        ============================================================ --}}
   @auth
   <div class="collapse sb-mobile-collapse d-lg-none w-100" id="sbNavMobile">
+
+    @if(session('tournamentID'))
+    <div class="sb-mobile-group">
+      <a class="sb-nav-link" href="{{ route('tournaments.exit') }}">
+        <i class="bi bi-arrow-left"></i> ← Turnyrai
+      </a>
+    </div>
+    @endif
 
     <div class="sb-mobile-group">
       <div class="sb-mobile-label">Spėjimai</div>

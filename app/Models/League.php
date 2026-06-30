@@ -11,12 +11,22 @@ class League extends Model
     protected $fillable = [
         'name', 'description', 'is_public', 'owner_id',
         'base_fee', 'penalty_step', 'use_league_odds', 'reward_description',
+        'tournament_id',
+    ];
+
+    protected $attributes = [
+        'tournament_id' => 1,
     ];
 
     protected $casts = [
         'is_public'       => 'boolean',
         'use_league_odds' => 'boolean',
     ];
+
+    public function tournament()
+    {
+        return $this->belongsTo(Tournament::class);
+    }
 
     public function members()
     {

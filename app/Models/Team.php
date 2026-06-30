@@ -11,6 +11,16 @@ class Team extends Model
         'team',
         'group_name',
         'group_position',
+        'tournament_id',
     ];
+
+    protected $attributes = [
+        'tournament_id' => 1,
+    ];
+
+    public function tournament()
+    {
+        return $this->belongsTo(Tournament::class);
+    }
 }
 

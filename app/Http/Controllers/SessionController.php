@@ -1,10 +1,8 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\LeagueMember;
 use App\Models\UserSetting;
-use App\Models\Game;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
@@ -14,36 +12,45 @@ class SessionController extends Controller
 {
     public function setSession($user): void
     {
-        if (Game::count() > 0) {
-            $event = DB::table('games')
+        $userSettings = UserSetting::where('user_id', $user->id)->firstOrFail();
+        $leagueMember = LeagueMember::where('user_id', $user->id)
+            ->where('active', true)
+            ->with('league.tournament')
+            ->firstOrFail();
+
+        $leagueID     = $leagueMember->league_id;
+        $tournamentID = $leagueMember->league->tournament_id;
+        $tournament   = $leagueMember->league->tournament;
+
+        $event = DB::table('games')
+            ->join('events', 'games.event_id', '=', 'events.id')
+            ->select('events.id', 'events.event_survival', 'events.rate')
+            ->whereNull('games.home_team_score')
+            ->where('events.tournament_id', $tournamentID)
+            ->first();
+
+        if ($event) {
+            $eventID       = $event->id;
+            $eventSurvival = $event->event_survival;
+            $eventRate     = $event->rate;
+
+            $firstGame = DB::table('games')
                 ->join('events', 'games.event_id', '=', 'events.id')
-                ->select('events.id', 'events.event_survival', 'events.rate')
-                ->whereNull('games.home_team_score')
+                ->where('events.tournament_id', $tournamentID)
+                ->orderBy('games.game_date')
+                ->select('games.game_date')
                 ->first();
 
-            if (empty($event)) {
-                $eventID = 0; $eventSurvival = 0; $eventRate = 0;
-            } else {
-                $eventID       = $event->id;
-                $eventSurvival = $event->event_survival;
-                $eventRate     = $event->rate;
-            }
-
-            $game = Game::firstOrFail();
-            $firstGameDate = new DateTime($game->game_date);
-            $disabled = strtotime('-0 day', $firstGameDate->getTimestamp()) < time() ? 'disabled' : '';
+            $disabled = $firstGame
+                ? (strtotime('-0 day', (new DateTime($firstGame->game_date))->getTimestamp()) < time() ? 'disabled' : '')
+                : '';
         } else {
             $eventID = 0; $eventSurvival = 0; $eventRate = 0; $disabled = '';
         }
 
-        $survivalGame   = Setting::where('setting', 'survivalGame')->first();
         $timeDifference = Setting::where('setting', 'timeDifference')->first();
-        $userSettings   = UserSetting::where('user_id', $user->id)->firstOrFail();
-        $leagueMember   = LeagueMember::where('user_id', $user->id)
-                            ->where('active', true)
-                            ->with('league')
-                            ->firstOrFail();
 
+        Session::put('tournamentID',   $tournamentID);
         Session::put('active',         $user->active);
         Session::put('eventID',        $eventID);
         Session::put('eventSurvival',  $eventSurvival);
@@ -51,11 +58,11 @@ class SessionController extends Controller
         Session::put('disabled',       $disabled);
         Session::put('userID',         $user->id);
         Session::put('resultAmount',   $userSettings->result_amount);
-        Session::put('leagueID',       $leagueMember->league_id);
+        Session::put('leagueID',       $leagueID);
         Session::put('admin',          $userSettings->admin);
         Session::put('fee',            $leagueMember->league->base_fee);
         Session::put('guest',          (int) $leagueMember->is_guest);
-        Session::put('survivalGame',   $survivalGame?->value ?? 0);
+        Session::put('survivalGame',   $tournament->survival_game ? 1 : 0);
         Session::put('timeDifference', $timeDifference?->value ?? 0);
     }
 }

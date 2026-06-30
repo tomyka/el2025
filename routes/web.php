@@ -19,6 +19,7 @@ use App\Http\Controllers\PointStandingController;
 use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\CompareController;
+use App\Http\Controllers\TournamentController;
 use Illuminate\Support\Facades\Route;
 
 /*Original routes start*/
@@ -43,7 +44,10 @@ Route::get('/dashboard', function () {
 /*Original routes end*/
 
 
-Route::get('/', [MainController::class,  'loadApp'])->name('/');
+Route::get('/', [TournamentController::class, 'hub'])->name('tournaments.hub');
+Route::get('/tournament/{slug}', [TournamentController::class, 'show'])->name('tournament.show');
+Route::post('/tournament/{slug}/enter', [TournamentController::class, 'enter'])->name('tournament.enter');
+Route::get('/tournaments/exit', [TournamentController::class, 'exit'])->name('tournaments.exit');
 Route::get('main', [MainController::class,  'loadApp'])->name('main');
 Route::get('admin', function () {return redirect()->route('admin.index');})->name('admin');
 
@@ -144,6 +148,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'superadmin']], func
     // @deprecated — settings removed from admin panel; routes kept to avoid 404 on stale bookmarks
     Route::get('settings', [SettingController::class,'getSettingAll'])->name('admin.settings');
     Route::post('settings', [SettingController::class,'updateSetting']);
+
+    Route::get('tournaments', [TournamentController::class, 'adminIndex'])->name('admin.tournaments');
+    Route::get('tournaments/create', [TournamentController::class, 'adminCreate'])->name('admin.tournaments.create');
+    Route::post('tournaments', [TournamentController::class, 'adminStore'])->name('admin.tournaments.store');
+    Route::get('tournaments/{tournament}/edit', [TournamentController::class, 'adminEdit'])->name('admin.tournaments.edit');
+    Route::post('tournaments/{tournament}', [TournamentController::class, 'adminUpdate'])->name('admin.tournaments.update');
+    Route::post('tournaments/{tournament}/context', [TournamentController::class, 'adminEnterContext'])->name('admin.tournaments.context');
 });
 
 Route::group(['prefix' => 'summary', 'middleware' => 'auth'], function () {
