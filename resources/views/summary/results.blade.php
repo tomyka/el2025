@@ -112,13 +112,15 @@ $openInit = $grouped->mapWithKeys(
                     <td class="sr-pred-td {{ $username === $myUsername ? 'sr-my-col' : '' }}">
                         @if($pred)
                         @php
-                            $hasPred        = !is_null($pred->home_team_score) && $pred->home_team_score !== '';
-                            $scored         = !is_null($game->home_team_score);
-                            $predIsDraw     = (string)$pred->home_team_score === (string)$pred->away_team_score;
-                            $actualIsDraw   = $scored && (string)$game->home_team_score === (string)$game->away_team_score;
-                            $endingOk       = $predIsDraw === $actualIsDraw;
-                            $correct        = $scored && $pred->winner_points >= 5 && (!$game->is_knockout || $endingOk);
-                            $partial        = $scored && !$correct && $game->is_knockout && $pred->winner_points >= 5;
+                            $hasPred          = !is_null($pred->home_team_score) && $pred->home_team_score !== '';
+                            $scored           = !is_null($game->home_team_score);
+                            $predIsDraw       = (string)$pred->home_team_score === (string)$pred->away_team_score;
+                            $actualIsDraw     = $scored && (string)$game->home_team_score === (string)$game->away_team_score;
+                            $endingOk         = $predIsDraw === $actualIsDraw;
+                            $penWinnerOk      = !($game->is_knockout && $actualIsDraw && $game->game_winner_id)
+                                                || ($pred->game_winner_id == $game->game_winner_id);
+                            $correct          = $scored && $pred->winner_points >= 5 && (!$game->is_knockout || ($endingOk && $penWinnerOk));
+                            $partial          = $scored && !$correct && $game->is_knockout && $pred->winner_points >= 5;
                         @endphp
                         @if($scored)
                         <a href="#" class="sr-pts-link"
