@@ -30,6 +30,10 @@
            data-home-id="{{ $g->home_team_id }}"
            data-away-id="{{ $g->away_team_id }}"
            data-penalty-winner="{{ $g->game_winner_id ?? '' }}"
+           data-home-odds="{{ $g->home_odds ?? 0 }}"
+           data-draw-odds="{{ $g->draw_odds ?? 0 }}"
+           data-away-odds="{{ $g->away_odds ?? 0 }}"
+           data-rate="{{ $g->rate ?? 1 }}"
            x-on:click.prevent="navClick($event.currentTarget)"
            x-on:dblclick.prevent="rowClick($event.currentTarget)">
             <span class="upcoming-date">
@@ -138,6 +142,27 @@
                                  class="pred-flag" :alt="awayTeam">
                         </div>
                     </div>
+
+                    {{-- Odds toggle --}}
+                    <div x-show="hasOdds" class="mt-2">
+                        <button class="pred-odds-toggle" :class="{ active: showOdds }" @click="showOdds = !showOdds">
+                            <i class="bi bi-graph-up-arrow"></i> koef.
+                        </button>
+                        <div x-show="showOdds" x-transition class="pred-odds-panel">
+                            <div class="pred-odds-col">
+                                <span class="pred-odds-label" x-text="homeTeam"></span>
+                                <span class="pred-odds-pts" x-text="'+' + homeWinPts + ' pt'"></span>
+                            </div>
+                            <div class="pred-odds-col">
+                                <span class="pred-odds-label">Lygiosios</span>
+                                <span class="pred-odds-pts" x-text="'+' + drawPts + ' pt'"></span>
+                            </div>
+                            <div class="pred-odds-col">
+                                <span class="pred-odds-label" x-text="awayTeam"></span>
+                                <span class="pred-odds-pts" x-text="'+' + awayWinPts + ' pt'"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -165,6 +190,11 @@ function predModal() {
         penaltyWinner: null,
         gameDate:      '',
         saving:        false,
+        showOdds:      false,
+        hasOdds:       false,
+        homeWinPts:    0,
+        drawPts:       0,
+        awayWinPts:    0,
 
         init() {
             document.getElementById('gamePredModal').addEventListener('hidden.bs.modal', () => {
@@ -192,11 +222,15 @@ function predModal() {
                 d.isKnockout === '1',
                 d.homeId ? parseInt(d.homeId) : null,
                 d.awayId ? parseInt(d.awayId) : null,
-                d.penaltyWinner ? parseInt(d.penaltyWinner) : null
+                d.penaltyWinner ? parseInt(d.penaltyWinner) : null,
+                d.homeOdds || 0,
+                d.drawOdds || 0,
+                d.awayOdds || 0,
+                d.rate || 1
             );
         },
 
-        open(gameID, predictionID, homeTeam, awayTeam, homeScore, awayScore, gameDate, isKnockout, homeId, awayId, penaltyWinner) {
+        open(gameID, predictionID, homeTeam, awayTeam, homeScore, awayScore, gameDate, isKnockout, homeId, awayId, penaltyWinner, homeOdds, drawOdds, awayOdds, rate) {
             this.gameID        = gameID;
             this.predictionID  = predictionID;
             this.homeTeam      = homeTeam;
@@ -209,6 +243,12 @@ function predModal() {
             this.awayId        = awayId;
             this.penaltyWinner = penaltyWinner;
             this.saving        = false;
+            this.showOdds      = false;
+            const r = parseFloat(rate) || 1;
+            this.homeWinPts = Math.round((1 + parseFloat(homeOdds || 0)) * 5 * r * 10) / 10;
+            this.drawPts    = Math.round((1 + parseFloat(drawOdds || 0)) * 5 * r * 10) / 10;
+            this.awayWinPts = Math.round((1 + parseFloat(awayOdds || 0)) * 5 * r * 10) / 10;
+            this.hasOdds    = (parseFloat(homeOdds) > 0 || parseFloat(drawOdds) > 0 || parseFloat(awayOdds) > 0);
             const modalEl = document.getElementById('gamePredModal');
             (bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl)).show();
         },

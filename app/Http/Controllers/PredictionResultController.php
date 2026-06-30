@@ -177,7 +177,11 @@ class PredictionResultController extends Controller
                               IFNULL(por.odds_points,0) AS odds_points,
                               ROUND(IFNULL(por.full_points,0),2) AS full_points,
                               ROUND(IFNULL(por.streak_bonus,0),2) AS streak_bonus,
-                              e.is_knockout
+                              e.is_knockout,
+                              IFNULL(e.rate, 1) AS rate,
+                              ROUND(IFNULL(go.home_odds, 0), 4) AS home_odds,
+                              ROUND(IFNULL(go.draw_odds, 0), 4) AS draw_odds,
+                              ROUND(IFNULL(go.away_odds, 0), 4) AS away_odds
                           FROM games AS g
                               JOIN events AS e ON e.id=g.event_id
                               JOIN prediction_results AS prr ON g.id=prr.game_id
@@ -187,6 +191,7 @@ class PredictionResultController extends Controller
                               JOIN teams AS ht ON g.home_team_id=ht.id
                               JOIN teams AS at ON g.away_team_id=at.id
                               LEFT JOIN point_results AS por ON prr.user_id=por.user_id AND prr.game_id=por.game_id
+                              LEFT JOIN game_odds go ON go.game_id = g.id
                           WHERE
                               u.id = ?
                               AND e.id = ?
