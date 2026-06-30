@@ -854,6 +854,109 @@ button.sb-tab::after { display: none; }
 [data-theme="dark"] .lb-pub-top { background: rgba(251,191,36,.07); }
 
 /* ============================================================
+   Charity page
+   ============================================================ */
+.ch-hero {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: center;
+  background: linear-gradient(135deg, #172554 0%, #1d4ed8 100%);
+  border-radius: 16px;
+  padding: 32px 28px;
+  color: #fff;
+}
+.ch-hero-title {
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 800;
+  margin: 0 0 10px;
+}
+.ch-hero-sub {
+  font-size: .93rem;
+  opacity: .9;
+  line-height: 1.65;
+  margin: 0 0 20px;
+}
+.ch-stat-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.ch-stat {
+  display: flex;
+  flex-direction: column;
+}
+.ch-stat-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #fbbf24;
+}
+.ch-stat-label {
+  font-size: .72rem;
+  opacity: .75;
+  margin-top: 2px;
+}
+.ch-cta {
+  display: inline-block;
+  background: #fbbf24;
+  color: #78350f;
+  font-weight: 700;
+  font-size: .88rem;
+  padding: 9px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+.ch-cta:hover { background: #f59e0b; color: #78350f; }
+.ch-hero-img-wrap { flex-shrink: 0; }
+.ch-hero-img {
+  width: 160px;
+  border-radius: 12px;
+  object-fit: cover;
+  display: block;
+}
+@media (max-width: 560px) {
+  .ch-hero { grid-template-columns: 1fr; }
+  .ch-hero-img-wrap { display: none; }
+}
+
+.ch-payments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.ch-payment-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--sb-border);
+  border-radius: 10px;
+  overflow: hidden;
+  text-decoration: none;
+  transition: box-shadow .15s, transform .15s;
+}
+.ch-payment-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,.12);
+  transform: translateY(-2px);
+}
+.ch-payment-label {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--sb-text);
+  padding: 8px 10px;
+  background: var(--sb-bg);
+  border-bottom: 1px solid var(--sb-border);
+}
+.ch-payment-img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+[data-theme="dark"] .ch-payment-card { border-color: var(--sb-border); }
+[data-theme="dark"] .ch-payment-label { background: var(--sb-card); }
+
+/* ============================================================
    Guest hero banner  (orange gradient like Pickdee)
    ============================================================ */
 .sb-hero-banner {

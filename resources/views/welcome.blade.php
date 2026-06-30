@@ -32,6 +32,46 @@
     </div>
 </div>
 
+@php
+    $medalRows = collect(\Illuminate\Support\Facades\DB::select('
+        SELECT ps.final AS position, t.team, COUNT(*) AS votes
+        FROM prediction_standings ps
+        JOIN teams t ON t.id = ps.team_id
+        JOIN user_settings us ON us.user_id = ps.user_id
+        WHERE ps.final IN (1,2,3) AND us.active = 1
+        GROUP BY ps.final, t.id, t.team
+        ORDER BY ps.final ASC, votes DESC
+    '))->groupBy('position')->map(fn($rows) => $rows->first());
+    $medalEmojis = [1 => '🥇', 2 => '🥈', 3 => '🥉'];
+    $medalLabels = [1 => 'Čempionas', 2 => 'Antra vieta', 3 => 'Trečia vieta'];
+@endphp
+@if($medalRows->isNotEmpty())
+<div class="sb-card mt-3">
+    <div class="sb-card-title">
+        <i class="bi bi-award-fill sb-card-icon" style="color:#f59e0b"></i> Žaidėjų prognozės — medalininkai
+    </div>
+    <p style="font-size:.82rem;color:var(--sb-muted);margin-bottom:12px">Kurios komandos dažniausiai prognozuojamos užimsiančios prizines vietas?</p>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+        @foreach([1,2,3] as $pos)
+        @if($medalRows->has($pos))
+        @php $m = $medalRows[$pos]; @endphp
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;{{ $pos < 3 ? 'border-bottom:1px solid var(--sb-border)' : '' }}">
+            <span style="font-size:1.25rem;width:32px;text-align:center;flex-shrink:0">{{ $medalEmojis[$pos] }}</span>
+            <img src="{{ asset('img/teams/'.str_replace(' ','%20',strtolower($m->team)).'.svg') }}"
+                 style="width:24px;height:24px;border-radius:50%;object-fit:cover;flex-shrink:0"
+                 alt="{{ $m->team }}">
+            <span style="flex:1;font-weight:600;font-size:.9rem">{{ $m->team }}</span>
+            <span style="font-size:.78rem;color:var(--sb-muted);white-space:nowrap">{{ $m->votes }} {{ $m->votes == 1 ? 'prognozė' : 'prognozės' }}</span>
+        </div>
+        @endif
+        @endforeach
+    </div>
+    <div style="margin-top:10px;font-size:.8rem;color:var(--sb-muted)">
+        Sutinki su daugumos nuomone? <a href="{{ route('login') }}" style="color:var(--sb-accent);font-weight:600">Prisijunk ir pateik savo prognozę</a>.
+    </div>
+</div>
+@endif
+
 <div class="sb-card mt-3">
     <div class="sb-card-title">
         <i class="bi bi-trophy-fill sb-card-icon" style="color:#f59e0b"></i> Lyderiai

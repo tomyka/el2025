@@ -1,46 +1,84 @@
 @extends('layouts.master')
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xl-12">
-            Noriu padėkoti visiems dalyvaujantiems ir skiriantiems lėšas labdarai. Jūsų dėka JAU pavyko surinkti ir paaukoti Jaunimo Linijai 7500€ (iki 2024 metų visą surinktą paramą dvigubino TransUnion Lithuania įmonė).<strong> Ačiū, kad prisidedate prie gerų darbų!</strong>
+
+{{-- Hero --}}
+<div class="ch-hero mb-4">
+    <div class="ch-hero-text">
+        <h1 class="ch-hero-title">Žaidžiame dėl gero tikslo</h1>
+        <p class="ch-hero-sub">
+            SportBet — tai ne tik futbolo prognozių žaidimas. Nuo 2018 metų žaidėjai
+            savanoriškai aukoja <strong>Jaunimo linijai</strong> — organizacijai,
+            teikiančiai nemokamą psichologinę pagalbą jaunimui visoje Lietuvoje.
+        </p>
+        <div class="ch-stat-row">
+            <div class="ch-stat">
+                <span class="ch-stat-value">7 500€</span>
+                <span class="ch-stat-label">paaukota iš viso</span>
+            </div>
+            <div class="ch-stat">
+                <span class="ch-stat-value">8+</span>
+                <span class="ch-stat-label">turnyrų</span>
+            </div>
+            <div class="ch-stat">
+                <span class="ch-stat-value">2018</span>
+                <span class="ch-stat-label">pradėjome</span>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-12 col-xl-6 text-center">
-                <BR>
-                <a href="https://www.jaunimolinija.lt/" target="_blank">
-                    <img src="{{URL::to('img/JL_thank.png')}}"  width=100%>
-                </a>
-                <BR>
-                <BR>
-            </div>
-            <div class="col-lg-12 col-xl-6 text-center">
-                <strong>Nuo 2018 metų surinkta parama:</strong>
-                <BR>
-                <img src="{{URL::to('img/JL_payment_el2025.png')}}" alt="Euroleague2025 payment" width=100%>
-                <BR>
-                <img src="{{URL::to('img/JL_payment_el2024.png')}}" alt="Euroleague2024 payment" width=100%>
-                <BR>
-                <img src="{{URL::to('img/JL_payment_el2023.png')}}" alt="Euroleague2023 payment" width=100%>
-                <BR>
-                <img src="{{URL::to('img/JL_payment_el2022.png')}}" alt="Euroleague2022 payment" width=100%>
-                <BR>
-                <img src="{{URL::to('img/JL_payment_ecb2022.png')}}" alt="Eurobasket2022 payment" width=100%>
-                <BR>
-                <img src="{{URL::to('img/JL_payment_el2021.png')}}" alt="Euroleague2021 payment" width=100%>
-                <BR>
-                <img src="{{URL::to('img/JL_payment_ecf2020.png')}}" alt="Euro2020 payment" width=100%>
-                <BR>
-                <img src="{{URL::to('img/JL_payment_el2020.png')}}" alt="Euroleague2020 payment" width=100%>
-                <BR>
-                <img src="{{URL::to('img/JL_payment_el2019.png')}}" alt="Euroleague2019 payment" width=100%>
-                <BR>
-                <img src="{{URL::to('img/JL_payment_el2018_2.png')}}" alt="Euroleague2018 payment" width=100%>
-                <BR>
-                <img src="{{URL::to('img/JL_payment_el2018_1.png')}}" alt="Euroleague2018 payment" width=100%>
-            </div>
-        </div>
+        <a href="https://www.jaunimolinija.lt/" target="_blank" rel="noopener" class="ch-cta">
+            <i class="bi bi-heart-fill me-1"></i> Jaunimo linija &rarr;
+        </a>
     </div>
-    <BR>
+    <div class="ch-hero-img-wrap">
+        <a href="https://www.jaunimolinija.lt/" target="_blank" rel="noopener">
+            <img src="{{ URL::to('img/JL_thank.png') }}" class="ch-hero-img" alt="Jaunimo linija — ačiū">
+        </a>
+    </div>
+</div>
+
+{{-- About --}}
+<div class="sb-card mb-4">
+    <p style="font-size:.93rem;line-height:1.7;margin:0;color:var(--sb-text)">
+        Noriu padėkoti visiems dalyvaujantiems ir skiriantiems lėšas labdarai.
+        Jūsų dėka JAU pavyko surinkti ir paaukoti Jaunimo Linijai <strong>7 500€</strong>.
+        Iki 2024 metų visą surinktą paramą dvigubino <strong>TransUnion Lithuania</strong> įmonė.
+        <strong>Ačiū, kad prisidedate prie gerų darbų!</strong>
+    </p>
+</div>
+
+{{-- Payment evidence --}}
+<div class="sb-card">
+    <div class="sb-card-title mb-3">
+        <i class="bi bi-receipt sb-card-icon"></i> Mokėjimų įrodymai
+    </div>
+    <p style="font-size:.83rem;color:var(--sb-muted);margin-bottom:20px">
+        Kiekvieno turnyro pabaigoje surinkta suma pervedama Jaunimo linijai. Žemiau — visi mokėjimų patvirtinimai.
+        Spustelėk nuotrauką, kad pamatytum detaliau.
+    </p>
+
+    @php
+    $payments = [
+        ['label' => 'Euroleague 2025',  'img' => 'JL_payment_el2025.png'],
+        ['label' => 'Euroleague 2024',  'img' => 'JL_payment_el2024.png'],
+        ['label' => 'Euroleague 2023',  'img' => 'JL_payment_el2023.png'],
+        ['label' => 'Euroleague 2022',  'img' => 'JL_payment_el2022.png'],
+        ['label' => 'EuroBasket 2022',  'img' => 'JL_payment_ecb2022.png'],
+        ['label' => 'Euroleague 2021',  'img' => 'JL_payment_el2021.png'],
+        ['label' => 'Euroleague 2020',  'img' => 'JL_payment_el2020.png'],
+        ['label' => 'Euro 2020',        'img' => 'JL_payment_ecf2020.png'],
+        ['label' => 'Euroleague 2019',  'img' => 'JL_payment_el2019.png'],
+        ['label' => 'Euroleague 2018 (2)', 'img' => 'JL_payment_el2018_2.png'],
+        ['label' => 'Euroleague 2018 (1)', 'img' => 'JL_payment_el2018_1.png'],
+    ];
+    @endphp
+
+    <div class="ch-payments-grid">
+        @foreach($payments as $p)
+        <a href="{{ URL::to('img/' . $p['img']) }}" target="_blank" rel="noopener" class="ch-payment-card">
+            <div class="ch-payment-label">{{ $p['label'] }}</div>
+            <img src="{{ URL::to('img/' . $p['img']) }}" alt="{{ $p['label'] }} mokėjimas" class="ch-payment-img">
+        </a>
+        @endforeach
+    </div>
+</div>
+
 @endsection
