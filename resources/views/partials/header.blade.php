@@ -158,8 +158,8 @@
         <i class="bi bi-sun-fill sb-theme-sun"></i>
         <i class="bi bi-moon-fill sb-theme-moon"></i>
       </button>
-      <a class="sb-nav-pill sb-nav-pill--ghost" style="margin-left:0" href="{{ route('leaderboard') }}"><i class="bi bi-trophy-fill" style="font-size:.75rem;"></i> Lyderiai</a>
-      <a class="sb-nav-pill sb-nav-pill--ghost" style="margin-left:0" href="{{ route('charity') }}"><i class="bi bi-heart-fill" style="font-size:.75rem;"></i> Jaunimo linija</a>
+      <a class="sb-nav-pill sb-nav-pill--ghost" style="margin-left:0" href="{{ route('leaderboard') }}"><i class="bi bi-trophy-fill" style="font-size:.75rem;"></i><span class="d-none d-sm-inline"> Lyderiai</span></a>
+      <a class="sb-nav-pill sb-nav-pill--ghost" style="margin-left:0" href="{{ route('charity') }}"><i class="bi bi-heart-fill" style="font-size:.75rem;"></i><span class="d-none d-sm-inline"> Jaunimo linija</span></a>
       <a class="sb-nav-pill ms-0" href="{{ route('login') }}">Prisijungti</a>
     </div>
     @endauth
