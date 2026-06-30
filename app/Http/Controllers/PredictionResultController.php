@@ -310,6 +310,7 @@ class PredictionResultController extends Controller
                                ,g.game_winner_id
                                ,e.id    AS event_id
                                ,e.event AS event_name
+                               ,e.is_knockout
                                ,g.game_date
                              from games AS g
                                join teams  AS ht ON g.home_team_id = ht.id

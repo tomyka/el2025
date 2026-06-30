@@ -130,6 +130,13 @@ $openInit = $grouped->mapWithKeys(
                         <div class="sr-pred-badge {{ $scored ? ($correct ? 'sr-pred-ok' : 'sr-pred-fail') : 'sr-pred-pending' }}">
                             {{ $pred->home_team_score }}:{{ $pred->away_team_score }}
                         </div>
+                        @php
+                            $predIsDraw = (string)$pred->home_team_score === (string)$pred->away_team_score;
+                            $hasPenWinner = $predIsDraw && $game->is_knockout && $pred->game_winner_id;
+                        @endphp
+                        @if($hasPenWinner)
+                        <span class="sr-pw-indicator">{{ $pred->game_winner_id == $game->home_team_id ? '·H' : '·A' }}</span>
+                        @endif
                         @endif
                         @endif
                     </td>
