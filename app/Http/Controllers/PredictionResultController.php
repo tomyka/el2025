@@ -136,7 +136,13 @@ class PredictionResultController extends Controller
             }
         }
 
-        return response()->json(['success' => true]);
+        $gameOdds = \App\Models\GameOdds::where('game_id', $gameID)->first();
+        return response()->json([
+            'success'   => true,
+            'home_odds' => $gameOdds ? (float) $gameOdds->home_odds : 0.0,
+            'draw_odds' => $gameOdds ? (float) $gameOdds->draw_odds : 0.0,
+            'away_odds' => $gameOdds ? (float) $gameOdds->away_odds : 0.0,
+        ]);
     }
 
 

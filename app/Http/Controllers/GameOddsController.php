@@ -39,7 +39,8 @@ class GameOddsController extends Controller
             $leaguePredictions = DB::table('prediction_results')
                 ->where('game_id', $gameID)
                 ->whereIn('user_id', $memberIds)
-                ->where('generated', 0)
+                ->whereNotNull('home_team_score')
+                ->whereNotNull('away_team_score')
                 ->select('home_team_score', 'away_team_score')
                 ->get();
 
@@ -73,7 +74,10 @@ class GameOddsController extends Controller
 
     private function calculateGameOdds($gameID): object
     {
-        $predictionResults = PredictionResult::where('game_id', $gameID)->where('generated', 0)->get();
+        $predictionResults = PredictionResult::where('game_id', $gameID)
+            ->whereNotNull('home_team_score')
+            ->whereNotNull('away_team_score')
+            ->get();
         $total             = count($predictionResults);
 
         if ($total === 0) {

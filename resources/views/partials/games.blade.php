@@ -202,6 +202,7 @@ function predModal() {
         homeWinPts:    0,
         drawPts:       0,
         awayWinPts:    0,
+        rate:          1,
 
         init() {
             document.getElementById('gamePredModal').addEventListener('hidden.bs.modal', () => {
@@ -269,13 +270,18 @@ function predModal() {
             this.penaltyWinner = penaltyWinner;
             this.saving        = false;
             this.showOdds      = false;
-            const r = parseFloat(rate) || 1;
-            this.homeWinPts = Math.round((1 + parseFloat(homeOdds || 0)) * 5 * r * 10) / 10;
-            this.drawPts    = Math.round((1 + parseFloat(drawOdds || 0)) * 5 * r * 10) / 10;
-            this.awayWinPts = Math.round((1 + parseFloat(awayOdds || 0)) * 5 * r * 10) / 10;
-            this.hasOdds    = (parseFloat(homeOdds) > 0 || parseFloat(drawOdds) > 0 || parseFloat(awayOdds) > 0);
+            this.rate          = parseFloat(rate) || 1;
+            this._updateOddsDisplay(parseFloat(homeOdds || 0), parseFloat(drawOdds || 0), parseFloat(awayOdds || 0));
             const modalEl = document.getElementById('gamePredModal');
             (bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl)).show();
+        },
+
+        _updateOddsDisplay(homeOdds, drawOdds, awayOdds) {
+            const r = this.rate;
+            this.homeWinPts = Math.round((1 + homeOdds) * 5 * r * 10) / 10;
+            this.drawPts    = Math.round((1 + drawOdds) * 5 * r * 10) / 10;
+            this.awayWinPts = Math.round((1 + awayOdds) * 5 * r * 10) / 10;
+            this.hasOdds    = (homeOdds > 0 || drawOdds > 0 || awayOdds > 0);
         },
 
         async save() {
@@ -307,6 +313,8 @@ function predModal() {
                 });
 
                 if (res.ok) {
+                    const data = await res.json();
+
                     // Update score display
                     const el = document.getElementById('usc-pred-' + this.gameID);
                     if (el) el.textContent = homeVal + ':' + awayVal;
@@ -332,6 +340,14 @@ function predModal() {
                             } else if (this.penaltyWinner === this.awayId && awaySpan) {
                                 awaySpan.insertBefore(badge, awaySpan.firstChild);
                             }
+                        }
+
+                        // Update odds in row data attributes and live display
+                        if (data.home_odds !== undefined) {
+                            row.dataset.homeOdds = data.home_odds;
+                            row.dataset.drawOdds = data.draw_odds;
+                            row.dataset.awayOdds = data.away_odds;
+                            this._updateOddsDisplay(data.home_odds, data.draw_odds, data.away_odds);
                         }
                     }
                 }
