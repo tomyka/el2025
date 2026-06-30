@@ -132,6 +132,7 @@ class PredictionResultController extends Controller
                     $homeTeamScore, $awayTeamScore, $gameWinnerID,
                     $oldHomeScore, $oldAwayScore, $oldGameWinnerId
                 );
+                (new GameOddsController())->updateGameOdds($gameID);
             }
         }
 
