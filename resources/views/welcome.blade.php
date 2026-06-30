@@ -21,17 +21,19 @@
 </div>
 
 @php
-    $medalRows = collect(\Illuminate\Support\Facades\DB::select('
-        SELECT ps.final AS position, t.team, COUNT(*) AS votes
+    $medalRows = \Illuminate\Support\Facades\DB::select('
+        SELECT t.team,
+            SUM(CASE WHEN ps.final = 1 THEN 1 ELSE 0 END) AS firstPlacePrediction,
+            SUM(CASE WHEN ps.final = 2 THEN 1 ELSE 0 END) AS secondPlacePrediction,
+            SUM(CASE WHEN ps.final = 3 THEN 1 ELSE 0 END) AS thirdPlacePrediction,
+            SUM(CASE WHEN ps.final = 4 THEN 1 ELSE 0 END) AS fourthPlacePrediction
         FROM prediction_standings ps
-        JOIN teams t ON t.id = ps.team_id
-        JOIN user_settings us ON us.user_id = ps.user_id
-        WHERE ps.final IN (1,2,3) AND us.active = 1
-        GROUP BY ps.final, t.id, t.team
-        ORDER BY ps.final ASC, votes DESC
-    '))->groupBy('position')->map(fn($rows) => $rows->first());
-    $medalEmojis = [1 => '🥇', 2 => '🥈', 3 => '🥉'];
-    $medalLabels = [1 => 'Čempionas', 2 => 'Antra vieta', 3 => 'Trečia vieta'];
+        JOIN teams t ON ps.team_id = t.id
+        JOIN user_settings us ON ps.user_id = us.user_id
+        WHERE ps.final IS NOT NULL AND us.active = 1
+        GROUP BY t.team
+        ORDER BY firstPlacePrediction DESC, secondPlacePrediction DESC, thirdPlacePrediction DESC
+    ');
 @endphp
 <div class="row g-3 mt-0">
 
@@ -77,30 +79,30 @@
     </div>
 
     {{-- Medal predictions --}}
-    @if($medalRows->isNotEmpty())
+    @if(count($medalRows))
     <div class="col-md-6">
         <div class="sb-card h-100">
-            <div class="sb-card-title">
-                <i class="bi bi-award-fill sb-card-icon" style="color:#f59e0b"></i> Medalininkai
-            </div>
-            <p style="font-size:.82rem;color:var(--sb-muted);margin-bottom:12px">Dažniausiai prognozuojamos prizinės vietos</p>
-            <div style="display:flex;flex-direction:column;gap:6px;">
-                @foreach([1,2,3] as $pos)
-                @if($medalRows->has($pos))
-                @php $m = $medalRows[$pos]; @endphp
-                <div style="display:flex;align-items:center;gap:10px;padding:8px 0;{{ $pos < 3 ? 'border-bottom:1px solid var(--sb-border)' : '' }}">
-                    <span style="font-size:1.25rem;width:32px;text-align:center;flex-shrink:0">{{ $medalEmojis[$pos] }}</span>
-                    <img src="{{ asset('img/teams/'.str_replace(' ','%20',strtolower($m->team)).'.svg') }}"
-                         style="width:24px;height:24px;border-radius:50%;object-fit:cover;flex-shrink:0"
-                         alt="{{ $m->team }}">
-                    <span style="flex:1;font-weight:600;font-size:.9rem">{{ $m->team }}</span>
-                    <span style="font-size:.78rem;color:var(--sb-muted);white-space:nowrap">{{ $m->votes }} {{ $m->votes == 1 ? 'prognozė' : 'prognozės' }}</span>
+            <div class="sb-card-title"><i class="bi bi-graph-up-arrow sb-card-icon"></i> Finalų dalyvių prognozės</div>
+            <div class="stnl-list">
+                @foreach($medalRows as $standing)
+                <div class="stnl-row">
+                    <span class="stnl-team">
+                        <img class="standing-flag"
+                             src="{{ asset('img/teams/' . str_replace(' ', '%20', strtolower($standing->team)) . '.svg') }}"
+                             alt="{{ $standing->team }}">
+                        <span class="stnl-name">{{ $standing->team }}</span>
+                    </span>
+                    <span class="stnl-preds">
+                        <span class="standing-pos-badge pos-1 {{ $standing->firstPlacePrediction  == 0 ? 'pos-zero' : '' }}">{{ $standing->firstPlacePrediction }}</span>
+                        <span class="standing-pos-badge pos-2 {{ $standing->secondPlacePrediction == 0 ? 'pos-zero' : '' }}">{{ $standing->secondPlacePrediction }}</span>
+                        <span class="standing-pos-badge pos-3 {{ $standing->thirdPlacePrediction  == 0 ? 'pos-zero' : '' }}">{{ $standing->thirdPlacePrediction }}</span>
+                        <span class="standing-pos-badge pos-4 {{ $standing->fourthPlacePrediction == 0 ? 'pos-zero' : '' }}">{{ $standing->fourthPlacePrediction }}</span>
+                    </span>
                 </div>
-                @endif
                 @endforeach
             </div>
             <div style="margin-top:10px;font-size:.8rem;color:var(--sb-muted)">
-                Sutinki? <a href="{{ route('login') }}" style="color:var(--sb-accent);font-weight:600">Prisijunk ir pateik savo prognozę</a>.
+                <a href="{{ route('login') }}" style="color:var(--sb-accent);font-weight:600">Prisijunk</a> ir pateik savo prognozę.
             </div>
         </div>
     </div>
