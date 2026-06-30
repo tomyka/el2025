@@ -222,10 +222,11 @@ function predModal() {
             let oddsDebounce;
             const debouncedSave = () => {
                 clearTimeout(oddsDebounce);
-                oddsDebounce = setTimeout(() => this.save(), 700);
+                oddsDebounce = setTimeout(() => this.save(), 500);
             };
             this.$watch('homeScore', debouncedSave);
             this.$watch('awayScore', debouncedSave);
+            this.$watch('penaltyWinner', debouncedSave);
         },
 
         navClick(el) {
