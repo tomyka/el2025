@@ -83,7 +83,7 @@
                                 @elseif($adminLevel == 8)
                                 <option value="8" selected disabled>Admin</option>
                                 @endif
-                                @if(session('admin') >= 9)
+                                @if(session('admin') >= 8)
                                 <option value="9" {{ $adminLevel == 9 ? 'selected' : '' }}>Super</option>
                                 @elseif($adminLevel == 9)
                                 <option value="9" selected disabled>Super</option>
