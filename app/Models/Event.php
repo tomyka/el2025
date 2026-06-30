@@ -16,4 +16,9 @@ class Event extends Model
         'active',
         'rate',
     ];
+
+    public function tournament()
+    {
+        return $this->belongsTo(Tournament::class);
+    }
 }

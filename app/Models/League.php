@@ -19,6 +19,11 @@ class League extends Model
         'use_league_odds' => 'boolean',
     ];
 
+    public function tournament()
+    {
+        return $this->belongsTo(Tournament::class);
+    }
+
     public function members()
     {
         return $this->hasMany(LeagueMember::class);

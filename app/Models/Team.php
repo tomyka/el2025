@@ -12,5 +12,10 @@ class Team extends Model
         'group_name',
         'group_position',
     ];
+
+    public function tournament()
+    {
+        return $this->belongsTo(Tournament::class);
+    }
 }
 

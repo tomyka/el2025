@@ -46,4 +46,32 @@ class TournamentTest extends TestCase
         $this->assertEquals('world-cup-2026', $t->slug);
         $this->assertEquals('active', $t->status);
     }
+
+    public function test_tournament_model_creates_and_reads(): void
+    {
+        $t = \App\Models\Tournament::create([
+            'name'   => 'Test Cup',
+            'slug'   => 'test-cup',
+            'sport'  => 'football',
+            'status' => 'upcoming',
+        ]);
+        $this->assertDatabaseHas('tournaments', ['slug' => 'test-cup']);
+        $this->assertEquals('Test Cup', \App\Models\Tournament::where('slug','test-cup')->first()->name);
+    }
+
+    public function test_league_belongs_to_tournament(): void
+    {
+        $t = \App\Models\Tournament::create(['name'=>'T','slug'=>'t','sport'=>'football','status'=>'upcoming']);
+        $league = \App\Models\League::create(['name'=>'L','is_public'=>false,'tournament_id'=>$t->id]);
+        $this->assertEquals($t->id, $league->tournament->id);
+    }
+
+    public function test_event_belongs_to_tournament(): void
+    {
+        $t = \App\Models\Tournament::create(['name'=>'T2','slug'=>'t2','sport'=>'football','status'=>'upcoming']);
+        $event = \App\Models\Event::create([
+            'event'=>'Round 1','event_day'=>1,'event_survival'=>0,'active'=>1,'rate'=>1,'tournament_id'=>$t->id
+        ]);
+        $this->assertEquals($t->id, $event->tournament->id);
+    }
 }
