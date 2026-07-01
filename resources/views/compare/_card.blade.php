@@ -58,7 +58,6 @@
             ['label' => 'Išlikimo taškai',         'my' => $myData['survivalPoints'],               'their' => $theirData['survivalPoints'],               'fmt' => '0', 'hide_if_zero' => true],
             ['label' => 'Serija',                  'my' => $myData['userStreakPoints'] ?? 0,         'their' => $theirData['userStreakPoints'] ?? 0,         'fmt' => '1'],
             ['label' => 'Bingo',                   'my' => $myData['userGameBingo'],                'their' => $theirData['userGameBingo'],                'fmt' => '0'],
-            ['label' => 'Vid. taškai / žaidimas',  'my' => $myData['averagePoints'],               'their' => $theirData['averagePoints'],               'fmt' => '1'],
         ];
     @endphp
 
