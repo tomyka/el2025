@@ -42,6 +42,10 @@
         <i class="bi bi-trophy"></i> Turai
       </a>
       @if(session('admin') >= 9)
+      <a class="sb-nav-link {{ request()->routeIs('admin.tournaments*') ? 'active' : '' }}"
+         href="{{ route('admin.tournaments') }}">
+        <i class="bi bi-globe2"></i> Turnyrai
+      </a>
       <a class="sb-nav-link" href="{{ route('admin.updateStandingPoints') }}">
         <i class="bi bi-calculator"></i> Taškai už eigą
       </a>
@@ -126,6 +130,10 @@
         <i class="bi bi-trophy"></i> Turai
       </a>
       @if(session('admin') >= 9)
+      <a class="sb-nav-link {{ request()->routeIs('admin.tournaments*') ? 'active' : '' }}"
+         href="{{ route('admin.tournaments') }}">
+        <i class="bi bi-globe2"></i> Turnyrai
+      </a>
       <a class="sb-nav-link" href="{{ route('admin.updateStandingPoints') }}">
         <i class="bi bi-calculator"></i> Taškai už eigą
       </a>
