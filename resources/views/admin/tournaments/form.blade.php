@@ -1,26 +1,27 @@
 @extends('admin.layouts.master')
 @section('content')
 
-<div class="sb-card-title mb-3">
-  <i class="bi bi-globe2 sb-card-icon"></i>
-  {{ $tournament->exists ? 'Redaguoti turnyrą' : 'Naujas turnyras' }}
-</div>
+<div class="sb-card">
+  <div class="sb-card-title">
+    <i class="bi bi-globe2 sb-card-icon"></i>
+    {{ $tournament->exists ? 'Redaguoti turnyrą' : 'Naujas turnyras' }}
+  </div>
 
-@if($errors->any())
-  <div class="alert alert-danger">
+  @if($errors->any())
+  <div class="alert alert-danger py-2 mb-3">
     <ul class="mb-0">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
   </div>
-@endif
+  @endif
 
-@php
-  $action = $tournament->exists
-    ? route('admin.tournaments.update', $tournament)
-    : route('admin.tournaments.store');
-@endphp
+  @php
+    $action = $tournament->exists
+      ? route('admin.tournaments.update', $tournament)
+      : route('admin.tournaments.store');
+  @endphp
 
-<form method="POST" action="{{ $action }}" class="sb-card">
-  @csrf
-  <div class="row g-3">
+  <form method="POST" action="{{ $action }}">
+    @csrf
+    <div class="row g-3">
     <div class="col-md-6">
       <label class="form-label">Pavadinimas</label>
       <input class="form-control" name="name" value="{{ old('name', $tournament->name) }}" required>
@@ -73,12 +74,13 @@
       </div>
     </div>
     <div class="col-12">
-      <button type="submit" class="sb-btn sb-btn-primary">
+      <button type="submit" class="btn btn-sm btn-primary">
         {{ $tournament->exists ? 'Atnaujinti' : 'Sukurti' }}
       </button>
-      <a href="{{ route('admin.tournaments') }}" class="sb-btn sb-btn-secondary ms-2">Atšaukti</a>
+      <a href="{{ route('admin.tournaments') }}" class="btn btn-sm btn-outline-secondary ms-2">Atšaukti</a>
     </div>
-  </div>
-</form>
+    </div>
+  </form>
+</div>
 
 @endsection
