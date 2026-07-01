@@ -2855,15 +2855,10 @@ p { margin: 0; }
 .lb-trend-panel-inner {
   display: flex;
   gap: 14px;
-  align-items: stretch;
+  align-items: flex-start;
 }
 
-.lb-trend-chart {
-  flex: 2;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
+.lb-trend-chart { flex: 2; min-width: 0; }
 
 .lb-trend-chart-label {
   font-size: .65rem;
@@ -2871,7 +2866,7 @@ p { margin: 0; }
   margin-bottom: 4px;
 }
 
-.lb-trend-chart svg { width: 100%; flex: 1; min-height: 90px; display: block; }
+.lb-trend-chart svg { width: 100%; height: auto; display: block; }
 
 .lb-trend-legend {
   display: flex;
