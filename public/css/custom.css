@@ -2209,6 +2209,8 @@ button.sb-tab::after { display: none; }
 }
 .au-action-delete { color: #dc2626; }
 .au-action-delete:hover { background: #dc2626; border-color: #dc2626; color: #fff; }
+.au-action-promote { color: #d97706; }
+.au-action-promote:hover { background: #d97706; border-color: #d97706; color: #fff; }
 .au-action-hide { color: var(--sb-muted); }
 .au-action-hide:hover { background: var(--sb-muted); border-color: var(--sb-muted); color: #fff; }
 .au-action-hidden-active { color: var(--sb-accent); border-color: var(--sb-accent); }

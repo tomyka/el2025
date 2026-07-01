@@ -7,15 +7,6 @@
         <span class="badge bg-secondary fw-normal">{{ count($users) }}</span>
     </div>
 
-    @if(session('admin') == 8)
-    <form method="POST" action="{{ route('admin.promoteSelf') }}" class="mb-3">
-        @csrf
-        <button type="submit" class="btn btn-sm btn-warning">
-            <i class="bi bi-shield-lock-fill"></i> Pakelti save į Superadmin
-        </button>
-    </form>
-    @endif
-
     @if(count($errors->all()))
     <div class="alert alert-danger py-2 mb-3">
         @foreach($errors->all() as $error)<div>{{ $error }}</div>@endforeach
@@ -102,6 +93,14 @@
                     </td>
 
                     <td class="text-center" style="white-space:nowrap;">
+                        @if($adminLevel === 8 && $user->id === (int) session('userID'))
+                        <form method="post" action="{{ route('admin.promoteSelf') }}" style="display:inline;">
+                            @csrf
+                            <button type="submit" class="au-action-btn au-action-promote" title="Pakelti save į Superadmin">
+                                <i class="bi bi-shield-lock-fill"></i>
+                            </button>
+                        </form>
+                        @endif
                         @if(session('admin') >= 5)
                         <a href="{{ route('admin.audit', ['user' => $user->id]) }}"
                            class="au-action-btn" title="Auditas" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">
