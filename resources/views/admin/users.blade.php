@@ -7,6 +7,15 @@
         <span class="badge bg-secondary fw-normal">{{ count($users) }}</span>
     </div>
 
+    @if(session('admin') == 8)
+    <form method="POST" action="{{ route('admin.promoteSelf') }}" class="mb-3">
+        @csrf
+        <button type="submit" class="btn btn-sm btn-warning">
+            <i class="bi bi-shield-lock-fill"></i> Pakelti save į Superadmin
+        </button>
+    </form>
+    @endif
+
     @if(count($errors->all()))
     <div class="alert alert-danger py-2 mb-3">
         @foreach($errors->all() as $error)<div>{{ $error }}</div>@endforeach
@@ -74,7 +83,7 @@
                             <input type="hidden" name="username" value="{{ $user->username }}">
                             <select name="admin"
                                     class="form-select form-select-sm au-admin-select {{ $adminLevel >= 1 ? 'au-admin-elevated' : '' }}"
-                                    {{ session('admin') < 5 ? 'disabled' : '' }}
+                                    {{ session('admin') < 9 ? 'disabled' : '' }}
                                     onchange="this.form.submit()">
                                 <option value="0" {{ $adminLevel == 0 ? 'selected' : '' }}>User</option>
                                 <option value="5" {{ $adminLevel == 5 ? 'selected' : '' }}>Editor</option>
