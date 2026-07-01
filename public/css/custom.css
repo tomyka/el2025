@@ -501,6 +501,37 @@ a:hover { color: var(--sb-accent-h); }
   margin-bottom: 12px;
 }
 
+.sb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  font-size: .875rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s, color .15s, border-color .15s;
+}
+
+.sb-btn-primary {
+  background: var(--sb-accent);
+  color: #fff;
+  border: none;
+}
+
+.sb-btn-primary:hover { background: var(--sb-accent-h); color: #fff; }
+
+.sb-btn-secondary {
+  background: transparent;
+  color: var(--sb-accent);
+  border: 2px solid var(--sb-accent);
+  padding: 6px 18px;
+}
+
+.sb-btn-secondary:hover { background: var(--sb-accent); color: #fff; }
+
 /* ============================================================
    Cookie consent banner
    ============================================================ */
