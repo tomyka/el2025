@@ -93,8 +93,8 @@ class PointController extends Controller
             return [];
         }
 
-        $last10     = array_slice($allGameIds, -10);
-        $last10Flip = array_flip($last10);
+        $lastGames     = array_slice($allGameIds, -6);
+        $lastGamesFlip = array_flip($lastGames);
 
         // All result points keyed by game_id → user_id
         $allResults = DB::table('point_results')
@@ -133,7 +133,7 @@ class PointController extends Controller
                 $cumResultPts[$uid] += (float) ($gameByUser->get($uid)?->full_points ?? 0);
             }
 
-            if (!isset($last10Flip[$gameId])) {
+            if (!isset($lastGamesFlip[$gameId])) {
                 continue;
             }
 
