@@ -137,9 +137,9 @@
       @endif
     </div>
 
-  @else
+  @elseif(auth()->guest())
 
-    {{-- Active / Finished: leaderboard, medals, upcoming games, stats --}}
+    {{-- Active / Finished: leaderboard, medals, upcoming games, stats (guests only) --}}
     <div class="row g-3">
 
       {{-- Leaderboard --}}
