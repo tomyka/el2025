@@ -94,21 +94,17 @@
                 $rounds  = $point['roundHistory'];
                 $n       = count($rounds);
                 $svgW    = max(120, ($n - 1) * 60);
-                $maxCum  = max(max(array_column($rounds, 'cumulative_points')), 1);
                 $maxRank = max(max(array_column($rounds, 'rank')), 1);
 
-                $ptsPoly = '';
                 $rnkPoly = '';
                 $dots    = [];
                 $lbls    = [];
 
                 foreach ($rounds as $i => $r) {
                     $x        = $n > 1 ? round(($i / ($n - 1)) * $svgW, 1) : $svgW / 2;
-                    $yPts     = round(10 + (1 - $r['cumulative_points'] / $maxCum) * 60, 1);
                     $yRnk     = $maxRank > 1 ? round(10 + (($r['rank'] - 1) / ($maxRank - 1)) * 60, 1) : 10.0;
-                    $ptsPoly .= "{$x},{$yPts} ";
                     $rnkPoly .= "{$x},{$yRnk} ";
-                    $dots[]   = ['x' => $x, 'y' => $yPts, 'last' => $i === $n - 1];
+                    $dots[]   = ['x' => $x, 'y' => $yRnk, 'last' => $i === $n - 1];
                     $lbls[]   = ['x' => $x, 'label' => $r['game_idx']];
                 }
             @endphp
@@ -120,12 +116,11 @@
                         <line x1="0" y1="55" x2="{{ $svgW }}" y2="55" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="3,3"/>
                         <line x1="0" y1="30" x2="{{ $svgW }}" y2="30" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="3,3"/>
                         @if($n > 1)
-                        <polyline points="{{ trim($ptsPoly) }}" fill="none" stroke="#2563eb" stroke-width="2" stroke-linejoin="round"/>
-                        <polyline points="{{ trim($rnkPoly) }}" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,2" stroke-linejoin="round"/>
+                        <polyline points="{{ trim($rnkPoly) }}" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linejoin="round"/>
                         @endif
                         @foreach($dots as $dot)
                         <circle cx="{{ $dot['x'] }}" cy="{{ $dot['y'] }}"
-                                r="{{ $dot['last'] ? 4 : 3 }}" fill="#2563eb"
+                                r="{{ $dot['last'] ? 4 : 3 }}" fill="#f59e0b"
                                 @if($dot['last']) stroke="#fff" stroke-width="1.5" @endif/>
                         @endforeach
                         @foreach($lbls as $lbl)
@@ -133,7 +128,6 @@
                         @endforeach
                     </svg>
                     <div class="lb-trend-legend">
-                        <span class="lb-trend-legend-pts">— taškai</span>
                         <span class="lb-trend-legend-rank">-- vieta</span>
                     </div>
                 </div>
