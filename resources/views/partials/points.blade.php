@@ -111,7 +111,7 @@
             <div class="lb-trend-panel-inner">
                 <div class="lb-trend-chart">
                     <div class="lb-trend-chart-label">Paskutinės 10 rungtynių</div>
-                    <svg viewBox="0 0 {{ $svgW }} 90" style="width:100%;height:90px">
+                    <svg viewBox="0 0 {{ $svgW }} 90" preserveAspectRatio="none">
                         <line x1="0" y1="80" x2="{{ $svgW }}" y2="80" stroke="#e2e8f0" stroke-width="0.5"/>
                         <line x1="0" y1="55" x2="{{ $svgW }}" y2="55" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="3,3"/>
                         <line x1="0" y1="30" x2="{{ $svgW }}" y2="30" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="3,3"/>
