@@ -64,5 +64,6 @@ class SessionController extends Controller
         Session::put('guest',          (int) $leagueMember->is_guest);
         Session::put('survivalGame',   $tournament->survival_game ? 1 : 0);
         Session::put('timeDifference', $timeDifference?->value ?? 0);
+        Session::put('locale',         $userSettings->locale ?? 'lt');
     }
 }
