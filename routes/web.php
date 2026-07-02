@@ -20,6 +20,7 @@ use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\CompareController;
 use App\Http\Controllers\TournamentController;
+use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
 
 /*Original routes start*/
@@ -58,6 +59,8 @@ Route::get('privacy', function () {return view('privacy');})->name('privacy');
 Route::get('charity', function () {return view('charity');})->name('charity');
 Route::get('support', function () {return view('support');})->name('support');
 Route::get('sponsors', function () {return view('sponsors');})->name('sponsors');
+
+Route::post('/locale', [LocaleController::class, 'update'])->name('locale.update');
 
 Route::middleware('auth')->group(function () {
     Route::get('userProfile', [UserProfileController::class, 'getUserProfile'])->name('userProfile');
