@@ -12,7 +12,7 @@ class UserSetting extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'user_id', 'fee', 'color_id', 'receive_reminders', 'active'
+        'user_id', 'fee', 'color_id', 'receive_reminders', 'active', 'locale'
     ];
 
     protected $guarded = ['admin'];

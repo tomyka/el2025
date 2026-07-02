@@ -19,6 +19,7 @@ class UserSettingFactory extends Factory
             'admin' => $this->faker->boolean(20),
             'result_amount' => $this->faker->numberBetween(0, 10),
             'time_zone' => $this->faker->numberBetween(0, 24),
+            'locale' => 'lt',
         ];
     }
 }
