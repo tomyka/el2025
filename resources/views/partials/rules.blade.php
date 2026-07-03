@@ -2,19 +2,19 @@
 
     {{-- ── Overview ───────────────────────────────────────────────── --}}
     <div class="sb-card">
-        <div class="sb-card-title"><i class="bi bi-list-check sb-card-icon"></i> Totalizatoriaus eiga</div>
+        <div class="sb-card-title"><i class="bi bi-list-check sb-card-icon"></i> {{ __('Totalizatoriaus eiga') }}</div>
 
         <div class="rules-section">
-            <p>Totalizatorius vykdomas dviem etapais:</p>
+            <p>{{ __('Totalizatorius vykdomas dviem etapais:') }}</p>
 
             <div class="rules-stage">
                 <div class="rules-stage-badge">I</div>
                 <div>
-                    <strong>Grupių etapas</strong>
-                    <p>Rungtynių rezultatų pogrupiuose ir vietų pogrupiuose spėjimas, komandų, patekusių į šešioliktfinalį, aštuntfinalį, ketvirtfinalį bei finalų išankstinis prognozavimas.</p>
-                    <p>Rezultatus pateikti galima iki kiekvienų rungtynių pradžios.
-                        @auth <a href="{{ route('prediction.standings') }}" class="rules-link">Turnyro eigos prognozė</a> @else Turnyro eigos prognozė @endauth
-                        turi būti pateikta iki pirmųjų rungtynių pradžios.
+                    <strong>{{ __('Grupių etapas') }}</strong>
+                    <p>{{ __('Rungtynių rezultatų pogrupiuose ir vietų pogrupiuose spėjimas, komandų, patekusių į šešioliktfinalį, aštuntfinalį, ketvirtfinalį bei finalų išankstinis prognozavimas.') }}</p>
+                    <p>{{ __('Rezultatus pateikti galima iki kiekvienų rungtynių pradžios.') }}
+                        @auth <a href="{{ route('prediction.standings') }}" class="rules-link">{{ __('Turnyro eigos prognozė') }}</a> @else {{ __('Turnyro eigos prognozė') }} @endauth
+                        {{ __('turi būti pateikta iki pirmųjų rungtynių pradžios.') }}
                     </p>
                 </div>
             </div>
@@ -22,8 +22,8 @@
             <div class="rules-stage">
                 <div class="rules-stage-badge">II</div>
                 <div>
-                    <strong>Atkrintamųjų etapas</strong>
-                    <p>Nuoseklus šešioliktfinalių, aštuntfinalių, ketvirtfinalių, pusfinalių ir finalo rezultatų spėjimas.</p>
+                    <strong>{{ __('Atkrintamųjų etapas') }}</strong>
+                    <p>{{ __('Nuoseklus šešioliktfinalių, aštuntfinalių, ketvirtfinalių, pusfinalių ir finalo rezultatų spėjimas.') }}</p>
                 </div>
             </div>
         </div>
@@ -31,62 +31,62 @@
         @include('partials.fee')
 
         <div class="rules-section mt-3">
-            <strong>Vertinimas</strong>
+            <strong>{{ __('Vertinimas') }}</strong>
             <ul class="rules-list">
-                <li>Prognozuojamų rezultatų tikslumas vertinamas taškais.</li>
-                <li>Laimi daugiausiai surinkęs taškų.</li>
-                <li>Jei keli dalyviai surenka po lygiai taškų, žiūrima į eigos prognozės taškus, po to į daugiausiai tiksliai atspėtų rungtynių skaičių.</li>
-                <li>Neperdavus laiku rezultato, spėjimas bus sugeneruotas automatiškai — taškams už rungtynes nebus taikomas koeficientas.</li>
+                <li>{{ __('Prognozuojamų rezultatų tikslumas vertinamas taškais.') }}</li>
+                <li>{{ __('Laimi daugiausiai surinkęs taškų.') }}</li>
+                <li>{{ __('Jei keli dalyviai surenka po lygiai taškų, žiūrima į eigos prognozės taškus, po to į daugiausiai tiksliai atspėtų rungtynių skaičių.') }}</li>
+                <li>{{ __('Neperdavus laiku rezultato, spėjimas bus sugeneruotas automatiškai — taškams už rungtynes nebus taikomas koeficientas.') }}</li>
             </ul>
         </div>
     </div>
 
     {{-- ── Match scoring ───────────────────────────────────────────── --}}
     <div class="sb-card">
-        <div class="sb-card-title"><i class="bi bi-award-fill sb-card-icon"></i> Taškų skaičiavimas — rungtynių rezultatai</div>
+        <div class="sb-card-title"><i class="bi bi-award-fill sb-card-icon"></i> {{ __('Taškų skaičiavimas — rungtynių rezultatai') }}</div>
 
         <div class="rules-scoring-grid">
             <div class="rules-scoring-item">
                 <div class="rules-scoring-pts">(1+Koef.)×5</div>
-                <div class="rules-scoring-label">Nugalėtojas — su koeficiento premija</div>
+                <div class="rules-scoring-label">{{ __('Nugalėtojas — su koeficiento premija') }}</div>
             </div>
             <div class="rules-scoring-item">
                 <div class="rules-scoring-pts">5 − Δ</div>
-                <div class="rules-scoring-label">Tikslumas pagal įvarčių skirtumą</div>
+                <div class="rules-scoring-label">{{ __('Tikslumas pagal įvarčių skirtumą') }}</div>
             </div>
             <div class="rules-scoring-item">
                 <div class="rules-scoring-pts">+2.5</div>
-                <div class="rules-scoring-label">Bingo — tikslus rezultatas</div>
+                <div class="rules-scoring-label">{{ __('Bingo — tikslus rezultatas') }}</div>
             </div>
             <div class="rules-scoring-item">
                 <div class="rules-scoring-pts">+N−1</div>
-                <div class="rules-scoring-label">Seka — N atspėjimų iš eilės</div>
+                <div class="rules-scoring-label">{{ __('Seka — N atspėjimų iš eilės') }}</div>
             </div>
             <div class="rules-scoring-item">
                 <div class="rules-scoring-pts">×1 / ×2</div>
-                <div class="rules-scoring-label">Etapo koeficientas (Grupių etapas / Atkrintamosios)</div>
+                <div class="rules-scoring-label">{{ __('Etapo koeficientas (Grupių etapas / Atkrintamosios)') }}</div>
             </div>
         </div>
 
         <div class="rules-section">
             <p class="rules-formula">
-                Taškai = (Nugalėtojas + Tikslumas + Bingo + Seka) × Etapo_koef
+                {{ __('Taškai = (Nugalėtojas + Tikslumas + Bingo + Seka) × Etapo_koef') }}
             </p>
         </div>
     </div>
 
     {{-- ── Accuracy matrix ────────────────────────────────────────── --}}
     <div class="sb-card">
-        <div class="sb-card-title"><i class="bi bi-grid-3x3-gap-fill sb-card-icon"></i> Tikslumo taškų lentelė</div>
+        <div class="sb-card-title"><i class="bi bi-grid-3x3-gap-fill sb-card-icon"></i> {{ __('Tikslumo taškų lentelė') }}</div>
 
         <div class="rules-section">
-            <p>Eilutė — namų komandos prognozės klaida, stulpelis — svečių komandos prognozės klaida (ta pati kryptis). Priešinga kryptis arba didesnė klaida mažina taškus.</p>
+            <p>{{ __('Eilutė — namų komandos prognozės klaida, stulpelis — svečių komandos prognozės klaida (ta pati kryptis). Priešinga kryptis arba didesnė klaida mažina taškus.') }}</p>
 
             <div style="overflow-x:auto;">
             <table class="rules-table mt-2">
                 <thead>
                     <tr>
-                        <th>Namų Δ \ Svečių Δ</th>
+                        <th>{{ __('Namų Δ \\ Svečių Δ') }}</th>
                         <th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th>
                     </tr>
                 </thead>
@@ -102,25 +102,25 @@
                 </tbody>
             </table>
             </div>
-            <p class="rules-table-caption">Pažymėta įstrižainė — lygi klaida abiejose pusėse (teisingas įvarčių skirtumas). Pilka — nulinis arba neigiamas taškai.</p>
+            <p class="rules-table-caption">{{ __('Pažymėta įstrižainė — lygi klaida abiejose pusėse (teisingas įvarčių skirtumas). Pilka — nulinis arba neigiamas taškai.') }}</p>
         </div>
     </div>
 
     {{-- ── Odds ────────────────────────────────────────────────────── --}}
     <div class="sb-card">
-        <div class="sb-card-title"><i class="bi bi-graph-up sb-card-icon"></i> Koeficientas</div>
+        <div class="sb-card-title"><i class="bi bi-graph-up sb-card-icon"></i> {{ __('Koeficientas') }}</div>
 
         <div class="rules-section">
-            <p>Koeficientas atlygina už drąsų, retai atspėtą spėjimą — kuo mažiau dalyvių pasirinko tą baigtį, tuo daugiau taškų už nugalėtoją.</p>
+            <p>{{ __('Koeficientas atlygina už drąsų, retai atspėtą spėjimą — kuo mažiau dalyvių pasirinko tą baigtį, tuo daugiau taškų už nugalėtoją.') }}</p>
             <ul class="rules-list">
-                <li>Koef. formulė: <code>log₂(Dalyvių_skaičius / Spėjusiųjų_šią_baigtį)</code></li>
-                <li>Taikomas tik atspėjus nugalėtoją.</li>
-                <li>Automatiškai sugeneruotiems spėjimams koeficientas = 0</li>
+                <li>{{ __('Koef. formulė:') }} <code>log₂(Dalyvių_skaičius / Spėjusiųjų_šią_baigtį)</code></li>
+                <li>{{ __('Taikomas tik atspėjus nugalėtoją.') }}</li>
+                <li>{{ __('Automatiškai sugeneruotiems spėjimams koeficientas = 0') }}</li>
             </ul>
 
             <table class="rules-table mt-3" style="max-width:340px;">
                 <thead>
-                    <tr><th>Spėjo šią baigtį</th><th>Koef.</th><th>Nugalėtojas</th></tr>
+                    <tr><th>{{ __('Spėjo šią baigtį') }}</th><th>{{ __('Koef.') }}</th><th>{{ __('Nugalėtojas') }}</th></tr>
                 </thead>
                 <tbody>
                     <tr><td>93 % (28/30)</td><td>0.10</td><td>(1+0.10)×5 = <strong>5.5</strong></td></tr>
@@ -135,20 +135,20 @@
 
     {{-- ── Streak ───────────────────────────────────────────────────── --}}
     <div class="sb-card">
-        <div class="sb-card-title"><i class="bi bi-lightning-fill sb-card-icon"></i> Sekos premija</div>
+        <div class="sb-card-title"><i class="bi bi-lightning-fill sb-card-icon"></i> {{ __('Sekos premija') }}</div>
 
         <div class="rules-section">
-            <p>Už kiekvieną iš eilės teisingai atspėtą nugalėtoją kaupiama sekos premija.</p>
+            <p>{{ __('Už kiekvieną iš eilės teisingai atspėtą nugalėtoją kaupiama sekos premija.') }}</p>
             <ul class="rules-list">
-                <li>Skaičiuojama pagal rungtynių eilę (ID tvarka).</li>
-                <li>Vienas teisingas spėjimas iš eilės — premijos nėra.</li>
-                <li>Kiekvienas papildomas teisingas spėjimas iš eilės prideda <strong>+1</strong>.</li>
-                <li>Sekos premija dauginama iš etapo koeficiento kartu su kitais taškais.</li>
+                <li>{{ __('Skaičiuojama pagal rungtynių eilę (ID tvarka).') }}</li>
+                <li>{{ __('Vienas teisingas spėjimas iš eilės — premijos nėra.') }}</li>
+                <li>{{ __('Kiekvienas papildomas teisingas spėjimas iš eilės prideda') }} <strong>+1</strong>.</li>
+                <li>{{ __('Sekos premija dauginama iš etapo koeficiento kartu su kitais taškais.') }}</li>
             </ul>
 
             <table class="rules-table mt-3" style="max-width:300px;">
                 <thead>
-                    <tr><th>Atspėjimų iš eilės</th><th>Sekos premija</th></tr>
+                    <tr><th>{{ __('Atspėjimų iš eilės') }}</th><th>{{ __('Sekos premija') }}</th></tr>
                 </thead>
                 <tbody>
                     <tr><td>1</td><td>+0</td></tr>
@@ -162,13 +162,13 @@
 
     {{-- ── Standings scoring ───────────────────────────────────────── --}}
     <div class="sb-card">
-        <div class="sb-card-title"><i class="bi bi-diagram-3-fill sb-card-icon"></i> Taškų skaičiavimas — turnyro eiga</div>
+        <div class="sb-card-title"><i class="bi bi-diagram-3-fill sb-card-icon"></i> {{ __('Taškų skaičiavimas — turnyro eiga') }}</div>
 
         <div class="row g-4">
 
             {{-- Group stage position matrix --}}
             <div class="col-lg-4 col-md-6 col-12">
-                <p class="rules-table-title">Grupių etapas — vietos</p>
+                <p class="rules-table-title">{{ __('Grupių etapas — vietos') }}</p>
                 <table class="rules-table">
                     <thead>
                         <tr>
@@ -189,27 +189,27 @@
                         @endfor
                     </tbody>
                 </table>
-                <p class="rules-table-caption">Eilutė = prognozė, stulpelis = tikroji vieta</p>
+                <p class="rules-table-caption">{{ __('Eilutė = prognozė, stulpelis = tikroji vieta') }}</p>
             </div>
 
             {{-- Knockout rounds --}}
             <div class="col-lg-4 col-md-6 col-12">
-                <p class="rules-table-title">Nokautų etapas — patekimas</p>
+                <p class="rules-table-title">{{ __('Nokautų etapas — patekimas') }}</p>
                 <table class="rules-table">
                     <thead>
-                        <tr><th>Etapas</th><th><i class="bi bi-check-lg"></i> atspėta</th><th><i class="bi bi-x-lg"></i> neatspėta</th></tr>
+                        <tr><th>{{ __('Etapas') }}</th><th><i class="bi bi-check-lg"></i> {{ __('atspėta') }}</th><th><i class="bi bi-x-lg"></i> {{ __('neatspėta') }}</th></tr>
                     </thead>
                     <tbody>
-                        <tr><td>Šešioliktfinalis</td><td class="rules-pts-pos">3</td><td class="rules-pts-zero">0</td></tr>
-                        <tr><td>Aštuntfinalis</td><td class="rules-pts-pos">6</td><td class="rules-pts-zero">0</td></tr>
-                        <tr><td>Ketvirtfinalis</td><td class="rules-pts-pos">9</td><td class="rules-pts-zero">0</td></tr>
+                        <tr><td>{{ __('Šešioliktfinalis') }}</td><td class="rules-pts-pos">3</td><td class="rules-pts-zero">0</td></tr>
+                        <tr><td>{{ __('Aštuntfinalis') }}</td><td class="rules-pts-pos">6</td><td class="rules-pts-zero">0</td></tr>
+                        <tr><td>{{ __('Ketvirtfinalis') }}</td><td class="rules-pts-pos">9</td><td class="rules-pts-zero">0</td></tr>
                     </tbody>
                 </table>
             </div>
 
             {{-- Finals matrix --}}
             <div class="col-lg-4 col-md-6 col-12">
-                <p class="rules-table-title">Finalai — vietos (prognozė vs tikroji)</p>
+                <p class="rules-table-title">{{ __('Finalai — vietos (prognozė vs tikroji)') }}</p>
                 <table class="rules-table">
                     <thead>
                         <tr>
@@ -224,7 +224,7 @@
                         <tr><th>4</th><td>9</td><td>12</td><td>15</td><td class="rules-pts-pos">18</td></tr>
                     </tbody>
                 </table>
-                <p class="rules-table-caption">Eilutė = prognozė, stulpelis = tikroji vieta</p>
+                <p class="rules-table-caption">{{ __('Eilutė = prognozė, stulpelis = tikroji vieta') }}</p>
             </div>
 
         </div>

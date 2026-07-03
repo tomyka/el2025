@@ -37,25 +37,25 @@
     <div class="pt-header">
         <div class="pt-title-group">
             <span class="pt-icon">📈</span>
-            <span class="pt-title">Mano vieta</span>
-            <span class="pt-subtitle">po kiekvienų rungtynių</span>
+            <span class="pt-title">{{ __('Mano vieta') }}</span>
+            <span class="pt-subtitle">{{ __('po kiekvienų rungtynių') }}</span>
         </div>
-        <span class="pt-game-count">{{ $n }} rungt.</span>
+        <span class="pt-game-count">{{ $n }} {{ __('rungt.') }}</span>
     </div>
 
     {{-- Stats strip --}}
     <div class="pt-stats">
         <div class="pt-stat">
             <div class="pt-stat-val pt-accent">#{{ $curRank }}</div>
-            <div class="pt-stat-lbl">Dabar</div>
+            <div class="pt-stat-lbl">{{ __('Dabar') }}</div>
         </div>
         <div class="pt-stat">
             <div class="pt-stat-val pt-up">#{{ $bestRank }}</div>
-            <div class="pt-stat-lbl">Geriausia</div>
+            <div class="pt-stat-lbl">{{ __('Geriausia') }}</div>
         </div>
         <div class="pt-stat">
             <div class="pt-stat-val pt-amber">#{{ $worstRank }}</div>
-            <div class="pt-stat-lbl">Blogiausia</div>
+            <div class="pt-stat-lbl">{{ __('Blogiausia') }}</div>
         </div>
         <div class="pt-stat">
             @if($delta > 0)
@@ -65,7 +65,7 @@
             @else
                 <div class="pt-stat-val pt-neutral">—</div>
             @endif
-            <div class="pt-stat-lbl">Pokytis</div>
+            <div class="pt-stat-lbl">{{ __('Pokytis') }}</div>
         </div>
     </div>
 
@@ -105,9 +105,9 @@
             <text x="{{ $svgW }}" y="{{ $svgH - 3 }}" font-size="7" fill="#3b82f6" text-anchor="end" font-weight="bold">{{ $n }}</text>
         </svg>
         <div class="pt-chart-hint">
-            <span>⬆ geriau</span>
-            <span class="pt-chart-axis-lbl">Rungtynių nr.</span>
-            <span>⬇ blogiau</span>
+            <span>⬆ {{ __('geriau') }}</span>
+            <span class="pt-chart-axis-lbl">{{ __('Rungtynių nr.') }}</span>
+            <span>⬇ {{ __('blogiau') }}</span>
         </div>
     </div>
 </div>

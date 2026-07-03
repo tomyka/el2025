@@ -6,18 +6,18 @@
     $userInTop = $myRank !== null && $myRank <= $lbLimit;
 @endphp
 <div class="sb-card" x-data="{ expanded: false }">
-    <div class="sb-card-title"><i class="bi bi-trophy-fill sb-card-icon"></i> Taškų lentelė</div>
+    <div class="sb-card-title"><i class="bi bi-trophy-fill sb-card-icon"></i> {{ __('Taškų lentelė') }}</div>
     <div class="lb-header">
         <span class="lb-header-rank">#</span>
-        <span class="lb-header-name">Žaidėjas</span>
-        <span class="lb-header-sub d-none d-md-block" title="Rungtynių taškai"><i class="bi bi-check2-all"></i></span>
-        <span class="lb-header-sub d-none d-md-block" title="Eigos taškai"><i class="bi bi-bar-chart-steps"></i></span>
+        <span class="lb-header-name">{{ __('Žaidėjas') }}</span>
+        <span class="lb-header-sub d-none d-md-block" title="{{ __('Rungtynių taškai') }}"><i class="bi bi-check2-all"></i></span>
+        <span class="lb-header-sub d-none d-md-block" title="{{ __('Eigos taškai') }}"><i class="bi bi-bar-chart-steps"></i></span>
         @if(session('survivalGame') == 1)
-        <span class="lb-header-sub d-none d-md-block" title="Išlikimo taškai"><i class="bi bi-shield-check"></i></span>
+        <span class="lb-header-sub d-none d-md-block" title="{{ __('Išlikimo taškai') }}"><i class="bi bi-shield-check"></i></span>
         @endif
-        <span class="lb-header-sub d-none d-md-block" title="Serija (iš eilės pataikytų spėjimų premija)"><i class="bi bi-fire"></i></span>
-        <span class="lb-header-sub lb-header-sub-bingo d-none d-md-block" title="Bingo"><i class="bi bi-bullseye"></i></span>
-        <span class="lb-header-total">Taškai</span>
+        <span class="lb-header-sub d-none d-md-block" title="{{ __('Serija (iš eilės pataikytų spėjimų premija)') }}"><i class="bi bi-fire"></i></span>
+        <span class="lb-header-sub lb-header-sub-bingo d-none d-md-block" title="{{ __('Bingo') }}"><i class="bi bi-bullseye"></i></span>
+        <span class="lb-header-total">{{ __('Taškai') }}</span>
         <span class="lb-header-chevron"></span>
     </div>
 
@@ -57,12 +57,12 @@
             @php
                 $sp = $point['standingPoints'];
                 $spStages = [
-                    'Grupių etapas'    => (float)($sp->group_position_points ?? 0),
-                    'Šešioliktfinalis' => (float)($sp->last32_points ?? 0),
-                    'Aštuntfinalis'    => (float)($sp->last16_points ?? 0),
-                    'Ketvirtfinalis'   => (float)($sp->quarterfinal_points ?? 0),
-                    'Pusfinalis'       => (float)($sp->semifinal_points ?? 0),
-                    'Finalas'          => (float)($sp->final_points ?? 0),
+                    __('Grupių etapas')    => (float)($sp->group_position_points ?? 0),
+                    __('Šešioliktfinalis') => (float)($sp->last32_points ?? 0),
+                    __('Aštuntfinalis')    => (float)($sp->last16_points ?? 0),
+                    __('Ketvirtfinalis')   => (float)($sp->quarterfinal_points ?? 0),
+                    __('Pusfinalis')       => (float)($sp->semifinal_points ?? 0),
+                    __('Finalas')          => (float)($sp->final_points ?? 0),
                 ];
                 $spPopRows = '';
                 foreach ($spStages as $lbl => $val) {
@@ -110,7 +110,7 @@
             @endphp
             <div class="lb-trend-panel-inner">
                 <div class="lb-trend-chart">
-                    <div class="lb-trend-chart-label">Paskutinės 6 rungtynės</div>
+                    <div class="lb-trend-chart-label">{{ __('Paskutinės 6 rungtynės') }}</div>
                     <svg viewBox="0 0 {{ $svgW }} 90" style="width:100%;height:90px">
                         <line x1="0" y1="80" x2="{{ $svgW }}" y2="80" stroke="#e2e8f0" stroke-width="0.5"/>
                         <line x1="0" y1="55" x2="{{ $svgW }}" y2="55" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="3,3"/>
@@ -128,12 +128,12 @@
                         @endforeach
                     </svg>
                     <div class="lb-trend-legend">
-                        <span class="lb-trend-legend-rank">-- vieta</span>
+                        <span class="lb-trend-legend-rank">-- {{ __('vieta') }}</span>
                     </div>
                 </div>
                 <div class="lb-trend-table">
                     <div class="lb-trend-table-header">
-                        <span>#</span><span>+Tšk</span><span>Vieta</span>
+                        <span>#</span><span>{{ __('+ Tšk') }}</span><span>{{ __('Vieta') }}</span>
                     </div>
                     @foreach($rounds as $idx => $r)
                     @php
@@ -156,9 +156,10 @@
     @endforeach
 
     @if($lbTotal > $lbLimit)
-    <button class="lb-show-more" @click="expanded = !expanded">
+    <button class="lb-show-more" @click="expanded = !expanded"
+            x-data="{ lblLess: '{{ __('Rodyti mažiau') }}', lblAll: '{{ __('Rodyti visus (:count)', ['count' => $lbTotal]) }}' }">
         <i class="bi" :class="expanded ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
-        <span x-text="expanded ? 'Rodyti mažiau' : 'Rodyti visus ({{ $lbTotal }})'"></span>
+        <span x-text="expanded ? lblLess : lblAll"></span>
     </button>
     @endif
 </div>

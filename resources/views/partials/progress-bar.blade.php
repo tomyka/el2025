@@ -6,7 +6,7 @@
     </div>
     <span class="sb-progress-count">{{ $tournamentProgress['scored_games'] }} / {{ $tournamentProgress['total_games'] }}</span>
     @if($tournamentProgress['today_games'] > 0)
-    <span class="sb-progress-today">⏱ {{ $tournamentProgress['today_games'] }} šiandien</span>
+    <span class="sb-progress-today">⏱ {{ $tournamentProgress['today_games'] }} {{ __('šiandien') }}</span>
     @endif
 </div>
 @endif

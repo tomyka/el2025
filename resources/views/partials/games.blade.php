@@ -1,7 +1,7 @@
 <div class="sb-card" x-data="predModal()">
     <div class="sb-card-title d-flex justify-content-between align-items-center">
-        <span><i class="bi bi-calendar3"></i> Artimiausios rungtynės</span>
-        <a href="{{ route('prediction.results') }}" class="upcoming-all-link">Visi spėjimai <i class="bi bi-arrow-right-short"></i></a>
+        <span><i class="bi bi-calendar3"></i> {{ __('Artimiausios rungtynės') }}</span>
+        <a href="{{ route('prediction.results') }}" class="upcoming-all-link">{{ __('Visi spėjimai') }} <i class="bi bi-arrow-right-short"></i></a>
     </div>
     <div class="upcoming-list">
         @foreach($predictionGames as $predictionGame)
@@ -73,10 +73,10 @@
                 $popContent = '';
                 if ($played && $totalPts > 0) {
                     $popContent = "<div class='sr-pop'>"
-                        . "<div class='sr-pop-row'><span>Nugalėtojas</span><strong>" . number_format($g->winner_points, 1) . "</strong></div>"
-                        . "<div class='sr-pop-row'><span>Skirtumas</span><strong>" . number_format($g->difference_points, 1) . "</strong></div>"
-                        . "<div class='sr-pop-row'><span>Tikslus</span><strong>" . number_format($g->bingo_points, 1) . "</strong></div>"
-                        . "<div class='sr-pop-row'><span>Serija</span><strong>" . ($streak > 0 ? '+' : '') . number_format($streak, 1) . "</strong></div>"
+                        . "<div class='sr-pop-row'><span>" . __('Nugalėtojas') . "</span><strong>" . number_format($g->winner_points, 1) . "</strong></div>"
+                        . "<div class='sr-pop-row'><span>" . __('Skirtumas') . "</span><strong>" . number_format($g->difference_points, 1) . "</strong></div>"
+                        . "<div class='sr-pop-row'><span>" . __('Tikslus') . "</span><strong>" . number_format($g->bingo_points, 1) . "</strong></div>"
+                        . "<div class='sr-pop-row'><span>" . __('Serija') . "</span><strong>" . ($streak > 0 ? '+' : '') . number_format($streak, 1) . "</strong></div>"
                         . "</div>";
                 }
             @endphp
@@ -102,7 +102,7 @@
                     $oAwayWinPts = round((1 + ($g->away_odds ?? 0)) * 5 * ($g->rate ?? 1), 1);
                     $oddsPopContent = "<div class='sr-pop'>"
                         . "<div class='sr-pop-row'><span>" . $g->home_team . "</span><strong>+" . number_format($oHomeWinPts, 1) . " pt</strong></div>"
-                        . "<div class='sr-pop-row'><span>Lygiosios</span><strong>+" . number_format($oDrawPts, 1) . " pt</strong></div>"
+                        . "<div class='sr-pop-row'><span>" . __('Lygiosios') . "</span><strong>+" . number_format($oDrawPts, 1) . " pt</strong></div>"
                         . "<div class='sr-pop-row'><span>" . $g->away_team . "</span><strong>+" . number_format($oAwayWinPts, 1) . " pt</strong></div>"
                         . "</div>";
                     @endphp
@@ -173,7 +173,7 @@
                             <span class="pred-odds-pts" x-text="'+' + homeWinPts + ' pt'"></span>
                         </div>
                         <div class="pred-odds-col">
-                            <span class="pred-odds-label">Lygiosios</span>
+                            <span class="pred-odds-label">{{ __('Lygiosios') }}</span>
                             <span class="pred-odds-pts" x-text="'+' + drawPts + ' pt'"></span>
                         </div>
                         <div class="pred-odds-col">

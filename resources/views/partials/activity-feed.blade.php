@@ -1,7 +1,7 @@
 @if(!empty($activityFeed))
 <div class="sb-card">
     <div class="sb-card-title">
-        <i class="bi bi-lightning-fill sb-card-icon"></i> Aktyvumas
+        <i class="bi bi-lightning-fill sb-card-icon"></i> {{ __('Aktyvumas') }}
     </div>
     <div class="af-list">
         @foreach($activityFeed as $item)
@@ -13,7 +13,7 @@
                     <div class="af-players">{{ $item['players'] }}</div>
                 @else
                     <span class="af-user">{{ $item['username'] }}</span>
-                    <span class="af-text"> serija ×{{ $item['length'] }}</span>
+                    <span class="af-text"> {{ __('serija') }} ×{{ $item['length'] }}</span>
                 @endif
             </div>
         </div>

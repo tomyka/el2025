@@ -1,6 +1,6 @@
 <div class="sb-card">
     <div class="sb-card-title">
-        <i class="bi bi-bar-chart-steps sb-card-icon"></i> Eigos taškai
+        <i class="bi bi-bar-chart-steps sb-card-icon"></i> {{ __('Eigos taškai') }}
     </div>
 
     @php
@@ -12,21 +12,21 @@
                 $base = $odds !== null ? round($pts / (1 + $odds), 1) : $pts;
                 $mult = $odds !== null ? round(1 + $odds, 2) : null;
                 $html = "<div class='sr-pop sr-pop-sm'>"
-                    . "<div class='sr-pop-row'><span>Spėjimo taškai</span><strong>" . number_format($base, 1) . "</strong></div>";
+                    . "<div class='sr-pop-row'><span>" . __('Spėjimo taškai') . "</span><strong>" . number_format($base, 1) . "</strong></div>";
                 if ($mult !== null) {
-                    $html .= "<div class='sr-pop-row'><span>Koeficientas</span><strong>×" . number_format($mult, 2) . "</strong></div>";
+                    $html .= "<div class='sr-pop-row'><span>" . __('Koeficientas') . "</span><strong>×" . number_format($mult, 2) . "</strong></div>";
                 }
                 return $html . "</div>";
             }
         }
 
         $stageDefs = [
-            ['key' => 'group_position', 'label' => 'Grupių etapas', 'pts' => 'group_position_points', 'odds' => 'group_position_odds', 'always' => true],
-            ['key' => 'last32',         'label' => 'Šešioliktfinalis', 'pts' => 'last32_points',         'odds' => 'last32_odds'],
-            ['key' => 'last16',         'label' => 'Aštuntfinalis',   'pts' => 'last16_points',         'odds' => 'last16_odds'],
-            ['key' => 'quarterfinal',   'label' => 'Ketvirtfinalis',  'pts' => 'quarterfinal_points',   'odds' => 'quarterfinal_odds'],
-            ['key' => 'semifinal',      'label' => 'Pusfinalis',      'pts' => 'semifinal_points',      'odds' => 'semifinal_odds'],
-            ['key' => 'final',          'label' => 'Finalas',         'pts' => 'final_points',          'odds' => 'final_odds'],
+            ['key' => 'group_position', 'label' => __('Grupių etapas'), 'pts' => 'group_position_points', 'odds' => 'group_position_odds', 'always' => true],
+            ['key' => 'last32',         'label' => __('Šešioliktfinalis'), 'pts' => 'last32_points',         'odds' => 'last32_odds'],
+            ['key' => 'last16',         'label' => __('Aštuntfinalis'),    'pts' => 'last16_points',         'odds' => 'last16_odds'],
+            ['key' => 'quarterfinal',   'label' => __('Ketvirtfinalis'),   'pts' => 'quarterfinal_points',   'odds' => 'quarterfinal_odds'],
+            ['key' => 'semifinal',      'label' => __('Pusfinalis'),       'pts' => 'semifinal_points',      'odds' => 'semifinal_odds'],
+            ['key' => 'final',          'label' => __('Finalas'),          'pts' => 'final_points',          'odds' => 'final_odds'],
         ];
 
         $activeStages = array_values(array_filter($stageDefs, function ($s) use ($pts) {
@@ -35,7 +35,7 @@
     @endphp
 
     @if($pts->isEmpty())
-        <p class="text-muted" style="font-size:.83rem;margin:0">Taškai dar neskaičiuoti.</p>
+        <p class="text-muted" style="font-size:.83rem;margin:0">{{ __('Taškai dar neskaičiuoti.') }}</p>
     @else
         @foreach($activeStages as $si => $stage)
         @php
@@ -62,7 +62,7 @@
             <div id="{{ $colId }}" class="collapse {{ $loop->last ? 'show' : '' }}">
                 @if($groupedByName)
                     @foreach($groupedByName as $groupName => $groupTeams)
-                    <div class="pst-group-label">{{ $groupName ? 'Grupė ' . $groupName : '' }}</div>
+                    <div class="pst-group-label">{{ $groupName ? __('Grupė') . ' ' . $groupName : '' }}</div>
                     @foreach($groupTeams as $r)
                     @php $pop = pstPopover((float)$r->$ptCol, isset($r->$odCol) ? (float)$r->$odCol : null); @endphp
                     <div class="pst-stage-row">

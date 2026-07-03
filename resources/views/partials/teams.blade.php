@@ -1,11 +1,11 @@
 <div class="container-fluid">
-    <p>Taškų lentelė:</p>
+    <p>{{ __('Taškų lentelė:') }}</p>
 
         <table class="table-sm table-bordered">
             <thead>
                 <tr class="table-primary">
                         <td align="center"><strong>#</strong></td>
-                        <td align="center"><strong>Komanda</strong></td>
+                        <td align="center"><strong>{{ __('Komanda') }}</strong></td>
                 </tr>
             </thead>
             <tbody>

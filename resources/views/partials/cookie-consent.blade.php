@@ -1,11 +1,11 @@
 <div id="sb-cookie-banner" class="sb-cookie-banner" style="display:none">
     <div class="sb-cookie-text">
         <i class="bi bi-cookie"></i>
-        Naudojame slapukus reklamai ir statistikai. Daugiau informacijos: <a href="{{ route('privacy') }}">privatumo politika</a>.
+        {{ __('Naudojame slapukus reklamai ir statistikai. Daugiau informacijos:') }} <a href="{{ route('privacy') }}">{{ __('privatumo politika') }}</a>.
     </div>
     <div class="sb-cookie-actions">
-        <button id="sb-cookie-decline" class="sb-cookie-btn sb-cookie-btn-secondary">Tik būtini</button>
-        <button id="sb-cookie-accept" class="sb-cookie-btn sb-cookie-btn-primary">Sutinku</button>
+        <button id="sb-cookie-decline" class="sb-cookie-btn sb-cookie-btn-secondary">{{ __('Tik būtini') }}</button>
+        <button id="sb-cookie-accept" class="sb-cookie-btn sb-cookie-btn-primary">{{ __('Sutinku') }}</button>
     </div>
 </div>
 <script>
