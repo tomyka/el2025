@@ -94,7 +94,7 @@
         </div>
 
         <div id="ps-progress" class="mt-3 d-flex flex-wrap gap-2">
-            <span class="badge bg-secondary" id="prog-pos">Vieta: 0 / {{ count($predictionStandings) }}</span>
+            <span class="badge bg-secondary" id="prog-pos">{{ __('Vieta') }}: 0 / {{ count($predictionStandings) }}</span>
             @php $totalTeams = count($predictionStandings); @endphp
             @if ($totalTeams >= 32)
             <span class="badge bg-secondary" id="prog-last32">1/16: 0 / 32</span>

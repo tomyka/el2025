@@ -13,6 +13,7 @@
 </div>
 
 <script>
+var labelZaidimas = '{{ __("Žaidimas") }} ';
 const gameLabels = {!! $gameLabels !!};
 
 const ctx = document.getElementById('trend-chart').getContext('2d');
@@ -45,7 +46,7 @@ new Chart(ctx, {
                 padding: 12,
                 callbacks: {
                     title: function (items) {
-                        return gameLabels[items[0].dataIndex] ?? ('Žaidimas ' + items[0].label);
+                        return gameLabels[items[0].dataIndex] ?? (labelZaidimas + items[0].label);
                     },
                     label: function (item) {
                         return '  ' + item.dataset.label + ':  ' + item.parsed.y.toFixed(1) + ' t.';
