@@ -46,7 +46,7 @@ class UserSettingController extends Controller
 
             Session::put('resultAmount',$request->input('resultAmount'));
 
-            return redirect()->route('userSettings')->with('info','Vartotojo nustatymai pakeisti');
+            return redirect()->route('userSettings')->with('info', __('Vartotojo nustatymai pakeisti'));
         }
 
 

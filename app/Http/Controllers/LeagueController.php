@@ -53,7 +53,7 @@ class LeagueController extends Controller
             ['is_admin' => true, 'is_guest' => false, 'active' => false]
         );
 
-        return redirect()->route('leagues.index')->with('info', 'Lyga sukurta');
+        return redirect()->route('leagues.index')->with('info', __('Lyga sukurta'));
     }
 
     public function update(Request $request): \Illuminate\Http\RedirectResponse
@@ -81,7 +81,7 @@ class LeagueController extends Controller
             'use_league_odds' => (bool) $request->input('use_league_odds', false),
         ]);
 
-        return redirect()->route('leagues.index')->with('info', 'Lyga atnaujinta');
+        return redirect()->route('leagues.index')->with('info', __('Lyga atnaujinta'));
     }
 
     public function invite(Request $request): \Illuminate\Http\RedirectResponse
@@ -100,7 +100,7 @@ class LeagueController extends Controller
         $alreadyInvited = LeagueInvite::where('league_id', $leagueId)->where('invited_user_id', $inviteeId)->where('status', 'pending')->exists();
 
         if ($alreadyMember || $alreadyInvited) {
-            return redirect()->back()->with('error', 'Vartotojas jau narys arba pakviestas');
+            return redirect()->back()->with('error', __('Vartotojas jau narys arba pakviestas'));
         }
 
         LeagueInvite::create([
@@ -110,7 +110,7 @@ class LeagueController extends Controller
             'status'          => 'pending',
         ]);
 
-        return redirect()->back()->with('info', 'Kvietimas išsiųstas');
+        return redirect()->back()->with('info', __('Kvietimas išsiųstas'));
     }
 
     public function acceptInvite(Request $request): \Illuminate\Http\RedirectResponse
@@ -128,7 +128,7 @@ class LeagueController extends Controller
 
         $invite->delete();
 
-        return redirect()->route('leagues.index')->with('info', 'Prisijungta prie lygos');
+        return redirect()->route('leagues.index')->with('info', __('Prisijungta prie lygos'));
     }
 
     public function declineInvite(Request $request): \Illuminate\Http\RedirectResponse
@@ -140,7 +140,7 @@ class LeagueController extends Controller
 
         $invite->delete();
 
-        return redirect()->route('leagues.index')->with('info', 'Kvietimas atmestas');
+        return redirect()->route('leagues.index')->with('info', __('Kvietimas atmestas'));
     }
 
     public function switchLeague(Request $request): \Illuminate\Http\RedirectResponse
@@ -161,7 +161,7 @@ class LeagueController extends Controller
             session(['fee' => $newMembership->league->base_fee]);
         }
 
-        return redirect()->back()->with('info', 'Lyga pakeista');
+        return redirect()->back()->with('info', __('Lyga pakeista'));
     }
 
     public function searchUsers(Request $request): \Illuminate\Http\JsonResponse
@@ -209,7 +209,7 @@ class LeagueController extends Controller
         $league = League::findOrFail($leagueId);
         $league->update(['use_league_odds' => (bool) $request->input('use_league_odds', false)]);
 
-        return redirect()->route('leagues.index')->with('info', 'Lygos koeficientai atnaujinti');
+        return redirect()->route('leagues.index')->with('info', __('Lygos koeficientai atnaujinti'));
     }
 
     public function adminIndex(): \Illuminate\View\View
@@ -229,7 +229,7 @@ class LeagueController extends Controller
         $league   = League::findOrFail($leagueId);
 
         if ($league->is_public) {
-            return redirect()->back()->with('error', 'Viešos lygos ištrinti negalima');
+            return redirect()->back()->with('error', __('Viešos lygos ištrinti negalima'));
         }
 
         $publicLeague    = League::where('is_public', true)->first();
@@ -247,7 +247,7 @@ class LeagueController extends Controller
 
         $league->delete();
 
-        return redirect()->route('admin.leagues')->with('info', 'Lyga ištrinta');
+        return redirect()->route('admin.leagues')->with('info', __('Lyga ištrinta'));
     }
 
     public function deleteLeague(Request $request): \Illuminate\Http\RedirectResponse
@@ -262,7 +262,7 @@ class LeagueController extends Controller
         }
 
         if ($league->is_public) {
-            return redirect()->back()->with('error', 'Viešos lygos ištrinti negalima');
+            return redirect()->back()->with('error', __('Viešos lygos ištrinti negalima'));
         }
 
         $publicLeague    = League::where('is_public', true)->first();
@@ -284,7 +284,7 @@ class LeagueController extends Controller
 
         $league->delete();
 
-        return redirect()->route('leagues.index')->with('info', 'Lyga ištrinta');
+        return redirect()->route('leagues.index')->with('info', __('Lyga ištrinta'));
     }
 
     public function leaveLeague(Request $request): \Illuminate\Http\RedirectResponse
@@ -295,11 +295,11 @@ class LeagueController extends Controller
         $league = League::findOrFail($leagueId);
 
         if ($league->is_public) {
-            return redirect()->back()->with('error', 'Negalima palikti Bendros lygos');
+            return redirect()->back()->with('error', __('Negalima palikti Bendros lygos'));
         }
 
         if ($league->owner_id === $userId) {
-            return redirect()->back()->with('error', 'Perduokite lygos valdymą kitam nariui prieš išeidami');
+            return redirect()->back()->with('error', __('Perduokite lygos valdymą kitam nariui prieš išeidami'));
         }
 
         $otherLeagueCount = LeagueMember::where('user_id', $userId)
@@ -307,7 +307,7 @@ class LeagueController extends Controller
             ->count();
 
         if ($otherLeagueCount === 0) {
-            return redirect()->back()->with('error', 'Negalima palikti vienintelės lygos');
+            return redirect()->back()->with('error', __('Negalima palikti vienintelės lygos'));
         }
 
         $membership = LeagueMember::where('user_id', $userId)
@@ -326,6 +326,6 @@ class LeagueController extends Controller
             session(['leagueID' => $publicLeague->id]);
         }
 
-        return redirect()->route('leagues.index')->with('info', 'Palikote lygą');
+        return redirect()->route('leagues.index')->with('info', __('Palikote lygą'));
     }
 }

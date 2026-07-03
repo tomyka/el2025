@@ -27,7 +27,7 @@ class SettingController extends Controller
             $setting->setting = $request->input('setting');
             $setting->value = $request->input('value');
             $setting->save();
-            return redirect()->route('admin.settings')->with('info','Nustatymas '. $request->input('settingID') .' pakeistas');
+            return redirect()->route('admin.settings')->with('info', __('Nustatymas :id pakeistas', ['id' => $request->input('settingID')]));
         }
 
     }

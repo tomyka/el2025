@@ -61,7 +61,7 @@ class TeamController extends Controller
         $team->link       = $request->input('teamLink');
         $team->group_name = $request->input('groupName');
         $team->save();
-        return redirect()->route('admin.teams')->with('info', 'Komanda atnaujinta');
+        return redirect()->route('admin.teams')->with('info', __('Komanda atnaujinta'));
     }
 
 

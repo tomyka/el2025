@@ -52,7 +52,7 @@ class UserController extends Controller
         $userSetting->save();
 
         return redirect()->route('admin.users')
-            ->with('info', 'Vartotojo ' . $request->input('username') . ' duomenys buvo atnaujinti.');
+            ->with('info', __('Vartotojo :username duomenys buvo atnaujinti.', ['username' => $request->input('username')]));
     }
 
     public function promoteSelf(): \Illuminate\Http\RedirectResponse

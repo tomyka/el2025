@@ -159,7 +159,7 @@ class TournamentController extends Controller
         $data['survival_game'] = $request->boolean('survival_game');
 
         Tournament::create($data);
-        return redirect()->route('admin.tournaments')->with('info', 'Turnyras sukurtas.');
+        return redirect()->route('admin.tournaments')->with('info', __('Turnyras sukurtas.'));
     }
 
     public function adminEdit(Tournament $tournament): View
@@ -185,12 +185,12 @@ class TournamentController extends Controller
         $data['survival_game'] = $request->boolean('survival_game');
 
         $tournament->update($data);
-        return redirect()->route('admin.tournaments')->with('info', 'Turnyras atnaujintas.');
+        return redirect()->route('admin.tournaments')->with('info', __('Turnyras atnaujintas.'));
     }
 
     public function adminEnterContext(Tournament $tournament): RedirectResponse
     {
         Session::put('tournamentID', $tournament->id);
-        return redirect()->route('admin.index')->with('info', 'Turnyro kontekstas: '.$tournament->name);
+        return redirect()->route('admin.index')->with('info', __('Turnyro kontekstas: :name', ['name' => $tournament->name]));
     }
 }

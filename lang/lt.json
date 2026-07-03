@@ -474,5 +474,12 @@
 
     "Pakartotinis slaptažodis": "Pakartotinis slaptažodis",
     "Svečias": "Svečias",
-    "Pridėti": "Pridėti"
+    "Pridėti": "Pridėti",
+
+    "Komanda atnaujinta": "Komanda atnaujinta",
+    "Turnyras sukurtas.": "Turnyras sukurtas.",
+    "Turnyras atnaujintas.": "Turnyras atnaujintas.",
+    "Vartotojo :username duomenys buvo atnaujinti.": "Vartotojo :username duomenys buvo atnaujinti.",
+    "Turnyro kontekstas: :name": "Turnyro kontekstas: :name",
+    "Nustatymas :id pakeistas": "Nustatymas :id pakeistas"
 }

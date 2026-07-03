@@ -30,7 +30,7 @@ class UserProfileController extends Controller
 
         $this->profileService->updateProfile($user, $request->only(['username', 'name', 'surname', 'email']));
 
-        return redirect()->route('userProfile')->with('info', 'Profilis atnaujintas.');
+        return redirect()->route('userProfile')->with('info', __('Profilis atnaujintas.'));
     }
 
     public function destroy(Request $request)
@@ -55,12 +55,12 @@ class UserProfileController extends Controller
         UserSetting::where('user_id', $user->id)->update([
             'receive_reminders' => $request->boolean('receive_reminders'),
         ]);
-        return redirect()->route('userProfile')->with('info', 'Pranešimų nustatymai atnaujinti.');
+        return redirect()->route('userProfile')->with('info', __('Pranešimų nustatymai atnaujinti.'));
     }
 
     public function unsubscribe(int $user): \Illuminate\Http\RedirectResponse
     {
         UserSetting::where('user_id', $user)->update(['receive_reminders' => false]);
-        return redirect('/')->with('info', 'Pranešimai išjungti sėkmingai.');
+        return redirect('/')->with('info', __('Pranešimai išjungti sėkmingai.'));
     }
 }

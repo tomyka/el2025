@@ -474,5 +474,12 @@
 
     "Pakartotinis slaptažodis": "Repeat password",
     "Svečias": "Guest",
-    "Pridėti": "Add"
+    "Pridėti": "Add",
+
+    "Komanda atnaujinta": "Team updated",
+    "Turnyras sukurtas.": "Tournament created.",
+    "Turnyras atnaujintas.": "Tournament updated.",
+    "Vartotojo :username duomenys buvo atnaujinti.": "User :username data has been updated.",
+    "Turnyro kontekstas: :name": "Tournament context: :name",
+    "Nustatymas :id pakeistas": "Setting :id changed"
 }
