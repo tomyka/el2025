@@ -130,8 +130,9 @@
 </div>
 
 <script>
+var atLabelEdit = @json(__('Redaguoti'));
 function atOpenModal(id, name, link, groupName) {
-    document.getElementById('atModalHeading').textContent = 'Redaguoti: ' + name;
+    document.getElementById('atModalHeading').textContent = atLabelEdit + ': ' + name;
     document.getElementById('atTeamID').value    = id;
     document.getElementById('atTeamName').value  = name;
     document.getElementById('atTeamLink').value  = link;
