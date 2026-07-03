@@ -3,8 +3,8 @@
     <form class="form-horizontal" role="form" method="post" action="profiles_post">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-3 col-xs-6 table-header" align="center">Grupė</div>
-                <div class="col-md-1 col-xs-6 table-header" align="center">Svečias</div>
+                <div class="col-md-3 col-xs-6 table-header" align="center">{{ __('Grupė') }}</div>
+                <div class="col-md-1 col-xs-6 table-header" align="center">{{ __('Svečias') }}</div>
             </div>
 
             @foreach($profiles as $profile)

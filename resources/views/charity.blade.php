@@ -4,33 +4,33 @@
 {{-- Hero --}}
 <div class="ch-hero mb-4">
     <div class="ch-hero-text">
-        <h1 class="ch-hero-title">Žaidžiame dėl gero tikslo</h1>
+        <h1 class="ch-hero-title">{{ __('Žaidžiame dėl gero tikslo') }}</h1>
         <p class="ch-hero-sub">
-            SportBet — tai ne tik futbolo prognozių žaidimas. Nuo 2018 metų žaidėjai
-            savanoriškai aukoja <strong>Jaunimo linijai</strong> — organizacijai,
-            teikiančiai nemokamą psichologinę pagalbą jaunimui visoje Lietuvoje.
+            {{ __('SportBet — tai ne tik futbolo prognozių žaidimas. Nuo 2018 metų žaidėjai savanoriškai aukoja') }}
+            <strong><a href="https://www.jaunimolinija.lt/" target="_blank" rel="noopener" class="ch-hero-link">{{ __('Jaunimo linijai') }}</a></strong> —
+            {{ __('organizacijai, teikiančiai nemokamą psichologinę pagalbą jaunimui visoje Lietuvoje.') }}
         </p>
         <div class="ch-stat-row">
             <div class="ch-stat">
                 <span class="ch-stat-value">7 500€</span>
-                <span class="ch-stat-label">paaukota iš viso</span>
+                <span class="ch-stat-label">{{ __('paaukota iš viso') }}</span>
             </div>
             <div class="ch-stat">
                 <span class="ch-stat-value">8+</span>
-                <span class="ch-stat-label">turnyrų</span>
+                <span class="ch-stat-label">{{ __('turnyrų') }}</span>
             </div>
             <div class="ch-stat">
                 <span class="ch-stat-value">2018</span>
-                <span class="ch-stat-label">pradėjome</span>
+                <span class="ch-stat-label">{{ __('pradėjome') }}</span>
             </div>
         </div>
         <a href="https://www.jaunimolinija.lt/" target="_blank" rel="noopener" class="ch-cta">
-            <i class="bi bi-heart-fill me-1"></i> Jaunimo linija &rarr;
+            <i class="bi bi-heart-fill me-1"></i> {{ __('Jaunimo linija') }} &rarr;
         </a>
     </div>
     <div class="ch-hero-img-wrap">
         <a href="https://www.jaunimolinija.lt/" target="_blank" rel="noopener">
-            <img src="{{ URL::to('img/JL_thank.png') }}" class="ch-hero-img" alt="Jaunimo linija — ačiū">
+            <img src="{{ URL::to('img/JL_thank.png') }}" class="ch-hero-img" alt="{{ __('Jaunimo linija — ačiū') }}">
         </a>
     </div>
 </div>
@@ -38,21 +38,19 @@
 {{-- About --}}
 <div class="sb-card mb-4">
     <p style="font-size:.93rem;line-height:1.7;margin:0;color:var(--sb-text)">
-        Noriu padėkoti visiems dalyvaujantiems ir skiriantiems lėšas labdarai.
-        Jūsų dėka JAU pavyko surinkti ir paaukoti Jaunimo Linijai <strong>7 500€</strong>.
-        Iki 2024 metų visą surinktą paramą dvigubino <strong>TransUnion Lithuania</strong> įmonė.
-        <strong>Ačiū, kad prisidedate prie gerų darbų!</strong>
+        {{ __('Noriu padėkoti visiems dalyvaujantiems ir skiriantiems lėšas labdarai. Jūsų dėka JAU pavyko surinkti ir paaukoti Jaunimo Linijai') }} <strong>7 500€</strong>.
+        {{ __('Iki 2024 metų visą surinktą paramą dvigubino') }} <strong>TransUnion Lithuania</strong> {{ __('įmonė.') }}
+        <strong>{{ __('Ačiū, kad prisidedate prie gerų darbų!') }}</strong>
     </p>
 </div>
 
 {{-- Payment evidence --}}
 <div class="sb-card">
     <div class="sb-card-title mb-3">
-        <i class="bi bi-receipt sb-card-icon"></i> Mokėjimų įrodymai
+        <i class="bi bi-receipt sb-card-icon"></i> {{ __('Mokėjimų įrodymai') }}
     </div>
     <p style="font-size:.83rem;color:var(--sb-muted);margin-bottom:20px">
-        Kiekvieno turnyro pabaigoje surinkta suma pervedama Jaunimo linijai. Žemiau — visi mokėjimų patvirtinimai.
-        Spustelėk nuotrauką, kad pamatytum detaliau.
+        {{ __('Kiekvieno turnyro pabaigoje surinkta suma pervedama Jaunimo linijai. Žemiau — visi mokėjimų patvirtinimai. Spustelėk nuotrauką, kad pamatytum detaliau.') }}
     </p>
 
     @php
@@ -75,7 +73,7 @@
         @foreach($payments as $p)
         <a href="{{ URL::to('img/' . $p['img']) }}" target="_blank" rel="noopener" class="ch-payment-card">
             <div class="ch-payment-label">{{ $p['label'] }}</div>
-            <img src="{{ URL::to('img/' . $p['img']) }}" alt="{{ $p['label'] }} mokėjimas" class="ch-payment-img">
+            <img src="{{ URL::to('img/' . $p['img']) }}" alt="{{ $p['label'] }} {{ __('mokėjimas') }}" class="ch-payment-img">
         </a>
         @endforeach
     </div>

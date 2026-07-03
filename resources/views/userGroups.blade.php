@@ -24,9 +24,9 @@
             @endif
 
             <div class="row">
-                <div class="col-md-3 col-xs-6 table-header" align="center">Grupė</div>
-                <div class="col-md-1 col-xs-6 table-header" align="center">Aktyvi</div>
-                <div class="col-md-1 col-xs-6 table-header" align="center">Svečias</div>
+                <div class="col-md-3 col-xs-6 table-header" align="center">{{ __('Grupė') }}</div>
+                <div class="col-md-1 col-xs-6 table-header" align="center">{{ __('Aktyvi') }}</div>
+                <div class="col-md-1 col-xs-6 table-header" align="center">{{ __('Svečias') }}</div>
             </div>
 
             @foreach($userGroups as $userGroup)
@@ -46,8 +46,8 @@
                         </div>
                     </div>
                     <div class="col-md-2 col-xs-6" align="center" id="tableCellBorderLess">
-                        <input type="Submit" class="btn btn-sm btn-outline-primary" name="update" value="Atnaujinti" formaction="{{route('updateUserGroup')}}">
-                        <input type="Submit" class="btn btn-sm btn-outline-primary" name="delete" value="Ištrinti" formaction="{{route('deleteUserGroup')}}">
+                        <input type="Submit" class="btn btn-sm btn-outline-primary" name="update" value="{{ __('Atnaujinti') }}" formaction="{{route('updateUserGroup')}}">
+                        <input type="Submit" class="btn btn-sm btn-outline-primary" name="delete" value="{{ __('Ištrinti') }}" formaction="{{route('deleteUserGroup')}}">
                     </div>
                 </div>
                 </form>
@@ -81,7 +81,7 @@
                         </fieldset>
                     </div>
 
-                    <div class="col-md-2 col-xs-1" align="center" id="tableCellBorderLess"><input name="insert" class="btn btn-sm btn-primary" type="Submit" value="Pridėti" formaction="{{route('insertUserGroup')}}"></div>
+                    <div class="col-md-2 col-xs-1" align="center" id="tableCellBorderLess"><input name="insert" class="btn btn-sm btn-primary" type="Submit" value="{{ __('Pridėti') }}" formaction="{{route('insertUserGroup')}}"></div>
                 </div>
                 </form>
                 @endif
