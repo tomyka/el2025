@@ -23,11 +23,11 @@
                     <td align="center"><a href="#" title="" data-container="body" data-toggle="popover" data-html="true" data-trigger="hover" data-placement="bottom" data-content="
                            <div class='row'>
                                 <div class='col col-9 col-md-9'>
-                                    <div>Pirmos grupės vietos:</div>
-                                    <div>Patekimas į antrą grupę:</div>
-                                    <div>Antros grupės vietos:</div>
-                                    <div>Patekimas į ketvirtfinalį:</div>
-                                    <div>Finalas:</div>
+                                    <div>{{ __('Pirmos grupės vietos:') }}</div>
+                                    <div>{{ __('Patekimas į antrą grupę:') }}</div>
+                                    <div>{{ __('Antros grupės vietos:') }}</div>
+                                    <div>{{ __('Patekimas į ketvirtfinalį:') }}</div>
+                                    <div>{{ __('Finalas:') }}</div>
                                 </div>
                                 <div class='col col-3 col-md-3'>
                                     <div align='right'><strong>{{$point['tablePoints']->firstRoundGroupPoints}}</strong></div>
@@ -36,7 +36,7 @@
                                     <div align='right'><strong>{{$point['tablePoints']->quarterfinalPoints}}</strong></div>
                                     <div align='right'><strong>{{$point['tablePoints']->finalPoints}}</strong></div>
                                 </div>
-                           </div>" data-original-title="Eigos taškai">{{$point['tablePoints']->totalPoints}}</a></td>
+                           </div>" data-original-title="{{ __('Eigos taškai') }}">{{$point['tablePoints']->totalPoints}}</a></td>
                     <td align="center">{{$point['userGamePoints']+$point['tablePoints']->totalPoints}}</td>
                 </tr>
 
