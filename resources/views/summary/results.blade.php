@@ -57,7 +57,7 @@ $openInit = $grouped->mapWithKeys(
         <table class="sr-table">
             <thead>
                 <tr>
-                    <th class="sr-sticky-col sr-hdr-game">Rungtynės</th>
+                    <th class="sr-sticky-col sr-hdr-game">{{ __('Rungtynės') }}</th>
                     @foreach($users as $username)
                     <th class="sr-hdr-user {{ $username === $myUsername ? 'sr-my-col' : '' }}" title="{{ $username }}">
                         <div class="sr-user-avatar {{ $username === $myUsername ? 'sr-my-avatar' : '' }}">{{ strtoupper(substr($username, 0, 1)) }}</div>
@@ -130,10 +130,10 @@ $openInit = $grouped->mapWithKeys(
                            data-bs-placement="top"
                            title="{{ $username }}"
                            data-bs-content="<div class='sr-pop'>
-                             <div class='sr-pop-row'><span>Nugalėtojas</span><strong>{{ number_format($pred->winner_points,1) }}</strong></div>
-                             <div class='sr-pop-row'><span>Skirtumas</span><strong>{{ number_format($pred->difference_points,1) }}</strong></div>
-                             <div class='sr-pop-row'><span>Tikslus</span><strong>{{ number_format($pred->bingo_points,1) }}</strong></div>
-                             <div class='sr-pop-row'><span>Serija</span><strong>@if(($pred->streak_bonus??0)>0)+@endif{{ number_format($pred->streak_bonus??0,1) }}</strong></div>
+                             <div class='sr-pop-row'><span>{{ __('Nugalėtojas') }}</span><strong>{{ number_format($pred->winner_points,1) }}</strong></div>
+                             <div class='sr-pop-row'><span>{{ __('Skirtumas') }}</span><strong>{{ number_format($pred->difference_points,1) }}</strong></div>
+                             <div class='sr-pop-row'><span>{{ __('Tikslus') }}</span><strong>{{ number_format($pred->bingo_points,1) }}</strong></div>
+                             <div class='sr-pop-row'><span>{{ __('Serija') }}</span><strong>@if(($pred->streak_bonus??0)>0)+@endif{{ number_format($pred->streak_bonus??0,1) }}</strong></div>
                            </div>">{{ number_format($pred->full_points + ($pred->streak_bonus ?? 0), 1) }}</a>
                         @endif
                         @if($hasPred)
@@ -152,7 +152,7 @@ $openInit = $grouped->mapWithKeys(
             </tbody>
             <tfoot>
                 <tr class="sr-grand-total">
-                    <td class="sr-sticky-col">Viso</td>
+                    <td class="sr-sticky-col">{{ __('Viso') }}</td>
                     @foreach($users as $username)
                     <td class="{{ $username === $myUsername ? 'sr-my-col' : '' }}">{{ ($grandTotals[$username] ?? 0) > 0 ? number_format($grandTotals[$username], 1) : '' }}</td>
                     @endforeach

@@ -22,11 +22,11 @@
         <div class="ps-groups-grid">
             @foreach ($grouped as $groupName => $teams)
             <div class="ps-group-card">
-                <div class="ps-group-title">Grupė {{ $groupName }}</div>
+                <div class="ps-group-title">{{ __('Grupė') }} {{ $groupName }}</div>
 
                 <div class="ps-group-row ps-group-header-row">
                     <span></span>
-                    <span class="text-center">Vieta</span>
+                    <span class="text-center">{{ __('Vieta') }}</span>
                     <span class="text-center d-none d-sm-block">1/16</span>
                     <span class="text-center d-sm-none">16</span>
                     <span class="text-center d-none d-sm-block">1/8</span>
@@ -88,9 +88,9 @@
         </div>
 
         <div class="ps-legend mt-3">
-            <p><strong>Vieta</strong> — vieta grupėje (1–4).</p>
-            <p><strong>1/16 – 1/2</strong> — pažymėkite komandas, patenkančias į kiekvieną etapą.</p>
-            <p><strong>F</strong> — galutinė vieta finalo etape (1–4).</p>
+            <p><strong>{{ __('Vieta') }}</strong> — {{ __('vieta grupėje (1–4).') }}</p>
+            <p><strong>1/16 – 1/2</strong> — {{ __('pažymėkite komandas, patenkančias į kiekvieną etapą.') }}</p>
+            <p><strong>F</strong> — {{ __('galutinė vieta finalo etape (1–4).') }}</p>
         </div>
 
         <div id="ps-progress" class="mt-3 d-flex flex-wrap gap-2">

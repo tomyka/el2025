@@ -16,12 +16,12 @@
     if (!function_exists('sstPopover')) {
         function sstPopover(object $ps): string {
             $stageDefs = [
-                ['label' => 'Grupių etapas',    'pts' => 'group_position_points', 'odds' => 'group_position_odds'],
-                ['label' => 'Šešioliktfinalis', 'pts' => 'last32_points',         'odds' => 'last32_odds'],
-                ['label' => 'Aštuntfinalis',    'pts' => 'last16_points',         'odds' => 'last16_odds'],
-                ['label' => 'Ketvirtfinalis',   'pts' => 'quarterfinal_points',   'odds' => 'quarterfinal_odds'],
-                ['label' => 'Pusfinalis',       'pts' => 'semifinal_points',      'odds' => 'semifinal_odds'],
-                ['label' => 'Finalas',          'pts' => 'final_points',          'odds' => 'final_odds'],
+                ['label' => __('Grupių etapas'),    'pts' => 'group_position_points', 'odds' => 'group_position_odds'],
+                ['label' => __('Šešioliktfinalis'), 'pts' => 'last32_points',         'odds' => 'last32_odds'],
+                ['label' => __('Aštuntfinalis'),    'pts' => 'last16_points',         'odds' => 'last16_odds'],
+                ['label' => __('Ketvirtfinalis'),   'pts' => 'quarterfinal_points',   'odds' => 'quarterfinal_odds'],
+                ['label' => __('Pusfinalis'),       'pts' => 'semifinal_points',      'odds' => 'semifinal_odds'],
+                ['label' => __('Finalas'),          'pts' => 'final_points',          'odds' => 'final_odds'],
             ];
             $rows = '';
             foreach ($stageDefs as $s) {
@@ -32,8 +32,8 @@
                 if ($odVal !== null) {
                     $base = round($ptVal / (1 + $odVal), 1);
                     $mult = round(1 + $odVal, 2);
-                    $rows .= "<div class='sr-pop-row sr-pop-sub'><span>Spėjimo taškai</span><strong>" . number_format($base, 1) . "</strong></div>"
-                           . "<div class='sr-pop-row sr-pop-sub'><span>Koeficientas</span><strong>×" . number_format($mult, 2) . "</strong></div>";
+                    $rows .= "<div class='sr-pop-row sr-pop-sub'><span>" . __('Spėjimo taškai') . "</span><strong>" . number_format($base, 1) . "</strong></div>"
+                           . "<div class='sr-pop-row sr-pop-sub'><span>" . __('Koeficientas') . "</span><strong>×" . number_format($mult, 2) . "</strong></div>";
                 }
             }
             return $rows ? "<div class='sr-pop sr-pop-sm'>{$rows}</div>" : '';
@@ -59,18 +59,18 @@
     {{-- Legend --}}
     <div class="sst-legend">
         <div class="sst-legend-colors">
-            <span class="sst-badge sst-hit">2</span> Pataikyta
-            <span class="sst-badge sst-miss">2</span> Praleista
-            <span class="sst-badge sst-pending">2</span> Laukiama
-            <span class="sst-badge sst-none">2</span> Nespėta
+            <span class="sst-badge sst-hit">2</span> {{ __('Pataikyta') }}
+            <span class="sst-badge sst-miss">2</span> {{ __('Praleista') }}
+            <span class="sst-badge sst-pending">2</span> {{ __('Laukiama') }}
+            <span class="sst-badge sst-none">2</span> {{ __('Nespėta') }}
         </div>
         <div class="sst-legend-stages">
-            <span class="sst-stage-lbl">G</span>Grupė
+            <span class="sst-stage-lbl">G</span>{{ __('Grupė') }}
             <span class="sst-stage-lbl">32</span>1/16
             <span class="sst-stage-lbl">16</span>1/8
             <span class="sst-stage-lbl">QF</span>1/4
             <span class="sst-stage-lbl">SF</span>1/2
-            <span class="sst-stage-lbl">F</span>Finalas
+            <span class="sst-stage-lbl">F</span>{{ __('Finalas') }}
         </div>
     </div>
 
@@ -78,7 +78,7 @@
         <table class="sst-table">
             <thead>
                 <tr class="sst-head-row">
-                    <th class="sst-team-hdr">Komanda</th>
+                    <th class="sst-team-hdr">{{ __('Komanda') }}</th>
                     @foreach($players as $player)
                     <th class="sst-player-hdr">{{ $player }}</th>
                     @endforeach
@@ -88,7 +88,7 @@
                 @foreach($teamGroups as $groupName => $groupTeams)
                 @if($groupName)
                 <tr class="sst-group-row">
-                    <td colspan="{{ count($players) + 1 }}">Grupė {{ $groupName }}</td>
+                    <td colspan="{{ count($players) + 1 }}">{{ __('Grupė') }} {{ $groupName }}</td>
                 </tr>
                 @endif
                 @foreach($groupTeams as $team)
@@ -112,7 +112,7 @@
                         <div class="sst-badges">
                             {{-- Group position --}}
                             <span class="sst-badge sst-pos {{ $cmpClass($ps->group_position, $team->group_position) }}"
-                                  title="Grupės vieta: spėta {{ $ps->group_position ?? '—' }}">{{ $ps->group_position ?? '—' }}</span>
+                                  title="{{ __('Grupės vieta: spėta') }} {{ $ps->group_position ?? '—' }}">{{ $ps->group_position ?? '—' }}</span>
                             {{-- Knockout rounds --}}
                             <span class="sst-badge {{ $advClass($ps->last32, $team->last32) }}"
                                   title="1/16">{{ $ps->last32 ? '✓' : '—' }}</span>
@@ -124,7 +124,7 @@
                                   title="1/2">{{ $ps->semifinal ? '✓' : '—' }}</span>
                             {{-- Final position --}}
                             <span class="sst-badge sst-fin {{ $cmpClass($ps->final, $team->final) }}"
-                                  title="Finalas: spėta {{ $ps->final ?? '—' }}">{{ $ps->final ?? '—' }}</span>
+                                  title="{{ __('Finalas: spėta') }} {{ $ps->final ?? '—' }}">{{ $ps->final ?? '—' }}</span>
                         </div>
                         @if($totalPts > 0)
                         <div class="sst-pts {{ $pop ? 'pst-hoverable' : '' }}"

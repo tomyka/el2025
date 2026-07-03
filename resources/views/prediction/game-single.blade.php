@@ -10,7 +10,7 @@
 
 <div class="sb-card">
     <div class="sb-card-title">
-        <i class="bi bi-pencil-square me-1"></i>Spėjimas
+        <i class="bi bi-pencil-square me-1"></i>{{ __('Spėjimas') }}
     </div>
 
     {{-- Teams --}}
@@ -36,12 +36,12 @@
 
     @if($locked)
         <div class="alert alert-secondary text-center">
-            <i class="bi bi-lock-fill me-1"></i>Žaidimas jau prasidėjo — spėjimų keisti negalima.
+            <i class="bi bi-lock-fill me-1"></i>{{ __('Žaidimas jau prasidėjo — spėjimų keisti negalima.') }}
         </div>
         @if($prediction && $prediction->home_team_score !== null)
         <div class="text-center mt-3">
             <span class="fs-3 fw-bold">{{ $prediction->home_team_score }} : {{ $prediction->away_team_score }}</span>
-            <div class="text-muted mt-1" style="font-size:.82rem">Jūsų spėjimas</div>
+            <div class="text-muted mt-1" style="font-size:.82rem">{{ __('Jūsų spėjimas') }}</div>
         </div>
         @endif
     @elseif($prediction)
@@ -66,7 +66,7 @@
             </div>
             <div class="text-center">
                 <button type="submit" id="sg-btn" class="btn btn-primary px-5">
-                    <i class="bi bi-check2 me-1"></i>Išsaugoti spėjimą
+                    <i class="bi bi-check2 me-1"></i>{{ __('Išsaugoti spėjimą') }}
                 </button>
             </div>
         </form>
@@ -96,7 +96,7 @@
         </script>
     @else
         <div class="alert alert-warning text-center">
-            Spėjimas nerastas. Bandykite dar kartą nuo <a href="{{ route('main') }}">pagrindinio puslapio</a>.
+            {{ __('Spėjimas nerastas. Bandykite dar kartą nuo') }} <a href="{{ route('main') }}">{{ __('pagrindinio puslapio') }}</a>.
         </div>
     @endif
 </div>

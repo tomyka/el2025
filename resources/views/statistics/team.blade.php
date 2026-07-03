@@ -11,9 +11,9 @@
     <div class="col col-md-3">
         <table class="table table-md">
             <tr class="table-secondary">
-                <td align="center">Žaista</td>
-                <td align="center">Laimėta</td>
-                <td align="center">Pralaimėta</td>
+                <td align="center">{{ __('Žaista') }}</td>
+                <td align="center">{{ __('Laimėta') }}</td>
+                <td align="center">{{ __('Pralaimėta') }}</td>
             </tr>
 
                 <tr>
@@ -28,8 +28,8 @@
     <div class="col col-md-2">
         <table class="table table-md">
             <tr class="table-secondary">
-                <td align="center">Įmesta</td>
-                <td align="center">Praleista</td>
+                <td align="center">{{ __('Įmesta') }}</td>
+                <td align="center">{{ __('Praleista') }}</td>
             </tr>
 
             <tr>

@@ -5,9 +5,9 @@
         <div class="col-md-3 col-xs-6">
             <table class="table table-nonfluid">
                 <tr>
-                    <th class="th-small">Skirtumas</th>
-                    <th class="th-small">Faktas</th>
-                    <th class="th-small">Spėjimas</th>
+                    <th class="th-small">{{ __('Skirtumas') }}</th>
+                    <th class="th-small">{{ __('Faktas') }}</th>
+                    <th class="th-small">{{ __('Spėjimas') }}</th>
                 </tr>
 
                 @foreach($predictionStatistics as $predictionStatistic)
@@ -22,13 +22,13 @@
             </table>
         </div>
         <div class="col-md-9 col-xs-6">
-            Paaiškinimas:
+            {{ __('Paaiškinimas:') }}
             <BR>
-            Skirtumas - rungtynių baigties skirtumas
+            {{ __('Skirtumas - rungtynių baigties skirtumas') }}
             <BR>
-            Faktas - kiek rungtynių realiai baigėsi tokiu skirtumu
+            {{ __('Faktas - kiek rungtynių realiai baigėsi tokiu skirtumu') }}
             <BR>
-            Spėjimas - kiek bendrai buvo spėjimų, kad rungtynės baigsis tokiu skirtumu.
+            {{ __('Spėjimas - kiek bendrai buvo spėjimų, kad rungtynės baigsis tokiu skirtumu.') }}
         </div>
 
 

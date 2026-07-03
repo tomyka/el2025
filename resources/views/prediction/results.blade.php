@@ -7,7 +7,7 @@
         <select class="form-select form-select-sm"
                 style="width:auto;font-size:.78rem;border-radius:8px;border-color:var(--sb-border);"
                 onchange="window.location='{{ route('prediction.results') }}' + (this.value ? '?event=' + this.value : '')">
-            <option value="" {{ $selectedEvent == 0 ? 'selected' : '' }}>Visi etapai</option>
+            <option value="" {{ $selectedEvent == 0 ? 'selected' : '' }}>{{ __('Visi etapai') }}</option>
             @foreach($events as $id => $name)
             <option value="{{ $id }}" {{ $selectedEvent == $id ? 'selected' : '' }}>{{ $name }}</option>
             @endforeach
@@ -15,7 +15,7 @@
     </div>
     @endif
     @if($groupedResults->isEmpty())
-        <p class="text-center text-muted py-4">Nėra rungtynių.</p>
+        <p class="text-center text-muted py-4">{{ __('Nėra rungtynių.') }}</p>
     @else
     <div class="pred-page">
         @foreach($groupedResults as $eventDay => $groupGroups)
@@ -40,10 +40,10 @@
                         $popContent = '';
                         if ($hasResult && $totalPts > 0) {
                             $popContent = "<div class='sr-pop'>"
-                                . "<div class='sr-pop-row'><span>Nugalėtojas</span><strong>" . number_format($game->winner_points, 1) . "</strong></div>"
-                                . "<div class='sr-pop-row'><span>Skirtumas</span><strong>" . number_format($game->difference_points, 1) . "</strong></div>"
-                                . "<div class='sr-pop-row'><span>Tikslus</span><strong>" . number_format($game->bingo_points, 1) . "</strong></div>"
-                                . ($streak > 0 ? "<div class='sr-pop-row'><span>Serija</span><strong>+" . number_format($streak, 1) . "</strong></div>" : "")
+                                . "<div class='sr-pop-row'><span>" . __('Nugalėtojas') . "</span><strong>" . number_format($game->winner_points, 1) . "</strong></div>"
+                                . "<div class='sr-pop-row'><span>" . __('Skirtumas') . "</span><strong>" . number_format($game->difference_points, 1) . "</strong></div>"
+                                . "<div class='sr-pop-row'><span>" . __('Tikslus') . "</span><strong>" . number_format($game->bingo_points, 1) . "</strong></div>"
+                                . ($streak > 0 ? "<div class='sr-pop-row'><span>" . __('Serija') . "</span><strong>+" . number_format($streak, 1) . "</strong></div>" : "")
                                 . "</div>";
                         }
                     @endphp
@@ -148,7 +148,7 @@
                             <span class="pred-odds-pts">+{{ number_format($homeWinPts, 1) }} pt</span>
                         </div>
                         <div class="pred-odds-col">
-                            <span class="pred-odds-label">Lygiosios</span>
+                            <span class="pred-odds-label">{{ __('Lygiosios') }}</span>
                             <span class="pred-odds-pts">+{{ number_format($drawPts, 1) }} pt</span>
                         </div>
                         <div class="pred-odds-col">

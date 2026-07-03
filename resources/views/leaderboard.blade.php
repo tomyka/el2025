@@ -3,12 +3,11 @@
 
 <div class="sb-card mb-4">
     <div class="sb-card-title">
-        <i class="bi bi-trophy-fill sb-card-icon" style="color:#f59e0b"></i> Lyderių lentelė
+        <i class="bi bi-trophy-fill sb-card-icon" style="color:#f59e0b"></i> {{ __('Lyderių lentelė') }}
     </div>
     <p class="text-muted mb-4" style="font-size:.88rem">
-        Bendras visų turnyrų taškų suvestinė. Žaidžiame nuo 2016 metų —
-        kiekvienas turnyras prideda naujų iššūkių ir intrigų.
-        <a href="{{ route('leaderboard') }}" style="color:var(--sb-accent)">Prisijunk</a> ir išbandyk save.
+        {{ __('Žaidžiame nuo 2016 metų — kiekvienas turnyras prideda naujų iššūkių ir intrigų.') }}
+        <a href="{{ route('leaderboard') }}" style="color:var(--sb-accent)">{{ __('Prisijunk') }}</a> {{ __('ir išbandyk save.') }}
     </p>
 
     <div class="table-responsive">
@@ -16,11 +15,11 @@
             <thead class="table-light">
                 <tr>
                     <th style="width:48px">#</th>
-                    <th>Žaidėjas</th>
-                    <th class="text-end">Taškai</th>
-                    <th class="text-end d-none d-sm-table-cell">Tikslūs</th>
-                    <th class="text-end d-none d-md-table-cell">Nugalėtojai</th>
-                    <th class="text-end d-none d-md-table-cell">Žaidimai</th>
+                    <th>{{ __('Žaidėjas') }}</th>
+                    <th class="text-end">{{ __('Taškai') }}</th>
+                    <th class="text-end d-none d-sm-table-cell">{{ __('Tikslūs') }}</th>
+                    <th class="text-end d-none d-md-table-cell">{{ __('Nugalėtojai') }}</th>
+                    <th class="text-end d-none d-md-table-cell">{{ __('Žaidimai') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -54,18 +53,17 @@
     <div class="sb-charity-card-inner">
         <div class="sb-charity-icon">♥</div>
         <div class="sb-charity-body">
-            <h3 class="sb-charity-title">Žaidžiame dėl gero tikslo</h3>
+            <h3 class="sb-charity-title">{{ __('Žaidžiame dėl gero tikslo') }}</h3>
             <p class="sb-charity-text">
-                SportBet — tai ne tik futbolo prognozių žaidimas. Nuo 2018 metų žaidėjai savanoriškai
-                aukoja Jaunimo linijai, teikiančiai psichologinę pagalbą jaunimui visoje Lietuvoje.
+                {{ __('SportBet — tai ne tik futbolo prognozių žaidimas. Nuo 2018 metų žaidėjai savanoriškai aukoja Jaunimo linijai, teikiančiai psichologinę pagalbą jaunimui visoje Lietuvoje.') }}
             </p>
             <a href="{{ route('charity') }}" class="sb-charity-link">
-                Sužinoti daugiau apie labdarą <i class="bi bi-arrow-right-short"></i>
+                {{ __('Sužinoti daugiau apie labdarą') }} <i class="bi bi-arrow-right-short"></i>
             </a>
         </div>
         <div class="sb-charity-stat-box">
             <span class="sb-charity-amount">7 500€</span>
-            <span class="sb-charity-stat-label">paaukota nuo 2018 m.</span>
+            <span class="sb-charity-stat-label">{{ __('paaukota nuo 2018 m.') }}</span>
         </div>
     </div>
 </div>

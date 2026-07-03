@@ -4,8 +4,8 @@
 
 <div class="sb-card p-0">
     <div class="ch-header">
-        <span class="ch-title">Taškų dinamika</span>
-        <span class="ch-meta">{{ $gameCount }} {{ $gameCount === 1 ? 'rungtynės' : 'rungtynių' }}</span>
+        <span class="ch-title">{{ __('Taškų dinamika') }}</span>
+        <span class="ch-meta">{{ $gameCount }} {{ $gameCount === 1 ? __('rungtynės') : __('rungtynių') }}</span>
     </div>
     <div class="ch-wrap">
         <canvas id="trend-chart"></canvas>

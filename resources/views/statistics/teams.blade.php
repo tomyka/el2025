@@ -3,13 +3,13 @@
 
     <table class="table table-nonfluid">
         <tr>
-            <th class="th-small">Komanda</th>
-            <th class="th-small">Viso uždirbta taškų</th>
-            <th class="th-small">Už atspėtą nugalėtoją</th>
-            <th class="th-small">Neatspėta baigtis</th>
-            <th class="th-small">Atspėta baigtis</th>
-            <th class="th-small">Atspėta, kad laimės</th>
-            <th class="th-small">Atspėta, kad pralaimės</th>
+            <th class="th-small">{{ __('Komanda') }}</th>
+            <th class="th-small">{{ __('Viso uždirbta taškų') }}</th>
+            <th class="th-small">{{ __('Už atspėtą nugalėtoją') }}</th>
+            <th class="th-small">{{ __('Neatspėta baigtis') }}</th>
+            <th class="th-small">{{ __('Atspėta baigtis') }}</th>
+            <th class="th-small">{{ __('Atspėta, kad laimės') }}</th>
+            <th class="th-small">{{ __('Atspėta, kad pralaimės') }}</th>
         </tr>
 
         @foreach($teamStatistics as $teamStatistic)

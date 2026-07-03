@@ -43,7 +43,7 @@
     </div>
 </div>
 
-<div class="cmp-section-title">Bendri statistikos</div>
+<div class="cmp-section-title">{{ __('Bendri statistikos') }}</div>
 <div class="cmp-stats-table">
     <div class="cmp-stats-row cmp-stats-header">
         <span class="cmp-stats-me">{{ $myData['username'] }}</span>
@@ -53,11 +53,11 @@
 
     @php
         $statRows = [
-            ['label' => 'Rungtynių taškai',       'my' => $myData['userGamePoints'],              'their' => $theirData['userGamePoints'],              'fmt' => '1'],
-            ['label' => 'Eigos taškai',            'my' => $myData['standingPoints']->total_points,'their' => $theirData['standingPoints']->total_points,'fmt' => '1'],
-            ['label' => 'Išlikimo taškai',         'my' => $myData['survivalPoints'],               'their' => $theirData['survivalPoints'],               'fmt' => '0', 'hide_if_zero' => true],
-            ['label' => 'Serija',                  'my' => $myData['userStreakPoints'] ?? 0,         'their' => $theirData['userStreakPoints'] ?? 0,         'fmt' => '1'],
-            ['label' => 'Bingo',                   'my' => $myData['userGameBingo'],                'their' => $theirData['userGameBingo'],                'fmt' => '0'],
+            ['label' => __('Rungtynių taškai'),       'my' => $myData['userGamePoints'],              'their' => $theirData['userGamePoints'],              'fmt' => '1'],
+            ['label' => __('Eigos taškai'),            'my' => $myData['standingPoints']->total_points,'their' => $theirData['standingPoints']->total_points,'fmt' => '1'],
+            ['label' => __('Išlikimo taškai'),         'my' => $myData['survivalPoints'],               'their' => $theirData['survivalPoints'],               'fmt' => '0', 'hide_if_zero' => true],
+            ['label' => __('Serija'),                  'my' => $myData['userStreakPoints'] ?? 0,         'their' => $theirData['userStreakPoints'] ?? 0,         'fmt' => '1'],
+            ['label' => __('Bingo'),                   'my' => $myData['userGameBingo'],                'their' => $theirData['userGameBingo'],                'fmt' => '0'],
         ];
     @endphp
 
@@ -78,11 +78,11 @@
 </div>
 
 @if(count($rounds) > 0)
-<div class="cmp-section-title">Etapai</div>
+<div class="cmp-section-title">{{ __('Etapai') }}</div>
 <div class="cmp-rounds-table">
     <div class="cmp-round-row cmp-round-header">
         <span class="cmp-round-me">{{ $myData['username'] }}</span>
-        <span class="cmp-round-name">Etapas</span>
+        <span class="cmp-round-name">{{ __('Etapas') }}</span>
         <span class="cmp-round-them">{{ $theirData['username'] }}</span>
     </div>
     @foreach($rounds as $r)

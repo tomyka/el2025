@@ -6,7 +6,7 @@
 <div class="table-responsive">
     <table class="table table-sm table-bordered table-hover mb-0">
         <tr class="align-middle">
-            <th class="table-primary">Rungtynės</th>
+            <th class="table-primary">{{ __('Rungtynės') }}</th>
             @foreach($predictionResults as $predictionResult)
                 @if($predictionResult->gameID==1)
                     <th class="table-primary text-center" style="white-space: nowrap;"><strong>{{$predictionResult->username}}</strong></th>
@@ -46,7 +46,7 @@
                                     <div align='right'><strong>{{number_format($predictionResult->odds,2)}}</strong></div>
                                     <div align='right'><strong>{{number_format($predictionResult->oddsPoints,2)}}</strong></div>
                                   </div>
-                           </div>" data-bs-original-title="Rungtynių taškai">{{$predictionResult->fullPoints}}</a>
+                           </div>" data-bs-original-title="{{ __('Rungtynių taškai') }}">{{$predictionResult->fullPoints}}</a>
                             </div>
                             <div>
                                 {{$predictionResult->homeScore}}:{{$predictionResult->awayScore}}

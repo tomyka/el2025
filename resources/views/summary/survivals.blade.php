@@ -4,9 +4,9 @@
                 <table class="table table-sm table-hover table-bordered">
                     <thead>
                         <tr class="table-dark">
-                            <td class="text-center">Dalyvis</td>
+                            <td class="text-center">{{ __('Dalyvis') }}</td>
                             @foreach($events as $event)
-                                    <td class="table-dark text-center">{{$event->id}} turas</td>
+                                    <td class="table-dark text-center">{{$event->id}} {{ __('turas') }}</td>
                             @endforeach
                         </tr>
                     </thead>

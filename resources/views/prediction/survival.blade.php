@@ -29,8 +29,8 @@
                 <table class="table table-sm">
                     <thead>
                         <tr class="table-dark">
-                            <td class="text-center">Komanda</td>
-                            <td class="text-center">{{session('eventID')}} turas</td>
+                            <td class="text-center">{{ __('Komanda') }}</td>
+                            <td class="text-center">{{session('eventID')}} {{ __('turas') }}</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,19 +53,19 @@
                 </table>
             </div>
             <div class="col-md-8 col-12">
-                <p><strong>Taisyklės:</strong></p>
-                <p>Kiekvieną turą pasirenkate komandą, kuri, jūsų nuomone laimės turo rungtynes. Jei jūsų pasirinkta komanda pralaimi - žaidimą pradedate iš naujo. Jei jūsų pasirinkta komanda laimi - žaidžiate toliau.</p>
-                <p>Tęsiant Išlikimo žaidimą tos pačios komandos rinktis daugiau nebegalima, todėl komandą kiekvienam turui rinkitės atidžiai.</p>
-                <p>Komandos pasirinkimą galima keisti iki tos komandos rungtynių pradžios. Rungtynėms prasidėjus nebegalima rinktis jose dalyvaujančių komandų, kaip ir negalima pakeisti tose rungtynėse dalyvaujančios pasirinktos komandos.</p>
-                <p>Taškai skaičiuojami taip:<strong style="color: #DF4400">10*(iš eilės atspėtų turų) taškų.</strong>. Pvz., jei atspėjate nugalėtoją 4 turus iš eilės, gausite 10+20+30+40 taškų už kiekvieną iš eilės atspėtą turą. Kuo ilgiau spėjate teisingai - tuo daugiau taškų gaunate.</p>
-                <p>Išlikimo žaidimai tęsis iki reguliariojo sezono pabaigos, t.y. suklydus spėjant nugalėtoją, nuo kito turo automatiškai pradėsite žaidimą iš naujo.</p>
+                <p><strong>{{ __('Taisyklės') }}:</strong></p>
+                <p>{{ __('Kiekvieną turą pasirenkate komandą, kuri, jūsų nuomone laimės turo rungtynes. Jei jūsų pasirinkta komanda pralaimi - žaidimą pradedate iš naujo. Jei jūsų pasirinkta komanda laimi - žaidžiate toliau.') }}</p>
+                <p>{{ __('Tęsiant Išlikimo žaidimą tos pačios komandos rinktis daugiau nebegalima, todėl komandą kiekvienam turui rinkitės atidžiai.') }}</p>
+                <p>{{ __('Komandos pasirinkimą galima keisti iki tos komandos rungtynių pradžios. Rungtynėms prasidėjus nebegalima rinktis jose dalyvaujančių komandų, kaip ir negalima pakeisti tose rungtynėse dalyvaujančios pasirinktos komandos.') }}</p>
+                <p>{{ __('Taškai skaičiuojami taip:') }}<strong style="color: #DF4400">10*({{ __('iš eilės atspėtų turų') }}) {{ __('taškų') }}.</strong>. {{ __('Pvz., jei atspėjate nugalėtoją 4 turus iš eilės, gausite 10+20+30+40 taškų už kiekvieną iš eilės atspėtą turą. Kuo ilgiau spėjate teisingai - tuo daugiau taškų gaunate.') }}</p>
+                <p>{{ __('Išlikimo žaidimai tęsis iki reguliariojo sezono pabaigos, t.y. suklydus spėjant nugalėtoją, nuo kito turo automatiškai pradėsite žaidimą iš naujo.') }}</p>
             </div>
         </div>
     </div>
 @else
     <div class="row">
         <div class="col-md-12">
-            <p>Išlikimo žaidimas baigėsi.</p>
+            <p>{{ __('Išlikimo žaidimas baigėsi.') }}</p>
         </div>
     </div>
 @endif
