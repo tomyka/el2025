@@ -55,7 +55,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h6 class="modal-title fw-semibold">Žaidėjų palyginimas</h6>
+                <h6 class="modal-title fw-semibold">{{ __('Žaidėjų palyginimas') }}</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="cmpModalBody">
@@ -81,7 +81,7 @@ document.addEventListener('click', function (e) {
     fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
         .then(function (r) { return r.text(); })
         .then(function (html) { body.innerHTML = html; })
-        .catch(function () { body.innerHTML = '<p class="text-danger text-center py-3">Klaida. Bandykite dar kartą.</p>'; });
+        .catch(function () { body.innerHTML = '<p class="text-danger text-center py-3">{{ __('Klaida. Bandykite dar kartą.') }}</p>'; });
 }, true);
 </script>
 
