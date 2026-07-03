@@ -3,7 +3,7 @@
 
 <div class="sb-card">
     <div class="sb-card-title d-flex align-items-center gap-2">
-        <i class="bi bi-people-fill sb-card-icon"></i> Vartotojai
+        <i class="bi bi-people-fill sb-card-icon"></i> {{ __('Vartotojai') }}
         <span class="badge bg-secondary fw-normal">{{ count($users) }}</span>
     </div>
 
@@ -24,8 +24,8 @@
             <thead class="table-light">
                 <tr>
                     <th class="au-col-id">#</th>
-                    <th>Vartotojas</th>
-                    <th class="d-none d-md-table-cell">El. paštas</th>
+                    <th>{{ __('Vartotojas') }}</th>
+                    <th class="d-none d-md-table-cell">{{ __('El. paštas') }}</th>
                     <th class="d-none d-lg-table-cell au-col-auth">Auth</th>
                     <th class="au-col-admin">Admin</th>
                     <th class="au-col-actions"></th>
@@ -47,7 +47,7 @@
                                 <div class="au-username">
                                     {{ $user->username }}
                                     @if(!$isActive)
-                                    <span class="au-hidden-badge" title="Neaktyvus — paslėptas nuo lentelių">neaktyvus</span>
+                                    <span class="au-hidden-badge" title="{{ __('Neaktyvus — paslėptas nuo lentelių') }}">{{ __('neaktyvus') }}</span>
                                     @endif
                                 </div>
                                 @if($user->name || $user->surname)
@@ -63,7 +63,7 @@
                         @if($user->google_id)
                         <span class="au-auth-badge au-auth-google" title="Google"><i class="bi bi-google"></i></span>
                         @else
-                        <span class="au-auth-badge au-auth-email" title="El. paštas"><i class="bi bi-envelope-fill"></i></span>
+                        <span class="au-auth-badge au-auth-email" title="{{ __('El. paštas') }}"><i class="bi bi-envelope-fill"></i></span>
                         @endif
                     </td>
 
@@ -96,21 +96,21 @@
                         @if($adminLevel === 8 && $user->id === (int) session('userID'))
                         <form method="post" action="{{ route('admin.promoteSelf') }}" style="display:inline;">
                             @csrf
-                            <button type="submit" class="au-action-btn au-action-promote" title="Pakelti save į Superadmin">
+                            <button type="submit" class="au-action-btn au-action-promote" title="{{ __('Pakelti save į Superadmin') }}">
                                 <i class="bi bi-shield-lock-fill"></i>
                             </button>
                         </form>
                         @endif
                         @if(session('admin') >= 5)
                         <a href="{{ route('admin.audit', ['user' => $user->id]) }}"
-                           class="au-action-btn" title="Auditas" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">
+                           class="au-action-btn" title="{{ __('Auditas') }}" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">
                             <i class="bi bi-clock-history"></i>
                         </a>
                         @endif
                         @if(session('admin') >= 9)
                         <button type="button"
                                 class="au-action-btn au-action-hide {{ !$isActive ? 'au-action-hidden-active' : '' }}"
-                                title="{{ !$isActive ? 'Aktyvuoti vartotoją' : 'Deaktyvuoti vartotoją' }}"
+                                title="{{ !$isActive ? __('Aktyvuoti vartotoją') : __('Deaktyvuoti vartotoją') }}"
                                 data-user-id="{{ $user->id }}"
                                 data-toggle-url="{{ route('admin.toggleHidden') }}"
                                 onclick="toggleHiddenUser(this)">
@@ -118,12 +118,12 @@
                         </button>
                         <form method="post" action="{{ route('admin.deleteUser') }}"
                               data-confirm-name="{{ $user->username }}"
-                              onsubmit="return confirm('Ištrinti vartotoją ' + this.dataset.confirmName + '?')"
+                              onsubmit="return confirm('{{ __('Ištrinti') }} ' + this.dataset.confirmName + '?')"
                               style="display:inline;">
                             @csrf
                             <input type="hidden" name="userID"   value="{{ $user->id }}">
                             <input type="hidden" name="username" value="{{ $user->username }}">
-                            <button type="submit" class="au-action-btn au-action-delete" title="Ištrinti">
+                            <button type="submit" class="au-action-btn au-action-delete" title="{{ __('Ištrinti') }}">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </form>
@@ -153,21 +153,25 @@ function toggleHiddenUser(btn) {
         const badge  = row.querySelector('.au-hidden-badge');
         const avatar = row.querySelector('.au-avatar');
         const icon   = btn.querySelector('i');
+        var msgActivate   = @json(__('Aktyvuoti vartotoją'));
+        var msgDeactivate = @json(__('Deaktyvuoti vartotoją'));
+        var msgInactive   = @json(__('neaktyvus'));
+        var msgInactiveTitle = @json(__('Neaktyvus — paslėptas nuo lentelių'));
         if (!data.active) {
             row.classList.add('au-row-hidden');
             avatar.classList.add('au-avatar-hidden');
             btn.classList.add('au-action-hidden-active');
-            btn.title = 'Aktyvuoti vartotoją';
+            btn.title = msgActivate;
             icon.className = 'bi bi-eye';
             if (!badge) {
                 const nameDiv = row.querySelector('.au-username');
-                nameDiv.insertAdjacentHTML('beforeend', ' <span class="au-hidden-badge" title="Neaktyvus — paslėptas nuo lentelių">neaktyvus</span>');
+                nameDiv.insertAdjacentHTML('beforeend', ' <span class="au-hidden-badge" title="' + msgInactiveTitle + '">' + msgInactive + '</span>');
             }
         } else {
             row.classList.remove('au-row-hidden');
             avatar.classList.remove('au-avatar-hidden');
             btn.classList.remove('au-action-hidden-active');
-            btn.title = 'Deaktyvuoti vartotoją';
+            btn.title = msgDeactivate;
             icon.className = 'bi bi-eye-slash';
             row.querySelector('.au-hidden-badge')?.remove();
         }

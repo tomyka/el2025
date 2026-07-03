@@ -3,10 +3,10 @@
 
 <div class="sb-card">
     <div class="sb-card-title d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <span><i class="bi bi-clock-history sb-card-icon"></i> Auditas</span>
+        <span><i class="bi bi-clock-history sb-card-icon"></i> {{ __('Auditas') }}</span>
         <form method="GET" action="{{ route('admin.audit') }}" class="d-flex align-items-center gap-2">
             <select name="user" class="form-select form-select-sm" style="width:auto;" onchange="this.form.submit()">
-                <option value="">— Visi vartotojai —</option>
+                <option value="">{{ __('— Visi vartotojai —') }}</option>
                 @foreach($users as $u)
                     <option value="{{ $u->id }}" {{ $userFilter == $u->id ? 'selected' : '' }}>
                         {{ $u->username }}
@@ -25,14 +25,14 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="tab-logins-btn" data-bs-toggle="tab"
                     data-bs-target="#tab-logins" type="button" role="tab">
-                <i class="bi bi-box-arrow-in-right"></i> Prisijungimai
+                <i class="bi bi-box-arrow-in-right"></i> {{ __('Prisijungimai') }}
                 <span class="badge bg-secondary fw-normal ms-1">{{ $logins->total() }}</span>
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="tab-predictions-btn" data-bs-toggle="tab"
                     data-bs-target="#tab-predictions" type="button" role="tab">
-                <i class="bi bi-pencil-square"></i> Prognozės
+                <i class="bi bi-pencil-square"></i> {{ __('Prognozės') }}
                 <span class="badge bg-secondary fw-normal ms-1">{{ $predictions->total() }}</span>
             </button>
         </li>
@@ -43,16 +43,16 @@
         {{-- Login history --}}
         <div class="tab-pane fade show active" id="tab-logins" role="tabpanel">
             @if($logins->isEmpty())
-                <p class="text-muted py-3">Prisijungimų įrašų nėra.</p>
+                <p class="text-muted py-3">{{ __('Prisijungimų įrašų nėra.') }}</p>
             @else
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-2 adt-table">
                     <thead class="table-light">
                         <tr>
-                            <th class="adt-col-user">Vartotojas</th>
-                            <th class="adt-col-method">Metodas</th>
-                            <th class="adt-col-ip d-none d-md-table-cell">IP adresas</th>
-                            <th class="adt-col-date">Data</th>
+                            <th class="adt-col-user">{{ __('Vartotojas') }}</th>
+                            <th class="adt-col-method">{{ __('Metodas') }}</th>
+                            <th class="adt-col-ip d-none d-md-table-cell">{{ __('IP adresas') }}</th>
+                            <th class="adt-col-date">{{ __('Data') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -62,19 +62,19 @@
                             <td>
                                 @if($login->login_method === 'register')
                                     <span class="badge bg-success fw-normal">
-                                        <i class="bi bi-person-plus-fill"></i> Registracija
+                                        <i class="bi bi-person-plus-fill"></i> {{ __('Registracija') }}
                                     </span>
                                 @elseif($login->login_method === 'register_google')
                                     <span class="badge bg-success fw-normal">
-                                        <i class="bi bi-google"></i> Registracija (Google)
+                                        <i class="bi bi-google"></i> {{ __('Registracija (Google)') }}
                                     </span>
                                 @elseif($login->login_method === 'google')
                                     <span class="badge adt-badge-google fw-normal">
-                                        <i class="bi bi-google"></i> Google
+                                        <i class="bi bi-google"></i> {{ __('Google') }}
                                     </span>
                                 @else
                                     <span class="badge bg-primary fw-normal">
-                                        <i class="bi bi-envelope-fill"></i> El. paštas
+                                        <i class="bi bi-envelope-fill"></i> {{ __('El. paštas') }}
                                     </span>
                                 @endif
                             </td>
@@ -92,18 +92,18 @@
         {{-- Prediction changes --}}
         <div class="tab-pane fade" id="tab-predictions" role="tabpanel">
             @if($predictions->isEmpty())
-                <p class="text-muted py-3">Prognozių pakeitimų nėra.</p>
+                <p class="text-muted py-3">{{ __('Prognozių pakeitimų nėra.') }}</p>
             @else
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-2 adt-table">
                     <thead class="table-light">
                         <tr>
-                            <th class="adt-col-user">Vartotojas</th>
-                            <th class="adt-col-match">Rungtynės</th>
-                            <th class="adt-col-score text-end">Sena</th>
+                            <th class="adt-col-user">{{ __('Vartotojas') }}</th>
+                            <th class="adt-col-match">{{ __('Rungtynės') }}</th>
+                            <th class="adt-col-score text-end">{{ __('Sena') }}</th>
                             <th class="adt-col-arrow"></th>
-                            <th class="adt-col-score">Nauja</th>
-                            <th class="adt-col-date">Data</th>
+                            <th class="adt-col-score">{{ __('Nauja') }}</th>
+                            <th class="adt-col-date">{{ __('Data') }}</th>
                         </tr>
                     </thead>
                     <tbody>

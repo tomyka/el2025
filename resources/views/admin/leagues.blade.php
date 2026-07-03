@@ -1,9 +1,9 @@
-﻿@extends('admin.layouts.master')
+@extends('admin.layouts.master')
 @section('content')
 
 <div class="sb-card">
     <div class="sb-card-title d-flex align-items-center gap-2">
-        <i class="bi bi-trophy-fill sb-card-icon"></i> Lygos
+        <i class="bi bi-trophy-fill sb-card-icon"></i> {{ __('Lygos') }}
         <span class="badge bg-secondary fw-normal">{{ $leagues->count() }}</span>
     </div>
 
@@ -19,11 +19,11 @@
             <thead class="table-light">
                 <tr>
                     <th style="width:40px;">#</th>
-                    <th>Pavadinimas</th>
-                    <th class="d-none d-md-table-cell">Savininkas</th>
-                    <th class="text-center" style="width:80px;">Nariai</th>
-                    <th class="d-none d-sm-table-cell text-center" style="width:80px;">Tipas</th>
-                    <th class="d-none d-lg-table-cell" style="width:130px;">Sukurta</th>
+                    <th>{{ __('Pavadinimas') }}</th>
+                    <th class="d-none d-md-table-cell">{{ __('Savininkas') }}</th>
+                    <th class="text-center" style="width:80px;">{{ __('Nariai') }}</th>
+                    <th class="d-none d-sm-table-cell text-center" style="width:80px;">{{ __('Tipas') }}</th>
+                    <th class="d-none d-lg-table-cell" style="width:130px;">{{ __('Sukurta') }}</th>
                     <th style="width:60px;"></th>
                 </tr>
             </thead>
@@ -52,9 +52,9 @@
 
                     <td class="d-none d-sm-table-cell text-center">
                         @if($league->is_public)
-                            <span style="font-size:.65rem;font-weight:700;padding:2px 9px;border-radius:20px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;">Vieša</span>
+                            <span style="font-size:.65rem;font-weight:700;padding:2px 9px;border-radius:20px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;">{{ __('Vieša') }}</span>
                         @else
-                            <span style="font-size:.65rem;font-weight:700;padding:2px 9px;border-radius:20px;background:#f1f5f9;color:var(--sb-muted);border:1px solid var(--sb-border);">Privati</span>
+                            <span style="font-size:.65rem;font-weight:700;padding:2px 9px;border-radius:20px;background:#f1f5f9;color:var(--sb-muted);border:1px solid var(--sb-border);">{{ __('Privati') }}</span>
                         @endif
                     </td>
 
@@ -66,7 +66,7 @@
                         @if(!$league->is_public && session('admin') >= 9)
                         <form method="POST" action="{{ route('admin.leagues.delete') }}"
                               data-confirm-name="{{ $league->name }}"
-                              onsubmit="return confirm('Ištrinti lygą \"' + this.dataset.confirmName + '\"? Visi nariai bus pašalinti.')">
+                              onsubmit="return confirm('{{ __('Ištrinti lygą') }} \"' + this.dataset.confirmName + '\"?')">
                             @csrf
                             <input type="hidden" name="leagueID" value="{{ $league->id }}">
                             <button type="submit" class="btn btn-sm"
@@ -79,7 +79,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="text-center text-muted py-4" style="font-size:.85rem;">Nėra lygų</td>
+                    <td colspan="7" class="text-center text-muted py-4" style="font-size:.85rem;">{{ __('Nėra lygų') }}</td>
                 </tr>
                 @endforelse
             </tbody>

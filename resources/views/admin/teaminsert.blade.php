@@ -14,7 +14,7 @@
         <div class="row ">
                 <div class="col-md-2">
                     <div class="input-group">
-                    Įveskite komandų kiekį:
+                    {{ __('Įveskite komandų kiekį:') }}
                     <input type="text" class="form-control-sm input-size-2" size=1 name="teamCount">
                 </div>
             </div>

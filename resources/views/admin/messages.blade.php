@@ -3,7 +3,7 @@
 
 <div class="sb-card">
     <div class="sb-card-title">
-        <i class="bi bi-chat-left-text-fill sb-card-icon"></i> Žinutės
+        <i class="bi bi-chat-left-text-fill sb-card-icon"></i> {{ __('Žinutės') }}
         <span class="badge bg-secondary fw-normal ms-1">{{ $messages->count() }}</span>
     </div>
 
@@ -16,9 +16,9 @@
             <thead class="table-light">
                 <tr>
                     <th class="am-col-id text-muted">#</th>
-                    <th class="am-col-msg">Žinutė</th>
-                    <th class="am-col-group">Lyga</th>
-                    <th class="am-col-active text-center">Aktyvi</th>
+                    <th class="am-col-msg">{{ __('Žinutė') }}</th>
+                    <th class="am-col-group">{{ __('Lygos') }}</th>
+                    <th class="am-col-active text-center">{{ __('Aktyvi') }}</th>
                     <th class="am-col-actions"></th>
                 </tr>
             </thead>
@@ -35,7 +35,7 @@
                     </td>
                     <td>
                         <select name="leagueID" class="form-select form-select-sm am-select">
-                            <option value="">— lyga —</option>
+                            <option value="">{{ __('— lyga —') }}</option>
                             @foreach($groups as $leagueID => $leagueName)
                             <option value="{{ $leagueID }}" {{ $leagueID == $message->league_id ? 'selected' : '' }}>
                                 {{ $leagueName }}
@@ -52,14 +52,14 @@
                     <td class="text-end am-col-actions">
                         <button type="submit" name="update" value="1"
                                 class="btn btn-sm btn-outline-primary am-action-btn"
-                                title="Išsaugoti">
+                                title="{{ __('Išsaugoti') }}">
                             <i class="bi bi-check-lg"></i>
                         </button>
                         @if(session('admin') >= 9)
                         <button type="submit" name="delete" value="1"
                                 class="btn btn-sm btn-outline-secondary am-action-btn am-action-delete ms-1"
-                                title="Ištrinti"
-                                onclick="return confirm('Ištrinti žinutę?')">
+                                title="{{ __('Ištrinti') }}"
+                                onclick="return confirm('{{ __('Ištrinti žinutę?') }}')">
                             <i class="bi bi-trash3"></i>
                         </button>
                         @endif
@@ -75,11 +75,11 @@
                     <td class="text-muted am-id"><i class="bi bi-plus-lg"></i></td>
                     <td>
                         <input type="text" class="form-control form-control-sm"
-                               name="message" placeholder="Nauja žinutė…">
+                               name="message" placeholder="{{ __('Nauja žinutė…') }}">
                     </td>
                     <td>
                         <select name="leagueID" class="form-select form-select-sm am-select">
-                            <option value="">— lyga —</option>
+                            <option value="">{{ __('— lyga —') }}</option>
                             @foreach($groups as $leagueID => $leagueName)
                             <option value="{{ $leagueID }}">{{ $leagueName }}</option>
                             @endforeach
@@ -93,7 +93,7 @@
                     <td class="text-end">
                         <button type="submit" name="insert" value="1"
                                 class="btn btn-sm btn-primary am-action-btn"
-                                title="Pridėti žinutę">
+                                title="{{ __('Pridėti žinutę') }}">
                             <i class="bi bi-plus-lg"></i>
                         </button>
                     </td>

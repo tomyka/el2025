@@ -13,8 +13,8 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="table-header col-md-1 text-center">Nr.</div>
-                <div class="table-header col-md-3 text-center">Aprašymas</div>
-                <div class="table-header col-md-1 text-center">Reikšmė</div>
+                <div class="table-header col-md-3 text-center">{{ __('Aprašymas') }}</div>
+                <div class="table-header col-md-1 text-center">{{ __('Reikšmė') }}</div>
             </div>
 
             @foreach($settings as $setting )

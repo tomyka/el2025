@@ -50,7 +50,7 @@ $grouped = collect($games)
                 <div class="pred-day-header">
                     <span>{{ $isKnockout
                         ? ucfirst(\Carbon\Carbon::parse($groupName)->locale('lt')->isoFormat('MMMM D'))
-                        : ($groupName ? 'Grupė ' . $groupName : 'Rungtynės') }}</span>
+                        : ($groupName ? __('Grupė') . ' ' . $groupName : __('Rungtynės')) }}</span>
                 </div>
                 @foreach($groupGames as $game)
                 @php

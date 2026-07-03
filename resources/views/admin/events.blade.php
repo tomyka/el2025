@@ -3,7 +3,7 @@
 
 <div class="sb-card">
     <div class="sb-card-title">
-        <i class="bi bi-calendar-event-fill sb-card-icon"></i> Turai
+        <i class="bi bi-calendar-event-fill sb-card-icon"></i> {{ __('Turai') }}
         <span class="badge bg-secondary fw-normal ms-1">{{ $events->count() }}</span>
     </div>
 
@@ -16,12 +16,12 @@
             <thead class="table-light">
                 <tr>
                     <th class="ae-col-id text-muted">#</th>
-                    <th class="ae-col-name">Turas</th>
-                    <th class="ae-col-short text-center" title="Turo diena">Diena</th>
-                    <th class="ae-col-switch text-center" title="Išlikimo turas">Išlik.</th>
-                    <th class="ae-col-switch text-center" title="Play-off turas (baudinių serija)">P/O</th>
-                    <th class="ae-col-switch text-center">Aktyvus</th>
-                    <th class="ae-col-short text-center" title="Koeficientas">Rate</th>
+                    <th class="ae-col-name">{{ __('Turas') }}</th>
+                    <th class="ae-col-short text-center" title="{{ __('Turo diena') }}">{{ __('Diena') }}</th>
+                    <th class="ae-col-switch text-center" title="{{ __('Išlikimo turas') }}">{{ __('Išlik.') }}</th>
+                    <th class="ae-col-switch text-center" title="{{ __('Play-off turas (baudinių serija)') }}">P/O</th>
+                    <th class="ae-col-switch text-center">{{ __('Aktyvus') }}</th>
+                    <th class="ae-col-short text-center" title="{{ __('Koeficientas') }}">Rate</th>
                     @if(session('admin') >= 9)
                     <th class="ae-col-actions"></th>
                     @endif
@@ -74,8 +74,8 @@
                     <td class="text-end">
                         <button type="submit" name="delete" value="1"
                                 class="btn btn-sm btn-outline-secondary ae-action-btn ae-action-delete"
-                                title="Ištrinti"
-                                onclick="return confirm('Ištrinti turą „{{ addslashes($event->event) }}"?')">
+                                title="{{ __('Ištrinti') }}"
+                                onclick="return confirm('{{ __('Ištrinti turą') }} „{{ addslashes($event->event) }}"?')">
                             <i class="bi bi-trash3"></i>
                         </button>
                     </td>
@@ -91,7 +91,7 @@
                     <td class="text-muted ae-id"><i class="bi bi-plus-lg"></i></td>
                     <td>
                         <input type="text" class="form-control form-control-sm"
-                               name="event" placeholder="Turo pavadinimas…">
+                               name="event" placeholder="{{ __('Turo pavadinimas…') }}">
                     </td>
                     <td class="text-center">
                         <input type="number" class="form-control form-control-sm text-center ae-tiny-input"
@@ -119,7 +119,7 @@
                     <td class="text-end">
                         <button type="submit" name="insert" value="1"
                                 class="btn btn-sm btn-primary ae-action-btn"
-                                title="Pridėti turą">
+                                title="{{ __('Pridėti turą') }}">
                             <i class="bi bi-plus-lg"></i>
                         </button>
                     </td>

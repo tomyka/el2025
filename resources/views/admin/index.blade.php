@@ -4,22 +4,22 @@
 <div class="row g-3">
 
     <div class="col-12">
-        <div class="sb-card-title"><i class="bi bi-gear-fill sb-card-icon"></i> Admin skydelis</div>
+        <div class="sb-card-title"><i class="bi bi-gear-fill sb-card-icon"></i> {{ __('Admin skydelis') }}</div>
     </div>
 
     @php
     $sections = [
-        ['icon' => 'bi-trophy',          'label' => 'Rezultatai (turas)',  'route' => 'admin.results',               'super' => false],
-        ['icon' => 'bi-trophy-fill',     'label' => 'Visi rezultatai',     'route' => 'admin.resultsAll',            'super' => false],
-        ['icon' => 'bi-calendar3',       'label' => 'Rungtynės',            'route' => 'admin.games',                 'super' => false],
-        ['icon' => 'bi-people-fill',     'label' => 'Vartotojai',          'route' => 'admin.users',                 'super' => true],
-        ['icon' => 'bi-flag-fill',       'label' => 'Komandos',            'route' => 'admin.teams',                 'super' => true],
-        ['icon' => 'bi-calendar-event',  'label' => 'Turai',               'route' => 'admin.events',                'super' => true],
-        ['icon' => 'bi-chat-left-text',  'label' => 'Žinutės',             'route' => 'admin.messages',              'super' => true],
-        ['icon' => 'bi-bar-chart-fill',  'label' => 'Eigos taškai',        'route' => 'admin.updateStandingPoints',  'super' => true, 'minLevel' => 9],
-        ['icon' => 'bi-trophy-fill',     'label' => 'Lygos',               'route' => 'admin.leagues',               'super' => false],
-        ['icon' => 'bi-clock-history',   'label' => 'Auditas',             'route' => 'admin.audit',                 'super' => true],
-        ['icon' => 'bi-globe2', 'label' => 'Turnyrai', 'route' => 'admin.tournaments', 'super' => true],
+        ['icon' => 'bi-trophy',          'label' => __('Rezultatai (turas)'),          'route' => 'admin.results',               'super' => false],
+        ['icon' => 'bi-trophy-fill',     'label' => __('Visi rezultatai'),              'route' => 'admin.resultsAll',            'super' => false],
+        ['icon' => 'bi-calendar3',       'label' => __('Rungtynės'),                    'route' => 'admin.games',                 'super' => false],
+        ['icon' => 'bi-people-fill',     'label' => __('Vartotojai'),                   'route' => 'admin.users',                 'super' => true],
+        ['icon' => 'bi-flag-fill',       'label' => __('Komandos'),                     'route' => 'admin.teams',                 'super' => true],
+        ['icon' => 'bi-calendar-event',  'label' => __('Turai'),                        'route' => 'admin.events',                'super' => true],
+        ['icon' => 'bi-chat-left-text',  'label' => __('Žinutės'),                      'route' => 'admin.messages',              'super' => true],
+        ['icon' => 'bi-bar-chart-fill',  'label' => __('Eigos taškai'),                 'route' => 'admin.updateStandingPoints',  'super' => true, 'minLevel' => 9],
+        ['icon' => 'bi-trophy-fill',     'label' => __('Lygos'),                        'route' => 'admin.leagues',               'super' => false],
+        ['icon' => 'bi-clock-history',   'label' => __('Auditas'),                      'route' => 'admin.audit',                 'super' => true],
+        ['icon' => 'bi-globe2',          'label' => __('Turnyrai'),                     'route' => 'admin.tournaments',           'super' => true],
     ];
     @endphp
 

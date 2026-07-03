@@ -3,7 +3,7 @@
 
 <div class="sb-card">
     <div class="sb-card-title">
-        <i class="bi bi-flag-fill sb-card-icon"></i> Komandos
+        <i class="bi bi-flag-fill sb-card-icon"></i> {{ __('Komandos') }}
         <span class="badge bg-secondary fw-normal ms-1">{{ $teams->count() }}</span>
     </div>
 
@@ -21,17 +21,17 @@
         @foreach($grouped as $groupName => $groupTeams)
         <div class="col-md-6">
             <div class="at-group-card">
-                <div class="at-group-header">Grupė {{ $groupName ?: '—' }}</div>
+                <div class="at-group-header">{{ __('Grupė') }} {{ $groupName ?: '—' }}</div>
 
                 <div class="at-group-row at-header-row">
                     <span></span>
-                    <span>Komanda</span>
+                    <span>{{ __('Komandos') }}</span>
                     <span class="text-center">#</span>
-                    <span class="text-center" title="Šešioliktfinalis">Š16</span>
-                    <span class="text-center" title="Aštuntfinalis">Š8</span>
-                    <span class="text-center" title="Ketvirtfinalis">KF</span>
-                    <span class="text-center" title="Pusfinalis">PF</span>
-                    <span class="text-center" title="Finalas">F</span>
+                    <span class="text-center" title="{{ __('Šešioliktfinalis') }}">Š16</span>
+                    <span class="text-center" title="{{ __('Aštuntfinalis') }}">Š8</span>
+                    <span class="text-center" title="{{ __('Ketvirtfinalis') }}">KF</span>
+                    <span class="text-center" title="{{ __('Pusfinalis') }}">PF</span>
+                    <span class="text-center" title="{{ __('Finalas') }}">F</span>
                 </div>
 
                 @foreach($groupTeams as $team)
@@ -108,21 +108,21 @@
                 <input type="hidden" name="teamID" id="atTeamID">
                 <div class="modal-body px-4 pt-3 pb-2">
                     <div class="mb-3">
-                        <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Pavadinimas</label>
+                        <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">{{ __('Pavadinimas') }}</label>
                         <input type="text" class="form-control form-control-sm" name="teamName" id="atTeamName">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Vėliavos URL</label>
+                        <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">{{ __('Vėliavos URL') }}</label>
                         <input type="text" class="form-control form-control-sm" name="teamLink" id="atTeamLink" placeholder="https://…">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Grupė</label>
+                        <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">{{ __('Grupė') }}</label>
                         <input type="text" class="form-control form-control-sm" name="groupName" id="atGroupName" maxlength="2" placeholder="A">
                     </div>
                 </div>
                 <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-end">
-                    <button type="button" class="btn btn-outline-secondary btn-sm me-2" data-bs-dismiss="modal">Atšaukti</button>
-                    <button type="submit" class="btn btn-primary btn-sm">Išsaugoti</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm me-2" data-bs-dismiss="modal">{{ __('Atšaukti') }}</button>
+                    <button type="submit" class="btn btn-primary btn-sm">{{ __('Išsaugoti') }}</button>
                 </div>
             </form>
         </div>

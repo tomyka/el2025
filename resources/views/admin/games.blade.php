@@ -4,12 +4,12 @@
 <div class="sb-card">
     <div class="sb-card-title d-flex align-items-center justify-content-between">
         <span>
-            <i class="bi bi-calendar-event-fill sb-card-icon"></i> Žaidimai
+            <i class="bi bi-calendar-event-fill sb-card-icon"></i> {{ __('Žaidimai') }}
             <span class="badge bg-secondary fw-normal ms-1">{{ $games->count() }}</span>
         </span>
         @if(session('admin') >= 9)
         <button class="btn btn-sm btn-primary" onclick="agmOpenInsert()">
-            <i class="bi bi-plus-lg"></i> Naujas
+            <i class="bi bi-plus-lg"></i> {{ __('Naujas') }}
         </button>
         @endif
     </div>
@@ -23,11 +23,11 @@
             <thead class="table-light">
                 <tr>
                     <th class="agm-col-id text-muted">#</th>
-                    <th class="agm-col-date">Data / laikas</th>
-                    <th class="agm-col-home text-end">Šeimininkai</th>
+                    <th class="agm-col-date">{{ __('Data / laikas') }}</th>
+                    <th class="agm-col-home text-end">{{ __('Šeimininkai') }}</th>
                     <th class="agm-col-vs"></th>
-                    <th class="agm-col-away">Svečiai</th>
-                    <th class="agm-col-stage">Etapas</th>
+                    <th class="agm-col-away">{{ __('Svečiai') }}</th>
+                    <th class="agm-col-stage">{{ __('Etapas') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -64,7 +64,7 @@
                     <input type="hidden" name="gameID" id="agmGameID">
                     <div class="modal-body px-4 pt-3 pb-2">
                         <div class="mb-3">
-                            <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Data ir laikas</label>
+                            <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">{{ __('Data ir laikas') }}</label>
                             <div class="d-flex gap-2">
                                 <input type="date" class="form-control form-control-sm" id="agmDate" style="flex:1">
                                 <select class="form-select form-select-sm" id="agmTime" style="width:90px;flex-shrink:0">
@@ -78,7 +78,7 @@
                             <input type="hidden" name="gameDateTime" id="agmDateTime">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Šeimininkai</label>
+                            <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">{{ __('Šeimininkai') }}</label>
                             <select name="homeTeamID" class="form-select form-select-sm" id="agmHomeTeamID">
                                 <option value="">—</option>
                                 @foreach($teams as $teamID => $teamName)
@@ -87,7 +87,7 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Svečiai</label>
+                            <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">{{ __('Svečiai') }}</label>
                             <select name="awayTeamID" class="form-select form-select-sm" id="agmAwayTeamID">
                                 <option value="">—</option>
                                 @foreach($teams as $teamID => $teamName)
@@ -96,7 +96,7 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">Etapas</label>
+                            <label class="form-label" style="font-size:.78rem;font-weight:600;color:var(--sb-muted)">{{ __('Etapas') }}</label>
                             <select name="eventID" class="form-select form-select-sm" id="agmEventID">
                                 <option value="">—</option>
                                 @foreach($events as $eventID => $eventName)
@@ -110,15 +110,15 @@
                         <button type="button" id="agmDeleteBtn"
                                 class="btn btn-outline-danger btn-sm"
                                 onclick="agmConfirmDelete()">
-                            <i class="bi bi-trash3"></i> Ištrinti
+                            <i class="bi bi-trash3"></i> {{ __('Ištrinti') }}
                         </button>
                         @else
                         <span></span>
                         @endif
                         <div>
                             <button type="button" class="btn btn-outline-secondary btn-sm me-2"
-                                    data-bs-dismiss="modal">Atšaukti</button>
-                            <button type="submit" class="btn btn-primary btn-sm">Išsaugoti</button>
+                                    data-bs-dismiss="modal">{{ __('Atšaukti') }}</button>
+                            <button type="submit" class="btn btn-primary btn-sm">{{ __('Išsaugoti') }}</button>
                         </div>
                     </div>
                 </form>
@@ -141,6 +141,9 @@ var agmDefaultEventID  = '{{ $lastEnteredEventID ?? '' }}';
 var agmTeamsData    = {!! $teamsData->keyBy('id')->map(fn($t) => ['id'=>$t->id,'team'=>$t->team,'last32'=>(int)$t->last32,'last16'=>(int)$t->last16,'quarterfinal'=>(int)$t->quarterfinal,'semifinal'=>(int)$t->semifinal,'final'=>(int)$t->final])->values()->toJson() !!};
 var agmEventsKO     = {!! $eventsKnockout->toJson() !!};
 var agmUsedByEvent  = {!! $usedByEvent->toJson() !!};
+var agmLabelNewGame  = @json(__('Naujas žaidimas'));
+var agmLabelEditGame = @json(__('Redaguoti žaidimą'));
+var agmLabelDelete   = @json(__('Ištrinti žaidimą'));
 
 function agmSnapTime(t) {
     var p = t.split(':'), h = parseInt(p[0], 10), m = parseInt(p[1], 10);
@@ -204,7 +207,7 @@ document.getElementById('agmForm').addEventListener('submit', function() {
 });
 
 function agmOpenInsert() {
-    document.getElementById('agmModalHeading').textContent = 'Naujas žaidimas';
+    document.getElementById('agmModalHeading').textContent = agmLabelNewGame;
     document.getElementById('agmForm').action = agmInsertAction;
     document.getElementById('agmGameID').value = '';
     document.getElementById('agmDeleteGameID').value = '';
@@ -217,7 +220,7 @@ function agmOpenInsert() {
 }
 
 function agmOpenModal(id, dateTime, homeTeamID, awayTeamID, eventID) {
-    document.getElementById('agmModalHeading').textContent = 'Redaguoti žaidimą #' + id;
+    document.getElementById('agmModalHeading').textContent = agmLabelEditGame + ' #' + id;
     document.getElementById('agmForm').action = agmUpdateAction;
     document.getElementById('agmGameID').value = id;
     document.getElementById('agmDeleteGameID').value = id;
@@ -234,7 +237,7 @@ function agmOpenModal(id, dateTime, homeTeamID, awayTeamID, eventID) {
 
 function agmConfirmDelete() {
     var id = document.getElementById('agmDeleteGameID').value;
-    if (confirm('Ištrinti žaidimą #' + id + '?')) {
+    if (confirm(agmLabelDelete + ' #' + id + '?')) {
         document.getElementById('agmDeleteForm').submit();
     }
 }

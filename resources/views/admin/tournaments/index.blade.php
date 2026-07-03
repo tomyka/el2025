@@ -3,9 +3,9 @@
 
 <div class="sb-card">
   <div class="sb-card-title d-flex align-items-center justify-content-between">
-    <span><i class="bi bi-globe2 sb-card-icon"></i> Turnyrai <span class="badge bg-secondary fw-normal ms-1">{{ $tournaments->count() }}</span></span>
+    <span><i class="bi bi-globe2 sb-card-icon"></i> {{ __('Turnyrai') }} <span class="badge bg-secondary fw-normal ms-1">{{ $tournaments->count() }}</span></span>
     <a href="{{ route('admin.tournaments.create') }}" class="btn btn-sm btn-primary">
-      <i class="bi bi-plus-lg"></i> Naujas turnyras
+      <i class="bi bi-plus-lg"></i> {{ __('Naujas turnyras') }}
     </a>
   </div>
 
@@ -17,7 +17,7 @@
   <table class="table table-hover align-middle mb-0">
     <thead class="table-light">
       <tr>
-        <th>#</th><th>Pavadinimas</th><th>Sportas</th><th>Statusas</th><th>Pradžia</th><th></th>
+        <th>#</th><th>{{ __('Pavadinimas') }}</th><th>{{ __('Sportas') }}</th><th>{{ __('Statusas') }}</th><th>{{ __('Pradžia') }}</th><th></th>
       </tr>
     </thead>
     <tbody>
@@ -33,10 +33,10 @@
         </td>
         <td>{{ $t->start_date?->format('Y-m-d') ?? '—' }}</td>
         <td class="text-end" style="white-space:nowrap;">
-          <a href="{{ route('admin.tournaments.edit', $t) }}" class="btn btn-sm btn-outline-secondary">Redaguoti</a>
+          <a href="{{ route('admin.tournaments.edit', $t) }}" class="btn btn-sm btn-outline-secondary">{{ __('Redaguoti') }}</a>
           <form method="POST" action="{{ route('admin.tournaments.context', $t) }}" class="d-inline">
             @csrf
-            <button class="btn btn-sm btn-primary" title="Dirbti šiame turnyre">▶ Kontekstas</button>
+            <button class="btn btn-sm btn-primary" title="{{ __('Dirbti šiame turnyre') }}">{{ __('▶ Kontekstas') }}</button>
           </form>
         </td>
       </tr>
