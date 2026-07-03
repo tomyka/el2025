@@ -33,11 +33,11 @@
                                <a href="#" title="" data-container="body" data-toggle="popover" data-bs-html="true" data-bs-trigger="hover" data-placement="right" data-bs-content="
                            <div class='row'>
                                 <div class='col col-8 col-md-9'>
-                                    <div>Už nugalėtoją:</div>
-                                    <div>Už skirtumą:</div>
-                                    <div>Už tikslų skirtumą:</div>
-                                    <div>Koeficientas:</div>
-                                    <div>Už koeficientą:</div>
+                                    <div>{{ __('Už nugalėtoją:') }}</div>
+                                    <div>{{ __('Už skirtumą:') }}</div>
+                                    <div>{{ __('Už tikslų skirtumą:') }}</div>
+                                    <div>{{ __('Koeficientas:') }}</div>
+                                    <div>{{ __('Už koeficientą:') }}</div>
                                 </div>
                                 <div class='col col-4 col-md-3'>
                                     <div align='right'><strong>{{number_format($predictionResult->winnerPoints,2)}}</strong></div>

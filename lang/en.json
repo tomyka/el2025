@@ -253,5 +253,10 @@
     "Neatspėta baigtis": "Incorrect outcome",
     "Atspėta baigtis": "Correct outcome",
     "Atspėta, kad laimės": "Predicted to win",
-    "Atspėta, kad pralaimės": "Predicted to lose"
+    "Atspėta, kad pralaimės": "Predicted to lose",
+    "Už nugalėtoją:": "For winner:",
+    "Už skirtumą:": "For margin:",
+    "Už tikslų skirtumą:": "For exact margin:",
+    "Koeficientas:": "Odds:",
+    "Už koeficientą:": "Odds bonus:"
 }

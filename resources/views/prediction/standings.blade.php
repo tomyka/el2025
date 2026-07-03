@@ -111,6 +111,7 @@
 
 <script>
     var predictionLocked = {{ session('disabled') === 'disabled' ? 'true' : 'false' }};
+    var labelVieta = '{{ __("Vieta") }}: ';
 
     function updateProgressCounters() {
         var totalTeams = document.querySelectorAll('.prediction-row').length;
@@ -122,7 +123,7 @@
         });
         var posEl = document.getElementById('prog-pos');
         if (posEl) {
-            posEl.textContent = 'Vieta: ' + posFilled + ' / ' + totalTeams;
+            posEl.textContent = labelVieta + posFilled + ' / ' + totalTeams;
             posEl.className   = 'badge ' + (posFilled === totalTeams ? 'bg-success' : 'bg-danger');
         }
 
