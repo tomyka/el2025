@@ -60,6 +60,29 @@ class ResultController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function recalculateAllGamePoints()
+    {
+        if (!session('admin')) {
+            abort(403);
+        }
+
+        $games = Game::whereNotNull('home_team_score')
+            ->whereNotNull('away_team_score')
+            ->pluck('id');
+
+        $pointsResultController = app(PointResultController::class);
+
+        foreach ($games as $gameID) {
+            DB::transaction(function () use ($gameID, $pointsResultController) {
+                $pointsResultController->updateGamePoints($gameID);
+            });
+        }
+
+        $pointsResultController->recalculateStreaks();
+
+        return redirect()->route('admin.results')->with('info', __('Visi taškų rezultatai perskaičiuoti.'));
+    }
+
     private function generateMissingResults(int $gameID): void
     {
         $inactiveUserIds = \App\Models\UserSetting::where('active', false)->pluck('user_id');

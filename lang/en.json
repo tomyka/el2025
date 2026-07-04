@@ -481,5 +481,6 @@
     "Turnyras atnaujintas.": "Tournament updated.",
     "Vartotojo :username duomenys buvo atnaujinti.": "User :username data has been updated.",
     "Turnyro kontekstas: :name": "Tournament context: :name",
-    "Nustatymas :id pakeistas": "Setting :id changed"
+    "Nustatymas :id pakeistas": "Setting :id changed",
+    "Visi taškų rezultatai perskaičiuoti.": "All game points recalculated."
 }

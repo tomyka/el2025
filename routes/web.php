@@ -143,6 +143,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'superadmin']], func
     Route::post('messageInsert', [MessageController::class,'insertMessage'])->name('admin.messageInsert');
 
     Route::get('updateStandingPoints', [PointStandingController::class,'updateStandingPoints'])->name('admin.updateStandingPoints');
+    Route::get('recalculateAllGamePoints', [ResultController::class,'recalculateAllGamePoints'])->name('admin.recalculateAllGamePoints');
 
     Route::post('leagues/delete', [LeagueController::class, 'adminDelete'])->middleware('level9admin')->name('admin.leagues.delete');
 
