@@ -3431,25 +3431,24 @@ a.lb-name-link:hover {
 .af-user { font-weight: 700; }
 .af-text { color: var(--sb-muted); }
 
-/* Locale toggle */
-.sb-locale-btn {
-    background: none;
+/* Locale flag dropdown */
+.sb-locale-select {
+    background: var(--sb-surface, #fff);
     border: 1px solid var(--sb-border, #dee2e6);
-    border-radius: 4px;
-    padding: 2px 7px;
-    font-size: .75rem;
-    font-weight: 600;
-    color: var(--sb-muted, #6c757d);
+    border-radius: 6px;
+    padding: 2px 4px;
+    font-size: .85rem;
+    color: var(--sb-text, #212529);
     cursor: pointer;
-    transition: all .15s;
+    transition: border-color .15s;
+    width: auto;
 }
-.sb-locale-btn.active {
-    background: var(--sb-accent, #0d6efd);
+.sb-locale-select:focus {
+    outline: none;
     border-color: var(--sb-accent, #0d6efd);
-    color: #fff;
 }
-.sb-locale-btn:hover:not(.active) {
-    border-color: var(--sb-accent, #0d6efd);
-    color: var(--sb-accent, #0d6efd);
+.sb-locale-select--full {
+    font-size: .9rem;
+    padding: 6px 10px;
 }
 .af-players { font-size: .75rem; font-weight: 600; color: var(--sb-text); margin-top: 1px; }

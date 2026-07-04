@@ -47,18 +47,14 @@
     <div class="card mb-4">
         <div class="card-header">{{ __('Kalba') }}</div>
         <div class="card-body">
-            <div class="d-flex gap-2">
-                <form method="POST" action="{{ route('locale.update') }}">
-                    @csrf
-                    <input type="hidden" name="locale" value="lt">
-                    <button type="submit" class="sb-locale-btn {{ app()->getLocale() === 'lt' ? 'active' : '' }}">{{ __('Lietuvių') }}</button>
-                </form>
-                <form method="POST" action="{{ route('locale.update') }}">
-                    @csrf
-                    <input type="hidden" name="locale" value="en">
-                    <button type="submit" class="sb-locale-btn {{ app()->getLocale() === 'en' ? 'active' : '' }}">{{ __('English') }}</button>
-                </form>
-            </div>
+            <form method="POST" action="{{ route('locale.update') }}" class="sb-locale-form">
+                @csrf
+                <input type="hidden" name="locale" value="{{ app()->getLocale() }}">
+                <select class="sb-locale-select sb-locale-select--full" onchange="this.closest('form').querySelector('[name=locale]').value=this.value;this.closest('form').submit()">
+                    <option value="lt" {{ app()->getLocale() === 'lt' ? 'selected' : '' }}>🇱🇹 {{ __('Lietuvių') }}</option>
+                    <option value="en" {{ app()->getLocale() === 'en' ? 'selected' : '' }}>🇬🇧 {{ __('English') }}</option>
+                </select>
+            </form>
         </div>
     </div>
 

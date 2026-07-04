@@ -119,19 +119,15 @@
         <i class="bi bi-moon-fill sb-theme-moon"></i>
       </button>
 
-      {{-- Locale toggle --}}
-      <div class="d-flex align-items-center" style="gap:2px">
-          <form method="POST" action="{{ route('locale.update') }}" class="d-inline">
-              @csrf
-              <input type="hidden" name="locale" value="lt">
-              <button type="submit" class="sb-locale-btn {{ app()->getLocale() === 'lt' ? 'active' : '' }}">LT</button>
-          </form>
-          <form method="POST" action="{{ route('locale.update') }}" class="d-inline">
-              @csrf
-              <input type="hidden" name="locale" value="en">
-              <button type="submit" class="sb-locale-btn {{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</button>
-          </form>
-      </div>
+      {{-- Locale flag dropdown --}}
+      <form method="POST" action="{{ route('locale.update') }}" class="sb-locale-form d-inline">
+          @csrf
+          <input type="hidden" name="locale" value="{{ app()->getLocale() }}">
+          <select class="sb-locale-select" onchange="this.closest('form').querySelector('[name=locale]').value=this.value;this.closest('form').submit()">
+              <option value="lt" {{ app()->getLocale() === 'lt' ? 'selected' : '' }}>🇱🇹</option>
+              <option value="en" {{ app()->getLocale() === 'en' ? 'selected' : '' }}>🇬🇧</option>
+          </select>
+      </form>
 
       {{-- Avatar dropdown --}}
       <div class="dropdown">
@@ -180,19 +176,15 @@
         <i class="bi bi-sun-fill sb-theme-sun"></i>
         <i class="bi bi-moon-fill sb-theme-moon"></i>
       </button>
-      {{-- Locale toggle --}}
-      <div class="d-flex align-items-center" style="gap:2px">
-          <form method="POST" action="{{ route('locale.update') }}" class="d-inline">
-              @csrf
-              <input type="hidden" name="locale" value="lt">
-              <button type="submit" class="sb-locale-btn {{ app()->getLocale() === 'lt' ? 'active' : '' }}">LT</button>
-          </form>
-          <form method="POST" action="{{ route('locale.update') }}" class="d-inline">
-              @csrf
-              <input type="hidden" name="locale" value="en">
-              <button type="submit" class="sb-locale-btn {{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</button>
-          </form>
-      </div>
+      {{-- Locale flag dropdown --}}
+      <form method="POST" action="{{ route('locale.update') }}" class="sb-locale-form d-inline">
+          @csrf
+          <input type="hidden" name="locale" value="{{ app()->getLocale() }}">
+          <select class="sb-locale-select" onchange="this.closest('form').querySelector('[name=locale]').value=this.value;this.closest('form').submit()">
+              <option value="lt" {{ app()->getLocale() === 'lt' ? 'selected' : '' }}>🇱🇹</option>
+              <option value="en" {{ app()->getLocale() === 'en' ? 'selected' : '' }}>🇬🇧</option>
+          </select>
+      </form>
       <a class="sb-nav-pill sb-nav-pill--ghost" style="margin-left:0" href="{{ route('leaderboard') }}"><i class="bi bi-trophy-fill" style="font-size:.75rem;"></i><span class="d-none d-sm-inline"> {{ __('Lyderiai') }}</span></a>
       <a class="sb-nav-pill sb-nav-pill--ghost" style="margin-left:0" href="{{ route('charity') }}"><i class="bi bi-heart-fill" style="font-size:.75rem;"></i><span class="d-none d-sm-inline"> {{ __('Jaunimo linija') }}</span></a>
       <a class="sb-nav-pill ms-0" href="{{ route('login') }}"><i class="bi bi-box-arrow-in-right" style="font-size:.75rem;"></i><span class="d-none d-sm-inline"> {{ __('Prisijungti') }}</span></a>
@@ -289,17 +281,15 @@
 
     <div class="sb-mobile-group">
       <div class="sb-mobile-label">{{ __('Paskyra') }}</div>
-      {{-- Locale toggle (mobile) --}}
-      <div class="d-flex gap-2 px-2 py-2">
-          <form method="POST" action="{{ route('locale.update') }}">
+      {{-- Locale flag dropdown (mobile) --}}
+      <div class="px-2 py-2">
+          <form method="POST" action="{{ route('locale.update') }}" class="sb-locale-form d-inline">
               @csrf
-              <input type="hidden" name="locale" value="lt">
-              <button type="submit" class="sb-locale-btn {{ app()->getLocale() === 'lt' ? 'active' : '' }}">LT</button>
-          </form>
-          <form method="POST" action="{{ route('locale.update') }}">
-              @csrf
-              <input type="hidden" name="locale" value="en">
-              <button type="submit" class="sb-locale-btn {{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</button>
+              <input type="hidden" name="locale" value="{{ app()->getLocale() }}">
+              <select class="sb-locale-select sb-locale-select--full" onchange="this.closest('form').querySelector('[name=locale]').value=this.value;this.closest('form').submit()">
+                  <option value="lt" {{ app()->getLocale() === 'lt' ? 'selected' : '' }}>🇱🇹 {{ __('Lietuvių') }}</option>
+                  <option value="en" {{ app()->getLocale() === 'en' ? 'selected' : '' }}>🇬🇧 {{ __('English') }}</option>
+              </select>
           </form>
       </div>
       <a class="sb-nav-link {{ request()->routeIs('userProfile') ? 'active' : '' }}"
