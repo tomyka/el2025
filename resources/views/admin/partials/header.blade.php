@@ -46,9 +46,6 @@
          href="{{ route('admin.tournaments') }}">
         <i class="bi bi-globe2"></i> {{ __('Turnyrai') }}
       </a>
-      <a class="sb-nav-link" href="{{ route('admin.updateStandingPoints') }}">
-        <i class="bi bi-calculator"></i> {{ __('Taškai už eigą') }}
-      </a>
       @endif
       @endif
     </div>
@@ -133,9 +130,6 @@
       <a class="sb-nav-link {{ request()->routeIs('admin.tournaments*') ? 'active' : '' }}"
          href="{{ route('admin.tournaments') }}">
         <i class="bi bi-globe2"></i> {{ __('Turnyrai') }}
-      </a>
-      <a class="sb-nav-link" href="{{ route('admin.updateStandingPoints') }}">
-        <i class="bi bi-calculator"></i> {{ __('Taškai už eigą') }}
       </a>
       @endif
       @endif
