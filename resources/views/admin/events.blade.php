@@ -20,6 +20,7 @@
                     <th class="ae-col-short text-center" title="{{ __('Turo diena') }}">{{ __('Diena') }}</th>
                     <th class="ae-col-switch text-center" title="{{ __('Išlikimo turas') }}">{{ __('Išlik.') }}</th>
                     <th class="ae-col-switch text-center" title="{{ __('Play-off turas (baudinių serija)') }}">P/O</th>
+                    <th class="ae-col-short text-center" title="{{ __('Play-off etapas') }}">{{ __('Etapas') }}</th>
                     <th class="ae-col-switch text-center">{{ __('Aktyvus') }}</th>
                     <th class="ae-col-short text-center" title="{{ __('Koeficientas') }}">Rate</th>
                     @if(session('admin') >= 9)
@@ -57,6 +58,15 @@
                                    name="isKnockout" {{ $event->is_knockout ? 'checked' : '' }}
                                    onchange="this.form.submit()">
                         </div>
+                    </td>
+                    <td class="text-center">
+                        <select name="round_type" class="form-select form-select-sm ae-tiny-select"
+                                onchange="this.form.submit()">
+                            <option value="">—</option>
+                            @foreach(['last32'=>'1/16','last16'=>'1/8','quarterfinal'=>'1/4','semifinal'=>'1/2','final'=>'F'] as $val => $label)
+                            <option value="{{ $val }}" {{ $event->round_type === $val ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
                     </td>
                     <td class="text-center">
                         <div class="form-check form-switch d-flex justify-content-center mb-0">
@@ -106,6 +116,14 @@
                         <div class="form-check form-switch d-flex justify-content-center mb-0">
                             <input type="checkbox" class="form-check-input" role="switch" name="isKnockout">
                         </div>
+                    </td>
+                    <td class="text-center">
+                        <select name="round_type" class="form-select form-select-sm ae-tiny-select">
+                            <option value="">—</option>
+                            @foreach(['last32'=>'1/16','last16'=>'1/8','quarterfinal'=>'1/4','semifinal'=>'1/2','final'=>'F'] as $val => $label)
+                            <option value="{{ $val }}">{{ $label }}</option>
+                            @endforeach
+                        </select>
                     </td>
                     <td class="text-center">
                         <div class="form-check form-switch d-flex justify-content-center mb-0">

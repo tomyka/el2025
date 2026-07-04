@@ -13,6 +13,7 @@ class Event extends Model
         'event_day',
         'event_survival',
         'is_knockout',
+        'round_type',
         'active',
         'rate',
         'tournament_id',

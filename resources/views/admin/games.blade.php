@@ -139,7 +139,7 @@ var agmUpdateAction = '{{ route('admin.updateGame') }}';
 var agmDefaultDateTime = '{{ \Carbon\Carbon::parse($gameMaxDateTime, 'UTC')->setTimezone('Europe/Vilnius')->format('Y-m-d\TH:i') }}';
 var agmDefaultEventID  = '{{ $lastEnteredEventID ?? '' }}';
 var agmTeamsData    = {!! $teamsData->keyBy('id')->map(fn($t) => ['id'=>$t->id,'team'=>$t->team,'last32'=>(int)$t->last32,'last16'=>(int)$t->last16,'quarterfinal'=>(int)$t->quarterfinal,'semifinal'=>(int)$t->semifinal,'final'=>(int)$t->final])->values()->toJson() !!};
-var agmEventsKO     = {!! $eventsKnockout->toJson() !!};
+var agmEventsData   = {!! $eventsKnockout->toJson() !!};
 var agmUsedByEvent  = {!! $usedByEvent->toJson() !!};
 var agmLabelNewGame  = @json(__('Naujas žaidimas'));
 var agmLabelEditGame = @json(__('Redaguoti žaidimą'));
@@ -163,7 +163,9 @@ function agmRebuildTeams() {
     var homeVal = String(document.getElementById('agmHomeTeamID').value);
     var awayVal = String(document.getElementById('agmAwayTeamID').value);
 
-    var isKO = agmEventsKO[eventID] == 1;
+    var evtData   = agmEventsData[eventID] || {};
+    var isKO      = evtData.ko == 1;
+    var roundType = evtData.round || null;
 
     // collect used team IDs in this event, excluding current game
     var usedIDs = [];
@@ -175,8 +177,10 @@ function agmRebuildTeams() {
     });
 
     var eligible = agmTeamsData.filter(function(t) {
-        if (isKO && !t.last32 && !t.last16 && !t.quarterfinal && !t.semifinal && !t.final) return false;
-        return true;
+        if (!isKO) return true;
+        if (roundType) return t[roundType] == 1;
+        // no round_type set: show any team with at least one knockout flag
+        return t.last32 || t.last16 || t.quarterfinal || t.semifinal || t.final;
     });
 
     agmFillSelect(document.getElementById('agmHomeTeamID'), eligible, usedIDs, awayVal, homeVal);

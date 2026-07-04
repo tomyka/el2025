@@ -42,7 +42,9 @@ class GameController extends Controller
         $now = Carbon::now('UTC');
 
         $teamsData = Team::select('id','team','last32','last16','quarterfinal','semifinal','final')->orderBy('team')->get();
-        $eventsKnockout = Event::pluck('is_knockout','id');
+        $eventsKnockout = Event::select('id','is_knockout','round_type')->get()
+            ->keyBy('id')
+            ->map(fn($e) => ['ko' => (int)$e->is_knockout, 'round' => $e->round_type]);
         $usedByEvent = Game::select('id','event_id','home_team_id','away_team_id')->get()
             ->groupBy('event_id')
             ->map(fn($g) => $g->mapWithKeys(fn($r) => [$r->id => array_values(array_filter([$r->home_team_id, $r->away_team_id]))]));

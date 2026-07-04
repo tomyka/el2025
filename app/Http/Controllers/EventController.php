@@ -21,6 +21,7 @@ class EventController extends Controller
        $event->event_day = $request->input('eventDay');
        $event->event_survival = (($request->input('eventSurvival') == "on") ? 1 : 0);
        $event->is_knockout    = (($request->input('isKnockout')    == "on") ? 1 : 0);
+       $event->round_type     = $request->input('round_type') ?: null;
        $event->active = (($request->input('active') == "on") ? 1 : 0);
        $event->rate = $request->input('rate');
        $event->save();
@@ -44,6 +45,7 @@ class EventController extends Controller
         $event->event_day = $request->input('eventDay');
         $event->event_survival = (($request->input('eventSurvival') == "on") ? 1 : 0);
         $event->is_knockout    = (($request->input('isKnockout')    == "on") ? 1 : 0);
+        $event->round_type     = $request->input('round_type') ?: null;
         $event->active = (($request->input('active') == "on") ? 1 : 0);
         $event->rate = $request->input('rate');
         $event->save();
