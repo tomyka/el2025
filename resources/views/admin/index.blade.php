@@ -18,15 +18,17 @@
         ['icon' => 'bi-chat-left-text',  'label' => __('Žinutės'),                      'route' => 'admin.messages',              'super' => true],
         ['icon' => 'bi-bar-chart-fill',  'label' => __('Eigos taškai'),                 'route' => 'admin.updateStandingPoints',  'super' => true, 'minLevel' => 9],
         ['icon' => 'bi-trophy-fill',     'label' => __('Lygos'),                        'route' => 'admin.leagues',               'super' => false],
-        ['icon' => 'bi-clock-history',   'label' => __('Auditas'),                      'route' => 'admin.audit',                 'super' => true],
-        ['icon' => 'bi-globe2',          'label' => __('Turnyrai'),                     'route' => 'admin.tournaments',           'super' => true],
+        ['icon' => 'bi-clock-history',   'label' => __('Auditas'),                      'route' => 'admin.audit',                       'super' => true],
+        ['icon' => 'bi-globe2',          'label' => __('Turnyrai'),                     'route' => 'admin.tournaments',                 'super' => true],
+        ['icon' => 'bi-arrow-repeat',    'label' => __('Perskaičiuoti taškus'),         'route' => 'admin.recalculateAllGamePoints',     'super' => true, 'minLevel' => 9, 'confirm' => __('Perskaičiuoti visų rungtynių taškus? Tai gali užtrukti.')],
     ];
     @endphp
 
     @foreach($sections as $s)
     @if(session('admin') >= ($s['minLevel'] ?? ($s['super'] ? 5 : 1)))
     <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-        <a href="{{ route($s['route']) }}" class="admin-tile">
+        <a href="{{ route($s['route']) }}" class="admin-tile"
+           @if(!empty($s['confirm'])) onclick="return confirm('{{ addslashes($s['confirm']) }}')" @endif>
             <i class="bi {{ $s['icon'] }} admin-tile-icon"></i>
             <span class="admin-tile-label">{{ $s['label'] }}</span>
         </a>
