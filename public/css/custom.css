@@ -2342,7 +2342,7 @@ button.sb-tab::after { display: none; }
 
 .ae-id           { font-size: .75rem; color: var(--sb-muted); }
 .ae-tiny-input   { width: 52px; display: inline-block; padding: 2px 4px; }
-.ae-tiny-select  { width: 104px; display: inline-block; padding: 2px 4px; }
+.ae-tiny-select  { width: 70px; display: inline-block; padding: 2px 4px; }
 
 .ae-action-btn {
   width: 30px; height: 30px; padding: 0;
