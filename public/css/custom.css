@@ -3431,24 +3431,41 @@ a.lb-name-link:hover {
 .af-user { font-weight: 700; }
 .af-text { color: var(--sb-muted); }
 
-/* Locale flag dropdown */
+/* Locale flag dropdown — base (settings / profile cards) */
 .sb-locale-select {
-    background: var(--sb-surface, #fff);
-    border: 1px solid var(--sb-border, #dee2e6);
+    background: var(--sb-card, #fff);
+    border: 1px solid var(--sb-border, #e2e8f0);
     border-radius: 6px;
-    padding: 2px 4px;
-    font-size: .85rem;
-    color: var(--sb-text, #212529);
+    padding: 5px 10px;
+    font-size: .88rem;
+    color: var(--sb-text, #0d1117);
     cursor: pointer;
     transition: border-color .15s;
     width: auto;
 }
-.sb-locale-select:focus {
-    outline: none;
-    border-color: var(--sb-accent, #0d6efd);
+.sb-locale-select:focus { outline: none; border-color: var(--sb-accent, #1d4ed8); }
+.sb-locale-select--full { padding: 7px 12px; font-size: .9rem; }
+
+/* In the dark topnav bar — match theme-btn/nav-link aesthetic */
+.sb-topnav .sb-locale-select {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 6px;
+    color: #64748b;
+    font-size: .82rem;
+    padding: 3px 5px;
+    transition: border-color .15s, color .15s;
 }
-.sb-locale-select--full {
-    font-size: .9rem;
-    padding: 6px 10px;
+.sb-topnav .sb-locale-select:hover { border-color: rgba(255,255,255,.3); color: #e2e8f0; }
+.sb-topnav .sb-locale-select:focus { outline: none; border-color: rgba(59,130,246,.55); }
+
+/* In the blue mobile panel — white-on-blue aesthetic */
+.sb-mobile-collapse .sb-locale-select {
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.22);
+    color: #fff;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: .88rem;
 }
 .af-players { font-size: .75rem; font-weight: 600; color: var(--sb-text); margin-top: 1px; }
