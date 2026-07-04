@@ -3458,6 +3458,7 @@ a.lb-name-link:hover {
 }
 .sb-topnav .sb-locale-select:hover { border-color: rgba(255,255,255,.3); color: #e2e8f0; }
 .sb-topnav .sb-locale-select:focus { outline: none; border-color: rgba(59,130,246,.55); }
+.sb-topnav .sb-locale-form { display: inline-flex; align-items: center; }
 
 /* In the blue mobile panel — white-on-blue aesthetic */
 .sb-mobile-collapse .sb-locale-select {
