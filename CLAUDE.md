@@ -68,28 +68,25 @@ Scoring runs in `PointResultController::doUpdateGamePoints()` via `ScoringServic
 | **Bingo** | `2.5` pts for exact score; else `0` |
 | **Odds** | Baked into winner bonus — `odds` comes from `game_odds` table, scaled by crowd vote |
 
-#### Knockout games (`is_knockout = 1`) — winner bonus
-
-Series/winner points are **all-or-nothing** — partial credit is intentionally not awarded:
+#### Knockout games (`is_knockout = 1`) — winner bonus (CONFIRMED RULE — do not change without explicit user instruction)
 
 | Scenario | Winner bonus |
 |---|---|
-| ✅ Correct advancing team **and** correct ending (90-min win or draw→pens) | `(1 + predictedOdds) × 5.0` |
-| 🟡 Correct advancing team **but** wrong ending | `0` — no series points |
+| ✅ Correct advancing team **and** correct ending (90-min win or draw→pens) | `(1 + predictedOdds) × 5.0` — full |
+| 🟡 Correct advancing team **but** wrong ending (predicted pens, won in 90min, or vice-versa) | `(1 + actualOdds) × 2.5` — half |
+| 🟡 Correct draw→pens path **but** wrong penalty winner | `(1 + actualOdds) × 2.5` — half |
 | ❌ Wrong advancing team | `0` |
 
-> **Do not add partial/half credit here.** This has been attempted and reverted multiple times. The rule is intentional: series points require both the right team and the right ending.
+`actualOdds` is used for partial cases so half credit can never exceed full credit.
 
 Bingo for knockout: exact score **and** correct penalty winner (if applicable) → `2.5` pts.
 
 #### Prediction summary label colours (`resources/views/summary/results.blade.php`)
 
-The amber label indicates a partially correct prediction even though it scores **0 series points** — the label and the scoring are intentionally decoupled for knockout games:
-
 | Label colour | Condition |
 |---|---|
 | 🟢 Green (`sr-pred-ok`) | Fully correct: right team + right ending (or group game with correct winner) |
-| 🟡 Amber (`sr-pred-partial`) | Knockout only: correct advancing team but wrong ending — **0 series points, but still amber** |
+| 🟡 Amber (`sr-pred-partial`) | Knockout only: correct advancing team but wrong ending — gets **half** series points |
 | 🔴 Red (`sr-pred-fail`) | Wrong advancing team / wrong direction |
 | ⚪ Grey (`sr-pred-pending`) | Game not yet scored |
 
