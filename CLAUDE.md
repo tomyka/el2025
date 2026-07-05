@@ -57,13 +57,50 @@ Most controllers read directly from `session()` instead of receiving parameters.
 
 ### Scoring logic (PointResultController)
 
-Points per game = all of the below × event `rate`:
-- **Winner**: 50 pts if predicted correct winner
-- **Difference**: `50 - |actual_diff - predicted_diff|`
-- **Bingo**: 50 pts for exact score, 20 pts if goal difference delta is zero
-- **Odds**: `winner_points × (odds - 1)` — only if winner was correct; odds come from `game_odds` table
+Scoring runs in `PointResultController::doUpdateGamePoints()` via `ScoringService`. All components are summed and multiplied by the event `rate`.
 
-When a result is saved by an admin, `ResultController::updateResult()` chains: generate missing predictions → update survival → update game odds → recalculate all `point_results` for that game.
+#### Group stage games (`is_knockout = 0`)
+
+| Component | Formula |
+|---|---|
+| **Table points** | Lookup from `points_calculations` table keyed by `{actual_home_diff}_{actual_away_diff}` — covers winner + goal difference together |
+| **Winner bonus** | `(1 + odds) × 5.0` if predicted winner/draw direction matches; else `0` |
+| **Bingo** | `2.5` pts for exact score; else `0` |
+| **Odds** | Baked into winner bonus — `odds` comes from `game_odds` table, scaled by crowd vote |
+
+#### Knockout games (`is_knockout = 1`) — three-tier winner bonus
+
+The winner bonus has three tiers. **Do not collapse these to two tiers** (this mistake has been made before):
+
+| Scenario | Winner bonus |
+|---|---|
+| ✅ Correct advancing team **and** correct ending (90-min win or draw→pens) | `(1 + predictedOdds) × 5.0` — full credit |
+| 🟡 Correct advancing team **but** wrong ending (predicted 90-min, went to pens, or vice-versa) | `(1 + actualOdds) × 2.5` — half credit |
+| 🟡 Correct draw→pens path **but** wrong penalty winner | `(1 + actualOdds) × 2.5` — half credit |
+| ❌ Wrong advancing team | `0` |
+
+`actualOdds` is used for partial cases (not `predictedOdds`) so half credit can never exceed full credit.
+
+Bingo for knockout: exact score **and** correct penalty winner (if applicable) → `2.5` pts.
+
+#### Prediction summary label colours (`resources/views/summary/results.blade.php`)
+
+Labels mirror the scoring tiers — the coloring and the scoring must stay consistent:
+
+| Label colour | Condition |
+|---|---|
+| 🟢 Green (`sr-pred-ok`) | Full credit: `winner_points ≥ 5` and (group game, or knockout with correct ending) |
+| 🟡 Amber (`sr-pred-partial`) | Knockout only: correct advancing team but wrong ending (derived from raw scores, not from `winner_points`) |
+| 🔴 Red (`sr-pred-fail`) | Wrong advancing team / wrong direction |
+| ⚪ Grey (`sr-pred-pending`) | Game not yet scored |
+
+> **Warning:** The partial label detection reads team IDs from scores directly (same logic as `PointResultController`), not from `winner_points`, because `winner_points` is 0 for half-credit cases. Do not rewrite the partial detection to use `winner_points`.
+
+#### Recalculating scores
+
+After any scoring change, visit `/admin/recalculateAllGamePoints` (superadmin only) to reprocess all scored games. There is also a tile on the admin dashboard.
+
+When a single result is saved by an admin, `ResultController::updateResult()` chains: generate missing predictions → update survival → update game odds → recalculate all `point_results` for that game.
 
 ### Controllers that are called as classes (not via routing)
 
