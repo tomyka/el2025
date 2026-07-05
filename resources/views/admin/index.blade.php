@@ -16,11 +16,11 @@
         ['icon' => 'bi-flag-fill',       'label' => __('Komandos'),                     'route' => 'admin.teams',                 'super' => true],
         ['icon' => 'bi-calendar-event',  'label' => __('Turai'),                        'route' => 'admin.events',                'super' => true],
         ['icon' => 'bi-chat-left-text',  'label' => __('Žinutės'),                      'route' => 'admin.messages',              'super' => true],
-        ['icon' => 'bi-bar-chart-fill',  'label' => __('Eigos taškai'),                 'route' => 'admin.updateStandingPoints',  'super' => true, 'minLevel' => 9],
         ['icon' => 'bi-trophy-fill',     'label' => __('Lygos'),                        'route' => 'admin.leagues',               'super' => false],
         ['icon' => 'bi-clock-history',   'label' => __('Auditas'),                      'route' => 'admin.audit',                       'super' => true],
         ['icon' => 'bi-globe2',          'label' => __('Turnyrai'),                     'route' => 'admin.tournaments',                 'super' => true],
         ['icon' => 'bi-arrow-repeat',    'label' => __('Perskaičiuoti taškus'),         'route' => 'admin.recalculateAllGamePoints',     'super' => true, 'minLevel' => 9, 'confirm' => __('Perskaičiuoti visų rungtynių taškus? Tai gali užtrukti.')],
+        ['icon' => 'bi-bar-chart-fill',  'label' => __('Eigos taškai'),                 'route' => 'admin.updateStandingPoints',  'super' => true, 'minLevel' => 9],
     ];
     @endphp
 
