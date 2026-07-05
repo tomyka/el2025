@@ -120,7 +120,21 @@ $openInit = $grouped->mapWithKeys(
                             $penWinnerOk      = !($game->is_knockout && $actualIsDraw && $game->game_winner_id)
                                                 || ($pred->game_winner_id == $game->game_winner_id);
                             $correct          = $scored && $pred->winner_points >= 5 && (!$game->is_knockout || ($endingOk && $penWinnerOk));
-                            $partial          = $scored && !$correct && $game->is_knockout && $pred->winner_points >= 5;
+                            // Determine advancing team from scores (mirrors PointResultController logic)
+                            $predWinnerId     = null;
+                            if ($hasPred) {
+                                if ((int)$pred->home_team_score > (int)$pred->away_team_score)      $predWinnerId = $game->home_team_id;
+                                elseif ((int)$pred->home_team_score < (int)$pred->away_team_score)  $predWinnerId = $game->away_team_id;
+                                else                                                                 $predWinnerId = $pred->game_winner_id;
+                            }
+                            $actualWinnerId   = null;
+                            if ($scored) {
+                                if ((int)$game->home_team_score > (int)$game->away_team_score)      $actualWinnerId = $game->home_team_id;
+                                elseif ((int)$game->home_team_score < (int)$game->away_team_score)  $actualWinnerId = $game->away_team_id;
+                                else                                                                 $actualWinnerId = $game->game_winner_id;
+                            }
+                            $gotRightTeam     = $predWinnerId && $actualWinnerId && (int)$predWinnerId === (int)$actualWinnerId;
+                            $partial          = $scored && !$correct && $game->is_knockout && $gotRightTeam;
                         @endphp
                         @if($scored)
                         <a href="#" class="sr-pts-link"
