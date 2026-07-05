@@ -371,21 +371,11 @@ class PointResultController extends Controller
 
                 $odds = $this->scoring->getGameOdds($predHome, $predAway, $gameOdds, $predictionResult->generated);
 
-                if ($predWinnerId !== null && $actualWinnerId !== null && (int) $predWinnerId === (int) $actualWinnerId) {
-                    if ($predIsDraw === $actualIsDraw) {
-                        // Correct advancing team AND correct ending — full credit
-                        $winnerBonus = (1 + $odds) * 5.0;
-                    } else {
-                        // Correct advancing team but wrong ending (90-min vs penalties) — half credit
-                        // Uses actualOdds so partial credit never exceeds full credit
-                        $winnerBonus = (1 + $actualOdds) * 2.5;
-                        $odds        = $actualOdds;
-                    }
-                } elseif ($predIsDraw && $actualIsDraw) {
-                    // Correct draw/penalties path but wrong penalty winner — half credit
-                    $winnerBonus = (1 + $actualOdds) * 2.5;
-                    $odds        = $actualOdds;
+                if ($predWinnerId !== null && $actualWinnerId !== null && (int) $predWinnerId === (int) $actualWinnerId && $predIsDraw === $actualIsDraw) {
+                    // Correct advancing team AND correct ending — full series points
+                    $winnerBonus = (1 + $odds) * 5.0;
                 } else {
+                    // Partially correct (right team, wrong ending) or wrong team — no series points
                     $winnerBonus = 0.0;
                     $odds        = 0.0;
                 }

@@ -68,33 +68,32 @@ Scoring runs in `PointResultController::doUpdateGamePoints()` via `ScoringServic
 | **Bingo** | `2.5` pts for exact score; else `0` |
 | **Odds** | Baked into winner bonus — `odds` comes from `game_odds` table, scaled by crowd vote |
 
-#### Knockout games (`is_knockout = 1`) — three-tier winner bonus
+#### Knockout games (`is_knockout = 1`) — winner bonus
 
-The winner bonus has three tiers. **Do not collapse these to two tiers** (this mistake has been made before):
+Series/winner points are **all-or-nothing** — partial credit is intentionally not awarded:
 
 | Scenario | Winner bonus |
 |---|---|
-| ✅ Correct advancing team **and** correct ending (90-min win or draw→pens) | `(1 + predictedOdds) × 5.0` — full credit |
-| 🟡 Correct advancing team **but** wrong ending (predicted 90-min, went to pens, or vice-versa) | `(1 + actualOdds) × 2.5` — half credit |
-| 🟡 Correct draw→pens path **but** wrong penalty winner | `(1 + actualOdds) × 2.5` — half credit |
+| ✅ Correct advancing team **and** correct ending (90-min win or draw→pens) | `(1 + predictedOdds) × 5.0` |
+| 🟡 Correct advancing team **but** wrong ending | `0` — no series points |
 | ❌ Wrong advancing team | `0` |
 
-`actualOdds` is used for partial cases (not `predictedOdds`) so half credit can never exceed full credit.
+> **Do not add partial/half credit here.** This has been attempted and reverted multiple times. The rule is intentional: series points require both the right team and the right ending.
 
 Bingo for knockout: exact score **and** correct penalty winner (if applicable) → `2.5` pts.
 
 #### Prediction summary label colours (`resources/views/summary/results.blade.php`)
 
-Labels mirror the scoring tiers — the coloring and the scoring must stay consistent:
+The amber label indicates a partially correct prediction even though it scores **0 series points** — the label and the scoring are intentionally decoupled for knockout games:
 
 | Label colour | Condition |
 |---|---|
-| 🟢 Green (`sr-pred-ok`) | Full credit: `winner_points ≥ 5` and (group game, or knockout with correct ending) |
-| 🟡 Amber (`sr-pred-partial`) | Knockout only: correct advancing team but wrong ending (derived from raw scores, not from `winner_points`) |
+| 🟢 Green (`sr-pred-ok`) | Fully correct: right team + right ending (or group game with correct winner) |
+| 🟡 Amber (`sr-pred-partial`) | Knockout only: correct advancing team but wrong ending — **0 series points, but still amber** |
 | 🔴 Red (`sr-pred-fail`) | Wrong advancing team / wrong direction |
 | ⚪ Grey (`sr-pred-pending`) | Game not yet scored |
 
-> **Warning:** The partial label detection reads team IDs from scores directly (same logic as `PointResultController`), not from `winner_points`, because `winner_points` is 0 for half-credit cases. Do not rewrite the partial detection to use `winner_points`.
+> **Warning:** The partial label detection reads team IDs from scores directly (same logic as `PointResultController`), not from `winner_points` — because `winner_points` is 0 for these cases. Do not rewrite the partial detection to use `winner_points`.
 
 #### Recalculating scores
 
