@@ -92,6 +92,13 @@ Bingo for knockout: exact score **and** correct penalty winner (if applicable) �
 
 > **Warning:** The partial label detection reads team IDs from scores directly (same logic as `PointResultController`), not from `winner_points` — because `winner_points` is 0 for these cases. Do not rewrite the partial detection to use `winner_points`.
 
+#### Streak (Serija) bonus
+
+The streak bonus rewards consecutive fully correct predictions. **Partial (amber) predictions do NOT count toward the streak** — only fully correct (green) ones do. Implemented in `recalculateStreaks()`:
+
+- Group stage: `winner_points > 0 && !generated` → counts as correct
+- Knockout: additionally requires right team **and** correct ending — partial (right team, wrong ending) breaks the streak
+
 #### Recalculating scores
 
 After any scoring change, visit `/admin/recalculateAllGamePoints` (superadmin only) to reprocess all scored games. There is also a tile on the admin dashboard.

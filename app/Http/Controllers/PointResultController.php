@@ -49,7 +49,7 @@ class PointResultController extends Controller
         if (empty($gameIDs)) return;
 
         // Load all point_results for scored games, joined with prediction_results
-        // to determine whether each prediction was genuine (not auto-generated)
+        // to determine whether each prediction was genuine and fully correct.
         $rows = DB::table('point_results')
             ->leftJoin('prediction_results', function ($join) {
                 $join->on('point_results.user_id', '=', 'prediction_results.user_id')
@@ -64,7 +64,16 @@ class PointResultController extends Controller
                 'point_results.game_id',
                 'point_results.winner_points',
                 'prediction_results.generated',
-                'events.rate'
+                'prediction_results.home_team_score as pred_home',
+                'prediction_results.away_team_score as pred_away',
+                'prediction_results.game_winner_id as pred_winner_id',
+                'games.home_team_score as actual_home',
+                'games.away_team_score as actual_away',
+                'games.game_winner_id as actual_winner_id',
+                'games.home_team_id',
+                'games.away_team_id',
+                'events.rate',
+                'events.is_knockout'
             )
             ->get();
 
@@ -72,7 +81,20 @@ class PointResultController extends Controller
         $lookup  = [];
         $userIDs = [];
         foreach ($rows as $row) {
-            $correct = $row->winner_points > 0 && !$row->generated;
+            if ($row->generated || $row->winner_points <= 0) {
+                $correct = false;
+            } elseif ($row->is_knockout && $row->pred_home !== null && $row->pred_away !== null) {
+                // Knockout: streak only for fully correct (right team AND right ending)
+                $predIsDraw   = ((int) $row->pred_home === (int) $row->pred_away);
+                $actualIsDraw = ((int) $row->actual_home === (int) $row->actual_away);
+                $predWinner   = $predIsDraw ? $row->pred_winner_id
+                    : ($row->pred_home > $row->pred_away ? $row->home_team_id : $row->away_team_id);
+                $actualWinner = $actualIsDraw ? $row->actual_winner_id
+                    : ($row->actual_home > $row->actual_away ? $row->home_team_id : $row->away_team_id);
+                $correct = (int) $predWinner === (int) $actualWinner && $predIsDraw === $actualIsDraw;
+            } else {
+                $correct = true; // group stage: winner_points > 0 already means correct direction
+            }
             $lookup[$row->user_id][$row->game_id] = ['id' => $row->id, 'correct' => $correct, 'rate' => (float) $row->rate];
             $userIDs[$row->user_id] = true;
         }
