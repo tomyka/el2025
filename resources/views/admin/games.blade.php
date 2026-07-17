@@ -176,9 +176,13 @@ function agmRebuildTeams() {
         }
     });
 
+    // final and 3rd-place games both pick from teams marked "semifinal" —
+    // by kickoff time no team is marked "final" yet, since that only happens after the semifinals are played
+    var lookupRound = (roundType === 'final') ? 'semifinal' : roundType;
+
     var eligible = agmTeamsData.filter(function(t) {
         if (!isKO) return true;
-        if (roundType) return t[roundType] == 1;
+        if (lookupRound) return t[lookupRound] == 1;
         // no round_type set: show any team with at least one knockout flag
         return t.last32 || t.last16 || t.quarterfinal || t.semifinal || t.final;
     });
