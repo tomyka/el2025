@@ -111,7 +111,7 @@ class PointStandingController extends Controller
             'final'        => $teams->contains(fn($t) => $t->final > 0),
         ];
 
-        $stageBase = ['last32' => 3, 'last16' => 6, 'quarterfinal' => 12, 'semifinal' => 120];
+        $stageBase = ['last32' => 3, 'last16' => 6, 'quarterfinal' => 9, 'semifinal' => 12];
 
         foreach ($teams as $team) {
             $teamPreds = $allPreds->get($team->id, collect());

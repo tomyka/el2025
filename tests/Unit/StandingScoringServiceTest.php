@@ -78,28 +78,28 @@ class StandingScoringServiceTest extends TestCase
 
     public function test_final_points_champion_correctly_predicted(): void
     {
-        $this->assertSame(720, $this->service->calculateFinalPoints(1, 1));
+        $this->assertSame(36, $this->service->calculateFinalPoints(1, 1));
     }
 
     public function test_final_points_runner_up_correctly_predicted(): void
     {
-        $this->assertSame(600, $this->service->calculateFinalPoints(2, 2));
+        $this->assertSame(30, $this->service->calculateFinalPoints(2, 2));
     }
 
     public function test_final_points_third_correctly_predicted(): void
     {
-        $this->assertSame(420, $this->service->calculateFinalPoints(3, 3));
+        $this->assertSame(24, $this->service->calculateFinalPoints(3, 3));
     }
 
     public function test_final_points_fourth_correctly_predicted(): void
     {
-        $this->assertSame(420, $this->service->calculateFinalPoints(4, 4));
+        $this->assertSame(18, $this->service->calculateFinalPoints(4, 4));
     }
 
     public function test_final_points_champion_predicted_runner_up(): void
     {
-        // teamFinal=1, predictedFinal=2 → 480
-        $this->assertSame(480, $this->service->calculateFinalPoints(1, 2));
+        // teamFinal=1, predictedFinal=2 → 27
+        $this->assertSame(27, $this->service->calculateFinalPoints(1, 2));
     }
 
     public function test_final_points_null_inputs_return_zero(): void

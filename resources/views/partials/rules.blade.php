@@ -203,6 +203,7 @@
                         <tr><td>{{ __('Šešioliktfinalis') }}</td><td class="rules-pts-pos">3</td><td class="rules-pts-zero">0</td></tr>
                         <tr><td>{{ __('Aštuntfinalis') }}</td><td class="rules-pts-pos">6</td><td class="rules-pts-zero">0</td></tr>
                         <tr><td>{{ __('Ketvirtfinalis') }}</td><td class="rules-pts-pos">9</td><td class="rules-pts-zero">0</td></tr>
+                        <tr><td>{{ __('Pusfinalis') }}</td><td class="rules-pts-pos">12</td><td class="rules-pts-zero">0</td></tr>
                     </tbody>
                 </table>
             </div>
