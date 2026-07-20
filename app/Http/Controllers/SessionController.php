@@ -29,23 +29,23 @@ class SessionController extends Controller
             ->where('events.tournament_id', $tournamentID)
             ->first();
 
+        $firstGame = DB::table('games')
+            ->join('events', 'games.event_id', '=', 'events.id')
+            ->where('events.tournament_id', $tournamentID)
+            ->orderBy('games.game_date')
+            ->select('games.game_date')
+            ->first();
+
+        $disabled = $firstGame
+            ? (strtotime('-0 day', (new DateTime($firstGame->game_date))->getTimestamp()) < time() ? 'disabled' : '')
+            : '';
+
         if ($event) {
             $eventID       = $event->id;
             $eventSurvival = $event->event_survival;
             $eventRate     = $event->rate;
-
-            $firstGame = DB::table('games')
-                ->join('events', 'games.event_id', '=', 'events.id')
-                ->where('events.tournament_id', $tournamentID)
-                ->orderBy('games.game_date')
-                ->select('games.game_date')
-                ->first();
-
-            $disabled = $firstGame
-                ? (strtotime('-0 day', (new DateTime($firstGame->game_date))->getTimestamp()) < time() ? 'disabled' : '')
-                : '';
         } else {
-            $eventID = 0; $eventSurvival = 0; $eventRate = 0; $disabled = '';
+            $eventID = 0; $eventSurvival = 0; $eventRate = 0;
         }
 
         $timeDifference = Setting::where('setting', 'timeDifference')->first();

@@ -22,16 +22,18 @@ class PredictionStandingController extends Controller
 
     public function updatePredictionStandingsUser(UpdatePredictionStandingRequest $request)
     {
-        $predictionStanding = PredictionStanding::where('id', $request->input('prediction_standingID'))
-            ->where('user_id', session('userID'))
-            ->firstOrFail();
-        $predictionStanding->group_position = $request->input('groupPosition');
-        $predictionStanding->last32         = $request->input('last32');
-        $predictionStanding->last16         = $request->input('last16');
-        $predictionStanding->quarterfinal   = $request->input('quarterfinal');
-        $predictionStanding->semifinal      = $request->input('semifinal');
-        $predictionStanding->final          = $request->input('final');
-        $predictionStanding->save();
+        if (session('disabled') !== 'disabled') {
+            $predictionStanding = PredictionStanding::where('id', $request->input('prediction_standingID'))
+                ->where('user_id', session('userID'))
+                ->firstOrFail();
+            $predictionStanding->group_position = $request->input('groupPosition');
+            $predictionStanding->last32         = $request->input('last32');
+            $predictionStanding->last16         = $request->input('last16');
+            $predictionStanding->quarterfinal   = $request->input('quarterfinal');
+            $predictionStanding->semifinal      = $request->input('semifinal');
+            $predictionStanding->final          = $request->input('final');
+            $predictionStanding->save();
+        }
 
         return response()->json(['success' => true]);
     }

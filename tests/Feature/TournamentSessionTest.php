@@ -76,4 +76,31 @@ class TournamentSessionTest extends TestCase
         // eventID must be 0 because no games exist in the user's tournament
         $this->assertEquals(0, session('eventID'));
     }
+
+    public function test_disabled_stays_set_once_tournament_finished(): void
+    {
+        [$user, $tournament] = $this->makeUserInTournament();
+
+        $event = Event::create([
+            'event' => 'Final', 'event_day' => 1, 'event_survival' => 0,
+            'active' => 1, 'rate' => 1, 'tournament_id' => $tournament->id,
+        ]);
+        $teamA = Team::create(['team' => 'A', 'tournament_id' => $tournament->id]);
+        $teamB = Team::create(['team' => 'B', 'tournament_id' => $tournament->id]);
+        Game::create([
+            'game_date' => now()->subDay(),
+            'event_id' => $event->id,
+            'home_team_id' => $teamA->id,
+            'away_team_id' => $teamB->id,
+            'home_team_score' => 1,
+            'away_team_score' => 0,
+        ]);
+
+        (new \App\Http\Controllers\SessionController())->setSession($user);
+
+        // Tournament is fully scored (no unscored games left), but the first
+        // game already started in the past, so predictions must stay locked.
+        $this->assertEquals(0, session('eventID'));
+        $this->assertEquals('disabled', session('disabled'));
+    }
 }
