@@ -65,6 +65,22 @@
         if ($actual === null) return 'sst-pending';
         return ($predicted == 1 && $actual == 1) ? 'sst-hit' : 'sst-miss';
     };
+
+    // Final placement prediction, judged against whether the team even reached the semifinal.
+    $finalClass = function($predictedFinal, $predictedSemifinal, $team) {
+        if ($predictedFinal === null || $predictedFinal == 0) return 'sst-none';
+
+        // Team was eliminated before the semifinal — this pick can never come true.
+        if ($team->semifinal !== null && (int)$team->semifinal !== 1) return 'sst-miss';
+
+        // Team's final placement isn't decided yet (semis or the final/3rd-place game still pending).
+        if ($team->final === null) return 'sst-pending';
+
+        if ((int)$predictedFinal === (int)$team->final) return 'sst-hit';
+
+        // Wrong exact final slot, but correctly predicted this team would reach the semifinal.
+        return $predictedSemifinal == 1 ? 'sst-partial' : 'sst-miss';
+    };
 @endphp
 
 <div class="sb-card p-0">
@@ -74,6 +90,7 @@
         <div class="sst-legend-colors">
             <span class="sst-badge sst-hit">2</span> {{ __('Pataikyta') }}
             <span class="sst-badge sst-miss">2</span> {{ __('Praleista') }}
+            <span class="sst-badge sst-partial">2</span> {{ __('Pusfinalis teisingas, finalo vieta ne') }}
             <span class="sst-badge sst-pending">2</span> {{ __('Laukiama') }}
             <span class="sst-badge sst-none">2</span> {{ __('Nespėta') }}
         </div>
@@ -126,7 +143,7 @@
                             $l16Class = $advClass($ps->last16, $team->last16);
                             $qfClass  = $advClass($ps->quarterfinal, $team->quarterfinal);
                             $sfClass  = $advClass($ps->semifinal, $team->semifinal);
-                            $finClass = $cmpClass($ps->final, $team->final);
+                            $finClass = $finalClass($ps->final, $ps->semifinal, $team);
 
                             $l32Symbol = $ps->last32 ? ($l32Class === 'sst-miss' ? '✗' : '✓') : '—';
                             $l16Symbol = $ps->last16 ? ($l16Class === 'sst-miss' ? '✗' : '✓') : '—';

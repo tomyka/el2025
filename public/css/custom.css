@@ -2774,6 +2774,7 @@ button.sb-tab::after { display: none; }
 .sst-pop-badge { cursor: help; }
 .sst-hit     { background: #dcfce7; color: #15803d; }
 .sst-miss    { background: #fee2e2; color: #dc2626; }
+.sst-partial { background: #fef3c7; color: #d97706; }
 .sst-pending { background: #fef9c3; color: #a16207; }
 .sst-none    { background: #f1f5f9; color: #cbd5e1; }
 
@@ -3121,6 +3122,7 @@ p { margin: 0; }
 [data-theme="dark"] .sst-pred-cell    { border-color: var(--sb-border); }
 [data-theme="dark"] .sst-hit     { background: rgba(34,197,94,.15); color: #86efac; }
 [data-theme="dark"] .sst-miss    { background: rgba(239,68,68,.15); color: #fca5a5; }
+[data-theme="dark"] .sst-partial { background: rgba(251,191,36,.15); color: #fcd34d; }
 [data-theme="dark"] .sst-pending { background: rgba(245,158,11,.15); color: #fcd34d; }
 [data-theme="dark"] .sst-none    { background: #253047; color: var(--sb-muted); }
 
