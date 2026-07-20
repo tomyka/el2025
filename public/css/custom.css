@@ -2771,6 +2771,7 @@ button.sb-tab::after { display: none; }
   line-height: 1;
   flex-shrink: 0;
 }
+.sst-pop-badge { cursor: help; }
 .sst-hit     { background: #dcfce7; color: #15803d; }
 .sst-miss    { background: #fee2e2; color: #dc2626; }
 .sst-pending { background: #fef9c3; color: #a16207; }

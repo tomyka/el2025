@@ -13,6 +13,19 @@
 
     $teamGroups = $teams->groupBy('group_name')->sortKeys();
 
+    if (!function_exists('sstBadgePopover')) {
+        function sstBadgePopover(string $label, float $ptVal, ?float $odVal): string {
+            $rows = "<div class='sr-pop-row'><span>{$label}</span><strong>" . number_format($ptVal, 1) . "</strong></div>";
+            if ($odVal !== null && $odVal > 0 && $ptVal > 0) {
+                $base = round($ptVal / (1 + $odVal), 1);
+                $mult = round(1 + $odVal, 2);
+                $rows .= "<div class='sr-pop-row sr-pop-sub'><span>" . __('Spėjimo taškai') . "</span><strong>" . number_format($base, 1) . "</strong></div>"
+                       . "<div class='sr-pop-row sr-pop-sub'><span>" . __('Koeficientas') . "</span><strong>×" . number_format($mult, 2) . "</strong></div>";
+            }
+            return "<div class='sr-pop sr-pop-sm'>{$rows}</div>";
+        }
+    }
+
     if (!function_exists('sstPopover')) {
         function sstPopover(object $ps): string {
             $stageDefs = [
@@ -106,25 +119,56 @@
                                + ($ps->quarterfinal_points ?? 0) + ($ps->semifinal_points ?? 0) + ($ps->final_points ?? 0))
                             : 0;
                         $pop = $ps && $totalPts > 0 ? sstPopover($ps) : '';
+
+                        if ($ps) {
+                            $gpClass  = $cmpClass($ps->group_position, $team->group_position);
+                            $l32Class = $advClass($ps->last32, $team->last32);
+                            $l16Class = $advClass($ps->last16, $team->last16);
+                            $qfClass  = $advClass($ps->quarterfinal, $team->quarterfinal);
+                            $sfClass  = $advClass($ps->semifinal, $team->semifinal);
+                            $finClass = $cmpClass($ps->final, $team->final);
+
+                            $l32Symbol = $ps->last32 ? ($l32Class === 'sst-miss' ? '✗' : '✓') : '—';
+                            $l16Symbol = $ps->last16 ? ($l16Class === 'sst-miss' ? '✗' : '✓') : '—';
+                            $qfSymbol  = $ps->quarterfinal ? ($qfClass === 'sst-miss' ? '✗' : '✓') : '—';
+                            $sfSymbol  = $ps->semifinal ? ($sfClass === 'sst-miss' ? '✗' : '✓') : '—';
+
+                            $gpPop  = ($ps->group_position ?? null) !== null
+                                ? sstBadgePopover(__('Grupės vieta'), (float)($ps->group_position_points ?? 0), isset($ps->group_position_odds) ? (float)$ps->group_position_odds : null)
+                                : '';
+                            $l32Pop = $ps->last32 ? sstBadgePopover(__('Šešioliktfinalis'), (float)($ps->last32_points ?? 0), isset($ps->last32_odds) ? (float)$ps->last32_odds : null) : '';
+                            $l16Pop = $ps->last16 ? sstBadgePopover(__('Aštuntfinalis'),    (float)($ps->last16_points ?? 0), isset($ps->last16_odds) ? (float)$ps->last16_odds : null) : '';
+                            $qfPop  = $ps->quarterfinal ? sstBadgePopover(__('Ketvirtfinalis'), (float)($ps->quarterfinal_points ?? 0), isset($ps->quarterfinal_odds) ? (float)$ps->quarterfinal_odds : null) : '';
+                            $sfPop  = $ps->semifinal ? sstBadgePopover(__('Pusfinalis'), (float)($ps->semifinal_points ?? 0), isset($ps->semifinal_odds) ? (float)$ps->semifinal_odds : null) : '';
+                            $finPop = ($ps->final ?? null) !== null
+                                ? sstBadgePopover(__('Finalas'), (float)($ps->final_points ?? 0), isset($ps->final_odds) ? (float)$ps->final_odds : null)
+                                : '';
+                        }
                     @endphp
                     <td class="sst-pred-cell">
                         @if($ps)
                         <div class="sst-badges">
                             {{-- Group position --}}
-                            <span class="sst-badge sst-pos {{ $cmpClass($ps->group_position, $team->group_position) }}"
-                                  title="{{ __('Grupės vieta: spėta') }} {{ $ps->group_position ?? '—' }}">{{ $ps->group_position ?? '—' }}</span>
+                            <span class="sst-badge sst-pos {{ $gpClass }} {{ $gpPop ? 'sst-pop-badge' : '' }}"
+                                  @if($gpPop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $gpPop }}" @else title="{{ __('Grupės vieta: spėta') }} {{ $ps->group_position ?? '—' }}" @endif
+                            >{{ $ps->group_position ?? '—' }}</span>
                             {{-- Knockout rounds --}}
-                            <span class="sst-badge {{ $advClass($ps->last32, $team->last32) }}"
-                                  title="1/16">{{ $ps->last32 ? '✓' : '—' }}</span>
-                            <span class="sst-badge {{ $advClass($ps->last16, $team->last16) }}"
-                                  title="1/8">{{ $ps->last16 ? '✓' : '—' }}</span>
-                            <span class="sst-badge {{ $advClass($ps->quarterfinal, $team->quarterfinal) }}"
-                                  title="1/4">{{ $ps->quarterfinal ? '✓' : '—' }}</span>
-                            <span class="sst-badge {{ $advClass($ps->semifinal, $team->semifinal) }}"
-                                  title="1/2">{{ $ps->semifinal ? '✓' : '—' }}</span>
+                            <span class="sst-badge {{ $l32Class }} {{ $l32Pop ? 'sst-pop-badge' : '' }}"
+                                  @if($l32Pop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $l32Pop }}" @else title="1/16" @endif
+                            >{{ $l32Symbol }}</span>
+                            <span class="sst-badge {{ $l16Class }} {{ $l16Pop ? 'sst-pop-badge' : '' }}"
+                                  @if($l16Pop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $l16Pop }}" @else title="1/8" @endif
+                            >{{ $l16Symbol }}</span>
+                            <span class="sst-badge {{ $qfClass }} {{ $qfPop ? 'sst-pop-badge' : '' }}"
+                                  @if($qfPop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $qfPop }}" @else title="1/4" @endif
+                            >{{ $qfSymbol }}</span>
+                            <span class="sst-badge {{ $sfClass }} {{ $sfPop ? 'sst-pop-badge' : '' }}"
+                                  @if($sfPop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $sfPop }}" @else title="1/2" @endif
+                            >{{ $sfSymbol }}</span>
                             {{-- Final position --}}
-                            <span class="sst-badge sst-fin {{ $cmpClass($ps->final, $team->final) }}"
-                                  title="{{ __('Finalas: spėta') }} {{ $ps->final ?? '—' }}">{{ $ps->final ?? '—' }}</span>
+                            <span class="sst-badge sst-fin {{ $finClass }} {{ $finPop ? 'sst-pop-badge' : '' }}"
+                                  @if($finPop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $finPop }}" @else title="{{ __('Finalas: spėta') }} {{ $ps->final ?? '—' }}" @endif
+                            >{{ $ps->final ?? '—' }}</span>
                         </div>
                         @if($totalPts > 0)
                         <div class="sst-pts {{ $pop ? 'pst-hoverable' : '' }}"
@@ -144,7 +188,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.pst-hoverable[data-bs-toggle="popover"]').forEach(function (el) {
+    document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (el) {
         new bootstrap.Popover(el, { container: 'body', html: true });
     });
 });
