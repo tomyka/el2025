@@ -167,29 +167,29 @@
                         <div class="sst-badges">
                             {{-- Group position --}}
                             <span class="sst-badge sst-pos {{ $gpClass }} {{ $gpPop ? 'sst-pop-badge' : '' }}"
-                                  @if($gpPop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $gpPop }}" @else title="{{ __('Grupės vieta: spėta') }} {{ $ps->group_position ?? '—' }}" @endif
+                                  @if($gpPop) data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $gpPop }}" @else title="{{ __('Grupės vieta: spėta') }} {{ $ps->group_position ?? '—' }}" @endif
                             >{{ $ps->group_position ?? '—' }}</span>
                             {{-- Knockout rounds --}}
                             <span class="sst-badge {{ $l32Class }} {{ $l32Pop ? 'sst-pop-badge' : '' }}"
-                                  @if($l32Pop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $l32Pop }}" @else title="1/16" @endif
+                                  @if($l32Pop) data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $l32Pop }}" @else title="1/16" @endif
                             >{{ $l32Symbol }}</span>
                             <span class="sst-badge {{ $l16Class }} {{ $l16Pop ? 'sst-pop-badge' : '' }}"
-                                  @if($l16Pop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $l16Pop }}" @else title="1/8" @endif
+                                  @if($l16Pop) data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $l16Pop }}" @else title="1/8" @endif
                             >{{ $l16Symbol }}</span>
                             <span class="sst-badge {{ $qfClass }} {{ $qfPop ? 'sst-pop-badge' : '' }}"
-                                  @if($qfPop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $qfPop }}" @else title="1/4" @endif
+                                  @if($qfPop) data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $qfPop }}" @else title="1/4" @endif
                             >{{ $qfSymbol }}</span>
                             <span class="sst-badge {{ $sfClass }} {{ $sfPop ? 'sst-pop-badge' : '' }}"
-                                  @if($sfPop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $sfPop }}" @else title="1/2" @endif
+                                  @if($sfPop) data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $sfPop }}" @else title="1/2" @endif
                             >{{ $sfSymbol }}</span>
                             {{-- Final position --}}
                             <span class="sst-badge sst-fin {{ $finClass }} {{ $finPop ? 'sst-pop-badge' : '' }}"
-                                  @if($finPop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $finPop }}" @else title="{{ __('Finalas: spėta') }} {{ $ps->final ?? '—' }}" @endif
+                                  @if($finPop) data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $finPop }}" @else title="{{ __('Finalas: spėta') }} {{ $ps->final ?? '—' }}" @endif
                             >{{ $ps->final ?? '—' }}</span>
                         </div>
                         @if($totalPts > 0)
                         <div class="sst-pts {{ $pop ? 'pst-hoverable' : '' }}"
-                             @if($pop) data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $pop }}" @endif
+                             @if($pop) data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-html="true" data-bs-placement="top" data-bs-content="{{ $pop }}" @endif
                         >{{ number_format($totalPts, 1) }}</div>
                         @endif
                         @endif
@@ -202,13 +202,5 @@
         </table>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (el) {
-        new bootstrap.Popover(el, { container: 'body', html: true });
-    });
-});
-</script>
 
 @endsection
