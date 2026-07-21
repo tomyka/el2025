@@ -42,7 +42,7 @@
 <div class="sb-card mb-4">
 
   {{-- Tournament header --}}
-  <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:20px">
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px">
     <div style="flex:1;min-width:0">
       <div style="font-weight:700;font-size:1.15rem;margin-bottom:4px">{{ $t->name }}</div>
       <div style="font-size:.8rem;color:var(--sb-muted)">
@@ -65,7 +65,7 @@
           @if($inLeague)
           <form method="POST" action="{{ route('tournament.enter', $t->slug) }}">
             @csrf
-            <button class="sb-btn sb-btn-primary">Žaisti →</button>
+            <button class="sb-btn sb-btn-primary">{{ $d['allGamesFinished'] ? 'Peržiūrėti →' : 'Žaisti →' }}</button>
           </form>
           @endif
         @endauth

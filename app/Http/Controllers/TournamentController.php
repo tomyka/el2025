@@ -33,7 +33,21 @@ class TournamentController extends Controller
         foreach ($tournaments as $t) {
             $tid = $t->id;
 
+            $gameCount = DB::table('games')
+                ->join('events', 'games.event_id', '=', 'events.id')
+                ->where('events.tournament_id', $tid)
+                ->count();
+            $unscoredCount = DB::table('games')
+                ->join('events', 'games.event_id', '=', 'events.id')
+                ->where('events.tournament_id', $tid)
+                ->whereNull('games.home_team_score')
+                ->count();
+
             $tData[$tid] = [
+                // All games played, even if an admin hasn't flipped the tournament's
+                // status to "finished" yet.
+                'allGamesFinished' => $gameCount > 0 && $unscoredCount === 0,
+
                 'participantCount' => LeagueMember::whereHas('league', fn ($q) => $q->where('tournament_id', $tid))
                     ->where('is_guest', false)->where('active', true)->distinct()->count('user_id'),
 
