@@ -8,6 +8,7 @@ use App\Models\League;
 use App\Models\LeagueMember;
 use App\Models\Team;
 use App\Models\User;
+use App\Models\UserSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -18,6 +19,7 @@ class ChartXssTest extends TestCase
     public function test_chart_escapes_html_in_username(): void
     {
         $user = User::factory()->create(['username' => '</script><script>alert(1)']);
+        UserSetting::factory()->create(['user_id' => $user->id, 'active' => true]);
         $league = League::factory()->create();
         LeagueMember::factory()->create(['user_id' => $user->id, 'league_id' => $league->id]);
 
@@ -47,6 +49,7 @@ class ChartXssTest extends TestCase
     public function test_chart_escapes_html_in_team_names(): void
     {
         $user = User::factory()->create(['username' => 'normal']);
+        UserSetting::factory()->create(['user_id' => $user->id, 'active' => true]);
         $league = League::factory()->create();
         LeagueMember::factory()->create(['user_id' => $user->id, 'league_id' => $league->id]);
 

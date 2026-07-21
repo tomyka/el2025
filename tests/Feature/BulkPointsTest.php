@@ -12,6 +12,7 @@ use App\Models\League;
 use App\Models\LeagueMember;
 use App\Models\Team;
 use App\Models\User;
+use App\Models\UserSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -31,6 +32,7 @@ class BulkPointsTest extends TestCase
     private function makeUser(): User
     {
         $user = User::factory()->create();
+        UserSetting::factory()->create(['user_id' => $user->id, 'active' => true]);
         LeagueMember::factory()->create([
             'user_id' => $user->id,
             'league_id' => $this->league->id,

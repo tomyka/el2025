@@ -38,7 +38,7 @@ class PredictionReminderCommandTest extends TestCase
     private function makeOptedInUser(): User
     {
         $user = User::factory()->create(['email' => 'test@example.com']);
-        UserSetting::create([
+        UserSetting::factory()->create([
             'user_id' => $user->id,
             'admin' => 0,
             'receive_reminders' => true,
@@ -84,7 +84,7 @@ class PredictionReminderCommandTest extends TestCase
         Carbon::setTestNow('2026-06-19 20:00:00');
         $game = $this->makeGame('2026-06-19 20:30:00');
         $user = User::factory()->create(['email' => 'out@example.com']);
-        UserSetting::create(['user_id' => $user->id, 'admin' => 0, 'receive_reminders' => false]);
+        UserSetting::factory()->create(['user_id' => $user->id, 'admin' => 0, 'receive_reminders' => false]);
 
         $this->artisan('reminders:send')->assertExitCode(0);
 

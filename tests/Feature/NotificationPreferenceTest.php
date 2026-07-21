@@ -15,7 +15,7 @@ class NotificationPreferenceTest extends TestCase
     private function makeUser(bool $reminders = false): User
     {
         $user = User::factory()->create();
-        UserSetting::create([
+        UserSetting::factory()->create([
             'user_id' => $user->id,
             'admin' => 0,
             'receive_reminders' => $reminders,

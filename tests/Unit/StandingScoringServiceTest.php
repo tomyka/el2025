@@ -19,30 +19,30 @@ class StandingScoringServiceTest extends TestCase
 
     public function test_group_position_exact_match(): void
     {
-        // |1 - 1| = 0, (48 - 1 - 0) * 10 = 470
-        $this->assertSame(470, $this->service->calculateGroupPositionPoints(1, 1, 48));
+        // |1 - 1| = 0, 3 - 0 = 3
+        $this->assertSame(3, $this->service->calculateGroupPositionPoints(1, 1));
     }
 
     public function test_group_position_off_by_one(): void
     {
-        // |1 - 2| = 1, (48 - 1 - 1) * 10 = 460
-        $this->assertSame(460, $this->service->calculateGroupPositionPoints(1, 2, 48));
+        // |1 - 2| = 1, 3 - 1 = 2
+        $this->assertSame(2, $this->service->calculateGroupPositionPoints(1, 2));
     }
 
     public function test_group_position_max_difference(): void
     {
-        // |1 - 4| = 3, (48 - 1 - 3) * 10 = 440
-        $this->assertSame(440, $this->service->calculateGroupPositionPoints(1, 4, 48));
+        // |1 - 4| = 3, max(0, 3 - 3) = 0
+        $this->assertSame(0, $this->service->calculateGroupPositionPoints(1, 4));
     }
 
     public function test_group_position_zero_returns_zero(): void
     {
-        $this->assertSame(0, $this->service->calculateGroupPositionPoints(0, 1, 48));
+        $this->assertSame(0, $this->service->calculateGroupPositionPoints(0, 1));
     }
 
     public function test_group_position_null_prediction_returns_zero(): void
     {
-        $this->assertSame(0, $this->service->calculateGroupPositionPoints(1, null, 48));
+        $this->assertSame(0, $this->service->calculateGroupPositionPoints(1, null));
     }
 
     // ── calculateKnockoutPoints ──────────────────────────────────────────────

@@ -158,7 +158,10 @@ class LeagueMembershipTest extends TestCase
 
         $this->actingAs($user)->withSession(['userID' => $user->id])
             ->post(route('leagues.leave'), ['leagueID' => $publicLeague->id])
-            ->assertStatus(403);
+            ->assertRedirect()
+            ->assertSessionHas('error');
+
+        $this->assertDatabaseHas('league_members', ['league_id' => $publicLeague->id, 'user_id' => $user->id]);
     }
 
     public function test_league_admin_can_search_users(): void

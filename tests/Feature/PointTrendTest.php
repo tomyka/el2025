@@ -9,6 +9,7 @@ use App\Models\League;
 use App\Models\LeagueMember;
 use App\Models\Team;
 use App\Models\User;
+use App\Models\UserSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -26,6 +27,7 @@ class PointTrendTest extends TestCase
     private function makeUser(int $leagueId): User
     {
         $user = User::factory()->create();
+        UserSetting::factory()->create(['user_id' => $user->id, 'active' => true]);
         LeagueMember::factory()->create(['user_id' => $user->id, 'league_id' => $leagueId, 'is_guest' => 0]);
 
         return $user;

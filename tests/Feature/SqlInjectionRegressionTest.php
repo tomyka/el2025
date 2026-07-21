@@ -173,6 +173,7 @@ class SqlInjectionRegressionTest extends TestCase
     public function test_get_team_statistics_returns_stats(): void
     {
         $data = $this->seedMinimal();
+        $data['game']->update(['home_team_score' => 2, 'away_team_score' => 1]);
 
         $controller = new TeamStatisticsController;
         $result = $controller->getTeamStatistics($data['homeTeam']->id);
