@@ -16,7 +16,7 @@ class LeagueMembershipTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        League::create(['name' => 'Public League', 'is_public' => true]);
+        League::create(['name' => 'Public League', 'is_public' => true, 'tournament_id' => 1]);
     }
 
     public function test_authenticated_user_can_create_league(): void
@@ -24,7 +24,7 @@ class LeagueMembershipTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->withSession(['userID' => $user->id])
+            ->withSession(['userID' => $user->id, 'tournamentID' => 1])
             ->post(route('leagues.create'), [
                 'name' => 'Friends Liga',
                 'description' => 'Our private league',
@@ -36,6 +36,7 @@ class LeagueMembershipTest extends TestCase
         $this->assertNotNull($league);
         $this->assertEquals($user->id, $league->owner_id);
         $this->assertFalse($league->is_public);
+        $this->assertEquals(1, $league->tournament_id);
 
         $member = LeagueMember::where('league_id', $league->id)
             ->where('user_id', $user->id)
@@ -49,7 +50,7 @@ class LeagueMembershipTest extends TestCase
         $owner = User::factory()->create();
         $invitee = User::factory()->create();
 
-        $league = League::create(['name' => 'Test', 'is_public' => false, 'owner_id' => $owner->id]);
+        $league = League::create(['name' => 'Test', 'is_public' => false, 'owner_id' => $owner->id, 'tournament_id' => 1]);
         LeagueMember::create(['league_id' => $league->id, 'user_id' => $owner->id, 'is_admin' => true, 'active' => false, 'is_guest' => false]);
 
         $this->actingAs($owner)->withSession(['userID' => $owner->id])
@@ -70,7 +71,7 @@ class LeagueMembershipTest extends TestCase
         $owner = User::factory()->create();
         $invitee = User::factory()->create();
 
-        $league = League::create(['name' => 'Test', 'is_public' => false, 'owner_id' => $owner->id]);
+        $league = League::create(['name' => 'Test', 'is_public' => false, 'owner_id' => $owner->id, 'tournament_id' => 1]);
         LeagueMember::create(['league_id' => $league->id, 'user_id' => $owner->id, 'is_admin' => true, 'active' => false, 'is_guest' => false]);
 
         $invite = LeagueInvite::create([
@@ -96,7 +97,7 @@ class LeagueMembershipTest extends TestCase
         $owner = User::factory()->create();
         $invitee = User::factory()->create();
 
-        $league = League::create(['name' => 'Test', 'is_public' => false, 'owner_id' => $owner->id]);
+        $league = League::create(['name' => 'Test', 'is_public' => false, 'owner_id' => $owner->id, 'tournament_id' => 1]);
 
         $invite = LeagueInvite::create([
             'league_id' => $league->id,
@@ -118,7 +119,7 @@ class LeagueMembershipTest extends TestCase
         $user = User::factory()->create();
 
         $publicLeague = League::where('is_public', true)->first();
-        $privateLeague = League::create(['name' => 'Private', 'is_public' => false, 'owner_id' => $user->id]);
+        $privateLeague = League::create(['name' => 'Private', 'is_public' => false, 'owner_id' => $user->id, 'tournament_id' => 1]);
 
         LeagueMember::create(['league_id' => $publicLeague->id,  'user_id' => $user->id, 'active' => true,  'is_guest' => false, 'is_admin' => false]);
         LeagueMember::create(['league_id' => $privateLeague->id, 'user_id' => $user->id, 'active' => false, 'is_guest' => false, 'is_admin' => true]);
@@ -136,7 +137,7 @@ class LeagueMembershipTest extends TestCase
         $owner = User::factory()->create();
         $user = User::factory()->create();
         $publicLeague = League::where('is_public', true)->first();
-        $privateLeague = League::create(['name' => 'Private', 'is_public' => false, 'owner_id' => $owner->id]);
+        $privateLeague = League::create(['name' => 'Private', 'is_public' => false, 'owner_id' => $owner->id, 'tournament_id' => 1]);
 
         LeagueMember::create(['league_id' => $publicLeague->id,  'user_id' => $user->id, 'active' => false, 'is_guest' => false, 'is_admin' => false]);
         LeagueMember::create(['league_id' => $privateLeague->id, 'user_id' => $user->id, 'active' => true,  'is_guest' => false, 'is_admin' => false]);
@@ -168,7 +169,7 @@ class LeagueMembershipTest extends TestCase
     {
         $admin = User::factory()->create(['username' => 'tomas_k', 'name' => 'Tomas', 'surname' => 'K']);
         $other = User::factory()->create(['username' => 'john_d',  'name' => 'John',  'surname' => 'D']);
-        $league = League::create(['name' => 'Test', 'is_public' => false, 'owner_id' => $admin->id]);
+        $league = League::create(['name' => 'Test', 'is_public' => false, 'owner_id' => $admin->id, 'tournament_id' => 1]);
         LeagueMember::create(['league_id' => $league->id, 'user_id' => $admin->id, 'is_admin' => true, 'active' => false, 'is_guest' => false]);
 
         $this->actingAs($admin)->withSession(['userID' => $admin->id])

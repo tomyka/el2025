@@ -217,7 +217,16 @@ class TournamentController extends Controller
         $data['is_public'] = $request->boolean('is_public');
         $data['survival_game'] = $request->boolean('survival_game');
 
-        Tournament::create($data);
+        $tournament = Tournament::create($data);
+
+        // Every tournament needs its own public league - new registrations and
+        // guest views join/read this one, scoped by tournament_id so it never
+        // gets confused with another tournament's leagues.
+        League::create([
+            'name' => $tournament->name,
+            'is_public' => true,
+            'tournament_id' => $tournament->id,
+        ]);
 
         return redirect()->route('admin.tournaments')->with('info', __('Turnyras sukurtas.'));
     }

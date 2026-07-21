@@ -18,6 +18,7 @@ class LeagueController extends Controller
         $userId = session('userID');
 
         $myLeagues = LeagueMember::where('user_id', $userId)
+            ->whereHas('league', fn ($q) => $q->where('tournament_id', session('tournamentID')))
             ->with(['league', 'league.members.user', 'league.pendingInvites.invitedUser'])
             ->get();
 
@@ -50,6 +51,7 @@ class LeagueController extends Controller
             'penalty_step' => $request->input('penalty_step'),
             'use_league_odds' => (bool) $request->input('use_league_odds', false),
             'reward_description' => $request->input('reward_description'),
+            'tournament_id' => session('tournamentID'),
         ]);
 
         LeagueMember::firstOrCreate(

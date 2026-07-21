@@ -33,7 +33,7 @@
     </a>
   </div>
   @else
-  <a href="{{ route('login') }}" class="sb-btn sb-btn-primary">Prisijungti ir dalyvauti</a>
+  <a href="{{ route('login', ['tournament' => $tournament->slug]) }}" class="sb-btn sb-btn-primary">Prisijungti ir dalyvauti</a>
   @endauth
 </div>
 @endif

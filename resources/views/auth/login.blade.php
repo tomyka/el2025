@@ -61,7 +61,7 @@
 
         @php $firstGame = \App\Models\Game::min('game_date'); @endphp
         @if (is_null($firstGame) || now()->lt($firstGame))
-        <a href="{{ route('register') }}" class="sb-auth-bottom-link">
+        <a href="{{ route('register', request()->only('tournament')) }}" class="sb-auth-bottom-link">
             {{ __('Neturite paskyros? Sukurkite') }}
         </a>
         @endif

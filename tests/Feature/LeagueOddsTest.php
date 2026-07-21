@@ -25,6 +25,7 @@ class LeagueOddsTest extends TestCase
             'name' => 'Big League',
             'is_public' => false,
             'use_league_odds' => $useLeagueOdds,
+            'tournament_id' => 1,
         ]);
 
         $users = [];
@@ -75,7 +76,7 @@ class LeagueOddsTest extends TestCase
     {
         $game = $this->makeGame();
 
-        $league = League::create(['name' => 'Small', 'is_public' => false, 'use_league_odds' => true]);
+        $league = League::create(['name' => 'Small', 'is_public' => false, 'use_league_odds' => true, 'tournament_id' => 1]);
         for ($i = 0; $i < 5; $i++) {
             $user = User::factory()->create();
             LeagueMember::create(['league_id' => $league->id, 'user_id' => $user->id, 'active' => false, 'is_guest' => false, 'is_admin' => false]);
@@ -90,7 +91,7 @@ class LeagueOddsTest extends TestCase
     public function test_league_admin_can_toggle_use_league_odds(): void
     {
         $owner = User::factory()->create();
-        $league = League::create(['name' => 'Tog', 'is_public' => false, 'owner_id' => $owner->id, 'use_league_odds' => false]);
+        $league = League::create(['name' => 'Tog', 'is_public' => false, 'owner_id' => $owner->id, 'use_league_odds' => false, 'tournament_id' => 1]);
         LeagueMember::create(['league_id' => $league->id, 'user_id' => $owner->id, 'is_admin' => true, 'active' => true, 'is_guest' => false]);
 
         $this->actingAs($owner)->withSession(['userID' => $owner->id])

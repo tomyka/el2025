@@ -83,7 +83,7 @@
             <button class="sb-btn sb-btn-primary">Prisijungti anksti →</button>
           </form>
         @else
-          <a href="{{ route('login') }}" class="sb-btn sb-btn-primary">Registruotis →</a>
+          <a href="{{ route('login', ['tournament' => $t->slug]) }}" class="sb-btn sb-btn-primary">Registruotis →</a>
         @endauth
       @else
         <a href="{{ route('tournament.show', $t->slug) }}" class="sb-btn sb-btn-secondary">Peržiūrėti rezultatus →</a>

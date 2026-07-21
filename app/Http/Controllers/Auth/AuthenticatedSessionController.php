@@ -12,8 +12,15 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
-    public function create(): View
+    public function create(Request $request): View
     {
+        // Remember which tournament a guest arrived here to join (e.g. from a
+        // tournament's public page) so registration can join them to that
+        // tournament's league instead of an unrelated default one.
+        if ($request->filled('tournament')) {
+            $request->session()->put('intended_tournament', $request->query('tournament'));
+        }
+
         return view('auth.login');
     }
 

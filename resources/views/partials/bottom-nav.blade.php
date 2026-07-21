@@ -19,7 +19,9 @@
     @endif
     @php
         $activeLeagueId = session('leagueID');
-        $myLeagues = \App\Models\LeagueMember::where('user_id', session('userID'))->with('league')->get();
+        $myLeagues = \App\Models\LeagueMember::where('user_id', session('userID'))
+            ->whereHas('league', fn ($q) => $q->where('tournament_id', session('tournamentID')))
+            ->with('league')->get();
         $activeLeagueName = $myLeagues->firstWhere('league_id', $activeLeagueId)?->league->name ?? 'Lyga';
     @endphp
     <div class="dropup">

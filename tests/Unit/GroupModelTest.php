@@ -30,6 +30,7 @@ class GroupModelTest extends TestCase
             'reward_description' => '2.5x payout',
             'is_public' => false,
             'use_league_odds' => false,
+            'tournament_id' => 1,
         ]);
 
         $this->assertNotNull($league->id);

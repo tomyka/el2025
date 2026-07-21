@@ -18,10 +18,17 @@ class RegisteredUserController extends Controller
 {
     use ChecksRegistrationDeadline;
 
-    public function create(): View|RedirectResponse
+    public function create(Request $request): View|RedirectResponse
     {
         if (! $this->registrationIsOpen()) {
             return redirect()->route('main');
+        }
+
+        // Remember which tournament a guest arrived here to join (e.g. from a
+        // tournament's public page) so registration can join them to that
+        // tournament's league instead of an unrelated default one.
+        if ($request->filled('tournament')) {
+            $request->session()->put('intended_tournament', $request->query('tournament'));
         }
 
         return view('auth.register');

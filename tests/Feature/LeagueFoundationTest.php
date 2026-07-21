@@ -23,6 +23,7 @@ class LeagueFoundationTest extends TestCase
         $league = League::create([
             'name' => 'Test League',
             'is_public' => true,
+            'tournament_id' => 1,
         ]);
 
         $this->assertDatabaseHas('leagues', ['name' => 'Test League', 'is_public' => true]);
@@ -31,7 +32,7 @@ class LeagueFoundationTest extends TestCase
 
     public function test_league_member_belongs_to_league(): void
     {
-        $league = League::create(['name' => 'My League', 'is_public' => false]);
+        $league = League::create(['name' => 'My League', 'is_public' => false, 'tournament_id' => 1]);
         $user = User::factory()->create();
 
         LeagueMember::create([
@@ -90,8 +91,8 @@ class LeagueFoundationTest extends TestCase
     {
         session(['guest' => 0]);
 
-        $leagueA = League::create(['name' => 'League A', 'is_public' => false]);
-        $leagueB = League::create(['name' => 'League B', 'is_public' => false]);
+        $leagueA = League::create(['name' => 'League A', 'is_public' => false, 'tournament_id' => 1]);
+        $leagueB = League::create(['name' => 'League B', 'is_public' => false, 'tournament_id' => 1]);
 
         $userA = User::factory()->create();
         $userB = User::factory()->create();

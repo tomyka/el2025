@@ -1,7 +1,9 @@
 @php
     $userId = session('userID');
     $activeLeagueId = session('leagueID');
-    $myLeagues = \App\Models\LeagueMember::where('user_id', $userId)->with('league')->get();
+    $myLeagues = \App\Models\LeagueMember::where('user_id', $userId)
+        ->whereHas('league', fn ($q) => $q->where('tournament_id', session('tournamentID')))
+        ->with('league')->get();
     $activeLeague = $myLeagues->firstWhere('league_id', $activeLeagueId);
     $pendingInviteCount = \App\Models\LeagueInvite::where('invited_user_id', $userId)->where('status', 'pending')->count();
 @endphp
