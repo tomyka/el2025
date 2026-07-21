@@ -51,7 +51,9 @@ class PointSurvivalController extends Controller
             })
             ->leftjoin('teams as t', 'ps.team_id', '=', 't.id') // Inner join on teams to get team name
             ->where('e.rate', 1) // Filter for events with rate = 1
-            ->where('e.id', '<=', $eventID) // Filter for events with id <= 1
+            // eventID is 0 once the tournament is finished (no active event left) -
+            // that means show every event, not none.
+            ->when((int) $eventID > 0, fn ($q) => $q->where('e.id', '<=', $eventID))
             ->orderBy('e.id') // Order by user_id
             ->orderBy('u.id') // Order by user_id
             ->get();

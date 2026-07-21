@@ -222,7 +222,9 @@ class PredictionResultController extends Controller
     {
         $now = Carbon::now('UTC')->format('Y-m-d H:i:s');
         $guest = session('guest');
-        $eventIDValue = ($eventID === '') ? 99 : (int) $eventID;
+        // eventID is '' (no filter selected) or 0 (tournament finished, no active
+        // event left) - both mean "show every event," not "show none."
+        $eventIDValue = ($eventID === '' || (int) $eventID === 0) ? 99 : (int) $eventID;
 
         $predictionGames = DB::select('select
                           pr.game_id,

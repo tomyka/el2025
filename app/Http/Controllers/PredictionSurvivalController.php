@@ -51,7 +51,11 @@ class PredictionSurvivalController extends Controller
     public function getPredictionSurvivalSummary()
     {
         $eventID = session('eventID');
-        $events = Event::where('id', '<=', $eventID)->where('rate', '=', 1)->get();
+        // eventID is 0 once the tournament is finished (no active event left) -
+        // that means show every event, not none.
+        $events = Event::when((int) $eventID > 0, fn ($q) => $q->where('id', '<=', $eventID))
+            ->where('rate', '=', 1)
+            ->get();
         $users = User::all();
 
         $predictionSurvivalController = new PointSurvivalController;
