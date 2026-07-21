@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\LeagueMember;
 use App\Models\PointResult;
 use App\Models\PointStanding;
 use App\Models\PointSurvival;
@@ -9,7 +10,6 @@ use App\Models\PredictionResult;
 use App\Models\PredictionStanding;
 use App\Models\PredictionSurvival;
 use App\Models\User;
-use App\Models\LeagueMember;
 use App\Models\UserSetting;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;

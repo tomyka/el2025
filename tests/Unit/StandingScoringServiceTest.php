@@ -12,7 +12,7 @@ class StandingScoringServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new StandingScoringService();
+        $this->service = new StandingScoringService;
     }
 
     // ── calculateGroupPositionPoints ─────────────────────────────────────────

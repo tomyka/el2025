@@ -1,7 +1,9 @@
 <?php
+
 namespace Tests\Feature;
 
 use App\Models\League;
+use App\Models\LeagueInvite;
 use App\Models\LeagueMember;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,9 +26,9 @@ class LeagueMembershipTest extends TestCase
         $this->actingAs($user)
             ->withSession(['userID' => $user->id])
             ->post(route('leagues.create'), [
-                'name'         => 'Friends Liga',
-                'description'  => 'Our private league',
-                'base_fee'     => 10,
+                'name' => 'Friends Liga',
+                'description' => 'Our private league',
+                'base_fee' => 10,
                 'penalty_step' => 5,
             ])->assertRedirect(route('leagues.index'));
 
@@ -44,7 +46,7 @@ class LeagueMembershipTest extends TestCase
 
     public function test_league_admin_can_invite_user(): void
     {
-        $owner   = User::factory()->create();
+        $owner = User::factory()->create();
         $invitee = User::factory()->create();
 
         $league = League::create(['name' => 'Test', 'is_public' => false, 'owner_id' => $owner->id]);
@@ -52,30 +54,30 @@ class LeagueMembershipTest extends TestCase
 
         $this->actingAs($owner)->withSession(['userID' => $owner->id])
             ->post(route('leagues.invite'), [
-                'leagueID'      => $league->id,
+                'leagueID' => $league->id,
                 'invitedUserID' => $invitee->id,
             ])->assertRedirect();
 
         $this->assertDatabaseHas('league_invites', [
-            'league_id'       => $league->id,
+            'league_id' => $league->id,
             'invited_user_id' => $invitee->id,
-            'status'          => 'pending',
+            'status' => 'pending',
         ]);
     }
 
     public function test_user_can_accept_invite(): void
     {
-        $owner   = User::factory()->create();
+        $owner = User::factory()->create();
         $invitee = User::factory()->create();
 
         $league = League::create(['name' => 'Test', 'is_public' => false, 'owner_id' => $owner->id]);
         LeagueMember::create(['league_id' => $league->id, 'user_id' => $owner->id, 'is_admin' => true, 'active' => false, 'is_guest' => false]);
 
-        $invite = \App\Models\LeagueInvite::create([
-            'league_id'       => $league->id,
+        $invite = LeagueInvite::create([
+            'league_id' => $league->id,
             'invited_user_id' => $invitee->id,
-            'invited_by_id'   => $owner->id,
-            'status'          => 'pending',
+            'invited_by_id' => $owner->id,
+            'status' => 'pending',
         ]);
 
         $this->actingAs($invitee)->withSession(['userID' => $invitee->id])
@@ -84,23 +86,23 @@ class LeagueMembershipTest extends TestCase
 
         $this->assertDatabaseHas('league_members', [
             'league_id' => $league->id,
-            'user_id'   => $invitee->id,
+            'user_id' => $invitee->id,
         ]);
         $this->assertDatabaseMissing('league_invites', ['id' => $invite->id]);
     }
 
     public function test_user_can_decline_invite(): void
     {
-        $owner   = User::factory()->create();
+        $owner = User::factory()->create();
         $invitee = User::factory()->create();
 
         $league = League::create(['name' => 'Test', 'is_public' => false, 'owner_id' => $owner->id]);
 
-        $invite = \App\Models\LeagueInvite::create([
-            'league_id'       => $league->id,
+        $invite = LeagueInvite::create([
+            'league_id' => $league->id,
             'invited_user_id' => $invitee->id,
-            'invited_by_id'   => $owner->id,
-            'status'          => 'pending',
+            'invited_by_id' => $owner->id,
+            'status' => 'pending',
         ]);
 
         $this->actingAs($invitee)->withSession(['userID' => $invitee->id])
@@ -115,7 +117,7 @@ class LeagueMembershipTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $publicLeague  = League::where('is_public', true)->first();
+        $publicLeague = League::where('is_public', true)->first();
         $privateLeague = League::create(['name' => 'Private', 'is_public' => false, 'owner_id' => $user->id]);
 
         LeagueMember::create(['league_id' => $publicLeague->id,  'user_id' => $user->id, 'active' => true,  'is_guest' => false, 'is_admin' => false]);
@@ -132,8 +134,8 @@ class LeagueMembershipTest extends TestCase
     public function test_user_can_leave_private_league(): void
     {
         $owner = User::factory()->create();
-        $user  = User::factory()->create();
-        $publicLeague  = League::where('is_public', true)->first();
+        $user = User::factory()->create();
+        $publicLeague = League::where('is_public', true)->first();
         $privateLeague = League::create(['name' => 'Private', 'is_public' => false, 'owner_id' => $owner->id]);
 
         LeagueMember::create(['league_id' => $publicLeague->id,  'user_id' => $user->id, 'active' => false, 'is_guest' => false, 'is_admin' => false]);
@@ -149,7 +151,7 @@ class LeagueMembershipTest extends TestCase
 
     public function test_user_cannot_leave_public_league(): void
     {
-        $user         = User::factory()->create();
+        $user = User::factory()->create();
         $publicLeague = League::where('is_public', true)->first();
 
         LeagueMember::create(['league_id' => $publicLeague->id, 'user_id' => $user->id, 'active' => true, 'is_guest' => false, 'is_admin' => false]);

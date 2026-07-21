@@ -20,13 +20,14 @@ class SingleGamePredictionTest extends TestCase
             'event' => 'Test', 'event_day' => 1,
             'event_survival' => 0, 'active' => 1, 'rate' => 1,
         ]);
-        $home = Team::create(['team' => 'Home' . uniqid()]);
-        $away = Team::create(['team' => 'Away' . uniqid()]);
+        $home = Team::create(['team' => 'Home'.uniqid()]);
+        $away = Team::create(['team' => 'Away'.uniqid()]);
+
         return Game::create([
-            'event_id'     => $event->id,
+            'event_id' => $event->id,
             'home_team_id' => $home->id,
             'away_team_id' => $away->id,
-            'game_date'    => $started
+            'game_date' => $started
                 ? now()->subHours(2)->toDateTimeString()
                 : now()->addHours(3)->toDateTimeString(),
         ]);

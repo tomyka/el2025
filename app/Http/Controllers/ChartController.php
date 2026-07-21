@@ -9,7 +9,7 @@ class ChartController extends Controller
     public function getChartData()
     {
         $groupID = session('leagueID');
-        $guest   = session('guest', 0);
+        $guest = session('guest', 0);
 
         // All scored games in chronological order
         $games = DB::select('
@@ -64,39 +64,39 @@ class ChartController extends Controller
 
         $datasets = [];
         foreach ($users as $idx => $user) {
-            $color      = $user->color_code ?: $palette[$idx % count($palette)];
+            $color = $user->color_code ?: $palette[$idx % count($palette)];
             $cumulative = 0;
-            $data       = [];
+            $data = [];
             foreach ($gameIds as $gameId) {
                 $cumulative += $pointsMap[$user->id][$gameId] ?? 0;
                 $data[] = round($cumulative, 1);
             }
             $datasets[] = [
-                'label'           => $user->username,
-                'data'            => $data,
-                'borderColor'     => $color,
-                'backgroundColor' => $color . '26',
-                'borderWidth'     => 2,
-                'pointRadius'     => count($games) > 40 ? 0 : 3,
-                'pointHoverRadius'=> 6,
-                'tension'         => 0.3,
-                'fill'            => false,
+                'label' => $user->username,
+                'data' => $data,
+                'borderColor' => $color,
+                'backgroundColor' => $color.'26',
+                'borderWidth' => 2,
+                'pointRadius' => count($games) > 40 ? 0 : 3,
+                'pointHoverRadius' => 6,
+                'tension' => 0.3,
+                'fill' => false,
             ];
         }
 
         // Game labels for tooltip (team abbreviations)
         $gameLabels = array_map(
-            fn($g) => strtoupper(substr($g->home_team, 0, 3))
-                    . ' - '
-                    . strtoupper(substr($g->away_team, 0, 3)),
+            fn ($g) => strtoupper(substr($g->home_team, 0, 3))
+                    .' - '
+                    .strtoupper(substr($g->away_team, 0, 3)),
             $games
         );
 
         $jsonFlags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
 
         return view('summary.chart')
-            ->with('datasets',   json_encode($datasets,   $jsonFlags))
+            ->with('datasets', json_encode($datasets, $jsonFlags))
             ->with('gameLabels', json_encode($gameLabels, $jsonFlags))
-            ->with('gameCount',  count($games));
+            ->with('gameCount', count($games));
     }
 }

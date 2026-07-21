@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -12,10 +13,10 @@ class Tournament extends Model
     ];
 
     protected $casts = [
-        'is_public'      => 'boolean',
-        'survival_game'  => 'boolean',
-        'start_date'     => 'date',
-        'end_date'       => 'date',
+        'is_public' => 'boolean',
+        'survival_game' => 'boolean',
+        'start_date' => 'date',
+        'end_date' => 'date',
     ];
 
     public function events()

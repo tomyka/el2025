@@ -14,10 +14,11 @@ class AuditAccessTest extends TestCase
     private function makeUser(int $adminLevel): User
     {
         $user = User::factory()->create();
-        $setting = new UserSetting();
+        $setting = new UserSetting;
         $setting->user_id = $user->id;
         $setting->admin = $adminLevel;
         $setting->save();
+
         return $user;
     }
 
@@ -55,7 +56,7 @@ class AuditAccessTest extends TestCase
 
     public function test_user_filter_returns_ok(): void
     {
-        $admin  = $this->makeUser(5);
+        $admin = $this->makeUser(5);
         $target = $this->makeUser(0);
 
         $this->actingAs($admin)

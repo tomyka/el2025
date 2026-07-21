@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +14,7 @@ class LeagueMember extends Model
     protected $casts = [
         'is_admin' => 'boolean',
         'is_guest' => 'boolean',
-        'active'   => 'boolean',
+        'active' => 'boolean',
     ];
 
     public function league()

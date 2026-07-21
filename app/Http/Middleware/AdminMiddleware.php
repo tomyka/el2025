@@ -13,7 +13,7 @@ class AdminMiddleware
     {
         $userID = session('userID');
 
-        if (!$userID || !UserSetting::where('user_id', $userID)->where('admin', '>', 0)->exists()) {
+        if (! $userID || ! UserSetting::where('user_id', $userID)->where('admin', '>', 0)->exists()) {
             return redirect('/');
         }
 

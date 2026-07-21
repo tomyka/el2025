@@ -18,24 +18,24 @@ class GameControllerTest extends TestCase
     {
         $admin = User::factory()->create();
         UserSetting::factory()->create(['user_id' => $admin->id, 'admin' => 1]);
-        $home  = Team::create(['team' => 'Germany', 'group_name' => 'A', 'group_position' => 1]);
-        $away  = Team::create(['team' => 'France',  'group_name' => 'B', 'group_position' => 1]);
+        $home = Team::create(['team' => 'Germany', 'group_name' => 'A', 'group_position' => 1]);
+        $away = Team::create(['team' => 'France',  'group_name' => 'B', 'group_position' => 1]);
         $event = Event::create(['event' => 'Group Stage', 'event_day' => 1, 'event_survival' => 0, 'active' => 1, 'rate' => 1]);
-        $game  = Game::create([
-            'game_date'    => '2026-06-10 18:00:00',
+        $game = Game::create([
+            'game_date' => '2026-06-10 18:00:00',
             'home_team_id' => $home->id,
             'away_team_id' => $away->id,
-            'event_id'     => $event->id,
+            'event_id' => $event->id,
         ]);
 
         $response = $this->actingAs($admin)
             ->withSession(['admin' => 1, 'eventID' => $event->id, 'userID' => $admin->id])
             ->post(route('admin.updateGame'), [
-                'gameID'       => $game->id,
+                'gameID' => $game->id,
                 'gameDateTime' => '2026-06-11T21:30',
-                'homeTeamID'   => $home->id,
-                'awayTeamID'   => $away->id,
-                'eventID'      => $event->id,
+                'homeTeamID' => $home->id,
+                'awayTeamID' => $away->id,
+                'eventID' => $event->id,
             ]);
 
         $response->assertRedirect(route('admin.games'));
@@ -46,17 +46,17 @@ class GameControllerTest extends TestCase
     {
         $admin = User::factory()->create();
         UserSetting::factory()->create(['user_id' => $admin->id, 'admin' => 1]);
-        $home  = Team::create(['team' => 'Germany', 'group_name' => 'A', 'group_position' => 1]);
-        $away  = Team::create(['team' => 'France',  'group_name' => 'B', 'group_position' => 1]);
+        $home = Team::create(['team' => 'Germany', 'group_name' => 'A', 'group_position' => 1]);
+        $away = Team::create(['team' => 'France',  'group_name' => 'B', 'group_position' => 1]);
         $event = Event::create(['event' => 'Group Stage', 'event_day' => 1, 'event_survival' => 0, 'active' => 1, 'rate' => 1]);
 
         $response = $this->actingAs($admin)
             ->withSession(['admin' => 1, 'eventID' => $event->id, 'userID' => $admin->id])
             ->post(route('admin.insertGame'), [
                 'gameDateTime' => '2026-06-12T19:00',
-                'homeTeamID'   => $home->id,
-                'awayTeamID'   => $away->id,
-                'eventID'      => $event->id,
+                'homeTeamID' => $home->id,
+                'awayTeamID' => $away->id,
+                'eventID' => $event->id,
             ]);
 
         $response->assertRedirect(route('admin.games'));

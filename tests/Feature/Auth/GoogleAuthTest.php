@@ -105,7 +105,7 @@ class GoogleAuthTest extends TestCase
         $this->fakeSocialiteUser('gid-rem', $user->email, 'Test User');
 
         $this->withSession(['remember_me' => true])
-             ->get('/auth/google/callback');
+            ->get('/auth/google/callback');
 
         $this->assertNotNull($user->fresh()->remember_token);
     }
@@ -116,7 +116,7 @@ class GoogleAuthTest extends TestCase
         $this->fakeSocialiteUser('gid-clr', $user->email, 'Test User');
 
         $response = $this->withSession(['remember_me' => true])
-                         ->get('/auth/google/callback');
+            ->get('/auth/google/callback');
 
         $response->assertSessionMissing('remember_me');
     }
@@ -136,14 +136,14 @@ class GoogleAuthTest extends TestCase
         // Make registrationIsOpen() return false by inserting a game with a past date and no score.
         // registrationIsOpen() queries: Game::whereNull scores -> min('game_date'), returns true only if null or future.
         DB::table('games')->insert([
-            'game_date'       => now()->subDay()->toDateTimeString(),
-            'event_id'        => 1,
-            'home_team_id'    => 1,
-            'away_team_id'    => 2,
+            'game_date' => now()->subDay()->toDateTimeString(),
+            'event_id' => 1,
+            'home_team_id' => 1,
+            'away_team_id' => 2,
             'home_team_score' => null,
             'away_team_score' => null,
-            'created_at'      => now(),
-            'updated_at'      => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         // This email does not exist in the DB, so we skip the existing-user paths
@@ -151,7 +151,7 @@ class GoogleAuthTest extends TestCase
         $this->fakeSocialiteUser('gid-noreg', 'new-noreg@example.com', 'New User');
 
         $response = $this->withSession(['remember_me' => true])
-                         ->get('/auth/google/callback');
+            ->get('/auth/google/callback');
 
         $response->assertSessionMissing('remember_me');
         $response->assertRedirect(route('main'));

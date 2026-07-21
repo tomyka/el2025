@@ -21,14 +21,14 @@ class ChartXssTest extends TestCase
         $league = League::factory()->create();
         LeagueMember::factory()->create(['user_id' => $user->id, 'league_id' => $league->id]);
 
-        $event    = Event::create(['event' => 'T', 'event_day' => 1, 'event_survival' => 0, 'active' => 1, 'rate' => 1]);
+        $event = Event::create(['event' => 'T', 'event_day' => 1, 'event_survival' => 0, 'active' => 1, 'rate' => 1]);
         $homeTeam = Team::create(['team' => 'Home']);
         $awayTeam = Team::create(['team' => 'Away']);
         Game::create([
-            'event_id'        => $event->id,
-            'home_team_id'    => $homeTeam->id,
-            'away_team_id'    => $awayTeam->id,
-            'game_date'       => now()->subHour(),
+            'event_id' => $event->id,
+            'home_team_id' => $homeTeam->id,
+            'away_team_id' => $awayTeam->id,
+            'game_date' => now()->subHour(),
             'home_team_score' => 1,
             'away_team_score' => 0,
         ]);
@@ -50,14 +50,14 @@ class ChartXssTest extends TestCase
         $league = League::factory()->create();
         LeagueMember::factory()->create(['user_id' => $user->id, 'league_id' => $league->id]);
 
-        $event    = Event::create(['event' => 'T', 'event_day' => 1, 'event_survival' => 0, 'active' => 1, 'rate' => 1]);
+        $event = Event::create(['event' => 'T', 'event_day' => 1, 'event_survival' => 0, 'active' => 1, 'rate' => 1]);
         $homeTeam = Team::create(['team' => '<b>Bold</b>']);
         $awayTeam = Team::create(['team' => 'Away']);
         Game::create([
-            'event_id'        => $event->id,
-            'home_team_id'    => $homeTeam->id,
-            'away_team_id'    => $awayTeam->id,
-            'game_date'       => now()->subHour(),
+            'event_id' => $event->id,
+            'home_team_id' => $homeTeam->id,
+            'away_team_id' => $awayTeam->id,
+            'game_date' => now()->subHour(),
             'home_team_score' => 1,
             'away_team_score' => 0,
         ]);

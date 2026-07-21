@@ -1,7 +1,7 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use App\Models\League;
 use App\Models\LeagueMember;
 use App\Models\Tournament;
 use Illuminate\Http\RedirectResponse;
@@ -25,7 +25,7 @@ class TournamentController extends Controller
                 ->where('active', true)
                 ->with('league')
                 ->get()
-                ->keyBy(fn($m) => $m->league->tournament_id);
+                ->keyBy(fn ($m) => $m->league->tournament_id);
         }
 
         $now = now()->toDateTimeString();
@@ -34,7 +34,7 @@ class TournamentController extends Controller
             $tid = $t->id;
 
             $tData[$tid] = [
-                'participantCount' => LeagueMember::whereHas('league', fn($q) => $q->where('tournament_id', $tid))
+                'participantCount' => LeagueMember::whereHas('league', fn ($q) => $q->where('tournament_id', $tid))
                     ->where('is_guest', false)->where('active', true)->distinct()->count('user_id'),
 
                 'predictionCount' => DB::table('point_results as pr')
@@ -43,7 +43,7 @@ class TournamentController extends Controller
                     ->where('e.tournament_id', $tid)
                     ->count(),
 
-                'leaderboard' => DB::select("
+                'leaderboard' => DB::select('
                     SELECT u.username,
                            ROUND(SUM(IFNULL(pr.full_points,0) + IFNULL(pr.streak_bonus,0)),1) AS total_points
                     FROM users u
@@ -56,9 +56,9 @@ class TournamentController extends Controller
                     HAVING total_points > 0
                     ORDER BY total_points DESC
                     LIMIT 5
-                ", [$tid]),
+                ', [$tid]),
 
-                'medalRows' => DB::select("
+                'medalRows' => DB::select('
                     SELECT tm.team,
                         SUM(CASE WHEN ps.final = 1 THEN 1 ELSE 0 END) AS firstPlacePrediction,
                         SUM(CASE WHEN ps.final = 2 THEN 1 ELSE 0 END) AS secondPlacePrediction,
@@ -70,9 +70,9 @@ class TournamentController extends Controller
                     WHERE ps.final IS NOT NULL AND us.active = 1 AND tm.tournament_id = ?
                     GROUP BY tm.team
                     ORDER BY firstPlacePrediction DESC, secondPlacePrediction DESC, thirdPlacePrediction DESC
-                ", [$tid]),
+                ', [$tid]),
 
-                'upcomingGames' => DB::select("
+                'upcomingGames' => DB::select('
                     SELECT g.game_date, ht.team AS home_team, at.team AS away_team
                     FROM games g
                     JOIN events e ON g.event_id = e.id
@@ -81,7 +81,7 @@ class TournamentController extends Controller
                     WHERE e.tournament_id = ? AND g.home_team_score IS NULL AND g.game_date >= ?
                     ORDER BY g.game_date
                     LIMIT 3
-                ", [$tid, $now]),
+                ', [$tid, $now]),
             ];
         }
 
@@ -90,14 +90,14 @@ class TournamentController extends Controller
 
     public function enter(string $slug): RedirectResponse
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('login');
         }
 
-        $tournament  = Tournament::where('slug', $slug)->firstOrFail();
-        $membership  = LeagueMember::where('user_id', Auth::id())
+        $tournament = Tournament::where('slug', $slug)->firstOrFail();
+        $membership = LeagueMember::where('user_id', Auth::id())
             ->where('active', true)
-            ->whereHas('league', fn($q) => $q->where('tournament_id', $tournament->id))
+            ->whereHas('league', fn ($q) => $q->where('tournament_id', $tournament->id))
             ->with('league')
             ->first();
 
@@ -105,6 +105,7 @@ class TournamentController extends Controller
 
         if ($membership) {
             Session::put('leagueID', $membership->league_id);
+
             return redirect()->route('main');
         }
 
@@ -114,6 +115,7 @@ class TournamentController extends Controller
     public function exit(): RedirectResponse
     {
         Session::forget(['tournamentID', 'leagueID']);
+
         return redirect()->route('tournaments.hub');
     }
 
@@ -122,7 +124,7 @@ class TournamentController extends Controller
         $tournament = Tournament::where('slug', $slug)->firstOrFail();
 
         $participantCount = LeagueMember::whereHas(
-            'league', fn($q) => $q->where('tournament_id', $tournament->id)
+            'league', fn ($q) => $q->where('tournament_id', $tournament->id)
         )->where('is_guest', false)->distinct()->count('user_id');
 
         return view('tournaments.show', compact('tournament', 'participantCount'));
@@ -133,32 +135,34 @@ class TournamentController extends Controller
     public function adminIndex(): View
     {
         $tournaments = Tournament::orderByDesc('created_at')->get();
+
         return view('admin.tournaments.index', compact('tournaments'));
     }
 
     public function adminCreate(): View
     {
-        return view('admin.tournaments.form', ['tournament' => new Tournament()]);
+        return view('admin.tournaments.form', ['tournament' => new Tournament]);
     }
 
     public function adminStore(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'name'          => 'required|string|max:255',
-            'slug'          => 'required|string|max:100|unique:tournaments,slug|regex:/^[a-z0-9-]+$/',
-            'sport'         => 'required|string|max:50',
-            'status'        => 'required|in:upcoming,active,finished',
-            'start_date'    => 'nullable|date',
-            'end_date'      => 'nullable|date|after_or_equal:start_date',
-            'description'   => 'nullable|string|max:1000',
-            'cover_image'   => 'nullable|string|max:255',
-            'is_public'     => 'boolean',
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:100|unique:tournaments,slug|regex:/^[a-z0-9-]+$/',
+            'sport' => 'required|string|max:50',
+            'status' => 'required|in:upcoming,active,finished',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'description' => 'nullable|string|max:1000',
+            'cover_image' => 'nullable|string|max:255',
+            'is_public' => 'boolean',
             'survival_game' => 'boolean',
         ]);
-        $data['is_public']     = $request->boolean('is_public');
+        $data['is_public'] = $request->boolean('is_public');
         $data['survival_game'] = $request->boolean('survival_game');
 
         Tournament::create($data);
+
         return redirect()->route('admin.tournaments')->with('info', __('Turnyras sukurtas.'));
     }
 
@@ -170,27 +174,29 @@ class TournamentController extends Controller
     public function adminUpdate(Request $request, Tournament $tournament): RedirectResponse
     {
         $data = $request->validate([
-            'name'          => 'required|string|max:255',
-            'slug'          => 'required|string|max:100|regex:/^[a-z0-9-]+$/|unique:tournaments,slug,'.$tournament->id,
-            'sport'         => 'required|string|max:50',
-            'status'        => 'required|in:upcoming,active,finished',
-            'start_date'    => 'nullable|date',
-            'end_date'      => 'nullable|date|after_or_equal:start_date',
-            'description'   => 'nullable|string|max:1000',
-            'cover_image'   => 'nullable|string|max:255',
-            'is_public'     => 'boolean',
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:100|regex:/^[a-z0-9-]+$/|unique:tournaments,slug,'.$tournament->id,
+            'sport' => 'required|string|max:50',
+            'status' => 'required|in:upcoming,active,finished',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'description' => 'nullable|string|max:1000',
+            'cover_image' => 'nullable|string|max:255',
+            'is_public' => 'boolean',
             'survival_game' => 'boolean',
         ]);
-        $data['is_public']     = $request->boolean('is_public');
+        $data['is_public'] = $request->boolean('is_public');
         $data['survival_game'] = $request->boolean('survival_game');
 
         $tournament->update($data);
+
         return redirect()->route('admin.tournaments')->with('info', __('Turnyras atnaujintas.'));
     }
 
     public function adminEnterContext(Tournament $tournament): RedirectResponse
     {
         Session::put('tournamentID', $tournament->id);
+
         return redirect()->route('admin.index')->with('info', __('Turnyro kontekstas: :name', ['name' => $tournament->name]));
     }
 }

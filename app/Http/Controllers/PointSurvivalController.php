@@ -8,8 +8,10 @@ use Illuminate\Support\Facades\DB;
 
 class PointSurvivalController extends Controller
 {
-    public function getPredictionSurvivalUserPoints($userID){
+    public function getPredictionSurvivalUserPoints($userID)
+    {
         $pointUserSurvival = PointSurvival::where('user_id', '=', $userID)->sum('survival_points');
+
         return $pointUserSurvival;
     }
 
@@ -33,7 +35,8 @@ class PointSurvivalController extends Controller
         return $result;
     }
 
-    public function getPointSurvivalEventID($eventID){
+    public function getPointSurvivalEventID($eventID)
+    {
         $predictionSurvivals = DB::table('users as u')
             ->crossJoin('events as e') // Simulate CROSS JOIN
             ->select(
@@ -42,7 +45,7 @@ class PointSurvivalController extends Controller
                 DB::raw("IFNULL(ps.survival_points, '') as survival_points"), // Handle null survival_points
                 DB::raw("IFNULL(t.team, '') as team"), // Handle null survival_points
             )
-            ->leftJoin('point_survivals as ps', function($join) {
+            ->leftJoin('point_survivals as ps', function ($join) {
                 $join->on('e.id', '=', 'ps.event_id')
                     ->on('u.id', '=', 'ps.user_id'); // Left join on event_id and user_id
             })
@@ -52,16 +55,18 @@ class PointSurvivalController extends Controller
             ->orderBy('e.id') // Order by user_id
             ->orderBy('u.id') // Order by user_id
             ->get();
+
         return $predictionSurvivals;
     }
 
-    public function updatePointSurvival($userID, $eventID, $teamID){
+    public function updatePointSurvival($userID, $eventID, $teamID)
+    {
 
-        PointSurvival::where('user_id', $userID)->where ('event_id', $eventID)->where('team_id', $teamID)->delete();
+        PointSurvival::where('user_id', $userID)->where('event_id', $eventID)->where('team_id', $teamID)->delete();
 
-        $points = PredictionSurvival::where('user_id', $userID)->whereNotNull('event_id')->count()*10;
+        $points = PredictionSurvival::where('user_id', $userID)->whereNotNull('event_id')->count() * 10;
 
-        $pointSurvival = new PointSurvival();
+        $pointSurvival = new PointSurvival;
         $pointSurvival->user_id = $userID;
         $pointSurvival->event_id = $eventID;
         $pointSurvival->team_id = $teamID;

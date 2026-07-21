@@ -18,37 +18,37 @@ class PredictionResultTest extends TestCase
 
     public function test_user_can_make_prediction_on_game(): void
     {
-        $user   = User::factory()->create();
+        $user = User::factory()->create();
         $league = League::factory()->create();
         LeagueMember::factory()->create(['user_id' => $user->id, 'league_id' => $league->id]);
 
         $event = Event::create([
-            'event'          => 'Euro 2024 Round of 16',
-            'event_day'      => 2,
+            'event' => 'Euro 2024 Round of 16',
+            'event_day' => 2,
             'event_survival' => 0,
-            'rate'           => 1,
+            'rate' => 1,
         ]);
 
         $homeTeam = Team::create(['team' => 'France', 'group_name' => 'A']);
         $awayTeam = Team::create(['team' => 'Poland', 'group_name' => 'A']);
 
         $game = Game::create([
-            'game_date'    => now()->addDay(),
-            'event_id'     => $event->id,
+            'game_date' => now()->addDay(),
+            'event_id' => $event->id,
             'home_team_id' => $homeTeam->id,
             'away_team_id' => $awayTeam->id,
         ]);
 
         PredictionResult::create([
-            'user_id'         => $user->id,
-            'game_id'         => $game->id,
+            'user_id' => $user->id,
+            'game_id' => $game->id,
             'home_team_score' => 2,
             'away_team_score' => 0,
         ]);
 
         $this->assertDatabaseHas('prediction_results', [
-            'user_id'         => $user->id,
-            'game_id'         => $game->id,
+            'user_id' => $user->id,
+            'game_id' => $game->id,
             'home_team_score' => 2,
             'away_team_score' => 0,
         ]);
@@ -57,25 +57,25 @@ class PredictionResultTest extends TestCase
     public function test_multiple_users_can_predict_same_game(): void
     {
         $league = League::factory()->create();
-        $user1  = User::factory()->create();
-        $user2  = User::factory()->create();
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
 
         LeagueMember::factory()->create(['user_id' => $user1->id, 'league_id' => $league->id]);
         LeagueMember::factory()->create(['user_id' => $user2->id, 'league_id' => $league->id]);
 
         $event = Event::create([
-            'event'          => 'Euro 2024',
-            'event_day'      => 1,
+            'event' => 'Euro 2024',
+            'event_day' => 1,
             'event_survival' => 0,
-            'rate'           => 1,
+            'rate' => 1,
         ]);
 
         $homeTeam = Team::create(['team' => 'Italy', 'group_name' => 'B']);
         $awayTeam = Team::create(['team' => 'England', 'group_name' => 'B']);
 
         $game = Game::create([
-            'game_date'    => now()->addDays(2),
-            'event_id'     => $event->id,
+            'game_date' => now()->addDays(2),
+            'event_id' => $event->id,
             'home_team_id' => $homeTeam->id,
             'away_team_id' => $awayTeam->id,
         ]);
@@ -88,30 +88,30 @@ class PredictionResultTest extends TestCase
 
     public function test_user_can_update_prediction_before_game(): void
     {
-        $user   = User::factory()->create();
+        $user = User::factory()->create();
         $league = League::factory()->create();
         LeagueMember::factory()->create(['user_id' => $user->id, 'league_id' => $league->id]);
 
         $event = Event::create([
-            'event'          => 'Euro 2024 Final',
-            'event_day'      => 10,
+            'event' => 'Euro 2024 Final',
+            'event_day' => 10,
             'event_survival' => 0,
-            'rate'           => 1,
+            'rate' => 1,
         ]);
 
         $homeTeam = Team::create(['team' => 'France']);
         $awayTeam = Team::create(['team' => 'Spain']);
 
         $game = Game::create([
-            'game_date'    => now()->addDays(5),
-            'event_id'     => $event->id,
+            'game_date' => now()->addDays(5),
+            'event_id' => $event->id,
             'home_team_id' => $homeTeam->id,
             'away_team_id' => $awayTeam->id,
         ]);
 
         $prediction = PredictionResult::create([
-            'user_id'         => $user->id,
-            'game_id'         => $game->id,
+            'user_id' => $user->id,
+            'game_id' => $game->id,
             'home_team_score' => 1,
             'away_team_score' => 0,
         ]);

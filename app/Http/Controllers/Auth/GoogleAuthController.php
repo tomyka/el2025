@@ -23,6 +23,7 @@ class GoogleAuthController extends Controller
     public function rememberAndRedirect(Request $request)
     {
         session(['remember_me' => $request->boolean('remember')]);
+
         return Socialite::driver('google')->redirect();
     }
 
@@ -32,6 +33,7 @@ class GoogleAuthController extends Controller
             $googleUser = Socialite::driver('google')->user();
         } catch (\Exception $e) {
             session()->forget('remember_me');
+
             return redirect('/')->with('error', __('Google prisijungimas nepavyko. Bandykite dar kartą.'));
         }
 
@@ -40,7 +42,8 @@ class GoogleAuthController extends Controller
         if ($user) {
             Auth::login($user, session('remember_me', false));
             session()->forget('remember_me');
-            (new AuditLoginsController())->insertAuditLogin($user->id, $request->ip(), 'google');
+            (new AuditLoginsController)->insertAuditLogin($user->id, $request->ip(), 'google');
+
             return redirect()->route('main');
         }
 
@@ -50,32 +53,35 @@ class GoogleAuthController extends Controller
             $user->update(['google_id' => $googleUser->getId()]);
             Auth::login($user, session('remember_me', false));
             session()->forget('remember_me');
-            (new AuditLoginsController())->insertAuditLogin($user->id, $request->ip(), 'google');
+            (new AuditLoginsController)->insertAuditLogin($user->id, $request->ip(), 'google');
+
             return redirect()->route('main');
         }
 
-        if (!$this->registrationIsOpen()) {
+        if (! $this->registrationIsOpen()) {
             session()->forget('remember_me');
+
             return redirect()->route('main');
         }
 
         $nameParts = explode(' ', $googleUser->getName(), 2);
         $user = User::create([
-            'google_id'         => $googleUser->getId(),
-            'email'             => $googleUser->getEmail(),
+            'google_id' => $googleUser->getId(),
+            'email' => $googleUser->getEmail(),
             'email_verified_at' => now(),
-            'username'          => strstr($googleUser->getEmail(), '@', true),
-            'name'              => $nameParts[0],
-            'surname'           => $nameParts[1] ?? '',
-            'password'          => null,
+            'username' => strstr($googleUser->getEmail(), '@', true),
+            'name' => $nameParts[0],
+            'surname' => $nameParts[1] ?? '',
+            'password' => null,
         ]);
 
         event(new Registered($user));
-        (new PostRegisterController())->postRegisterActions($user->id);
+        (new PostRegisterController)->postRegisterActions($user->id);
 
         Auth::login($user, session('remember_me', false));
         session()->forget('remember_me');
-        (new AuditLoginsController())->insertAuditLogin($user->id, $request->ip(), 'register_google');
+        (new AuditLoginsController)->insertAuditLogin($user->id, $request->ip(), 'register_google');
+
         return redirect()->route('main');
     }
 }

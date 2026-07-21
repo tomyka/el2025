@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\Event;
 use App\Models\Game;
 use App\Models\Team;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\RateLimiter;
 use Tests\TestCase;
@@ -26,10 +25,10 @@ class HoneypotTest extends TestCase
         $home = Team::create(['team' => 'Home']);
         $away = Team::create(['team' => 'Away']);
         Game::create([
-            'event_id'        => $event->id,
-            'home_team_id'    => $home->id,
-            'away_team_id'    => $away->id,
-            'game_date'       => now()->addDay(),
+            'event_id' => $event->id,
+            'home_team_id' => $home->id,
+            'away_team_id' => $away->id,
+            'game_date' => now()->addDay(),
             'home_team_score' => null,
             'away_team_score' => null,
         ]);
@@ -40,12 +39,12 @@ class HoneypotTest extends TestCase
         $this->makeOpenGame();
 
         $this->post(route('register'), [
-            'username'              => 'botuser',
-            'name'                  => 'Bot',
-            'email'                 => 'bot@test.com',
-            'password'              => 'password123',
+            'username' => 'botuser',
+            'name' => 'Bot',
+            'email' => 'bot@test.com',
+            'password' => 'password123',
             'password_confirmation' => 'password123',
-            'website'               => 'http://spam.example.com',
+            'website' => 'http://spam.example.com',
         ])->assertRedirect(route('main'));
 
         $this->assertDatabaseMissing('users', ['email' => 'bot@test.com']);
@@ -56,12 +55,12 @@ class HoneypotTest extends TestCase
         $this->makeOpenGame();
 
         $this->post(route('register'), [
-            'username'              => 'realuser',
-            'name'                  => 'Real',
-            'email'                 => 'real@test.com',
-            'password'              => 'password123',
+            'username' => 'realuser',
+            'name' => 'Real',
+            'email' => 'real@test.com',
+            'password' => 'password123',
             'password_confirmation' => 'password123',
-            'website'               => '',
+            'website' => '',
         ])->assertRedirect(route('main'));
 
         $this->assertDatabaseHas('users', ['email' => 'real@test.com']);

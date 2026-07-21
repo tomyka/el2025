@@ -2,32 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Game;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
-
-
+use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class MainController extends Controller
 {
-    public function loadApp(){
+    public function loadApp()
+    {
 
-
-        $teamStatisticsController = new TeamStatisticsController();
-        $feeController = new FeeController();
-        $predictionResults = new PredictionResultController();
-        $pointController = new PointController();
-        $predictionSurvivalController = new PredictionSurvivalController();
-        $predictionStandingController = new PredictionStandingController();
-        $messageController = new MessageController();
-        $activityFeedController = new ActivityFeedController();
+        $teamStatisticsController = new TeamStatisticsController;
+        $feeController = new FeeController;
+        $predictionResults = new PredictionResultController;
+        $pointController = new PointController;
+        $predictionSurvivalController = new PredictionSurvivalController;
+        $predictionStandingController = new PredictionStandingController;
+        $messageController = new MessageController;
+        $activityFeedController = new ActivityFeedController;
         $user = Auth::user();
         $rankHistory = [];
 
         if (isset($user)) {
-            $sessionController = new SessionController();
+            $sessionController = new SessionController;
             $sessionController->setSession($user);
             $groupID = session('leagueID');
             $userID = session('userID');
@@ -36,32 +33,32 @@ class MainController extends Controller
             $rankHistory = $pointController->getRankHistory($groupID, $userID);
             $gameHistory = $pointController->getAllUsersGameHistory($groupID);
             foreach ($points as $i => &$point) {
-                $history               = $gameHistory[$point['userID']] ?? [];
+                $history = $gameHistory[$point['userID']] ?? [];
                 $point['roundHistory'] = $history;
             }
             unset($point);
             $messages = $messageController->getProfileMessages($groupID);
-            $predictionResults = $predictionResults->getPredictionResultsUserGroupEventDay($eventID,$groupID, $userID);
+            $predictionResults = $predictionResults->getPredictionResultsUserGroupEventDay($eventID, $groupID, $userID);
             $predictionResultsWithStats = $teamStatisticsController->prepareTeamStatistics($predictionResults);
 
             // Drop finished games from previous days; keep today's finished games
             $today = now()->toDateString();
             $predictionResultsWithStats = array_values(array_filter(
                 $predictionResultsWithStats,
-                fn($item) => $item['gameDetails']->home_team_score === null
+                fn ($item) => $item['gameDetails']->home_team_score === null
                           || substr($item['gameDetails']->game_date, 0, 10) >= $today
             ));
 
             // Limit upcoming-games widget to first 3 distinct calendar dates
             $upcomingDates = collect($predictionResultsWithStats)
-                ->map(fn($item) => substr($item['gameDetails']->game_date, 0, 10))
+                ->map(fn ($item) => substr($item['gameDetails']->game_date, 0, 10))
                 ->unique()->take(3)->flip();
             $predictionResultsWithStats = array_values(array_filter(
                 $predictionResultsWithStats,
-                fn($item) => $upcomingDates->has(substr($item['gameDetails']->game_date, 0, 10))
+                fn ($item) => $upcomingDates->has(substr($item['gameDetails']->game_date, 0, 10))
             ));
-            $standings = $predictionStandingController->getPredictionStandingTop4( $groupID);
-            $eventDaySurvivalStatus=$predictionSurvivalController->getEventDaySurvivalStatus($userID,$eventID);
+            $standings = $predictionStandingController->getPredictionStandingTop4($groupID);
+            $eventDaySurvivalStatus = $predictionSurvivalController->getEventDaySurvivalStatus($userID, $eventID);
             $predictionStandingsPoints = $pointController->getPredictionStandingsUserPoints($userID);
             $firstGameStarted = DB::table('games')->where('game_date', '<=', now())->exists();
 
@@ -73,14 +70,13 @@ class MainController extends Controller
 
             $activityFeed = $activityFeedController->getFeed((int) session('leagueID'));
 
-            return view('main')->with('messages', $messages)->with('points', $points)->with('predictionGames', $predictionResultsWithStats)->with('eventDaySurvivalStatus',$eventDaySurvivalStatus)->with('groupDetails',$feeController->getGroupDetails())->with('userDetails',$feeController->getUserDetails())->with('fund',$feeController->getFund())->with('fundCollected',$feeController->getFundCollected())->with('standings',$standings)->with('predictionStandingsPoints',$predictionStandingsPoints)->with('rankHistory', $rankHistory)->with('firstGameStarted', $firstGameStarted)->with('standingsMissing', $standingsMissing)->with('tournamentProgress', $tournamentProgress)->with('snapshot', $snapshot)->with('activityFeed', $activityFeed);
-        }
-        else {
+            return view('main')->with('messages', $messages)->with('points', $points)->with('predictionGames', $predictionResultsWithStats)->with('eventDaySurvivalStatus', $eventDaySurvivalStatus)->with('groupDetails', $feeController->getGroupDetails())->with('userDetails', $feeController->getUserDetails())->with('fund', $feeController->getFund())->with('fundCollected', $feeController->getFundCollected())->with('standings', $standings)->with('predictionStandingsPoints', $predictionStandingsPoints)->with('rankHistory', $rankHistory)->with('firstGameStarted', $firstGameStarted)->with('standingsMissing', $standingsMissing)->with('tournamentProgress', $tournamentProgress)->with('snapshot', $snapshot)->with('activityFeed', $activityFeed);
+        } else {
             return redirect()->route('tournaments.hub');
         }
     }
 
-    public function leaderboard(): \Illuminate\View\View
+    public function leaderboard(): View
     {
         $players = DB::select('
             SELECT
@@ -104,7 +100,9 @@ class MainController extends Controller
     private function standingsMissing(int $userID): bool
     {
         $total = DB::table('prediction_standings')->where('user_id', $userID)->count();
-        if ($total === 0) return false;
+        if ($total === 0) {
+            return false;
+        }
 
         // group_position: every team must have one, and no duplicates within a group
         if (DB::table('prediction_standings')->where('user_id', $userID)->whereNull('group_position')->exists()) {
@@ -118,7 +116,9 @@ class MainController extends Controller
             ->groupBy('t.group_name', 'ps.group_position')
             ->havingRaw('COUNT(*) > 1')
             ->exists();
-        if ($duplicatePositions) return true;
+        if ($duplicatePositions) {
+            return true;
+        }
 
         // knockout stage counts must match expected bracket sizes
         $counts = DB::table('prediction_standings')
@@ -134,12 +134,22 @@ class MainController extends Controller
 
         // Derive expected last32 count: if total teams >= 32 a round of 32 exists
         $expectedLast32 = $total >= 32 ? 32 : 0;
-        if ($expectedLast32 > 0 && (int) $counts->last32_count !== $expectedLast32) return true;
+        if ($expectedLast32 > 0 && (int) $counts->last32_count !== $expectedLast32) {
+            return true;
+        }
 
-        if ((int) $counts->last16_count !== 16) return true;
-        if ((int) $counts->qf_count     !== 8)  return true;
-        if ((int) $counts->sf_count     !== 4)  return true;
-        if ((int) $counts->final_count  !== 4)  return true;
+        if ((int) $counts->last16_count !== 16) {
+            return true;
+        }
+        if ((int) $counts->qf_count !== 8) {
+            return true;
+        }
+        if ((int) $counts->sf_count !== 4) {
+            return true;
+        }
+        if ((int) $counts->final_count !== 4) {
+            return true;
+        }
 
         return false;
     }
@@ -155,7 +165,9 @@ class MainController extends Controller
                 break;
             }
         }
-        if ($mine === null) return null;
+        if ($mine === null) {
+            return null;
+        }
 
         $last5 = DB::table('point_results as pr')
             ->join('games as g', 'g.id', '=', 'pr.game_id')
@@ -167,13 +179,15 @@ class MainController extends Controller
             ->limit(5)
             ->select('pr.bingo_points', 'pr.winner_points')
             ->get()
-            ->map(fn($r) => [
+            ->map(fn ($r) => [
                 'type' => $r->bingo_points > 0 ? 'bingo'
                         : ($r->winner_points > 0 ? 'win' : 'miss'),
             ])
             ->toArray();
 
-        if (empty($last5)) return null;
+        if (empty($last5)) {
+            return null;
+        }
 
         // Streak: consecutive non-miss games from most recent
         $allResults = DB::table('point_results as pr')
@@ -199,14 +213,14 @@ class MainController extends Controller
         $n = count($rankHistory);
         $rank_change = null;
         if ($n >= 2) {
-            $prevIndex   = max(0, $n - 6);
-            $prevRank    = $rankHistory[$prevIndex];
+            $prevIndex = max(0, $n - 6);
+            $prevRank = $rankHistory[$prevIndex];
             $rank_change = $prevRank - $rank; // positive = improved
         }
 
         return [
-            'rank'        => $rank,
-            'total'       => round(
+            'rank' => $rank,
+            'total' => round(
                 ($mine['userGamePoints'] ?? 0)
                 + ($mine['userStreakPoints'] ?? 0)
                 + ($mine['standingPoints']->total_points ?? 0)
@@ -214,38 +228,41 @@ class MainController extends Controller
                 1
             ),
             'bingo_count' => $mine['userGameBingo'] ?? 0,
-            'streak'      => $streak,
+            'streak' => $streak,
             'rank_change' => $rank_change,
-            'last5'       => $last5,
+            'last5' => $last5,
         ];
     }
 
     private function getTournamentProgress(): ?array
     {
         $eventID = session('eventID');
-        if (!$eventID) return null;
+        if (! $eventID) {
+            return null;
+        }
 
         $event = DB::table('events')->where('id', $eventID)->first();
-        if (!$event) return null;
+        if (! $event) {
+            return null;
+        }
 
-        $total  = DB::table('games')->where('event_id', $eventID)->count();
+        $total = DB::table('games')->where('event_id', $eventID)->count();
         $scored = DB::table('games')->where('event_id', $eventID)
-                    ->whereNotNull('home_team_score')->count();
+            ->whereNotNull('home_team_score')->count();
         // Use Vilnius timezone (auto-adjusts for DST: UTC+2 summer, UTC+1 winter)
         $todayStart = Carbon::today('Europe/Vilnius')->utc();
-        $todayEnd   = Carbon::today('Europe/Vilnius')->endOfDay()->utc();
+        $todayEnd = Carbon::today('Europe/Vilnius')->endOfDay()->utc();
 
-        $today  = DB::table('games')->where('event_id', $eventID)
-                    ->whereNull('home_team_score')
-                    ->whereBetween('game_date', [$todayStart, $todayEnd])->count();
+        $today = DB::table('games')->where('event_id', $eventID)
+            ->whereNull('home_team_score')
+            ->whereBetween('game_date', [$todayStart, $todayEnd])->count();
 
         return [
-            'event_name'   => $event->event,
-            'total_games'  => $total,
+            'event_name' => $event->event,
+            'total_games' => $total,
             'scored_games' => $scored,
-            'today_games'  => $today,
-            'pct'          => $total > 0 ? (int) round($scored / $total * 100) : 0,
+            'today_games' => $today,
+            'pct' => $total > 0 ? (int) round($scored / $total * 100) : 0,
         ];
     }
-
 }

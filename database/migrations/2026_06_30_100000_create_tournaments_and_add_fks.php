@@ -1,10 +1,12 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('tournaments', function (Blueprint $table) {
@@ -28,14 +30,14 @@ return new class extends Migration {
             ->value('value');
 
         DB::table('tournaments')->insert([
-            'name'          => 'Pasaulio futbolo čempionato totalizatorius 2026',
-            'slug'          => 'world-cup-2026',
-            'sport'         => 'football',
-            'status'        => 'active',
-            'is_public'     => true,
+            'name' => 'Pasaulio futbolo čempionato totalizatorius 2026',
+            'slug' => 'world-cup-2026',
+            'sport' => 'football',
+            'status' => 'active',
+            'is_public' => true,
             'survival_game' => $survivalVal,
-            'created_at'    => now(),
-            'updated_at'    => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         // Add nullable tournament_id to events, teams, leagues

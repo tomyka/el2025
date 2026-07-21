@@ -15,26 +15,26 @@ class AuditLoginTest extends TestCase
         $user = User::factory()->create(['password' => bcrypt('secret123')]);
 
         $this->post('/login', [
-            'email'    => $user->email,
+            'email' => $user->email,
             'password' => 'secret123',
         ]);
 
         $this->assertDatabaseHas('audit_logins', [
-            'user_id'      => (string) $user->id,
+            'user_id' => (string) $user->id,
             'login_method' => 'email',
-            'ip_address'   => '127.0.0.1',
+            'ip_address' => '127.0.0.1',
         ]);
     }
 
     public function test_failed_login_does_not_create_audit_record(): void
     {
         User::factory()->create([
-            'email'    => 'test@example.com',
+            'email' => 'test@example.com',
             'password' => bcrypt('correct'),
         ]);
 
         $this->post('/login', [
-            'email'    => 'test@example.com',
+            'email' => 'test@example.com',
             'password' => 'wrong',
         ]);
 

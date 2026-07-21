@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\LeagueMember>
+ * @extends Factory<LeagueMember>
  */
 class LeagueMemberFactory extends Factory
 {
@@ -17,11 +17,11 @@ class LeagueMemberFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id'   => User::factory(),
+            'user_id' => User::factory(),
             'league_id' => League::factory(),
-            'active'    => true,
-            'is_guest'  => false,
-            'is_admin'  => false,
+            'active' => true,
+            'is_guest' => false,
+            'is_admin' => false,
         ];
     }
 }

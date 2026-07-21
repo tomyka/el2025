@@ -20,12 +20,12 @@ class PredictionStandingLockTest extends TestCase
 
     private function seedData(): array
     {
-        $user   = User::factory()->create();
+        $user = User::factory()->create();
         $league = League::factory()->create();
         LeagueMember::factory()->create(['user_id' => $user->id, 'league_id' => $league->id, 'active' => true, 'is_guest' => 0]);
         UserSetting::factory()->create(['user_id' => $user->id]);
 
-        $team              = Team::create(['team' => 'TeamA']);
+        $team = Team::create(['team' => 'TeamA']);
         $predictionStanding = PredictionStanding::create(['user_id' => $user->id, 'team_id' => $team->id, 'group_position' => 1]);
 
         Session::put('userID', $user->id);
@@ -37,12 +37,12 @@ class PredictionStandingLockTest extends TestCase
     {
         return UpdatePredictionStandingRequest::create('/prediction/standings', 'POST', [
             'prediction_standingID' => $predictionStandingID,
-            'groupPosition'         => $groupPosition,
-            'last32'                => 1,
-            'last16'                => null,
-            'quarterfinal'          => null,
-            'semifinal'             => null,
-            'final'                 => null,
+            'groupPosition' => $groupPosition,
+            'last32' => 1,
+            'last16' => null,
+            'quarterfinal' => null,
+            'semifinal' => null,
+            'final' => null,
         ]);
     }
 
@@ -51,7 +51,7 @@ class PredictionStandingLockTest extends TestCase
         ['predictionStanding' => $predictionStanding] = $this->seedData();
         Session::put('disabled', 'disabled');
 
-        (new PredictionStandingController())->updatePredictionStandingsUser(
+        (new PredictionStandingController)->updatePredictionStandingsUser(
             $this->makeRequest($predictionStanding->id, 3)
         );
 
@@ -63,7 +63,7 @@ class PredictionStandingLockTest extends TestCase
         ['predictionStanding' => $predictionStanding] = $this->seedData();
         Session::put('disabled', '');
 
-        (new PredictionStandingController())->updatePredictionStandingsUser(
+        (new PredictionStandingController)->updatePredictionStandingsUser(
             $this->makeRequest($predictionStanding->id, 3)
         );
 

@@ -22,7 +22,7 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
-        (new AuditLoginsController())->insertAuditLogin(
+        (new AuditLoginsController)->insertAuditLogin(
             Auth::id(),
             $request->ip(),
             'email'
@@ -36,6 +36,7 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect('/');
     }
 }

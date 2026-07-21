@@ -1,10 +1,16 @@
 <?php
+
 namespace Tests\Feature;
 
+use App\Http\Controllers\GameOddsController;
+use App\Http\Controllers\PointResultController;
+use App\Models\Event;
+use App\Models\Game;
 use App\Models\League;
 use App\Models\LeagueMember;
+use App\Models\PredictionResult;
+use App\Models\Team;
 use App\Models\User;
-use App\Models\UserSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -16,8 +22,8 @@ class LeagueOddsTest extends TestCase
     private function makeLeagueWith20Members(bool $useLeagueOdds = true): array
     {
         $league = League::create([
-            'name'            => 'Big League',
-            'is_public'       => false,
+            'name' => 'Big League',
+            'is_public' => false,
             'use_league_odds' => $useLeagueOdds,
         ]);
 
@@ -31,40 +37,41 @@ class LeagueOddsTest extends TestCase
         return [$league, $users];
     }
 
-    private function makeGame(): \App\Models\Game
+    private function makeGame(): Game
     {
-        $event    = \App\Models\Event::create(['event' => 'Test', 'event_day' => 1, 'event_survival' => 0, 'active' => 1, 'rate' => 1]);
-        $homeTeam = \App\Models\Team::create(['team' => 'Home']);
-        $awayTeam = \App\Models\Team::create(['team' => 'Away']);
-        return \App\Models\Game::create([
-            'event_id'     => $event->id,
+        $event = Event::create(['event' => 'Test', 'event_day' => 1, 'event_survival' => 0, 'active' => 1, 'rate' => 1]);
+        $homeTeam = Team::create(['team' => 'Home']);
+        $awayTeam = Team::create(['team' => 'Away']);
+
+        return Game::create([
+            'event_id' => $event->id,
             'home_team_id' => $homeTeam->id,
             'away_team_id' => $awayTeam->id,
-            'game_date'    => now()->addDays(1)->toDateTimeString(),
+            'game_date' => now()->addDays(1)->toDateTimeString(),
         ]);
     }
 
-    public function test_updateGameOdds_writes_league_game_odds_for_opt_in_league(): void
+    public function test_update_game_odds_writes_league_game_odds_for_opt_in_league(): void
     {
         $game = $this->makeGame();
         [$league, $users] = $this->makeLeagueWith20Members(true);
 
         // 15 users predict home win (1-0), 5 predict draw (0-0)
         foreach (array_slice($users, 0, 15) as $user) {
-            \App\Models\PredictionResult::create(['user_id' => $user->id, 'game_id' => $game->id, 'home_team_score' => 1, 'away_team_score' => 0, 'generated' => 0]);
+            PredictionResult::create(['user_id' => $user->id, 'game_id' => $game->id, 'home_team_score' => 1, 'away_team_score' => 0, 'generated' => 0]);
         }
         foreach (array_slice($users, 15, 5) as $user) {
-            \App\Models\PredictionResult::create(['user_id' => $user->id, 'game_id' => $game->id, 'home_team_score' => 0, 'away_team_score' => 0, 'generated' => 0]);
+            PredictionResult::create(['user_id' => $user->id, 'game_id' => $game->id, 'home_team_score' => 0, 'away_team_score' => 0, 'generated' => 0]);
         }
 
-        $controller = new \App\Http\Controllers\GameOddsController();
+        $controller = new GameOddsController;
         $controller->updateGameOdds($game->id);
 
         $this->assertDatabaseHas('game_odds', ['game_id' => $game->id]);
         $this->assertDatabaseHas('league_game_odds', ['league_id' => $league->id, 'game_id' => $game->id]);
     }
 
-    public function test_updateGameOdds_skips_league_with_fewer_than_20_members(): void
+    public function test_update_game_odds_skips_league_with_fewer_than_20_members(): void
     {
         $game = $this->makeGame();
 
@@ -74,7 +81,7 @@ class LeagueOddsTest extends TestCase
             LeagueMember::create(['league_id' => $league->id, 'user_id' => $user->id, 'active' => false, 'is_guest' => false, 'is_admin' => false]);
         }
 
-        $controller = new \App\Http\Controllers\GameOddsController();
+        $controller = new GameOddsController;
         $controller->updateGameOdds($game->id);
 
         $this->assertDatabaseMissing('league_game_odds', ['league_id' => $league->id, 'game_id' => $game->id]);
@@ -95,14 +102,14 @@ class LeagueOddsTest extends TestCase
 
     public function test_league_odds_recalculated_in_leaderboard_when_active(): void
     {
-        $event    = \App\Models\Event::create(['event' => 'E3', 'event_day' => 1, 'event_survival' => 0, 'active' => 1, 'rate' => 1]);
-        $homeTeam = \App\Models\Team::create(['team' => 'H3']);
-        $awayTeam = \App\Models\Team::create(['team' => 'A3']);
-        $game = \App\Models\Game::create([
-            'event_id'        => $event->id,
-            'home_team_id'    => $homeTeam->id,
-            'away_team_id'    => $awayTeam->id,
-            'game_date'       => now()->subDay()->toDateTimeString(),
+        $event = Event::create(['event' => 'E3', 'event_day' => 1, 'event_survival' => 0, 'active' => 1, 'rate' => 1]);
+        $homeTeam = Team::create(['team' => 'H3']);
+        $awayTeam = Team::create(['team' => 'A3']);
+        $game = Game::create([
+            'event_id' => $event->id,
+            'home_team_id' => $homeTeam->id,
+            'away_team_id' => $awayTeam->id,
+            'game_date' => now()->subDay()->toDateTimeString(),
             'home_team_score' => 1,
             'away_team_score' => 0,
         ]);
@@ -112,38 +119,38 @@ class LeagueOddsTest extends TestCase
 
         // Global odds stored as log₂ values: log₂(20/5)=2.0 means 25% predicted home
         DB::table('game_odds')->insert([
-            'game_id'    => $game->id,
-            'home_odds'  => 2.0,
-            'draw_odds'  => 1.0,
-            'away_odds'  => 0.5,
+            'game_id' => $game->id,
+            'home_odds' => 2.0,
+            'draw_odds' => 1.0,
+            'away_odds' => 0.5,
             'updated_at' => now(),
         ]);
 
         // League odds: home_odds = 1.5 (log₂ value)
         DB::table('league_game_odds')->insert([
-            'league_id'  => $league->id,
-            'game_id'    => $game->id,
-            'home_odds'  => 1.5,
-            'draw_odds'  => 1.6,
-            'away_odds'  => 1.7,
+            'league_id' => $league->id,
+            'game_id' => $game->id,
+            'home_odds' => 1.5,
+            'draw_odds' => 1.6,
+            'away_odds' => 1.7,
             'updated_at' => now(),
         ]);
 
         // User predicted home win, got points
         DB::table('point_results')->insert([
-            'user_id'           => $user->id,
-            'game_id'           => $game->id,
-            'winner_points'     => 5,
+            'user_id' => $user->id,
+            'game_id' => $game->id,
+            'winner_points' => 5,
             'difference_points' => 30,
-            'bingo_points'      => 0,
-            'odds'              => 2.0,
-            'odds_points'       => 10, // global: 5 * 2.0
-            'full_points'       => 45,
-            'streak_bonus'      => 0,
+            'bingo_points' => 0,
+            'odds' => 2.0,
+            'odds_points' => 10, // global: 5 * 2.0
+            'full_points' => 45,
+            'streak_bonus' => 0,
         ]);
 
-        $controller = app(\App\Http\Controllers\PointResultController::class);
-        $profile    = $controller->getUserProfilePoints($user->id, $league->id);
+        $controller = app(PointResultController::class);
+        $profile = $controller->getUserProfilePoints($user->id, $league->id);
 
         // With league odds (1.5): winner_points_league = (1+1.5)*5*1 = 12.5
         $row = collect($profile)->firstWhere('game_id', $game->id);

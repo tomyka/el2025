@@ -16,10 +16,11 @@ class NotificationPreferenceTest extends TestCase
     {
         $user = User::factory()->create();
         UserSetting::create([
-            'user_id'           => $user->id,
-            'admin'             => 0,
+            'user_id' => $user->id,
+            'admin' => 0,
             'receive_reminders' => $reminders,
         ]);
+
         return $user;
     }
 

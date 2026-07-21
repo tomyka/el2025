@@ -5,7 +5,7 @@ namespace App\Services;
 class StandingScoringService
 {
     public function calculateGroupPositionPoints(
-        int  $teamPosition,
+        int $teamPosition,
         ?int $predictedPosition
     ): int {
         if ($teamPosition === 0 || $predictedPosition === null) {

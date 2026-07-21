@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Event;
+use App\Models\League;
 use App\Models\User;
 use App\Models\UserSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,10 +16,11 @@ class AdminAccessTest extends TestCase
     private function makeUser(int $adminLevel): User
     {
         $user = User::factory()->create();
-        $setting = new UserSetting();
+        $setting = new UserSetting;
         $setting->user_id = $user->id;
         $setting->admin = $adminLevel;
         $setting->save();
+
         return $user;
     }
 
@@ -96,7 +99,7 @@ class AdminAccessTest extends TestCase
 
     public function test_level9_can_delete_user(): void
     {
-        $admin  = $this->makeUser(9);
+        $admin = $this->makeUser(9);
         $target = $this->makeUser(0);
 
         $this->actingAs($admin)
@@ -111,8 +114,8 @@ class AdminAccessTest extends TestCase
 
     public function test_level5_blocked_from_league_delete(): void
     {
-        $admin  = $this->makeUser(5);
-        $league = \App\Models\League::factory()->create(['is_public' => false]);
+        $admin = $this->makeUser(5);
+        $league = League::factory()->create(['is_public' => false]);
 
         $this->actingAs($admin)
             ->withSession(['userID' => $admin->id])
@@ -124,8 +127,8 @@ class AdminAccessTest extends TestCase
 
     public function test_level9_can_delete_league(): void
     {
-        $admin  = $this->makeUser(9);
-        $league = \App\Models\League::factory()->create(['is_public' => false]);
+        $admin = $this->makeUser(9);
+        $league = League::factory()->create(['is_public' => false]);
 
         $this->actingAs($admin)
             ->withSession(['userID' => $admin->id])
@@ -140,12 +143,12 @@ class AdminAccessTest extends TestCase
     public function test_level5_blocked_from_event_delete(): void
     {
         $admin = $this->makeUser(5);
-        $event = \App\Models\Event::create([
-            'event'          => 'Test Event',
-            'event_day'      => 1,
+        $event = Event::create([
+            'event' => 'Test Event',
+            'event_day' => 1,
             'event_survival' => 0,
-            'active'         => 1,
-            'rate'           => 1,
+            'active' => 1,
+            'rate' => 1,
         ]);
 
         $this->actingAs($admin)
@@ -159,12 +162,12 @@ class AdminAccessTest extends TestCase
     public function test_level9_can_delete_event(): void
     {
         $admin = $this->makeUser(9);
-        $event = \App\Models\Event::create([
-            'event'          => 'Test Event',
-            'event_day'      => 1,
+        $event = Event::create([
+            'event' => 'Test Event',
+            'event_day' => 1,
             'event_survival' => 0,
-            'active'         => 1,
-            'rate'           => 1,
+            'active' => 1,
+            'rate' => 1,
         ]);
 
         $this->actingAs($admin)

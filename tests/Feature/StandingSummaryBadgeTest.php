@@ -18,7 +18,7 @@ class StandingSummaryBadgeTest extends TestCase
 
     public function test_incorrect_knockout_prediction_shows_x_and_points_popover(): void
     {
-        $user   = User::factory()->create();
+        $user = User::factory()->create();
         $league = League::factory()->create();
         LeagueMember::factory()->create(['user_id' => $user->id, 'league_id' => $league->id, 'active' => true, 'is_guest' => 0]);
 
@@ -42,7 +42,7 @@ class StandingSummaryBadgeTest extends TestCase
 
     public function test_correct_knockout_prediction_shows_checkmark(): void
     {
-        $user   = User::factory()->create();
+        $user = User::factory()->create();
         $league = League::factory()->create();
         LeagueMember::factory()->create(['user_id' => $user->id, 'league_id' => $league->id, 'active' => true, 'is_guest' => 0]);
 
@@ -62,7 +62,7 @@ class StandingSummaryBadgeTest extends TestCase
 
     public function test_final_prediction_is_red_when_team_never_reached_semifinal(): void
     {
-        $user   = User::factory()->create();
+        $user = User::factory()->create();
         $league = League::factory()->create();
         LeagueMember::factory()->create(['user_id' => $user->id, 'league_id' => $league->id, 'active' => true, 'is_guest' => 0]);
 
@@ -83,7 +83,7 @@ class StandingSummaryBadgeTest extends TestCase
 
     public function test_final_prediction_is_amber_when_semifinal_correct_but_final_slot_wrong(): void
     {
-        $user   = User::factory()->create();
+        $user = User::factory()->create();
         $league = League::factory()->create();
         LeagueMember::factory()->create(['user_id' => $user->id, 'league_id' => $league->id, 'active' => true, 'is_guest' => 0]);
 
@@ -105,7 +105,7 @@ class StandingSummaryBadgeTest extends TestCase
 
     public function test_final_prediction_is_red_when_semifinal_not_predicted_and_final_slot_wrong(): void
     {
-        $user   = User::factory()->create();
+        $user = User::factory()->create();
         $league = League::factory()->create();
         LeagueMember::factory()->create(['user_id' => $user->id, 'league_id' => $league->id, 'active' => true, 'is_guest' => 0]);
 

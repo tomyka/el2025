@@ -1,15 +1,19 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\League;
-use App\Models\LeagueMember;
 use App\Models\LeagueInvite;
+use App\Models\LeagueMember;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class LeagueController extends Controller
 {
-    public function index(): \Illuminate\View\View
+    public function index(): View
     {
         $userId = session('userID');
 
@@ -25,26 +29,26 @@ class LeagueController extends Controller
         return view('leagues.index', compact('myLeagues', 'pendingInvites'));
     }
 
-    public function create(Request $request): \Illuminate\Http\RedirectResponse
+    public function create(Request $request): RedirectResponse
     {
         $request->validate([
-            'name'               => 'required|string|max:100',
-            'description'        => 'nullable|string|max:500',
-            'base_fee'           => 'nullable|integer|min:0',
-            'penalty_step'       => 'nullable|integer|min:0',
+            'name' => 'required|string|max:100',
+            'description' => 'nullable|string|max:500',
+            'base_fee' => 'nullable|integer|min:0',
+            'penalty_step' => 'nullable|integer|min:0',
             'reward_description' => 'nullable|string|max:500',
         ]);
 
         $userId = session('userID');
 
         $league = League::create([
-            'name'               => $request->input('name'),
-            'description'        => $request->input('description'),
-            'is_public'          => false,
-            'owner_id'           => $userId,
-            'base_fee'           => $request->input('base_fee'),
-            'penalty_step'       => $request->input('penalty_step'),
-            'use_league_odds'    => (bool) $request->input('use_league_odds', false),
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'is_public' => false,
+            'owner_id' => $userId,
+            'base_fee' => $request->input('base_fee'),
+            'penalty_step' => $request->input('penalty_step'),
+            'use_league_odds' => (bool) $request->input('use_league_odds', false),
             'reward_description' => $request->input('reward_description'),
         ]);
 
@@ -56,10 +60,10 @@ class LeagueController extends Controller
         return redirect()->route('leagues.index')->with('info', __('Lyga sukurta'));
     }
 
-    public function update(Request $request): \Illuminate\Http\RedirectResponse
+    public function update(Request $request): RedirectResponse
     {
         $leagueId = (int) $request->input('leagueID');
-        $userId   = session('userID');
+        $userId = session('userID');
 
         LeagueMember::where('league_id', $leagueId)
             ->where('user_id', $userId)
@@ -67,27 +71,27 @@ class LeagueController extends Controller
             ->firstOrFail();
 
         $request->validate([
-            'name'         => 'required|string|max:100',
-            'description'  => 'nullable|string|max:500',
-            'base_fee'     => 'nullable|integer|min:0',
+            'name' => 'required|string|max:100',
+            'description' => 'nullable|string|max:500',
+            'base_fee' => 'nullable|integer|min:0',
             'penalty_step' => 'nullable|integer|min:0',
         ]);
 
         League::findOrFail($leagueId)->update([
-            'name'            => $request->input('name'),
-            'description'     => $request->input('description'),
-            'base_fee'        => $request->input('base_fee'),
-            'penalty_step'    => $request->input('penalty_step'),
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'base_fee' => $request->input('base_fee'),
+            'penalty_step' => $request->input('penalty_step'),
             'use_league_odds' => (bool) $request->input('use_league_odds', false),
         ]);
 
         return redirect()->route('leagues.index')->with('info', __('Lyga atnaujinta'));
     }
 
-    public function invite(Request $request): \Illuminate\Http\RedirectResponse
+    public function invite(Request $request): RedirectResponse
     {
         $leagueId = (int) $request->input('leagueID');
-        $userId   = session('userID');
+        $userId = session('userID');
 
         LeagueMember::where('league_id', $leagueId)
             ->where('user_id', $userId)
@@ -96,7 +100,7 @@ class LeagueController extends Controller
 
         $inviteeId = (int) $request->input('invitedUserID');
 
-        $alreadyMember  = LeagueMember::where('league_id', $leagueId)->where('user_id', $inviteeId)->exists();
+        $alreadyMember = LeagueMember::where('league_id', $leagueId)->where('user_id', $inviteeId)->exists();
         $alreadyInvited = LeagueInvite::where('league_id', $leagueId)->where('invited_user_id', $inviteeId)->where('status', 'pending')->exists();
 
         if ($alreadyMember || $alreadyInvited) {
@@ -104,16 +108,16 @@ class LeagueController extends Controller
         }
 
         LeagueInvite::create([
-            'league_id'       => $leagueId,
+            'league_id' => $leagueId,
             'invited_user_id' => $inviteeId,
-            'invited_by_id'   => $userId,
-            'status'          => 'pending',
+            'invited_by_id' => $userId,
+            'status' => 'pending',
         ]);
 
         return redirect()->back()->with('info', __('Kvietimas išsiųstas'));
     }
 
-    public function acceptInvite(Request $request): \Illuminate\Http\RedirectResponse
+    public function acceptInvite(Request $request): RedirectResponse
     {
         $userId = session('userID');
         $invite = LeagueInvite::where('id', $request->input('inviteID'))
@@ -131,7 +135,7 @@ class LeagueController extends Controller
         return redirect()->route('leagues.index')->with('info', __('Prisijungta prie lygos'));
     }
 
-    public function declineInvite(Request $request): \Illuminate\Http\RedirectResponse
+    public function declineInvite(Request $request): RedirectResponse
     {
         $userId = session('userID');
         $invite = LeagueInvite::where('id', $request->input('inviteID'))
@@ -143,9 +147,9 @@ class LeagueController extends Controller
         return redirect()->route('leagues.index')->with('info', __('Kvietimas atmestas'));
     }
 
-    public function switchLeague(Request $request): \Illuminate\Http\RedirectResponse
+    public function switchLeague(Request $request): RedirectResponse
     {
-        $userId      = session('userID');
+        $userId = session('userID');
         $newLeagueId = (int) $request->input('leagueID');
 
         $newMembership = LeagueMember::where('user_id', $userId)
@@ -164,11 +168,11 @@ class LeagueController extends Controller
         return redirect()->back()->with('info', __('Lyga pakeista'));
     }
 
-    public function searchUsers(Request $request): \Illuminate\Http\JsonResponse
+    public function searchUsers(Request $request): JsonResponse
     {
-        $userId   = session('userID');
+        $userId = session('userID');
         $leagueId = (int) $request->input('leagueID');
-        $query    = $request->input('query', '');
+        $query = $request->input('query', '');
 
         LeagueMember::where('league_id', $leagueId)
             ->where('user_id', $userId)
@@ -179,15 +183,15 @@ class LeagueController extends Controller
             return response()->json([]);
         }
 
-        $existingMemberIds  = LeagueMember::where('league_id', $leagueId)->pluck('user_id');
-        $pendingInviteeIds  = LeagueInvite::where('league_id', $leagueId)->where('status', 'pending')->pluck('invited_user_id');
-        $excludeIds         = $existingMemberIds->merge($pendingInviteeIds)->unique();
+        $existingMemberIds = LeagueMember::where('league_id', $leagueId)->pluck('user_id');
+        $pendingInviteeIds = LeagueInvite::where('league_id', $leagueId)->where('status', 'pending')->pluck('invited_user_id');
+        $excludeIds = $existingMemberIds->merge($pendingInviteeIds)->unique();
 
         $users = User::where(function ($q) use ($query) {
-                $q->where('name',     'like', "%{$query}%")
-                  ->orWhere('surname',  'like', "%{$query}%")
-                  ->orWhere('username', 'like', "%{$query}%");
-            })
+            $q->where('name', 'like', "%{$query}%")
+                ->orWhere('surname', 'like', "%{$query}%")
+                ->orWhere('username', 'like', "%{$query}%");
+        })
             ->whereNotIn('id', $excludeIds)
             ->select('id', 'username', 'name', 'surname')
             ->limit(10)
@@ -196,9 +200,9 @@ class LeagueController extends Controller
         return response()->json($users);
     }
 
-    public function toggleOdds(Request $request): \Illuminate\Http\RedirectResponse
+    public function toggleOdds(Request $request): RedirectResponse
     {
-        $userId   = session('userID');
+        $userId = session('userID');
         $leagueId = (int) $request->input('leagueID');
 
         LeagueMember::where('user_id', $userId)
@@ -212,7 +216,7 @@ class LeagueController extends Controller
         return redirect()->route('leagues.index')->with('info', __('Lygos koeficientai atnaujinti'));
     }
 
-    public function adminIndex(): \Illuminate\View\View
+    public function adminIndex(): View
     {
         $leagues = League::withCount('members')
             ->with('owner')
@@ -223,16 +227,16 @@ class LeagueController extends Controller
         return view('admin.leagues', compact('leagues'));
     }
 
-    public function adminDelete(Request $request): \Illuminate\Http\RedirectResponse
+    public function adminDelete(Request $request): RedirectResponse
     {
         $leagueId = (int) $request->input('leagueID');
-        $league   = League::findOrFail($leagueId);
+        $league = League::findOrFail($leagueId);
 
         if ($league->is_public) {
             return redirect()->back()->with('error', __('Viešos lygos ištrinti negalima'));
         }
 
-        $publicLeague    = League::where('is_public', true)->first();
+        $publicLeague = League::where('is_public', true)->first();
         $activeMemberIds = LeagueMember::where('league_id', $leagueId)
             ->where('active', true)
             ->pluck('user_id');
@@ -250,9 +254,9 @@ class LeagueController extends Controller
         return redirect()->route('admin.leagues')->with('info', __('Lyga ištrinta'));
     }
 
-    public function deleteLeague(Request $request): \Illuminate\Http\RedirectResponse
+    public function deleteLeague(Request $request): RedirectResponse
     {
-        $userId   = session('userID');
+        $userId = session('userID');
         $leagueId = (int) $request->input('leagueID');
 
         $league = League::findOrFail($leagueId);
@@ -265,7 +269,7 @@ class LeagueController extends Controller
             return redirect()->back()->with('error', __('Viešos lygos ištrinti negalima'));
         }
 
-        $publicLeague    = League::where('is_public', true)->first();
+        $publicLeague = League::where('is_public', true)->first();
         $activeMemberIds = LeagueMember::where('league_id', $leagueId)
             ->where('active', true)
             ->pluck('user_id');
@@ -287,9 +291,9 @@ class LeagueController extends Controller
         return redirect()->route('leagues.index')->with('info', __('Lyga ištrinta'));
     }
 
-    public function leaveLeague(Request $request): \Illuminate\Http\RedirectResponse
+    public function leaveLeague(Request $request): RedirectResponse
     {
-        $userId   = session('userID');
+        $userId = session('userID');
         $leagueId = (int) $request->input('leagueID');
 
         $league = League::findOrFail($leagueId);
@@ -318,7 +322,7 @@ class LeagueController extends Controller
         $membership->delete();
 
         if ($wasActive) {
-            $publicLeague     = League::where('is_public', true)->firstOrFail();
+            $publicLeague = League::where('is_public', true)->firstOrFail();
             $publicMembership = LeagueMember::where('user_id', $userId)
                 ->where('league_id', $publicLeague->id)
                 ->firstOrFail();

@@ -13,7 +13,7 @@ class SuperAdminMiddleware
     {
         $userID = session('userID');
 
-        if (!$userID || !UserSetting::where('user_id', $userID)->where('admin', '>=', 5)->exists()) {
+        if (! $userID || ! UserSetting::where('user_id', $userID)->where('admin', '>=', 5)->exists()) {
             return redirect()->route('admin.index');
         }
 

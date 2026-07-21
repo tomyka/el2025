@@ -13,15 +13,15 @@ class GroupSeeder extends Seeder
      */
     public function run(): void
     {
-        $groups = array(
-                    array(
-                        'group' => 'Vieša grupė',
-                        'group_description' => '',
-                        'fee' => '20',
-                        'fee_description' => 'Visas mokestis bus skirtas Jaunimo Linijai paremti.',
-                        'reward_ratio' => '0.8',
-                        'reward_description' => 'Pirmos 5 vietos apdovanojamos Žalgirio suvenyrais su žaidėjų parašais.'
-         ));
+        $groups = [
+            [
+                'group' => 'Vieša grupė',
+                'group_description' => '',
+                'fee' => '20',
+                'fee_description' => 'Visas mokestis bus skirtas Jaunimo Linijai paremti.',
+                'reward_ratio' => '0.8',
+                'reward_description' => 'Pirmos 5 vietos apdovanojamos Žalgirio suvenyrais su žaidėjų parašais.',
+            ]];
 
         DB::table((new Group)->getTable())->insert($groups);
 

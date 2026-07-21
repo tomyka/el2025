@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Game;
 use App\Models\GameOdds;
-use App\Models\PointResult;
+use App\Models\League;
+use App\Models\LeagueMember;
 use App\Models\PointsCalculation;
 use App\Services\ScoringService;
 use App\Services\StreakService;
@@ -25,14 +26,14 @@ class PointResultController extends Controller
         DB::table('point_results')->updateOrInsert(
             ['user_id' => $userID, 'game_id' => $gameID],
             [
-                'winner_points'     => $points->winnerPoints,
+                'winner_points' => $points->winnerPoints,
                 'difference_points' => $points->differencePoints,
-                'bingo_points'      => $points->bingoPoints,
-                'odds'              => $points->odds,
-                'odds_points'       => $points->oddsPoints,
-                'full_points'       => $points->fullPoints,
-                'streak_bonus'      => 0,
-                'updated_at'        => now(),
+                'bingo_points' => $points->bingoPoints,
+                'odds' => $points->odds,
+                'odds_points' => $points->oddsPoints,
+                'full_points' => $points->fullPoints,
+                'streak_bonus' => 0,
+                'updated_at' => now(),
             ]
         );
     }
@@ -46,14 +47,16 @@ class PointResultController extends Controller
             ->pluck('id')
             ->toArray();
 
-        if (empty($gameIDs)) return;
+        if (empty($gameIDs)) {
+            return;
+        }
 
         // Load all point_results for scored games, joined with prediction_results
         // to determine whether each prediction was genuine and fully correct.
         $rows = DB::table('point_results')
             ->leftJoin('prediction_results', function ($join) {
                 $join->on('point_results.user_id', '=', 'prediction_results.user_id')
-                     ->on('point_results.game_id', '=', 'prediction_results.game_id');
+                    ->on('point_results.game_id', '=', 'prediction_results.game_id');
             })
             ->join('games', 'point_results.game_id', '=', 'games.id')
             ->join('events', 'games.event_id', '=', 'events.id')
@@ -78,16 +81,16 @@ class PointResultController extends Controller
             ->get();
 
         // Build lookup: user_id → game_id → {id, correct, rate}
-        $lookup  = [];
+        $lookup = [];
         $userIDs = [];
         foreach ($rows as $row) {
             if ($row->generated || $row->winner_points <= 0) {
                 $correct = false;
             } elseif ($row->is_knockout && $row->pred_home !== null && $row->pred_away !== null) {
                 // Knockout: streak only for fully correct (right team AND right ending)
-                $predIsDraw   = ((int) $row->pred_home === (int) $row->pred_away);
+                $predIsDraw = ((int) $row->pred_home === (int) $row->pred_away);
                 $actualIsDraw = ((int) $row->actual_home === (int) $row->actual_away);
-                $predWinner   = $predIsDraw ? $row->pred_winner_id
+                $predWinner = $predIsDraw ? $row->pred_winner_id
                     : ($row->pred_home > $row->pred_away ? $row->home_team_id : $row->away_team_id);
                 $actualWinner = $actualIsDraw ? $row->actual_winner_id
                     : ($row->actual_home > $row->actual_away ? $row->home_team_id : $row->away_team_id);
@@ -104,25 +107,28 @@ class PointResultController extends Controller
         foreach (array_keys($userIDs) as $userID) {
             $streak = 0;
             foreach ($gameIDs as $gameID) {
-                if (!isset($lookup[$userID][$gameID])) {
+                if (! isset($lookup[$userID][$gameID])) {
                     $streak = 0;
+
                     continue;
                 }
-                $entry  = $lookup[$userID][$gameID];
+                $entry = $lookup[$userID][$gameID];
                 $streak = $entry['correct'] ? $streak + 1 : 0;
                 $updates[$entry['id']] = StreakService::bonus($streak, $entry['rate']);
             }
         }
 
-        if (empty($updates)) return;
+        if (empty($updates)) {
+            return;
+        }
 
         // Single batch update via CASE WHEN
-        $whenClauses    = implode(' ', array_fill(0, count($updates), 'WHEN ? THEN ?'));
-        $inPlaceholders = implode(',',  array_fill(0, count($updates), '?'));
+        $whenClauses = implode(' ', array_fill(0, count($updates), 'WHEN ? THEN ?'));
+        $inPlaceholders = implode(',', array_fill(0, count($updates), '?'));
 
         $bindings = [];
         foreach ($updates as $id => $bonus) {
-            $bindings[] = (int)   $id;
+            $bindings[] = (int) $id;
             $bindings[] = (float) $bonus;
         }
         foreach (array_keys($updates) as $id) {
@@ -162,9 +168,9 @@ class PointResultController extends Controller
 
         $useLeagueOdds = false;
         if ($leagueId !== null) {
-            $league = \App\Models\League::find($leagueId);
+            $league = League::find($leagueId);
             if ($league && $league->use_league_odds) {
-                $memberCount = \App\Models\LeagueMember::where('league_id', $leagueId)
+                $memberCount = LeagueMember::where('league_id', $leagueId)
                     ->where('is_guest', false)
                     ->count();
                 $useLeagueOdds = $memberCount >= 20;
@@ -184,7 +190,7 @@ class PointResultController extends Controller
         $profile = [];
         foreach ($rows as $row) {
             $winnerPointsLeague = (float) $row->winner_points;
-            $fullPointsLeague   = (float) $row->full_points;
+            $fullPointsLeague = (float) $row->full_points;
 
             if ($useLeagueOdds && isset($leagueOddsMap[$row->game_id])) {
                 $lo = $leagueOddsMap[$row->game_id];
@@ -212,18 +218,18 @@ class PointResultController extends Controller
             }
 
             $profile[] = [
-                'game_id'              => $row->game_id,
-                'home_team'            => $row->home_team,
-                'away_team'            => $row->away_team,
-                'game_date'            => $row->game_date,
-                'winner_points'        => $row->winner_points,
+                'game_id' => $row->game_id,
+                'home_team' => $row->home_team,
+                'away_team' => $row->away_team,
+                'game_date' => $row->game_date,
+                'winner_points' => $row->winner_points,
                 'winner_points_league' => $winnerPointsLeague,
-                'difference_points'    => $row->difference_points,
-                'bingo_points'         => $row->bingo_points != 0 ? 1 : 0,
-                'full_points'          => round((float) $row->full_points, 1),
-                'full_points_league'   => $fullPointsLeague,
-                'streak_bonus'         => round((float) ($row->streak_bonus ?? 0), 1),
-                'rate'                 => $row->rate,
+                'difference_points' => $row->difference_points,
+                'bingo_points' => $row->bingo_points != 0 ? 1 : 0,
+                'full_points' => round((float) $row->full_points, 1),
+                'full_points_league' => $fullPointsLeague,
+                'streak_bonus' => round((float) ($row->streak_bonus ?? 0), 1),
+                'rate' => $row->rate,
             ];
         }
 
@@ -250,9 +256,9 @@ class PointResultController extends Controller
             ->get();
 
         $leagueOddsMap = [];
-        $league = \App\Models\League::find($leagueId);
+        $league = League::find($leagueId);
         if ($league && $league->use_league_odds) {
-            $memberCount = \App\Models\LeagueMember::where('league_id', $leagueId)
+            $memberCount = LeagueMember::where('league_id', $leagueId)
                 ->where('is_guest', false)->count();
             if ($memberCount >= 20) {
                 $gameIds = $rows->pluck('game_id')->unique();
@@ -266,18 +272,18 @@ class PointResultController extends Controller
         $result = [];
         foreach ($rows as $row) {
             $uid = $row->user_id;
-            if (!isset($result[$uid])) {
+            if (! isset($result[$uid])) {
                 $result[$uid] = [
-                    'game_points'   => 0.0,
+                    'game_points' => 0.0,
                     'streak_points' => 0.0,
-                    'bingo_count'   => 0,
-                    'game_count'    => 0,
+                    'bingo_count' => 0,
+                    'game_count' => 0,
                 ];
             }
 
             $fullPointsLeague = (float) $row->full_points;
 
-            if (!empty($leagueOddsMap)
+            if (! empty($leagueOddsMap)
                 && isset($leagueOddsMap[$row->game_id])
                 && $row->home_team_score !== null
                 && $row->away_team_score !== null
@@ -303,10 +309,10 @@ class PointResultController extends Controller
                 );
             }
 
-            $result[$uid]['game_points']   += $fullPointsLeague;
+            $result[$uid]['game_points'] += $fullPointsLeague;
             $result[$uid]['streak_points'] += (float) ($row->streak_bonus ?? 0);
-            $result[$uid]['bingo_count']   += ($row->bingo_points != 0 ? 1 : 0);
-            $result[$uid]['game_count']    += 1;
+            $result[$uid]['bingo_count'] += ($row->bingo_points != 0 ? 1 : 0);
+            $result[$uid]['game_count'] += 1;
         }
 
         return $result;
@@ -321,20 +327,20 @@ class PointResultController extends Controller
 
     private function doUpdateGamePoints(int $gameID): void
     {
-        $game  = Game::where('id', $gameID)->firstOrFail();
+        $game = Game::where('id', $gameID)->firstOrFail();
         $event = Event::where('id', $game->event_id)->firstOrFail();
 
         $homeTeamScore = $game->home_team_score;
         $awayTeamScore = $game->away_team_score;
-        $isKnockout    = (bool) $event->is_knockout;
+        $isKnockout = (bool) $event->is_knockout;
 
         $this->deletePointResultGamePoints($gameID);
 
         // Preload all 66 lookup rows once — keyed by "{homeDiff}_{awayDiff}"
         $pointsLookup = PointsCalculation::all()
-            ->keyBy(fn($r) => "{$r->home_score_difference}_{$r->away_score_difference}");
+            ->keyBy(fn ($r) => "{$r->home_score_difference}_{$r->away_score_difference}");
 
-        $gameOdds = GameOdds::where('game_id', $gameID)->first() ?? tap(new GameOdds(), function ($o) {
+        $gameOdds = GameOdds::where('game_id', $gameID)->first() ?? tap(new GameOdds, function ($o) {
             $o->home_odds = 1.0;
             $o->draw_odds = 1.0;
             $o->away_odds = 1.0;
@@ -345,9 +351,9 @@ class PointResultController extends Controller
             ->get();
 
         // For knockout rounds, resolve the actual ultimate winner once
-        $actualIsDraw   = false;
+        $actualIsDraw = false;
         $actualWinnerId = null;
-        $actualOdds     = 0.0;
+        $actualOdds = 0.0;
         if ($isKnockout) {
             $actualIsDraw = ((int) $homeTeamScore === (int) $awayTeamScore);
             if ((int) $homeTeamScore > (int) $awayTeamScore) {
@@ -378,8 +384,8 @@ class PointResultController extends Controller
             );
 
             if ($isKnockout && $predictionResult->home_team_score !== null && $predictionResult->away_team_score !== null) {
-                $predHome   = (int) $predictionResult->home_team_score;
-                $predAway   = (int) $predictionResult->away_team_score;
+                $predHome = (int) $predictionResult->home_team_score;
+                $predAway = (int) $predictionResult->away_team_score;
                 $predIsDraw = ($predHome === $predAway);
 
                 // Resolve predicted ultimate winner
@@ -401,28 +407,28 @@ class PointResultController extends Controller
                         // Correct advancing team but wrong ending — half series points
                         // Uses actualOdds so partial credit can never exceed full credit
                         $winnerBonus = (1 + $actualOdds) * 2.5;
-                        $odds        = $actualOdds;
+                        $odds = $actualOdds;
                     }
                 } elseif ($predIsDraw && $actualIsDraw) {
                     // Correct draw/penalties path but wrong penalty winner — half series points
                     $winnerBonus = (1 + $actualOdds) * 2.5;
-                    $odds        = $actualOdds;
+                    $odds = $actualOdds;
                 } else {
                     $winnerBonus = 0.0;
-                    $odds        = 0.0;
+                    $odds = 0.0;
                 }
 
                 // Bingo requires exact score AND correct penalty winner (if draw)
-                $scoreMatch   = ((int) $homeTeamScore === $predHome && (int) $awayTeamScore === $predAway);
-                $penaltyMatch = !$actualIsDraw || ($actualWinnerId !== null && (int) $actualWinnerId === (int) $predWinnerId);
-                $bingoPoints  = ($scoreMatch && $penaltyMatch) ? 2.5 : 0.0;
+                $scoreMatch = ((int) $homeTeamScore === $predHome && (int) $awayTeamScore === $predAway);
+                $penaltyMatch = ! $actualIsDraw || ($actualWinnerId !== null && (int) $actualWinnerId === (int) $predWinnerId);
+                $bingoPoints = ($scoreMatch && $penaltyMatch) ? 2.5 : 0.0;
             } else {
                 // Group stage — original logic
-                $winnerDir   = $this->scoring->getWinnerPoints(
+                $winnerDir = $this->scoring->getWinnerPoints(
                     $homeTeamScore, $awayTeamScore,
                     $predictionResult->home_team_score, $predictionResult->away_team_score
                 );
-                $odds        = $this->scoring->getGameOdds(
+                $odds = $this->scoring->getGameOdds(
                     $predictionResult->home_team_score, $predictionResult->away_team_score,
                     $gameOdds, $predictionResult->generated
                 );

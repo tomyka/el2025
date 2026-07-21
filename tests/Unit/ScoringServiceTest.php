@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\GameOdds;
 use App\Services\ScoringService;
+use Illuminate\Support\Collection;
 use Tests\TestCase;
 
 class ScoringServiceTest extends TestCase
@@ -13,7 +14,7 @@ class ScoringServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new ScoringService();
+        $this->service = new ScoringService;
     }
 
     // ── getTablePoints ───────────────────────────────────────────────────────
@@ -57,7 +58,7 @@ class ScoringServiceTest extends TestCase
     {
         // actual 0:0, pred 1:1 — both down by 1 → homeSigned=-1 (flip), awayRaw=-1 → awayDiff=+1 → key "1_1"
         // actual 2:1, pred 1:0 — both up by 1  → homeSigned=+1 (no flip), awayRaw=+1 → awayDiff=+1 → key "1_1"
-        $up   = $this->service->getTablePoints(2, 1, 1, 0, $this->buildLookup());
+        $up = $this->service->getTablePoints(2, 1, 1, 0, $this->buildLookup());
         $down = $this->service->getTablePoints(0, 0, 1, 1, $this->buildLookup());
         $this->assertSame($up, $down); // symmetric miss → same score
         $this->assertSame(4.5, $up);   // key "1_1" → 9/2
@@ -75,28 +76,28 @@ class ScoringServiceTest extends TestCase
         $this->assertSame(-2.0, $this->service->getTablePoints(2, 12, 2, 0, $this->buildLookup()));
     }
 
-    private function buildLookup(): \Illuminate\Support\Collection
+    private function buildLookup(): Collection
     {
         $awayDiffs = [7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5, -6, -7];
         $tableData = [
-            0 => [ -4,  -2,   0,   2,   4,   6,   8,  10,   8,   6,   4,   2,   0,  -2,  -4],
-            1 => [ -3,  -1,   1,   3,   5,   7,   9,   8,   6,   4,   2,   0,  -2,  -4,  -6],
-            2 => [ -2,   0,   2,   4,   6,   8,   7,   6,   4,   2,   0,  -2,  -4,  -6,  -8],
-            3 => [ -1,   1,   3,   5,   7,   6,   5,   4,   2,   0,  -2,  -4,  -6,  -8, -10],
-            4 => [  0,   2,   4,   6,   5,   4,   3,   2,   0,  -2,  -4,  -6,  -8, -10, -12],
-            5 => [  1,   3,   5,   4,   3,   2,   1,   0,  -2,  -4,  -6,  -8, -10, -12, -14],
-            6 => [  2,   4,   3,   2,   1,   0,  -1,  -2,  -4,  -6,  -8, -10, -12, -14, -16],
-            7 => [  3,   2,   1,   0,  -1,  -2,  -3,  -4,  -6,  -8, -10, -12, -14, -16, -18],
+            0 => [-4,  -2,   0,   2,   4,   6,   8,  10,   8,   6,   4,   2,   0,  -2,  -4],
+            1 => [-3,  -1,   1,   3,   5,   7,   9,   8,   6,   4,   2,   0,  -2,  -4,  -6],
+            2 => [-2,   0,   2,   4,   6,   8,   7,   6,   4,   2,   0,  -2,  -4,  -6,  -8],
+            3 => [-1,   1,   3,   5,   7,   6,   5,   4,   2,   0,  -2,  -4,  -6,  -8, -10],
+            4 => [0,   2,   4,   6,   5,   4,   3,   2,   0,  -2,  -4,  -6,  -8, -10, -12],
+            5 => [1,   3,   5,   4,   3,   2,   1,   0,  -2,  -4,  -6,  -8, -10, -12, -14],
+            6 => [2,   4,   3,   2,   1,   0,  -1,  -2,  -4,  -6,  -8, -10, -12, -14, -16],
+            7 => [3,   2,   1,   0,  -1,  -2,  -3,  -4,  -6,  -8, -10, -12, -14, -16, -18],
         ];
 
         $rows = [];
         foreach ($tableData as $homeDiff => $points) {
             foreach ($awayDiffs as $i => $awayDiff) {
-                $key        = "{$homeDiff}_{$awayDiff}";
+                $key = "{$homeDiff}_{$awayDiff}";
                 $rows[$key] = (object) [
                     'home_score_difference' => $homeDiff,
                     'away_score_difference' => $awayDiff,
-                    'points'                => $points[$i],
+                    'points' => $points[$i],
                 ];
             }
         }
@@ -201,37 +202,37 @@ class ScoringServiceTest extends TestCase
 
     public function test_game_odds_generated_always_returns_one(): void
     {
-        $gameOdds             = new GameOdds();
-        $gameOdds->home_odds  = 1.9;
-        $gameOdds->away_odds  = 2.1;
+        $gameOdds = new GameOdds;
+        $gameOdds->home_odds = 1.9;
+        $gameOdds->away_odds = 2.1;
 
         $this->assertSame(0.0, $this->service->getGameOdds(3, 1, $gameOdds, 1));
     }
 
     public function test_game_odds_home_prediction_returns_home_odds(): void
     {
-        $gameOdds             = new GameOdds();
-        $gameOdds->home_odds  = 1.9;
-        $gameOdds->away_odds  = 2.1;
+        $gameOdds = new GameOdds;
+        $gameOdds->home_odds = 1.9;
+        $gameOdds->away_odds = 2.1;
 
         $this->assertSame(1.9, $this->service->getGameOdds(2, 0, $gameOdds, 0));
     }
 
     public function test_game_odds_away_prediction_returns_away_odds(): void
     {
-        $gameOdds             = new GameOdds();
-        $gameOdds->home_odds  = 1.9;
-        $gameOdds->away_odds  = 2.1;
+        $gameOdds = new GameOdds;
+        $gameOdds->home_odds = 1.9;
+        $gameOdds->away_odds = 2.1;
 
         $this->assertSame(2.1, $this->service->getGameOdds(0, 2, $gameOdds, 0));
     }
 
     public function test_game_odds_draw_prediction_returns_draw_odds(): void
     {
-        $gameOdds             = new GameOdds();
-        $gameOdds->home_odds  = 1.9;
-        $gameOdds->draw_odds  = 3.2;
-        $gameOdds->away_odds  = 2.1;
+        $gameOdds = new GameOdds;
+        $gameOdds->home_odds = 1.9;
+        $gameOdds->draw_odds = 3.2;
+        $gameOdds->away_odds = 2.1;
 
         $this->assertSame(3.2, $this->service->getGameOdds(0, 0, $gameOdds, 0));
         $this->assertSame(3.2, $this->service->getGameOdds(1, 1, $gameOdds, 0));
@@ -246,7 +247,7 @@ class ScoringServiceTest extends TestCase
         $this->assertEqualsWithDelta(100.0, $points->winnerPoints, 0.001);
         $this->assertEqualsWithDelta(100.0, $points->differencePoints, 0.001);
         $this->assertEqualsWithDelta(100.0, $points->bingoPoints, 0.001);
-        $this->assertEqualsWithDelta(50.0,  $points->oddsPoints, 0.001);
+        $this->assertEqualsWithDelta(50.0, $points->oddsPoints, 0.001);
         $this->assertEqualsWithDelta(350.0, $points->fullPoints, 0.001);
         $this->assertSame(1.5, $points->odds);
     }

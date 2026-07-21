@@ -7,22 +7,24 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Factory;
 
-
 /**
  * @deprecated Settings UI removed from navigation; routes kept only for backward compatibility.
  */
 class UserSettingController extends Controller
 {
-    public function getUserSettings () {
+    public function getUserSettings()
+    {
         $userID = (session('userID'));
-        $userSettings = UserSetting::where('user_id',$userID)->with('user')->firstOrFail();
-        return view('userSettings')->with('userSettings',$userSettings);
+        $userSettings = UserSetting::where('user_id', $userID)->with('user')->firstOrFail();
+
+        return view('userSettings')->with('userSettings', $userSettings);
     }
 
-    public function insertUserSettings($user_id){
-        $userSettings = new UserSetting();
-        $userSettings->user_id =$user_id;
-        $userSettings->admin=(($user_id==1)?9:0);
+    public function insertUserSettings($user_id)
+    {
+        $userSettings = new UserSetting;
+        $userSettings->user_id = $user_id;
+        $userSettings->admin = (($user_id == 1) ? 9 : 0);
         $userSettings->save();
     }
 
@@ -44,12 +46,10 @@ class UserSettingController extends Controller
             $userSettings->result_amount = $request->input('resultAmount');
             $userSettings->save();
 
-            Session::put('resultAmount',$request->input('resultAmount'));
+            Session::put('resultAmount', $request->input('resultAmount'));
 
             return redirect()->route('userSettings')->with('info', __('Vartotojo nustatymai pakeisti'));
         }
-
-
 
     }
 }

@@ -55,8 +55,12 @@ class TeamStatisticsController extends Controller
         foreach ($games as $game) {
             $homeId = (int) $game->home_team_id;
             $awayId = (int) $game->away_team_id;
-            if (isset($statsByTeam[$homeId])) $statsByTeam[$homeId]->push($game);
-            if (isset($statsByTeam[$awayId])) $statsByTeam[$awayId]->push($game);
+            if (isset($statsByTeam[$homeId])) {
+                $statsByTeam[$homeId]->push($game);
+            }
+            if (isset($statsByTeam[$awayId])) {
+                $statsByTeam[$awayId]->push($game);
+            }
         }
 
         $statsObjects = [];
@@ -69,11 +73,12 @@ class TeamStatisticsController extends Controller
         $result = [];
         foreach ($predictionResults as $predictionResult) {
             $result[] = [
-                'gameDetails'   => $predictionResult,
+                'gameDetails' => $predictionResult,
                 'homeTeamStats' => $statsObjects[(int) $predictionResult->home_team_id] ?? null,
                 'awayTeamStats' => $statsObjects[(int) $predictionResult->away_team_id] ?? null,
             ];
         }
+
         return $result;
     }
 
@@ -81,15 +86,20 @@ class TeamStatisticsController extends Controller
     {
         $stats = ['gameCount' => 0, 'won' => 0, 'lost' => 0, 'pointsScored' => 0.0, 'pointsAllowed' => 0.0];
         foreach ($games as $game) {
-            $isHome   = (int) $game->home_team_id === $teamID;
-            $scored   = $isHome ? (int) $game->home_team_score : (int) $game->away_team_score;
+            $isHome = (int) $game->home_team_id === $teamID;
+            $scored = $isHome ? (int) $game->home_team_score : (int) $game->away_team_score;
             $conceded = $isHome ? (int) $game->away_team_score : (int) $game->home_team_score;
             $stats['gameCount']++;
-            $stats['pointsScored']  += $scored;
+            $stats['pointsScored'] += $scored;
             $stats['pointsAllowed'] += $conceded;
-            if ($scored > $conceded) $stats['won']++;
-            if ($scored < $conceded) $stats['lost']++;
+            if ($scored > $conceded) {
+                $stats['won']++;
+            }
+            if ($scored < $conceded) {
+                $stats['lost']++;
+            }
         }
+
         return (object) $stats;
     }
 }

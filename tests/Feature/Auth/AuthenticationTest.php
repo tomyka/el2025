@@ -57,7 +57,7 @@ class AuthenticationTest extends TestCase
         $user = User::factory()->create(['remember_token' => null]);
 
         $this->post('/login', [
-            'email'    => $user->email,
+            'email' => $user->email,
             'password' => 'password',
             'remember' => '1',
         ]);

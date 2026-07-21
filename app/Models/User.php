@@ -50,7 +50,7 @@ class User extends Authenticatable
 
     public function userSetting()
     {
-        return $this->hasOne('App\Models\UserSetting','user_id','id');
+        return $this->hasOne('App\Models\UserSetting', 'user_id', 'id');
     }
 
     public function leagueMembers()

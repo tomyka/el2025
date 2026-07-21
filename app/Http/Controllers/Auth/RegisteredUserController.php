@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\AuditLoginsController;
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Http\Controllers\PostRegisterController;
+use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +20,7 @@ class RegisteredUserController extends Controller
 
     public function create(): View|RedirectResponse
     {
-        if (!$this->registrationIsOpen()) {
+        if (! $this->registrationIsOpen()) {
             return redirect()->route('main');
         }
 
@@ -29,7 +29,7 @@ class RegisteredUserController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        if (!$this->registrationIsOpen()) {
+        if (! $this->registrationIsOpen()) {
             return redirect()->route('main');
         }
 
@@ -40,16 +40,16 @@ class RegisteredUserController extends Controller
 
         $request->validate([
             'username' => ['required', 'string', 'max:255'],
-            'name'     => ['required', 'string', 'max:255'],
-            'surname'  => ['nullable', 'string', 'max:255'],
-            'email'    => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'name' => ['required', 'string', 'max:255'],
+            'surname' => ['nullable', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
             'username' => $request->username,
-            'name'     => $request->name,
-            'surname'  => $request->surname ?? '',
+            'name' => $request->name,
+            'surname' => $request->surname ?? '',
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
@@ -58,10 +58,10 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        $postRegisterController = new PostRegisterController();
+        $postRegisterController = new PostRegisterController;
         $postRegisterController->postRegisterActions($user->id);
 
-        (new AuditLoginsController())->insertAuditLogin($user->id, $request->ip(), 'register');
+        (new AuditLoginsController)->insertAuditLogin($user->id, $request->ip(), 'register');
 
         return redirect(route('main', absolute: false));
     }

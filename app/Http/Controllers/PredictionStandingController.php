@@ -7,17 +7,17 @@ use App\Models\PredictionStanding;
 use App\Models\Team;
 use Illuminate\Support\Facades\DB;
 
-
 class PredictionStandingController extends Controller
 {
-    public function getPredictionStandingsUser() {
-        if (session('userID')!='') {
+    public function getPredictionStandingsUser()
+    {
+        if (session('userID') != '') {
             $predictionStandings = DB::table('prediction_standings')->join('teams', 'prediction_standings.team_id', '=', 'teams.id')->where('prediction_standings.user_id', session('userID'))->select('teams.team', 'teams.group_name', 'teams.link', 'prediction_standings.*')->get();
+
             return view('prediction.standings')->with('predictionStandings', $predictionStandings);
+        } else {
+            return redirect('/');
         }
-        else {
-                return redirect('/');
-            }
     }
 
     public function updatePredictionStandingsUser(UpdatePredictionStandingRequest $request)
@@ -27,11 +27,11 @@ class PredictionStandingController extends Controller
                 ->where('user_id', session('userID'))
                 ->firstOrFail();
             $predictionStanding->group_position = $request->input('groupPosition');
-            $predictionStanding->last32         = $request->input('last32');
-            $predictionStanding->last16         = $request->input('last16');
-            $predictionStanding->quarterfinal   = $request->input('quarterfinal');
-            $predictionStanding->semifinal      = $request->input('semifinal');
-            $predictionStanding->final          = $request->input('final');
+            $predictionStanding->last32 = $request->input('last32');
+            $predictionStanding->last16 = $request->input('last16');
+            $predictionStanding->quarterfinal = $request->input('quarterfinal');
+            $predictionStanding->semifinal = $request->input('semifinal');
+            $predictionStanding->final = $request->input('final');
             $predictionStanding->save();
         }
 
@@ -44,26 +44,27 @@ class PredictionStandingController extends Controller
         if ($teams->count() > 0) {
             foreach ($teams as $team) {
                 $predictionStandings[] = [
-                    'user_id' => $user_id
-                    , 'team_id' => $team->id
+                    'user_id' => $user_id, 'team_id' => $team->id,
                 ];
             }
-            $predictionStanding = new PredictionStanding();
-            $predictionStanding:: insert($predictionStandings);
+            $predictionStanding = new PredictionStanding;
+            $predictionStanding::insert($predictionStandings);
         }
     }
 
-    public function getPredictionStandingSummary() {
+    public function getPredictionStandingSummary()
+    {
         $groupID = session('leagueID');
         $teams = Team::all();
 
-        $predictionStandingController = new PredictionStandingController();
+        $predictionStandingController = new PredictionStandingController;
         $predictionStandings = $predictionStandingController->getPredictionStandingProfile($groupID);
 
-
-        return view('summary.standings')->with('predictionStandings',$predictionStandings)->with('teams',$teams);
+        return view('summary.standings')->with('predictionStandings', $predictionStandings)->with('teams', $teams);
     }
-   public function getPredictionStandingProfile($groupID){
+
+    public function getPredictionStandingProfile($groupID)
+    {
         $predictionStandingProfile = DB::select('SELECT
                                  u.username
                                 ,t.id as team_id
@@ -97,7 +98,8 @@ class PredictionStandingController extends Controller
         return $predictionStandingProfile;
     }
 
-    public function getPredictionStandingTop4($groupID){
+    public function getPredictionStandingTop4($groupID)
+    {
         $predictionStandingTop4 = DB::select('select
     team AS team
   ,SUM(CASE WHEN ps.final = 1 then 1 else 0 END) as firstPlacePrediction
@@ -117,5 +119,4 @@ group by team
 
         return $predictionStandingTop4;
     }
-
 }

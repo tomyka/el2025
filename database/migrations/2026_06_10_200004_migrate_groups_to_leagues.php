@@ -1,26 +1,28 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         // 1. Migrate existing groups → leagues with identical IDs
         $groups = DB::table('groups')->get();
         foreach ($groups as $group) {
             DB::table('leagues')->insertOrIgnore([
-                'id'                 => $group->id,
-                'name'               => $group->group,
-                'description'        => $group->group_description,
-                'is_public'          => false,
-                'owner_id'           => null,
-                'base_fee'           => $group->fee,
-                'penalty_step'       => null,
-                'use_league_odds'    => false,
+                'id' => $group->id,
+                'name' => $group->group,
+                'description' => $group->group_description,
+                'is_public' => false,
+                'owner_id' => null,
+                'base_fee' => $group->fee,
+                'penalty_step' => null,
+                'use_league_odds' => false,
                 'reward_description' => $group->reward_description,
-                'created_at'         => now(),
-                'updated_at'         => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
 
@@ -30,9 +32,9 @@ return new class extends Migration {
             $publicLeagueId = $existing->id;
         } else {
             $publicLeagueId = DB::table('leagues')->insertGetId([
-                'name'       => 'Public League',
-                'is_public'  => true,
-                'owner_id'   => null,
+                'name' => 'Public League',
+                'is_public' => true,
+                'owner_id' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -44,11 +46,11 @@ return new class extends Migration {
             : collect();
         foreach ($userGroups as $ug) {
             DB::table('league_members')->insertOrIgnore([
-                'league_id'  => $ug->group_id,
-                'user_id'    => $ug->user_id,
-                'is_admin'   => false,
-                'is_guest'   => (bool) $ug->guest,
-                'active'     => (bool) $ug->active,
+                'league_id' => $ug->group_id,
+                'user_id' => $ug->user_id,
+                'is_admin' => false,
+                'is_guest' => (bool) $ug->guest,
+                'active' => (bool) $ug->active,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -60,11 +62,11 @@ return new class extends Migration {
         // 5. Add all existing members to public league (non-active)
         foreach ($memberedUserIds as $uid) {
             DB::table('league_members')->insertOrIgnore([
-                'league_id'  => $publicLeagueId,
-                'user_id'    => $uid,
-                'is_admin'   => false,
-                'is_guest'   => false,
-                'active'     => false,
+                'league_id' => $publicLeagueId,
+                'user_id' => $uid,
+                'is_admin' => false,
+                'is_guest' => false,
+                'active' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -73,13 +75,13 @@ return new class extends Migration {
         // 6. Auto-join users with NO existing membership to public league as active
         $allUserIds = DB::table('users')->pluck('id');
         foreach ($allUserIds as $uid) {
-            if (!$memberedUserIds->contains($uid)) {
+            if (! $memberedUserIds->contains($uid)) {
                 DB::table('league_members')->insertOrIgnore([
-                    'league_id'  => $publicLeagueId,
-                    'user_id'    => $uid,
-                    'is_admin'   => false,
-                    'is_guest'   => false,
-                    'active'     => true,
+                    'league_id' => $publicLeagueId,
+                    'user_id' => $uid,
+                    'is_admin' => false,
+                    'is_guest' => false,
+                    'active' => true,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

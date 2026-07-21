@@ -12,7 +12,7 @@ class ActivityFeedController extends Controller
     {
         $guest = (int) session('guest', 0);
 
-        $bingos  = $this->getBingos($leagueID, $guest);
+        $bingos = $this->getBingos($leagueID, $guest);
         $streaks = $this->getStreaks($leagueID, $guest);
 
         return array_merge($bingos, $streaks);
@@ -46,11 +46,11 @@ class ActivityFeedController extends Controller
             )
             ->get();
 
-        return $rows->map(fn($r) => [
-            'type'    => 'bingo',
-            'game'    => "{$r->home_team} {$r->home_team_score}–{$r->away_team_score} {$r->away_team}",
+        return $rows->map(fn ($r) => [
+            'type' => 'bingo',
+            'game' => "{$r->home_team} {$r->home_team_score}–{$r->away_team_score} {$r->away_team}",
             'players' => $r->players,
-            'ago'     => Carbon::parse($r->game_date)->diffForHumans(now(), true),
+            'ago' => Carbon::parse($r->game_date)->diffForHumans(now(), true),
         ])->toArray();
     }
 
@@ -74,7 +74,7 @@ class ActivityFeedController extends Controller
             ->join('user_settings as us', 'us.user_id', '=', 'pr.user_id')
             ->joinSub($latestGame, 'latest', function ($join) {
                 $join->on('latest.user_id', '=', 'pr.user_id')
-                     ->on('latest.last_game_id', '=', 'pr.game_id');
+                    ->on('latest.last_game_id', '=', 'pr.game_id');
             })
             ->where('lm.league_id', $leagueID)
             ->where('lm.active', true)
@@ -88,12 +88,11 @@ class ActivityFeedController extends Controller
             ->select('u.username', 'pr.streak_bonus', 'e.rate', 'g.game_date')
             ->get();
 
-        return $rows->map(fn($r) => [
-            'type'     => 'streak',
+        return $rows->map(fn ($r) => [
+            'type' => 'streak',
             'username' => $r->username,
-            'length'   => StreakService::length((float) $r->streak_bonus, (float) $r->rate),
-            'ago'      => Carbon::parse($r->game_date)->diffForHumans(now(), true),
+            'length' => StreakService::length((float) $r->streak_bonus, (float) $r->rate),
+            'ago' => Carbon::parse($r->game_date)->diffForHumans(now(), true),
         ])->toArray();
     }
-
 }

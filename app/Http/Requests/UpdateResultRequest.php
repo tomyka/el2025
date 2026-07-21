@@ -14,7 +14,7 @@ class UpdateResultRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'gameID'        => ['required', 'integer'],
+            'gameID' => ['required', 'integer'],
             'homeTeamScore' => ['nullable', 'integer', 'min:0', 'max:150'],
             'awayTeamScore' => ['nullable', 'integer', 'min:0', 'max:150'],
         ];

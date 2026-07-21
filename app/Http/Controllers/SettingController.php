@@ -7,17 +7,21 @@ use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
-    public function getSettingAll(){
+    public function getSettingAll()
+    {
         $settings = Setting::all();
-        return view ('admin.settings')->with('settings',$settings);
+
+        return view('admin.settings')->with('settings', $settings);
     }
 
-    public function insertSetting(Request $request){
-        $setting = new setting();
+    public function insertSetting(Request $request)
+    {
+        $setting = new Setting;
         $setting->setting = $request->input('setting');
         $setting->value = $request->input('value');
         $setting->save();
-        return redirect()->route('admin.settings')->with('info','setting inserted');
+
+        return redirect()->route('admin.settings')->with('info', 'setting inserted');
     }
 
     public function updateSetting(Request $request)
@@ -27,6 +31,7 @@ class SettingController extends Controller
             $setting->setting = $request->input('setting');
             $setting->value = $request->input('value');
             $setting->save();
+
             return redirect()->route('admin.settings')->with('info', __('Nustatymas :id pakeistas', ['id' => $request->input('settingID')]));
         }
 

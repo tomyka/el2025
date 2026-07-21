@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
 
-        if (!Schema::hasTable('colors')) {
+        if (! Schema::hasTable('colors')) {
             Schema::create('colors', function (Blueprint $table) {
                 $table->id();
                 $table->string('color_code');
@@ -26,7 +26,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-                Schema::dropIfExists('colors');
+        Schema::dropIfExists('colors');
 
     }
 };

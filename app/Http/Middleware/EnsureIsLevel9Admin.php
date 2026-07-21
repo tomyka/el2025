@@ -13,7 +13,7 @@ class EnsureIsLevel9Admin
     {
         $userID = session('userID');
 
-        if (!$userID || !UserSetting::where('user_id', $userID)->where('admin', '>=', 9)->exists()) {
+        if (! $userID || ! UserSetting::where('user_id', $userID)->where('admin', '>=', 9)->exists()) {
             return redirect()->route('admin.index');
         }
 

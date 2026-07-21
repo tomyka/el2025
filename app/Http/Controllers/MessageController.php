@@ -24,11 +24,12 @@ class MessageController extends Controller
 
     public function insertMessage(Request $request)
     {
-        $message = new Message();
+        $message = new Message;
         $message->message = $request->input('message');
         $message->active = (($request->input('active') == 'on') ? 1 : 0);
         $message->league_id = $request->input('leagueID');
         $message->save();
+
         return redirect()->route('admin.messages')->with('info', 'message inserted');
     }
 
@@ -40,16 +41,18 @@ class MessageController extends Controller
             $message->active = (($request->input('active') == 'on') ? 1 : 0);
             $message->league_id = $request->input('leagueID');
             $message->save();
-            return redirect()->route('admin.messages')->with('info', 'message ' . $request->input('messageID') . ' updated');
+
+            return redirect()->route('admin.messages')->with('info', 'message '.$request->input('messageID').' updated');
         }
 
         if ($request->has('delete')) {
             $userID = session('userID');
-            if (!$userID || !UserSetting::where('user_id', $userID)->where('admin', '>=', 9)->exists()) {
+            if (! $userID || ! UserSetting::where('user_id', $userID)->where('admin', '>=', 9)->exists()) {
                 return redirect()->route('admin.messages')->with('error', 'Insufficient permissions to delete.');
             }
             Message::destroy($request->input('messageID'));
-            return redirect()->route('admin.messages')->with('info', 'message ' . $request->input('messageID') . ' deleted');
+
+            return redirect()->route('admin.messages')->with('info', 'message '.$request->input('messageID').' deleted');
         }
     }
 }

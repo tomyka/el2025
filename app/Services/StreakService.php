@@ -14,6 +14,7 @@ class StreakService
         if ($rate <= 0.0) {
             return 1;
         }
+
         return (int) round($streakBonus / $rate) + 1;
     }
 }

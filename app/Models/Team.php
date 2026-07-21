@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+
 class Team extends Model
 {
     protected $primaryKey = 'id';
@@ -23,4 +24,3 @@ class Team extends Model
         return $this->belongsTo(Tournament::class);
     }
 }
-

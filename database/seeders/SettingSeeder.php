@@ -13,10 +13,10 @@ class SettingSeeder extends Seeder
      */
     public function run(): void
     {
-        $settings = array(
-                    array('setting' => 'survivalGame', 'value' => '0'),
-                    array('setting' => 'timeDifference', 'value' => '3')
-         );
+        $settings = [
+            ['setting' => 'survivalGame', 'value' => '0'],
+            ['setting' => 'timeDifference', 'value' => '3'],
+        ];
 
         DB::table((new Setting)->getTable())->insert($settings);
 

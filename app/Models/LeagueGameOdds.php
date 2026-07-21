@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -6,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class LeagueGameOdds extends Model
 {
     public $timestamps = false;
+
     public $incrementing = false;
+
     // Composite PK (league_id, game_id) — Eloquent doesn't support composite PKs.
     // Use DB::table('league_game_odds') for all writes; this model is for reads only.
     protected $primaryKey = 'league_id';

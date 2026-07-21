@@ -18,13 +18,14 @@ class StreakBonusTest extends TestCase
     private function makeGame(): Game
     {
         $event = Event::create(['event' => 'E', 'event_day' => 1, 'event_survival' => 0, 'rate' => 1]);
-        $home  = Team::create(['team' => 'H' . uniqid()]);
-        $away  = Team::create(['team' => 'A' . uniqid()]);
+        $home = Team::create(['team' => 'H'.uniqid()]);
+        $away = Team::create(['team' => 'A'.uniqid()]);
+
         return Game::create([
-            'game_date'       => now(),
-            'event_id'        => $event->id,
-            'home_team_id'    => $home->id,
-            'away_team_id'    => $away->id,
+            'game_date' => now(),
+            'event_id' => $event->id,
+            'home_team_id' => $home->id,
+            'away_team_id' => $away->id,
             'home_team_score' => 1,
             'away_team_score' => 0,
         ]);
@@ -33,26 +34,26 @@ class StreakBonusTest extends TestCase
     private function insertPointResult(int $userID, int $gameID, float $winnerPoints, bool $generated = false): void
     {
         DB::table('prediction_results')->insert([
-            'user_id'         => $userID,
-            'game_id'         => $gameID,
+            'user_id' => $userID,
+            'game_id' => $gameID,
             'home_team_score' => 1,
             'away_team_score' => 0,
-            'generated'       => $generated ? 1 : 0,
-            'created_at'      => now(),
-            'updated_at'      => now(),
+            'generated' => $generated ? 1 : 0,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
         DB::table('point_results')->insert([
-            'user_id'          => $userID,
-            'game_id'          => $gameID,
-            'winner_points'    => $winnerPoints,
-            'difference_points'=> 0,
-            'bingo_points'     => 0,
-            'odds'             => 1,
-            'odds_points'      => 0,
-            'full_points'      => $winnerPoints,
-            'streak_bonus'     => 0,
-            'created_at'       => now(),
-            'updated_at'       => now(),
+            'user_id' => $userID,
+            'game_id' => $gameID,
+            'winner_points' => $winnerPoints,
+            'difference_points' => 0,
+            'bingo_points' => 0,
+            'odds' => 1,
+            'odds_points' => 0,
+            'full_points' => $winnerPoints,
+            'streak_bonus' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
     }
 
@@ -74,9 +75,9 @@ class StreakBonusTest extends TestCase
     public function test_consecutive_correct_predictions_increment_streak(): void
     {
         $user = User::factory()->create();
-        $g1   = $this->makeGame();
-        $g2   = $this->makeGame();
-        $g3   = $this->makeGame();
+        $g1 = $this->makeGame();
+        $g2 = $this->makeGame();
+        $g3 = $this->makeGame();
 
         // Ensure g1.id < g2.id < g3.id by using IDs as-created (auto-increment)
         $this->insertPointResult($user->id, $g1->id, winnerPoints: 5.0);
@@ -97,9 +98,9 @@ class StreakBonusTest extends TestCase
     public function test_wrong_prediction_resets_streak_to_zero(): void
     {
         $user = User::factory()->create();
-        $g1   = $this->makeGame();
-        $g2   = $this->makeGame();
-        $g3   = $this->makeGame();
+        $g1 = $this->makeGame();
+        $g2 = $this->makeGame();
+        $g3 = $this->makeGame();
 
         $this->insertPointResult($user->id, $g1->id, winnerPoints: 5.0);
         $this->insertPointResult($user->id, $g2->id, winnerPoints: 0.0); // wrong
@@ -119,9 +120,9 @@ class StreakBonusTest extends TestCase
     public function test_generated_prediction_resets_streak(): void
     {
         $user = User::factory()->create();
-        $g1   = $this->makeGame();
-        $g2   = $this->makeGame();
-        $g3   = $this->makeGame();
+        $g1 = $this->makeGame();
+        $g2 = $this->makeGame();
+        $g3 = $this->makeGame();
 
         $this->insertPointResult($user->id, $g1->id, winnerPoints: 5.0);
         $this->insertPointResult($user->id, $g2->id, winnerPoints: 5.0, generated: true); // auto-generated
@@ -141,9 +142,9 @@ class StreakBonusTest extends TestCase
     public function test_missing_point_result_row_resets_streak(): void
     {
         $user = User::factory()->create();
-        $g1   = $this->makeGame();
-        $g2   = $this->makeGame(); // no row for this game
-        $g3   = $this->makeGame();
+        $g1 = $this->makeGame();
+        $g2 = $this->makeGame(); // no row for this game
+        $g3 = $this->makeGame();
 
         $this->insertPointResult($user->id, $g1->id, winnerPoints: 5.0);
         // deliberately skip g2
@@ -186,8 +187,8 @@ class StreakBonusTest extends TestCase
     public function test_recalculate_is_idempotent(): void
     {
         $user = User::factory()->create();
-        $g1   = $this->makeGame();
-        $g2   = $this->makeGame();
+        $g1 = $this->makeGame();
+        $g2 = $this->makeGame();
 
         $this->insertPointResult($user->id, $g1->id, winnerPoints: 5.0);
         $this->insertPointResult($user->id, $g2->id, winnerPoints: 5.0);
@@ -208,19 +209,19 @@ class StreakBonusTest extends TestCase
     public function test_streak_bonus_returned_separately_in_user_profile_points(): void
     {
         $user = User::factory()->create();
-        $g1   = $this->makeGame();
-        $g2   = $this->makeGame();
+        $g1 = $this->makeGame();
+        $g2 = $this->makeGame();
 
         $this->insertPointResult($user->id, $g1->id, winnerPoints: 5.0);
         $this->insertPointResult($user->id, $g2->id, winnerPoints: 5.0);
 
         app(PointResultController::class)->recalculateStreaks();
 
-        $profilePoints   = app(PointResultController::class)->getUserProfilePoints($user->id);
-        $baseTotal        = array_sum(array_column($profilePoints, 'full_points'));
-        $streakTotal      = array_sum(array_column($profilePoints, 'streak_bonus'));
+        $profilePoints = app(PointResultController::class)->getUserProfilePoints($user->id);
+        $baseTotal = array_sum(array_column($profilePoints, 'full_points'));
+        $streakTotal = array_sum(array_column($profilePoints, 'streak_bonus'));
 
         $this->assertEquals(10.0, $baseTotal);   // base: 5+5
-        $this->assertEquals(1.0,  $streakTotal);  // streak: 0+1
+        $this->assertEquals(1.0, $streakTotal);  // streak: 0+1
     }
 }

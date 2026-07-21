@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Mail;
 
 class SendPredictionReminders extends Command
 {
-    protected $signature   = 'reminders:send';
+    protected $signature = 'reminders:send';
+
     protected $description = 'Send email reminders for upcoming game predictions';
 
     public function handle(): int
@@ -24,7 +25,7 @@ class SendPredictionReminders extends Command
             ->get();
 
         foreach ($games as $game) {
-            $gameTime     = Carbon::parse($game->game_date, 'UTC')->setTimezone('Europe/Vilnius');
+            $gameTime = Carbon::parse($game->game_date, 'UTC')->setTimezone('Europe/Vilnius');
             $reminderTime = $this->computeReminderTime($gameTime);
 
             if ($now->lt($reminderTime)) {
@@ -35,10 +36,11 @@ class SendPredictionReminders extends Command
             if ($now->gte($gameTime)) {
                 $game->reminder_sent = true;
                 $game->save();
+
                 continue;
             }
 
-            $users = User::whereHas('userSetting', fn($q) => $q->where('receive_reminders', true))
+            $users = User::whereHas('userSetting', fn ($q) => $q->where('receive_reminders', true))
                 ->whereNotNull('email')
                 ->get();
 

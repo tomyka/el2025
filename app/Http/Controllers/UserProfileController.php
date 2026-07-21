@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\UserSetting;
 use App\Services\ProfileService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -12,8 +13,10 @@ class UserProfileController extends Controller
 {
     public function __construct(private ProfileService $profileService) {}
 
-    public function getUserProfile() {
+    public function getUserProfile()
+    {
         $user = $this->profileService->getProfile(Auth::user());
+
         return view('userProfile')->with('user', $user);
     }
 
@@ -55,12 +58,14 @@ class UserProfileController extends Controller
         UserSetting::where('user_id', $user->id)->update([
             'receive_reminders' => $request->boolean('receive_reminders'),
         ]);
+
         return redirect()->route('userProfile')->with('info', __('Pranešimų nustatymai atnaujinti.'));
     }
 
-    public function unsubscribe(int $user): \Illuminate\Http\RedirectResponse
+    public function unsubscribe(int $user): RedirectResponse
     {
         UserSetting::where('user_id', $user)->update(['receive_reminders' => false]);
+
         return redirect('/')->with('info', __('Pranešimai išjungti sėkmingai.'));
     }
 }

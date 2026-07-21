@@ -1,8 +1,9 @@
 <?php
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class League extends Model
 {
@@ -19,7 +20,7 @@ class League extends Model
     ];
 
     protected $casts = [
-        'is_public'       => 'boolean',
+        'is_public' => 'boolean',
         'use_league_odds' => 'boolean',
     ];
 

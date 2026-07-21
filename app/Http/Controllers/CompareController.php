@@ -2,24 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class CompareController extends Controller
 {
-    public function show(int $userID): \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+    public function show(int $userID): View|RedirectResponse
     {
         $leagueID = session('leagueID');
-        $myID     = (int) session('userID');
+        $myID = (int) session('userID');
 
         if ($userID === $myID) {
             return redirect()->route('main');
         }
 
         $pointController = app(PointController::class);
-        $allPoints       = $pointController->getAllUserPoints($leagueID);
+        $allPoints = $pointController->getAllUserPoints($leagueID);
 
-        $myData    = null;
-        $myRank    = null;
+        $myData = null;
+        $myRank = null;
         $theirData = null;
         $theirRank = null;
 
@@ -34,7 +36,7 @@ class CompareController extends Controller
             }
         }
 
-        if (!$theirData) {
+        if (! $theirData) {
             abort(404);
         }
 
@@ -62,7 +64,7 @@ class CompareController extends Controller
         $events = [];
         foreach ($rows as $row) {
             $eid = $row->event_id;
-            if (!isset($events[$eid])) {
+            if (! isset($events[$eid])) {
                 $events[$eid] = ['name' => $row->event_name, 'my' => 0.0, 'their' => 0.0];
             }
             if ($row->user_id === $myID) {

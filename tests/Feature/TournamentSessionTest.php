@@ -1,6 +1,8 @@
 <?php
+
 namespace Tests\Feature;
 
+use App\Http\Controllers\SessionController;
 use App\Models\Event;
 use App\Models\Game;
 use App\Models\League;
@@ -25,20 +27,21 @@ class TournamentSessionTest extends TestCase
             'survival_game' => $survivalGame,
         ]);
         $league = League::create(['name' => 'L', 'is_public' => false, 'tournament_id' => $tournament->id]);
-        $user   = User::factory()->create();
+        $user = User::factory()->create();
         UserSetting::factory()->create(['user_id' => $user->id, 'admin' => 0]);
         Setting::firstOrCreate(['setting' => 'timeDifference'], ['value' => 0]);
         LeagueMember::create([
             'league_id' => $league->id, 'user_id' => $user->id,
             'active' => true, 'is_guest' => false,
         ]);
+
         return [$user, $tournament, $league];
     }
 
     public function test_set_session_puts_tournament_id_in_session(): void
     {
         [$user, $tournament] = $this->makeUserInTournament();
-        (new \App\Http\Controllers\SessionController())->setSession($user);
+        (new SessionController)->setSession($user);
         $this->assertEquals($tournament->id, session('tournamentID'));
     }
 
@@ -47,7 +50,7 @@ class TournamentSessionTest extends TestCase
         [$user] = $this->makeUserInTournament(survivalGame: true);
         // Deliberately set settings to opposite value
         Setting::firstOrCreate(['setting' => 'survivalGame'], ['value' => 0]);
-        (new \App\Http\Controllers\SessionController())->setSession($user);
+        (new SessionController)->setSession($user);
         $this->assertEquals(1, session('survivalGame'));
     }
 
@@ -72,7 +75,7 @@ class TournamentSessionTest extends TestCase
             'away_team_id' => $otherTeamB->id,
         ]);
 
-        (new \App\Http\Controllers\SessionController())->setSession($user);
+        (new SessionController)->setSession($user);
         // eventID must be 0 because no games exist in the user's tournament
         $this->assertEquals(0, session('eventID'));
     }
@@ -96,7 +99,7 @@ class TournamentSessionTest extends TestCase
             'away_team_score' => 0,
         ]);
 
-        (new \App\Http\Controllers\SessionController())->setSession($user);
+        (new SessionController)->setSession($user);
 
         // Tournament is fully scored (no unscored games left), but the first
         // game already started in the past, so predictions must stay locked.

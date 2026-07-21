@@ -46,7 +46,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-
         Schema::create('games', function (Blueprint $table) {
             $table->id();
             $table->dateTime('game_date');
@@ -75,7 +74,6 @@ return new class extends Migration
             $table->smallInteger('value');
             $table->timestamps();
         });
-
 
         Schema::create('user_groups', function (Blueprint $table) {
             $table->id();
@@ -123,7 +121,7 @@ return new class extends Migration
         Schema::create('prediction_survivals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->smallInteger('team_id')->constrained('teams');;
+            $table->smallInteger('team_id')->constrained('teams');
             $table->smallInteger('event_id')->nullable();
             $table->timestamps();
         });

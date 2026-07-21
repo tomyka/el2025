@@ -27,12 +27,12 @@ class ScoringService
         }
 
         $homeSignedDiff = $homeActual - (int) $homePred;
-        $homeDiff       = min(abs($homeSignedDiff), 7);
-        $awayRawDiff    = $awayActual - (int) $awayPred;
+        $homeDiff = min(abs($homeSignedDiff), 7);
+        $awayRawDiff = $awayActual - (int) $awayPred;
         // Flip away direction when home was overpredicted so uniform misses
         // (both scores off by the same amount) always map to positive col values.
         $awayDiff = max(-7, min(7, $homeSignedDiff < 0 ? -$awayRawDiff : $awayRawDiff));
-        $key      = "{$homeDiff}_{$awayDiff}";
+        $key = "{$homeDiff}_{$awayDiff}";
 
         $row = $lookup->get($key);
 
@@ -48,9 +48,9 @@ class ScoringService
         int $homeScorePrediction,
         int $awayScorePrediction
     ): int {
-        $homeWin  = ($homeScore > $awayScore)  && ($homeScorePrediction > $awayScorePrediction);
-        $awayWin  = ($homeScore < $awayScore)  && ($homeScorePrediction < $awayScorePrediction);
-        $draw     = ($homeScore === $awayScore) && ($homeScorePrediction === $awayScorePrediction);
+        $homeWin = ($homeScore > $awayScore) && ($homeScorePrediction > $awayScorePrediction);
+        $awayWin = ($homeScore < $awayScore) && ($homeScorePrediction < $awayScorePrediction);
+        $draw = ($homeScore === $awayScore) && ($homeScorePrediction === $awayScorePrediction);
 
         return ($homeWin || $awayWin || $draw) ? 50 : 0;
     }
@@ -65,7 +65,7 @@ class ScoringService
         int $homeScorePrediction,
         int $awayScorePrediction
     ): int {
-        $actualDiff    = $homeScore - $awayScore;
+        $actualDiff = $homeScore - $awayScore;
         $predictedDiff = $homeScorePrediction - $awayScorePrediction;
 
         return 50 - abs($actualDiff - $predictedDiff);
@@ -99,8 +99,13 @@ class ScoringService
             return 0.0;
         }
 
-        if ($homeScorePrediction > $awayScorePrediction) return (float) $gameOdds->home_odds;
-        if ($homeScorePrediction < $awayScorePrediction) return (float) $gameOdds->away_odds;
+        if ($homeScorePrediction > $awayScorePrediction) {
+            return (float) $gameOdds->home_odds;
+        }
+        if ($homeScorePrediction < $awayScorePrediction) {
+            return (float) $gameOdds->away_odds;
+        }
+
         return (float) $gameOdds->draw_odds;
     }
 
@@ -124,13 +129,13 @@ class ScoringService
         float $odds,
         float $rate
     ): stdClass {
-        $points                    = new stdClass();
-        $points->winnerPoints      = $winnerPoints * $rate;
-        $points->differencePoints  = $differencePoints * $rate;
-        $points->bingoPoints       = $bingoPoints * $rate;
-        $points->oddsPoints        = $oddsPoints * $rate;
-        $points->odds              = $odds;
-        $points->fullPoints        = $points->winnerPoints
+        $points = new stdClass;
+        $points->winnerPoints = $winnerPoints * $rate;
+        $points->differencePoints = $differencePoints * $rate;
+        $points->bingoPoints = $bingoPoints * $rate;
+        $points->oddsPoints = $oddsPoints * $rate;
+        $points->odds = $odds;
+        $points->fullPoints = $points->winnerPoints
             + $points->differencePoints
             + $points->bingoPoints
             + $points->oddsPoints;

@@ -1,12 +1,13 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\LeagueMember;
-use App\Models\UserSetting;
 use App\Models\Setting;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\DB;
+use App\Models\UserSetting;
 use DateTime;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class SessionController extends Controller
 {
@@ -18,9 +19,9 @@ class SessionController extends Controller
             ->with('league.tournament')
             ->firstOrFail();
 
-        $leagueID     = $leagueMember->league_id;
+        $leagueID = $leagueMember->league_id;
         $tournamentID = $leagueMember->league->tournament_id;
-        $tournament   = $leagueMember->league->tournament;
+        $tournament = $leagueMember->league->tournament;
 
         $event = DB::table('games')
             ->join('events', 'games.event_id', '=', 'events.id')
@@ -41,29 +42,31 @@ class SessionController extends Controller
             : '';
 
         if ($event) {
-            $eventID       = $event->id;
+            $eventID = $event->id;
             $eventSurvival = $event->event_survival;
-            $eventRate     = $event->rate;
+            $eventRate = $event->rate;
         } else {
-            $eventID = 0; $eventSurvival = 0; $eventRate = 0;
+            $eventID = 0;
+            $eventSurvival = 0;
+            $eventRate = 0;
         }
 
         $timeDifference = Setting::where('setting', 'timeDifference')->first();
 
-        Session::put('tournamentID',   $tournamentID);
-        Session::put('active',         $user->active);
-        Session::put('eventID',        $eventID);
-        Session::put('eventSurvival',  $eventSurvival);
-        Session::put('eventRate',      $eventRate);
-        Session::put('disabled',       $disabled);
-        Session::put('userID',         $user->id);
-        Session::put('resultAmount',   $userSettings->result_amount);
-        Session::put('leagueID',       $leagueID);
-        Session::put('admin',          $userSettings->admin);
-        Session::put('fee',            $leagueMember->league->base_fee);
-        Session::put('guest',          (int) $leagueMember->is_guest);
-        Session::put('survivalGame',   $tournament->survival_game ? 1 : 0);
+        Session::put('tournamentID', $tournamentID);
+        Session::put('active', $user->active);
+        Session::put('eventID', $eventID);
+        Session::put('eventSurvival', $eventSurvival);
+        Session::put('eventRate', $eventRate);
+        Session::put('disabled', $disabled);
+        Session::put('userID', $user->id);
+        Session::put('resultAmount', $userSettings->result_amount);
+        Session::put('leagueID', $leagueID);
+        Session::put('admin', $userSettings->admin);
+        Session::put('fee', $leagueMember->league->base_fee);
+        Session::put('guest', (int) $leagueMember->is_guest);
+        Session::put('survivalGame', $tournament->survival_game ? 1 : 0);
         Session::put('timeDifference', $timeDifference?->value ?? 0);
-        Session::put('locale',         $userSettings->locale ?? 'lt');
+        Session::put('locale', $userSettings->locale ?? 'lt');
     }
 }

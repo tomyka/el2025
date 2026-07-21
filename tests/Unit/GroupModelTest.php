@@ -13,7 +13,7 @@ class GroupModelTest extends TestCase
     public function test_league_can_be_created(): void
     {
         $league = League::factory()->create([
-            'name'     => 'Euro 2024',
+            'name' => 'Euro 2024',
             'base_fee' => 50,
         ]);
 
@@ -24,12 +24,12 @@ class GroupModelTest extends TestCase
     public function test_league_fillable_attributes(): void
     {
         $league = League::create([
-            'name'               => 'Champions League',
-            'base_fee'           => 100,
-            'penalty_step'       => 10,
+            'name' => 'Champions League',
+            'base_fee' => 100,
+            'penalty_step' => 10,
             'reward_description' => '2.5x payout',
-            'is_public'          => false,
-            'use_league_odds'    => false,
+            'is_public' => false,
+            'use_league_odds' => false,
         ]);
 
         $this->assertNotNull($league->id);

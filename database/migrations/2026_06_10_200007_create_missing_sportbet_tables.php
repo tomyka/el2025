@@ -4,10 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
-        if (!Schema::hasTable('user_settings')) {
+        if (! Schema::hasTable('user_settings')) {
             Schema::create('user_settings', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->constrained('users');
@@ -19,7 +20,7 @@ return new class extends Migration {
         }
 
         // messages uses league_id (groups table was dropped)
-        if (!Schema::hasTable('messages')) {
+        if (! Schema::hasTable('messages')) {
             Schema::create('messages', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('league_id')->nullable()->constrained('leagues');
@@ -29,7 +30,7 @@ return new class extends Migration {
             });
         }
 
-        if (!Schema::hasTable('prediction_results')) {
+        if (! Schema::hasTable('prediction_results')) {
             Schema::create('prediction_results', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->constrained('users');
@@ -43,7 +44,7 @@ return new class extends Migration {
             });
         }
 
-        if (!Schema::hasTable('prediction_standings')) {
+        if (! Schema::hasTable('prediction_standings')) {
             Schema::create('prediction_standings', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->constrained('users');
@@ -58,7 +59,7 @@ return new class extends Migration {
             });
         }
 
-        if (!Schema::hasTable('prediction_survivals')) {
+        if (! Schema::hasTable('prediction_survivals')) {
             Schema::create('prediction_survivals', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->constrained('users');
@@ -68,7 +69,7 @@ return new class extends Migration {
             });
         }
 
-        if (!Schema::hasTable('game_odds')) {
+        if (! Schema::hasTable('game_odds')) {
             Schema::create('game_odds', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('game_id')->constrained('games');
@@ -79,7 +80,7 @@ return new class extends Migration {
             });
         }
 
-        if (!Schema::hasTable('audit_logins')) {
+        if (! Schema::hasTable('audit_logins')) {
             Schema::create('audit_logins', function (Blueprint $table) {
                 $table->id();
                 $table->string('user_id');
@@ -87,7 +88,7 @@ return new class extends Migration {
             });
         }
 
-        if (!Schema::hasTable('audit_prediction_games')) {
+        if (! Schema::hasTable('audit_prediction_games')) {
             Schema::create('audit_prediction_games', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->constrained('users');

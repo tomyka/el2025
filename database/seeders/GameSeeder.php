@@ -14,7 +14,7 @@ class GameSeeder extends Seeder
     {
         // Key collections: event_day → id, team name → id
         $events = Event::pluck('id', 'event_day');
-        $teams  = Team::pluck('id', 'team');
+        $teams = Team::pluck('id', 'team');
 
         $e1 = $events[1];
         $e2 = $events[2];
@@ -28,7 +28,7 @@ class GameSeeder extends Seeder
             ['event_id' => $e1, 'home' => 'Mexico',                'away' => 'South Africa',          'date' => '2026-06-11 19:00:00'],
             ['event_id' => $e1, 'home' => 'Korea Republic',        'away' => 'Czechia',               'date' => '2026-06-12 02:00:00'],
             // Group B
-            ['event_id' => $e1, 'home' => 'Canada',                'away' => 'Bosnia and Herzegovina','date' => '2026-06-12 19:00:00'],
+            ['event_id' => $e1, 'home' => 'Canada',                'away' => 'Bosnia and Herzegovina', 'date' => '2026-06-12 19:00:00'],
             ['event_id' => $e1, 'home' => 'United States',         'away' => 'Paraguay',              'date' => '2026-06-13 01:00:00'],
             ['event_id' => $e1, 'home' => 'Qatar',                 'away' => 'Switzerland',           'date' => '2026-06-13 19:00:00'],
             // Group C
@@ -70,7 +70,7 @@ class GameSeeder extends Seeder
             // Group A
             ['event_id' => $e2, 'home' => 'Czechia',               'away' => 'South Africa',          'date' => '2026-06-18 16:00:00'],
             // Group B
-            ['event_id' => $e2, 'home' => 'Switzerland',           'away' => 'Bosnia and Herzegovina','date' => '2026-06-18 19:00:00'],
+            ['event_id' => $e2, 'home' => 'Switzerland',           'away' => 'Bosnia and Herzegovina', 'date' => '2026-06-18 19:00:00'],
             ['event_id' => $e2, 'home' => 'Canada',                'away' => 'Qatar',                 'date' => '2026-06-18 22:00:00'],
             // Group A
             ['event_id' => $e2, 'home' => 'Mexico',                'away' => 'Korea Republic',        'date' => '2026-06-19 03:00:00'],
@@ -158,10 +158,10 @@ class GameSeeder extends Seeder
                 ?? throw new \RuntimeException("Team not found in DB: \"{$g['away']}\"");
 
             $rows[] = [
-                'event_id'     => $g['event_id'],
+                'event_id' => $g['event_id'],
                 'home_team_id' => $homeId,
                 'away_team_id' => $awayId,
-                'game_date'    => $g['date'],
+                'game_date' => $g['date'],
             ];
         }
 

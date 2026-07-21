@@ -24,13 +24,14 @@ class PredictionReminderCommandTest extends TestCase
             'event' => 'Test', 'event_day' => 1,
             'event_survival' => 0, 'active' => 1, 'rate' => 1,
         ]);
-        $home = Team::create(['team' => 'Home' . uniqid()]);
-        $away = Team::create(['team' => 'Away' . uniqid()]);
+        $home = Team::create(['team' => 'Home'.uniqid()]);
+        $away = Team::create(['team' => 'Away'.uniqid()]);
+
         return Game::create([
-            'event_id'     => $event->id,
+            'event_id' => $event->id,
             'home_team_id' => $home->id,
             'away_team_id' => $away->id,
-            'game_date'    => $gameDate,
+            'game_date' => $gameDate,
         ]);
     }
 
@@ -38,10 +39,11 @@ class PredictionReminderCommandTest extends TestCase
     {
         $user = User::factory()->create(['email' => 'test@example.com']);
         UserSetting::create([
-            'user_id'           => $user->id,
-            'admin'             => 0,
+            'user_id' => $user->id,
+            'admin' => 0,
             'receive_reminders' => true,
         ]);
+
         return $user;
     }
 
@@ -57,7 +59,7 @@ class PredictionReminderCommandTest extends TestCase
 
         $this->artisan('reminders:send')->assertExitCode(0);
 
-        Mail::assertQueued(PredictionReminder::class, fn($m) => $m->hasTo($user->email));
+        Mail::assertQueued(PredictionReminder::class, fn ($m) => $m->hasTo($user->email));
         $this->assertTrue((bool) $game->fresh()->reminder_sent);
     }
 
@@ -117,7 +119,7 @@ class PredictionReminderCommandTest extends TestCase
 
     public function test_reminder_time_for_22xx_game_is_2100_same_day(): void
     {
-        $cmd = new SendPredictionReminders();
+        $cmd = new SendPredictionReminders;
         $gameTime = Carbon::parse('2026-06-19 22:45:00', 'Europe/Vilnius');
         $expected = Carbon::parse('2026-06-19 21:00:00', 'Europe/Vilnius');
 
@@ -126,7 +128,7 @@ class PredictionReminderCommandTest extends TestCase
 
     public function test_reminder_time_for_0300_game_is_2100_previous_day(): void
     {
-        $cmd = new SendPredictionReminders();
+        $cmd = new SendPredictionReminders;
         $gameTime = Carbon::parse('2026-06-20 03:00:00', 'Europe/Vilnius');
         $expected = Carbon::parse('2026-06-19 21:00:00', 'Europe/Vilnius');
 
@@ -135,7 +137,7 @@ class PredictionReminderCommandTest extends TestCase
 
     public function test_reminder_time_for_1800_game_is_1700_same_day(): void
     {
-        $cmd = new SendPredictionReminders();
+        $cmd = new SendPredictionReminders;
         $gameTime = Carbon::parse('2026-06-19 18:00:00', 'Europe/Vilnius');
         $expected = Carbon::parse('2026-06-19 17:00:00', 'Europe/Vilnius');
 

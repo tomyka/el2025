@@ -3,28 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\GameOdds;
+use App\Models\League;
+use App\Models\LeagueMember;
 use App\Models\PredictionResult;
 use Illuminate\Support\Facades\DB;
 
 class GameOddsController extends Controller
 {
-
     public function updateGameOdds($gameID): void
     {
         $calculated = $this->calculateGameOdds($gameID);
 
-        $gameOdd            = GameOdds::firstOrNew(['game_id' => $gameID]);
-        $gameOdd->game_id   = $gameID;
+        $gameOdd = GameOdds::firstOrNew(['game_id' => $gameID]);
+        $gameOdd->game_id = $gameID;
         $gameOdd->home_odds = $calculated->homeOdds;
         $gameOdd->draw_odds = $calculated->drawOdds;
         $gameOdd->away_odds = $calculated->awayOdds;
         $gameOdd->save();
 
         // Per-league odds for opt-in leagues with >= 20 non-guest members
-        $optInLeagues = \App\Models\League::where('use_league_odds', true)->get();
+        $optInLeagues = League::where('use_league_odds', true)->get();
 
         foreach ($optInLeagues as $league) {
-            $memberCount = \App\Models\LeagueMember::where('league_id', $league->id)
+            $memberCount = LeagueMember::where('league_id', $league->id)
                 ->where('is_guest', false)
                 ->count();
 
@@ -32,7 +33,7 @@ class GameOddsController extends Controller
                 continue;
             }
 
-            $memberIds = \App\Models\LeagueMember::where('league_id', $league->id)
+            $memberIds = LeagueMember::where('league_id', $league->id)
                 ->where('is_guest', false)
                 ->pluck('user_id');
 
@@ -49,22 +50,22 @@ class GameOddsController extends Controller
                 continue;
             }
 
-            $homeWins = $leaguePredictions->filter(fn($p) => $p->home_team_score > $p->away_team_score)->count();
-            $draws    = $leaguePredictions->filter(fn($p) => $p->home_team_score == $p->away_team_score)->count();
-            $awayWins = $leaguePredictions->filter(fn($p) => $p->home_team_score < $p->away_team_score)->count();
+            $homeWins = $leaguePredictions->filter(fn ($p) => $p->home_team_score > $p->away_team_score)->count();
+            $draws = $leaguePredictions->filter(fn ($p) => $p->home_team_score == $p->away_team_score)->count();
+            $awayWins = $leaguePredictions->filter(fn ($p) => $p->home_team_score < $p->away_team_score)->count();
 
             $leagueContrarian = round(log($total / 0.5, 2), 4);
             $homeOdds = $homeWins > 0 ? round(log($total / $homeWins, 2), 4) : $leagueContrarian;
-            $drawOdds = $draws    > 0 ? round(log($total / $draws,    2), 4) : $leagueContrarian;
+            $drawOdds = $draws > 0 ? round(log($total / $draws, 2), 4) : $leagueContrarian;
             $awayOdds = $awayWins > 0 ? round(log($total / $awayWins, 2), 4) : $leagueContrarian;
 
             DB::table('league_game_odds')->upsert(
                 [
-                    'league_id'  => $league->id,
-                    'game_id'    => $gameID,
-                    'home_odds'  => $homeOdds,
-                    'draw_odds'  => $drawOdds,
-                    'away_odds'  => $awayOdds,
+                    'league_id' => $league->id,
+                    'game_id' => $gameID,
+                    'home_odds' => $homeOdds,
+                    'draw_odds' => $drawOdds,
+                    'away_odds' => $awayOdds,
                     'updated_at' => now(),
                 ],
                 ['league_id', 'game_id'],
@@ -79,7 +80,7 @@ class GameOddsController extends Controller
             ->whereNotNull('home_team_score')
             ->whereNotNull('away_team_score')
             ->get();
-        $total             = count($predictionResults);
+        $total = count($predictionResults);
 
         if ($total === 0) {
             return (object) ['homeOdds' => 0.0, 'drawOdds' => 0.0, 'awayOdds' => 0.0];
@@ -104,28 +105,29 @@ class GameOddsController extends Controller
         ];
     }
 
-    private function calculateHomeOdds ($homeScore,$awayScore) {
-            if ($homeScore > $awayScore) {
-                return 1;
-            }
-            else {
-                return 0;
-            }
-    }
-    private function calculateDrawOdds ($homeScore,$awayScore) {
-        if ($homeScore == $awayScore) {
+    private function calculateHomeOdds($homeScore, $awayScore)
+    {
+        if ($homeScore > $awayScore) {
             return 1;
-        }
-        else {
+        } else {
             return 0;
         }
     }
 
-    private function calculateAwayOdds ($homeScore, $awayScore) {
+    private function calculateDrawOdds($homeScore, $awayScore)
+    {
+        if ($homeScore == $awayScore) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    private function calculateAwayOdds($homeScore, $awayScore)
+    {
         if ($homeScore < $awayScore) {
             return 1;
-        }
-        else {
+        } else {
             return 0;
         }
     }

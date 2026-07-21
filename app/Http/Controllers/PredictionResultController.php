@@ -5,17 +5,20 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdatePredictionResultRequest;
 use App\Models\Event;
 use App\Models\Game;
+use App\Models\GameOdds;
 use App\Models\PredictionResult;
-use App\Models\Team;
+use App\Models\UserSetting;
 use Carbon\Carbon;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PredictionResultController extends Controller
 {
-    public function getPredictionResultsUser() {
+    public function getPredictionResultsUser()
+    {
         if (session('userID') != '') {
-            $userID      = session('userID');
+            $userID = session('userID');
             $eventFilter = request()->integer('event', 0);
 
             // Default to the current active event
@@ -26,9 +29,9 @@ class PredictionResultController extends Controller
             $raw = $this->getPredictionGamesGrouped($userID, $eventFilter ?: null);
             $groupedResults = collect($raw)
                 ->groupBy('event_day')
-                ->map(fn($day) => $day->groupBy(
-                    fn($g) => Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('Y-m-d')
-                )->sortKeys()->map(fn($dayGames) => $dayGames->sortBy('game_date')));
+                ->map(fn ($day) => $day->groupBy(
+                    fn ($g) => Carbon::parse($g->game_date, 'UTC')->setTimezone('Europe/Vilnius')->format('Y-m-d')
+                )->sortKeys()->map(fn ($dayGames) => $dayGames->sortBy('game_date')));
 
             $events = Event::orderBy('id')->pluck('event', 'id');
 
@@ -41,7 +44,8 @@ class PredictionResultController extends Controller
         }
     }
 
-    private function getPredictionGamesGrouped($userID, ?int $eventId = null) {
+    private function getPredictionGamesGrouped($userID, ?int $eventId = null)
+    {
         $nowUtc = Carbon::now('UTC')->format('Y-m-d H:i:s');
         $eventClause = $eventId ? 'AND g.event_id = ?' : '';
         $bindings = $eventId ? [$userID, $eventId] : [$userID];
@@ -108,44 +112,43 @@ class PredictionResultController extends Controller
 
         if ($game->game_date > $now) {
             // Auto-reactivate a deactivated user only when they genuinely submit a prediction
-            \App\Models\UserSetting::where('user_id', $userID)
+            UserSetting::where('user_id', $userID)
                 ->where('active', false)
                 ->update(['active' => true]);
             $predictionResult = PredictionResult::where('id', $request->input('prediction_gameID'))
                 ->where('user_id', $userID)
                 ->firstOrFail();
 
-            $oldHomeScore    = $predictionResult->home_team_score;
-            $oldAwayScore    = $predictionResult->away_team_score;
+            $oldHomeScore = $predictionResult->home_team_score;
+            $oldAwayScore = $predictionResult->away_team_score;
             $oldGameWinnerId = $predictionResult->game_winner_id;
 
-            $predictionResult->home_team_score = (($homeTeamScore == "") ? null : $homeTeamScore);
-            $predictionResult->away_team_score = (($awayTeamScore == "") ? null : $awayTeamScore);
-            $predictionResult->game_winner_id = (($gameWinnerID == "") ? null : $gameWinnerID);
+            $predictionResult->home_team_score = (($homeTeamScore == '') ? null : $homeTeamScore);
+            $predictionResult->away_team_score = (($awayTeamScore == '') ? null : $awayTeamScore);
+            $predictionResult->game_winner_id = (($gameWinnerID == '') ? null : $gameWinnerID);
             $predictionResult->generated = 0;
             $predictionResult->save();
 
-            if ($homeTeamScore != "" && $awayTeamScore != "") {
-                $auditPredictionGameController = new AuditPredictionGameController();
+            if ($homeTeamScore != '' && $awayTeamScore != '') {
+                $auditPredictionGameController = new AuditPredictionGameController;
                 $auditPredictionGameController->insertAuditPredictionGame(
                     $userID, $gameID,
                     $homeTeamScore, $awayTeamScore, $gameWinnerID,
                     $oldHomeScore, $oldAwayScore, $oldGameWinnerId
                 );
-                (new GameOddsController())->updateGameOdds($gameID);
+                (new GameOddsController)->updateGameOdds($gameID);
             }
         }
 
-        $gameOdds = \App\Models\GameOdds::where('game_id', $gameID)->first();
+        $gameOdds = GameOdds::where('game_id', $gameID)->first();
+
         return response()->json([
-            'success'   => true,
+            'success' => true,
             'home_odds' => $gameOdds ? (float) $gameOdds->home_odds : 0.0,
             'draw_odds' => $gameOdds ? (float) $gameOdds->draw_odds : 0.0,
             'away_odds' => $gameOdds ? (float) $gameOdds->away_odds : 0.0,
         ]);
     }
-
-
 
     public function insertPredictionResultsUser($user_id)
     {
@@ -153,16 +156,16 @@ class PredictionResultController extends Controller
         if ($games->count() > 0) {
             foreach ($games as $game) {
                 $predictionResults[] = [
-                    'user_id' => $user_id
-                    , 'game_id' => $game->id
+                    'user_id' => $user_id, 'game_id' => $game->id,
                 ];
             }
-            $predictionResult = new PredictionResult();
-            $predictionResult:: insert($predictionResults);
+            $predictionResult = new PredictionResult;
+            $predictionResult::insert($predictionResults);
         }
     }
 
-    public function getPredictionResultsUserGroupEventDay($eventID, $groupID, $userID){
+    public function getPredictionResultsUserGroupEventDay($eventID, $groupID, $userID)
+    {
         $now = Carbon::now('UTC')->format('Y-m-d H:i:s');
         $rows = DB::select('SELECT
                             g.id,
@@ -215,7 +218,8 @@ class PredictionResultController extends Controller
         return $rows;
     }
 
-    public function getPredictionGamesProfile($groupID, $eventID){
+    public function getPredictionGamesProfile($groupID, $eventID)
+    {
         $now = Carbon::now('UTC')->format('Y-m-d H:i:s');
         $guest = session('guest');
         $eventIDValue = ($eventID === '') ? 99 : (int) $eventID;
@@ -250,7 +254,8 @@ class PredictionResultController extends Controller
         return $predictionGames;
     }
 
-    public function getPredictionGamesUserResultAmount($userID, $resultAmount){
+    public function getPredictionGamesUserResultAmount($userID, $resultAmount)
+    {
         $now = Carbon::now('UTC')->format('Y-m-d H:i:s');
         $predictionGamesUser = DB::select('SELECT
              DISTINCT
@@ -286,21 +291,19 @@ class PredictionResultController extends Controller
         return $predictionGamesUser;
     }
 
-
-
-    public function showSingleGame(int $gameID): \Illuminate\Http\Response
+    public function showSingleGame(int $gameID): Response
     {
         $game = Game::with('home_team', 'away_team')->findOrFail($gameID);
 
         try {
-            $sessionController = new SessionController();
+            $sessionController = new SessionController;
             $sessionController->setSession(Auth::user());
         } catch (\Throwable) {
             session(['userID' => Auth::id()]);
         }
 
         $userID = session('userID');
-        $now    = Carbon::now('UTC')->format('Y-m-d H:i:s');
+        $now = Carbon::now('UTC')->format('Y-m-d H:i:s');
         $locked = $game->game_date <= $now;
 
         $prediction = PredictionResult::where('game_id', $gameID)
@@ -310,7 +313,8 @@ class PredictionResultController extends Controller
         return response(view('prediction.game-single', compact('game', 'locked', 'prediction')));
     }
 
-    public function getPredictionResultSummary() {
+    public function getPredictionResultSummary()
+    {
 
         $groupID = session('leagueID');
         $eventID = session('eventID');
@@ -337,10 +341,8 @@ class PredictionResultController extends Controller
                              order by g.id ASC
                              ', [$nowUtc]);
 
-        $predictionResultController = new PredictionResultController();
+        $predictionResultController = new PredictionResultController;
         $predictionResults = $predictionResultController->getPredictionGamesProfile($groupID, $eventID);
-
-
 
         return view('summary.results')
             ->with('games', $games)
@@ -348,4 +350,3 @@ class PredictionResultController extends Controller
             ->with('activeEventID', (int) $eventID);
     }
 }
-

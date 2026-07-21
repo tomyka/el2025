@@ -2,46 +2,45 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Models\Team;
+use App\Models\Event;
 use App\Models\Game;
 use App\Models\PointSurvival;
 use App\Models\PredictionSurvival;
+use App\Models\Team;
 use App\Models\User;
-use App\Models\Event;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Factory;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Factory;
 
 class PredictionSurvivalController extends Controller
 {
-    public function getPredictionSurvivalUser() {
-        if (session('userID')!='') {
+    public function getPredictionSurvivalUser()
+    {
+        if (session('userID') != '') {
             $userID = session('userID');
             $eventID = session('eventID');
 
             $predictionSurvivals = $this->getPredictionSurvivalUserEventID($userID, $eventID);
             $survivalPoints = $this->checkSurvivalEventStatus($userID, $eventID);
 
-
             return view('prediction.survival')->with('predictionSurvivals', $predictionSurvivals)->with('survivalPoints', $survivalPoints);
-        }
-        else {
+        } else {
             return redirect('/');
         }
     }
 
     public function updatePredictionSurvivalUser(Request $request, Factory $validator)
     {
-        if ($request->input('teamID')!="") {
+        if ($request->input('teamID') != '') {
 
             $predictionSurvivalTeams = PredictionSurvival::where('user_id', session('userID'))->where('event_id', session('eventID'))->first();
-            if ($predictionSurvivalTeams != "") {
+            if ($predictionSurvivalTeams != '') {
                 $predictionSurvivalTeams->event_id = null;
                 $predictionSurvivalTeams->save();
             }
 
-            $predictionSurvivalTeams = PredictionSurvival::where('user_id',session('userID'))->where('team_id',$request->input('teamID'))->first();
+            $predictionSurvivalTeams = PredictionSurvival::where('user_id', session('userID'))->where('team_id', $request->input('teamID'))->first();
             $predictionSurvivalTeams->event_id = session('eventID');
             $predictionSurvivalTeams->save();
 
@@ -49,29 +48,29 @@ class PredictionSurvivalController extends Controller
 
     }
 
-    public function getPredictionSurvivalSummary() {
+    public function getPredictionSurvivalSummary()
+    {
         $eventID = session('eventID');
-        $events = Event::where('id','<=',$eventID)->where('rate','=',1)->get();
+        $events = Event::where('id', '<=', $eventID)->where('rate', '=', 1)->get();
         $users = User::all();
 
-        $predictionSurvivalController = new PointSurvivalController();
+        $predictionSurvivalController = new PointSurvivalController;
         $predictionSurvivals = $predictionSurvivalController->getPointSurvivalEventID($eventID);
 
-        return view('summary.survivals')->with('events',$events)->with('users',$users)->with('predictionSurvivals',$predictionSurvivals);
+        return view('summary.survivals')->with('events', $events)->with('users', $users)->with('predictionSurvivals', $predictionSurvivals);
     }
 
     public function insertPredictionSurvivalUser($user_id)
     {
         $teams = Team::all();
-        if  ($teams->count() > 0) {
+        if ($teams->count() > 0) {
             foreach ($teams as $team) {
                 $predictionSurvivals[] = [
-                    'user_id' => $user_id
-                    , 'team_id' => $team->id
+                    'user_id' => $user_id, 'team_id' => $team->id,
                 ];
             }
-            $predictionSurvival = new PredictionSurvival();
-            $predictionSurvival:: insert($predictionSurvivals);
+            $predictionSurvival = new PredictionSurvival;
+            $predictionSurvival::insert($predictionSurvivals);
         }
     }
 
@@ -80,21 +79,23 @@ class PredictionSurvivalController extends Controller
         $users = User::all();
         foreach ($users as $user) {
             $predictionSurvivals[] = [
-                'user_id' => $user->id
-                , 'event_id' => $eventID
+                'user_id' => $user->id, 'event_id' => $eventID,
             ];
         }
-        $predictionSurvival = new PredictionSurvival();
-        $predictionSurvival:: insert($predictionSurvivals);
+        $predictionSurvival = new PredictionSurvival;
+        $predictionSurvival::insert($predictionSurvivals);
     }
 
-    public function getEventDaySurvivalStatus($userID, $eventID){
-        $eventDaySurvivalStatus = PredictionSurvival::where('user_id','=',$userID)->where('id','=',$eventID)->count();
+    public function getEventDaySurvivalStatus($userID, $eventID)
+    {
+        $eventDaySurvivalStatus = PredictionSurvival::where('user_id', '=', $userID)->where('id', '=', $eventID)->count();
+
         return $eventDaySurvivalStatus;
     }
 
-    public function getPredictionSurvivalUserEventID($userID, $eventID){
-        $now = \Carbon\Carbon::now('UTC')->format('Y-m-d H:i:s');
+    public function getPredictionSurvivalUserEventID($userID, $eventID)
+    {
+        $now = Carbon::now('UTC')->format('Y-m-d H:i:s');
         $predictionSurvivalUserEvent = DB::select('
         SELECT distinct
    t.id as team_id
@@ -115,40 +116,39 @@ ORDER BY t.id',
         return $predictionSurvivalUserEvent;
     }
 
-
     public function updatePredictionSurvivalGame($gameID)
     {
-        $gameDetails = Game :: select('home_team_id','home_team_score','away_team_id','away_team_score', 'event_id')->where('id',$gameID)->first();
-        if ($gameDetails->home_team_score > $gameDetails->away_team_score){
+        $gameDetails = Game::select('home_team_id', 'home_team_score', 'away_team_id', 'away_team_score', 'event_id')->where('id', $gameID)->first();
+        if ($gameDetails->home_team_score > $gameDetails->away_team_score) {
             $gameWinnerTeamID = $gameDetails->home_team_id;
             $gameLoserTeamID = $gameDetails->away_team_id;
-        }
-        else{
+        } else {
             $gameLoserTeamID = $gameDetails->home_team_id;
             $gameWinnerTeamID = $gameDetails->away_team_id;
         }
 
-        $pointSurvivalController = new PointSurvivalController();
-        $predictionSurvivals = PredictionSurvival :: where('event_id',$gameDetails->event_id)->get();
+        $pointSurvivalController = new PointSurvivalController;
+        $predictionSurvivals = PredictionSurvival::where('event_id', $gameDetails->event_id)->get();
 
         foreach ($predictionSurvivals as $predictionSurvival) {
 
             if ($predictionSurvival->team_id == $gameLoserTeamID) {
                 $this->resetUserSurvivalSequence($predictionSurvival->user_id);
                 $pointSurvivalController->updatePointSurvival($predictionSurvival->user_id, $gameDetails->event_id, $predictionSurvival->team_id);
-            }
-            elseif ($predictionSurvival->team_id == $gameWinnerTeamID) {
+            } elseif ($predictionSurvival->team_id == $gameWinnerTeamID) {
                 $pointSurvivalController->updatePointSurvival($predictionSurvival->user_id, $gameDetails->event_id, $predictionSurvival->team_id);
             }
         }
     }
 
-    public function resetUserSurvivalSequence($userID){
-        PredictionSurvival :: where('user_id',$userID)->update(['event_id'=>null]);
+    public function resetUserSurvivalSequence($userID)
+    {
+        PredictionSurvival::where('user_id', $userID)->update(['event_id' => null]);
     }
 
-    private function checkSurvivalEventStatus($userID,$eventID){
-        $pointSurvival = PointSurvival::where('user_id',$userID)->where('event_id',$eventID)->first();
+    private function checkSurvivalEventStatus($userID, $eventID)
+    {
+        $pointSurvival = PointSurvival::where('user_id', $userID)->where('event_id', $eventID)->first();
 
         return $pointSurvival ? $pointSurvival->survival_points : -1;
     }

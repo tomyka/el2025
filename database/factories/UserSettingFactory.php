@@ -6,7 +6,7 @@ use App\Models\UserSetting;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\UserSetting>
+ * @extends Factory<UserSetting>
  */
 class UserSettingFactory extends Factory
 {

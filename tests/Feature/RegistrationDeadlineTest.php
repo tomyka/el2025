@@ -5,8 +5,8 @@ namespace Tests\Feature;
 use App\Models\Event;
 use App\Models\Game;
 use App\Models\Team;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\RateLimiter;
 use Tests\TestCase;
 
@@ -66,10 +66,10 @@ class RegistrationDeadlineTest extends TestCase
         $this->makeGame(now()->subDay());
 
         $this->post(route('register'), [
-            'username'              => 'lateuser',
-            'name'                  => 'Late',
-            'email'                 => 'late@test.com',
-            'password'              => 'password',
+            'username' => 'lateuser',
+            'name' => 'Late',
+            'email' => 'late@test.com',
+            'password' => 'password',
             'password_confirmation' => 'password',
         ])->assertRedirect(route('main'));
 
@@ -81,10 +81,10 @@ class RegistrationDeadlineTest extends TestCase
         $this->makeGame(now()->addDay());
 
         $this->post(route('register'), [
-            'username'              => 'newuser',
-            'name'                  => 'New',
-            'email'                 => 'new@test.com',
-            'password'              => 'password123',
+            'username' => 'newuser',
+            'name' => 'New',
+            'email' => 'new@test.com',
+            'password' => 'password123',
             'password_confirmation' => 'password123',
         ])->assertRedirect(route('main'));
 
@@ -97,19 +97,19 @@ class RegistrationDeadlineTest extends TestCase
     {
         for ($i = 0; $i < 3; $i++) {
             $this->post(route('register'), [
-                'username'              => 'bot' . $i,
-                'name'                  => 'Bot',
-                'email'                 => 'bot' . $i . '@test.com',
-                'password'              => 'password123',
+                'username' => 'bot'.$i,
+                'name' => 'Bot',
+                'email' => 'bot'.$i.'@test.com',
+                'password' => 'password123',
                 'password_confirmation' => 'password123',
             ]);
         }
 
         $response = $this->post(route('register'), [
-            'username'              => 'bot4',
-            'name'                  => 'Bot',
-            'email'                 => 'bot4@test.com',
-            'password'              => 'password123',
+            'username' => 'bot4',
+            'name' => 'Bot',
+            'email' => 'bot4@test.com',
+            'password' => 'password123',
             'password_confirmation' => 'password123',
         ]);
 
@@ -118,15 +118,15 @@ class RegistrationDeadlineTest extends TestCase
 
     // ── Helpers ──────────────────────────────────────────────────────
 
-    private function makeGame(\Illuminate\Support\Carbon $date): Game
+    private function makeGame(Carbon $date): Game
     {
         $event = Event::create(['event' => 'Test', 'event_day' => 1, 'event_survival' => 0, 'active' => 1, 'rate' => 1]);
-        $home  = Team::create(['team' => 'TeamA']);
-        $away  = Team::create(['team' => 'TeamB']);
+        $home = Team::create(['team' => 'TeamA']);
+        $away = Team::create(['team' => 'TeamB']);
 
         return Game::create([
-            'game_date'    => $date,
-            'event_id'     => $event->id,
+            'game_date' => $date,
+            'event_id' => $event->id,
             'home_team_id' => $home->id,
             'away_team_id' => $away->id,
         ]);
