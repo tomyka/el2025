@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\League;
 use App\Models\LeagueMember;
 use App\Models\Tournament;
 use Illuminate\Http\RedirectResponse;
@@ -141,7 +142,34 @@ class TournamentController extends Controller
             'league', fn ($q) => $q->where('tournament_id', $tournament->id)
         )->where('is_guest', false)->distinct()->count('user_id');
 
-        return view('tournaments.show', compact('tournament', 'participantCount'));
+        // Public read-only view of the tournament's official league: full
+        // points table + final-standing predictions, same widgets the
+        // logged-in dashboard shows, so a finished tournament stays browsable
+        // once "Peržiūrėti" is clicked instead of showing nothing.
+        $points = [];
+        $standings = [];
+        $publicLeague = League::where('tournament_id', $tournament->id)->where('is_public', true)->first();
+
+        if ($publicLeague) {
+            // getAllUserPoints()/getAllUsersGameHistory() filter league members by
+            // session('guest') - force it so anonymous visitors (and any
+            // authenticated visitor with unrelated session state) always see the
+            // real, non-guest leaderboard for this public league.
+            Session::put('guest', 0);
+
+            $pointController = app(PointController::class);
+            $points = $pointController->getAllUserPoints($publicLeague->id);
+
+            $gameHistory = $pointController->getAllUsersGameHistory($publicLeague->id);
+            foreach ($points as &$point) {
+                $point['roundHistory'] = $gameHistory[$point['userID']] ?? [];
+            }
+            unset($point);
+
+            $standings = app(PredictionStandingController::class)->getPredictionStandingTop4($publicLeague->id);
+        }
+
+        return view('tournaments.show', compact('tournament', 'participantCount', 'points', 'standings'));
     }
 
     // ── Admin ──────────────────────────────────────────────────────────────

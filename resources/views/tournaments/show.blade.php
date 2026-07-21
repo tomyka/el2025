@@ -30,4 +30,16 @@
   @endauth
 </div>
 
+@if(!empty($points))
+<div class="mb-3">
+  @include('partials.points')
+</div>
+@endif
+
+@if(!empty($standings))
+<div class="mb-3">
+  @include('partials.standings')
+</div>
+@endif
+
 @endsection
