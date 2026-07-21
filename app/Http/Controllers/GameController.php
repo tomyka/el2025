@@ -115,6 +115,6 @@ class GameController extends Controller
     {
         Game::destroy($request->input('gameID'));
 
-        return redirect()->route('admin.games')->with('info','game '.$request->input('gameID').' deleted');
+        return redirect()->route('admin.games')->with('info', 'game '.$request->input('gameID').' deleted');
     }
 }
