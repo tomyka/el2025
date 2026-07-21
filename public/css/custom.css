@@ -1291,7 +1291,7 @@ button.sb-tab::after { display: none; }
 }
 .lb-header-rank   { width: 26px; text-align: center; flex-shrink: 0; }
 .lb-header-name   { flex: 1; }
-.lb-header-sub    { width: 38px; text-align: center; flex-shrink: 0; }
+.lb-header-sub    { width: 38px; flex-shrink: 0; }
 .lb-header-sub-bingo { color: var(--sb-muted); }
 .lb-header-total  { min-width: 44px; text-align: right; flex-shrink: 0; font-weight: 700; }
 .lb-header-chevron { width: 12px; flex-shrink: 0; }
@@ -1300,9 +1300,21 @@ button.sb-tab::after { display: none; }
   font-size: .72rem;
   font-weight: 500;
   color: var(--sb-muted);
-  text-align: center;
   flex-shrink: 0;
   width: 38px;
+}
+
+/* .lb-header-sub / .lb-sub-col carry Bootstrap's d-none/d-md-block utilities
+   (!important), so centering their icon/text must win at the same md
+   breakpoint with matching specificity - plain text-align/flex here gets
+   silently overridden by d-md-block's `display: block !important`. */
+@media (min-width: 768px) {
+  .lb-header-sub.d-md-block,
+  .lb-sub-col.d-md-block {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
 }
 .lb-sub-bingo  { color: var(--sb-text); font-weight: 700; }
 .lb-sub-streak { color: #f97316; font-weight: 700; }

@@ -10,13 +10,13 @@
     <div class="lb-header">
         <span class="lb-header-rank">#</span>
         <span class="lb-header-name">{{ __('Žaidėjas') }}</span>
-        <span class="lb-header-sub d-none d-md-block" title="{{ __('Rungtynių taškai') }}"><i class="bi bi-check2-all"></i></span>
-        <span class="lb-header-sub d-none d-md-block" title="{{ __('Eigos taškai') }}"><i class="bi bi-bar-chart-steps"></i></span>
+        <span class="lb-header-sub d-none d-md-block" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Rezultatų spėjimo taškai') }}"><i class="bi bi-check2-all"></i></span>
+        <span class="lb-header-sub d-none d-md-block" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Eigos spėjimo taškai') }}"><i class="bi bi-bar-chart-steps"></i></span>
         @if(session('survivalGame') == 1)
-        <span class="lb-header-sub d-none d-md-block" title="{{ __('Išlikimo taškai') }}"><i class="bi bi-shield-check"></i></span>
+        <span class="lb-header-sub d-none d-md-block" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Išlikimo taškai') }}"><i class="bi bi-shield-check"></i></span>
         @endif
-        <span class="lb-header-sub d-none d-md-block" title="{{ __('Serija (iš eilės pataikytų spėjimų premija)') }}"><i class="bi bi-fire"></i></span>
-        <span class="lb-header-sub lb-header-sub-bingo d-none d-md-block" title="{{ __('Bingo') }}"><i class="bi bi-bullseye"></i></span>
+        <span class="lb-header-sub d-none d-md-block" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Sekos taškai') }}"><i class="bi bi-fire"></i></span>
+        <span class="lb-header-sub lb-header-sub-bingo d-none d-md-block" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Bingo taškai') }}"><i class="bi bi-bullseye"></i></span>
         <span class="lb-header-total">{{ __('Taškai') }}</span>
         <span class="lb-header-chevron"></span>
     </div>
