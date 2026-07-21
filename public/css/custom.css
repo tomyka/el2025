@@ -52,7 +52,6 @@ a:hover { color: var(--sb-accent-h); }
   flex-direction: column;
   min-height: 100vh;
   background: var(--sb-bg);
-  overflow-x: hidden;
 }
 
 /* Centered max-width wrapper — used inside sb-main and sb-hero */
@@ -70,6 +69,7 @@ a:hover { color: var(--sb-accent-h); }
   flex: 1;
   padding-top: 24px;
   padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  overflow-x: hidden;
 }
 
 @media (min-width: 992px) {
