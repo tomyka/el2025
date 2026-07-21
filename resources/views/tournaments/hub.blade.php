@@ -34,9 +34,12 @@
 
 @foreach($group as $t)
 @php
-  $d        = $tData[$t->id];
+  $d          = $tData[$t->id];
   $membership = $myLeaguesByTournament->get($t->id);
   $inLeague   = !is_null($membership);
+  // Truly over, either because an admin marked it finished or because
+  // every game has been played (even if the status column wasn't updated).
+  $isFinished = $status === 'finished' || $d['allGamesFinished'];
 @endphp
 
 <div class="sb-card mb-4">
@@ -67,6 +70,10 @@
             @csrf
             <button class="sb-btn sb-btn-primary">{{ $d['allGamesFinished'] ? 'Peržiūrėti →' : 'Žaisti →' }}</button>
           </form>
+          @endif
+        @else
+          @if($d['allGamesFinished'])
+          <a href="{{ route('tournament.show', $t->slug) }}" class="sb-btn sb-btn-secondary">Peržiūrėti →</a>
           @endif
         @endauth
       @elseif($status === 'upcoming')
@@ -137,9 +144,9 @@
       @endif
     </div>
 
-  @elseif(auth()->guest())
+  @elseif(auth()->guest() && !$isFinished)
 
-    {{-- Active / Finished: leaderboard, medals, upcoming games, stats (guests only) --}}
+    {{-- Active: leaderboard, medals, upcoming games, stats (guests only) --}}
     <div class="row g-3">
 
       {{-- Leaderboard --}}
