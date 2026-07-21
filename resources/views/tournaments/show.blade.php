@@ -1,6 +1,13 @@
 @extends('layouts.master')
 @section('content')
 
+@if($isFinished)
+<div class="mb-3">
+  <a href="{{ route('tournaments.hub') }}" class="sb-btn sb-btn-ghost" style="font-size:.8rem">
+    ← Turnyrai
+  </a>
+</div>
+@else
 <div class="sb-card mb-3">
   <div class="sb-card-title">
     <i class="bi bi-globe2 sb-card-icon"></i> {{ $tournament->name }}
@@ -29,6 +36,7 @@
   <a href="{{ route('login') }}" class="sb-btn sb-btn-primary">Prisijungti ir dalyvauti</a>
   @endauth
 </div>
+@endif
 
 @if(!empty($points))
 <div class="mb-3">

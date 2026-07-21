@@ -142,6 +142,20 @@ class TournamentController extends Controller
             'league', fn ($q) => $q->where('tournament_id', $tournament->id)
         )->where('is_guest', false)->distinct()->count('user_id');
 
+        // Truly over, either because an admin marked it finished or because
+        // every game has been played (even if the status column wasn't
+        // updated) - mirrors the same check on the tournaments hub page.
+        $gameCount = DB::table('games')
+            ->join('events', 'games.event_id', '=', 'events.id')
+            ->where('events.tournament_id', $tournament->id)
+            ->count();
+        $unscoredCount = DB::table('games')
+            ->join('events', 'games.event_id', '=', 'events.id')
+            ->where('events.tournament_id', $tournament->id)
+            ->whereNull('games.home_team_score')
+            ->count();
+        $isFinished = $tournament->status === 'finished' || ($gameCount > 0 && $unscoredCount === 0);
+
         // Public read-only view of the tournament's official league: full
         // points table + final-standing predictions, same widgets the
         // logged-in dashboard shows, so a finished tournament stays browsable
@@ -169,7 +183,7 @@ class TournamentController extends Controller
             $standings = app(PredictionStandingController::class)->getPredictionStandingTop4($publicLeague->id);
         }
 
-        return view('tournaments.show', compact('tournament', 'participantCount', 'points', 'standings'));
+        return view('tournaments.show', compact('tournament', 'participantCount', 'points', 'standings', 'isFinished'));
     }
 
     // ── Admin ──────────────────────────────────────────────────────────────

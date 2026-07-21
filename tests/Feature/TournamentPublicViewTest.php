@@ -82,4 +82,28 @@ class TournamentPublicViewTest extends TestCase
         $response->assertDontSee(route('prediction.results'), false);
         $response->assertDontSee(route('prediction.standings'), false);
     }
+
+    public function test_join_invitation_card_hidden_when_tournament_is_finished(): void
+    {
+        $tournament = Tournament::create(['name' => 'Finished Cup', 'slug' => 'finished-cup', 'sport' => 'football', 'status' => 'finished']);
+
+        $response = $this->get(route('tournament.show', $tournament->slug));
+
+        $response->assertOk();
+        $response->assertDontSee('Prisijungti ir dalyvauti', false);
+        $response->assertDontSee($tournament->name, false);
+        $response->assertSee('← Turnyrai', false);
+        $response->assertSee(route('tournaments.hub'), false);
+    }
+
+    public function test_join_invitation_card_shown_when_tournament_still_active(): void
+    {
+        $tournament = Tournament::create(['name' => 'Active Cup', 'slug' => 'active-cup', 'sport' => 'football', 'status' => 'active']);
+
+        $response = $this->get(route('tournament.show', $tournament->slug));
+
+        $response->assertOk();
+        $response->assertSee('Prisijungti ir dalyvauti', false);
+        $response->assertSee($tournament->name, false);
+    }
 }
